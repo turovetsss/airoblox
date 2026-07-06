@@ -3,42 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Интерактивный шаблон занятия — Учебный центр «РОБОВИТА»</title>
+<title>Карта курса — Учебный центр «РОБОВИТА»</title>
 <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body class="lesson-page lesson-template">
+<body class="course-map">
+<!-- ===== ШАПКА (светло-зелёная) ===== -->
 <header class="site-header">
   <div class="wrap">
     <div class="top-bar">
       <a class="brand" href="Карта_курса.html">
         <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
-        <div><div class="brand-name">РОБОВИТА</div><div class="brand-tag">учимся программировать роботов и игры</div></div>
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
       </a>
-      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Шаблон занятия</div>
     </div>
     <div class="hero">
-      <div class="hex-badge">X.X</div>
       <div>
-        <div class="module-pill">Раздел N · Название раздела</div>
-        <h1>Название занятия</h1>
-        <p class="subtitle">Коротко: что ребёнок сделает своими руками за 90 минут</p>
+        <div class="module-pill">Курс · Roblox Studio + Lua</div>
+        <h1>Карта курса</h1>
+        <p class="subtitle">Полная программа обучения — 40 занятий</p>
       </div>
     </div>
   </div>
 </header>
+
 <main class="wrap">
-  <div class="objectives"><h2>🎯 Цели занятия</h2><ul><li>Понять ключевую идею урока</li><li>Повторить действие с преподавателем</li><li>Сделать самостоятельный результат</li><li>Проверить себя через игру и квиз</li></ul></div>
-  <div class="card"><h2>📅 План на 90 минут</h2><table class="timetable"><tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr><tr><td>Разогрев</td><td>10 мин</td><td>Вспоминаем прошлое занятие</td></tr><tr><td>Новая идея</td><td>15 мин</td><td>Теория через пример</td></tr><tr><td>Интерактив</td><td>15 мин</td><td>Игры, сопоставления, поиск ошибки</td></tr><tr><td>Практика</td><td>35 мин</td><td>Проект по шагам</td></tr><tr><td>Итоги</td><td>15 мин</td><td>Квиз, бонус, рефлексия</td></tr><tr><td>Итого</td><td>90 мин</td><td>—</td></tr></table></div>
-  <div class="card"><h2><span class="num">1</span> Теория</h2><p>Текст теории...</p><div class="term-grid"><div class="term-card"><b>Термин</b><br><span class="muted">Объяснение</span></div></div><details class="hint-toggle"><summary>Подсказка преподавателю</summary><p>Если дети теряют внимание — переключайтесь на действие.</p></details><div class="media-placeholder"><div class="mp-icon">📸</div><p><b>Скриншот:</b> <code>assets/images/lesson-X.X/example.png</code></p></div></div>
-  <div class="interactive-box" id="warmupChoice"><h2>🎮 Мини-игра</h2><div class="choice-grid"><div class="choice-card" data-correct-choice="true">Правильное действие</div><div class="choice-card" data-correct-choice="false">Неправильное действие</div></div><button class="action-btn" onclick="checkChoices('warmupChoice')">Проверить</button><div class="activity-result"></div></div>
-  <div class="match-block" id="templateMatch"><h3>🔑 Установи соответствие</h3><div class="match-row"><div class="match-key">A</div><select class="match-select" data-correct="ответ1"><option value="">— выбери —</option><option value="ответ1">Ответ 1</option><option value="ответ2">Ответ 2</option></select></div><button class="match-btn" onclick="checkMatchBlock('templateMatch')">✅ Проверить</button><div class="match-result"></div></div>
-  <div class="task-box"><h2>🛠️ Практическое задание</h2><div class="progress-track"><div class="progress-fill"></div></div><span class="progress-label">Выполнено шагов: 0 из 3</span><ul class="task-steps"><li><input type="checkbox" id="t1"><label for="t1">Шаг 1</label></li><li><input type="checkbox" id="t2"><label for="t2">Шаг 2</label></li><li class="bonus-step"><input type="checkbox" id="tb"><label for="tb">⭐ Бонус</label></li></ul></div>
-  <div class="ai-helper"><div class="ai-head"><span style="font-size:32px">🤖</span><div class="t">ИИ-помощник</div></div><div class="ai-buttons"><button class="ai-q-btn" onclick="askBit(this,'ai1')">Вопрос 1</button></div><div class="ai-answer">Нажми вопрос</div><div id="ai1" hidden><b>Ответ:</b> пример</div></div>
-  <div class="quiz-wrap" id="templateQuiz"><h2>📝 Проверь себя</h2><div class="quiz-question" data-name="q1" data-correct="a"><p class="quiz-q-text">1. Вопрос?</p><label><input type="radio" name="q1" value="a"> Верно</label><label><input type="radio" name="q1" value="b"> Неверно</label><div class="q-feedback"></div></div><button class="quiz-btn" onclick="checkQuiz('templateQuiz')">Проверить</button><div class="quiz-result"></div></div>
-  <div class="reflection-box"><h2>💭 Рефлексия</h2><textarea placeholder="Сегодня я научился..."></textarea></div>
-  <div class="lesson-nav"><a class="nav-btn prev" href="Карта_курса.html"><div class="lbl">← Назад</div><div class="ttl">К карте курса</div></a><a class="nav-btn next" href="#"><div class="lbl">Далее →</div><div class="ttl">Следующее занятие</div></a></div>
+  <!-- Приветственный блок -->
+  <div class="card" style="background:linear-gradient(135deg,var(--primary-light),#F2FCE9);border:none;">
+    <h2 style="color:var(--primary-dark);">👋 Привет! Это карта курса РОБОВИТА</h2>
+    <p>Здесь собраны все занятия программы по порядку. Нажимайте на готовые занятия (отмечены ✅), чтобы открыть страницу. Занятия со статусом 🔜 ещё в разработке — как только они будут готовы, они тоже станут ссылками.</p>
+    <p>Для новых материалов используйте <a href="index.html"><b>интерактивный шаблон занятия</b></a> — в нём уже есть все блоки (теория, фото/видео, таблица, код, ИИ-помощник, задание, опрос), просто впишите свой текст.</p>
+  </div>
+
+  <!-- Раздел 1 -->
+  <div class="card module-card">
+    <h2>Раздел 1 · Введение <span class="mod-count">3/3 готово</span></h2>
+    <div class="lrows">
+      <a class="lrow" href="Занятие_1.1_Знакомство_с_компьютером.html"><span class="code">1.1</span><span class="ttl">Знакомство с компьютером</span><span class="st done">✅ Готово</span></a>
+      <a class="lrow" href="Занятие_1.2_Первый_урок_в_Roblox.html"><span class="code">1.2</span><span class="ttl">Первый урок в Roblox, мышь и клавиатура</span><span class="st done">✅ Готово</span></a>
+      <a class="lrow" href="Занятие_1.3_Инструменты_моделирования.html"><span class="code">1.3</span><span class="ttl">Инструменты моделирования, закрепление</span><span class="st done">✅ Готово</span></a>
+    </div>
+  </div>
+
+  <!-- Раздел 2 -->
+  <div class="card module-card">
+    <h2>Раздел 2 · Моделирование, ландшафт и карты <span class="mod-count">0/7 готово</span></h2>
+    <div class="lrows">
+      <div class="lrow disabled"><span class="code">2.1</span><span class="ttl">Строим дерево</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">2.2</span><span class="ttl">Строим карту деревни</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">2.3</span><span class="ttl">Челлендж №1 — повтори</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">2.4</span><span class="ttl">Дом</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">2.5</span><span class="ttl">Волшебный лес</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">2.6</span><span class="ttl">Новогодний фейерверк</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">2.7</span><span class="ttl">Челлендж №2 — Поколдуем?</span><span class="st soon">🔜 В разработке</span></div>
+    </div>
+  </div>
+
+  <!-- Раздел 3 -->
+  <div class="card module-card">
+    <h2>Раздел 3 · Создание игр по шаблону <span class="mod-count">0/1 готово</span></h2>
+    <div class="lrows">
+      <div class="lrow disabled"><span class="code">3.1</span><span class="ttl">Создание игры по готовому шаблону Roblox</span><span class="st soon">🔜 В разработке</span></div>
+    </div>
+  </div>
+
+  <!-- Раздел 4.1 -->
+  <div class="card module-card">
+    <h2>Раздел 4.1 · Базовые конструкции программирования <span class="mod-count">0/13 готово</span></h2>
+    <div class="lrows">
+      <div class="lrow disabled"><span class="code">4.1.1</span><span class="ttl">Пещера кристаллов — Boolean</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.1.2</span><span class="ttl">Поместье — Vector3</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.1.3</span><span class="ttl">Фонтан блоков — текст, числа и цвет</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.1.4</span><span class="ttl">Объекты и свойства</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.1.5</span><span class="ttl">Первый скрипт, наследование объектов</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.1.6</span><span class="ttl">Переменные</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.1.7</span><span class="ttl">Цикл For</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.1.8</span><span class="ttl">Операторы</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.1.9</span><span class="ttl">Калькулятор</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.1.10</span><span class="ttl">Условия</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.1.11</span><span class="ttl">Цикл с условием — While</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.1.12</span><span class="ttl">Функции</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.1.13</span><span class="ttl">Аргументы функций — return и print</span><span class="st soon">🔜 В разработке</span></div>
+    </div>
+  </div>
+
+  <!-- Раздел 4.2 -->
+  <div class="card module-card">
+    <h2>Раздел 4.2 · Продвинутые конструкции программирования <span class="mod-count">0/4 готово</span></h2>
+    <div class="lrows">
+      <div class="lrow disabled"><span class="code">4.2.1</span><span class="ttl">Локальные переменные</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.2.3</span><span class="ttl">Обработка событий и кликов мыши</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.2.4</span><span class="ttl">GetChildren</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">4.2.5</span><span class="ttl">FindFirstChild</span><span class="st soon">🔜 В разработке</span></div>
+    </div>
+  </div>
+
+  <!-- Раздел 5.1 -->
+  <div class="card module-card">
+    <h2>Раздел 5.1 · Игровая разработка — работа с GUI <span class="mod-count">0/6 готово</span></h2>
+    <div class="lrows">
+      <div class="lrow disabled"><span class="code">5.1.1</span><span class="ttl">GUI: введение + TextButton</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.1.2</span><span class="ttl">GUI: TextBox, ImageLabel, ImageButton</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.1.3</span><span class="ttl">GUI: SurfaceGui</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.1.4</span><span class="ttl">GUI: BillboardGui</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.1.5</span><span class="ttl">TweenGUI (анимация интерфейса)</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.1.6</span><span class="ttl">Загрузочный экран</span><span class="st soon">🔜 В разработке</span></div>
+    </div>
+  </div>
+
+  <!-- Раздел 5.2 -->
+  <div class="card module-card">
+    <h2>Раздел 5.2 · Игровая механика <span class="mod-count">0/7 готово</span></h2>
+    <div class="lrows">
+      <div class="lrow disabled"><span class="code">5.2.1</span><span class="ttl">Удалённые события и функции (RemoteEvent/RemoteFunction)</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.2.2</span><span class="ttl">Кликер</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.2.3</span><span class="ttl">Модульные скрипты (ModuleScript)</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.2.4</span><span class="ttl">Bindable функции и события</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.2.5</span><span class="ttl">Создание инвентаря</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.2.6</span><span class="ttl">Ачивки (достижения)</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.2.7</span><span class="ttl">Звуки игры</span><span class="st soon">🔜 В разработке</span></div>
+    </div>
+  </div>
+
+  <!-- Раздел 5.3 -->
+  <div class="card module-card">
+    <h2>Раздел 5.3 · Продвинутый Lua <span class="mod-count">0/4 готово</span></h2>
+    <div class="lrows">
+      <div class="lrow disabled"><span class="code">5.3.1</span><span class="ttl">Облачное хранилище данных (DataStore)</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.3.2</span><span class="ttl">Магазин доната</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.3.3</span><span class="ttl">Музыкальный плеер</span><span class="st soon">🔜 В разработке</span></div>
+      <div class="lrow disabled"><span class="code">5.3.4</span><span class="ttl">Движение NPC</span><span class="st soon">🔜 В разработке</span></div>
+    </div>
+  </div>
+
+  <!-- Раздел 5.4 -->
+  <div class="card module-card">
+    <h2>Раздел 5.4 · Создание игр (итоговые проекты) <span class="mod-count">0/1 готово</span></h2>
+    <div class="lrows">
+      <div class="lrow disabled"><span class="code">5.4.1</span><span class="ttl">Итоговый проект — своя игра</span><span class="st soon">🔜 В разработке</span></div>
+    </div>
+  </div>
 </main>
-<footer class="site-footer"><div class="wrap"><div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип">Учебный центр «РОБОВИТА»</div><div>Интерактивный шаблон занятия</div></div></footer>
+
+<!-- ===== ФУТЕР (светло-зелёный) ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Офлайн-курс по Roblox Studio и Lua для детей</div>
+  </div>
+</footer>
 <script src="assets/js/lesson.js"></script>
 </body>
 </html>
