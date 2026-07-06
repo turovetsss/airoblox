@@ -1,183 +1,441 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1.3. Инструменты моделирования — Учебный центр «РОБОВИТА»</title>
-<link rel="stylesheet" href="assets/css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.4. Восстанови паркур — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body class="lesson-page theme-studio">
-<header class="site-header">
-  <div class="wrap">
-    <div class="top-bar">
-      <a class="brand" href="Карта_курса.html"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Бит">
-<line x1="60" y1="20" x2="60" y2="6" stroke="#EAFBF3" stroke-width="4" stroke-linecap="round"/>
-<circle class="bit-antenna-tip" cx="60" cy="6" r="6" fill="#FFB238"/>
-<rect x="8" y="48" width="12" height="22" rx="6" fill="#0B7350"/>
-<rect x="100" y="48" width="12" height="22" rx="6" fill="#0B7350"/>
-<rect x="18" y="20" width="84" height="76" rx="24" fill="#129E6C" stroke="#0E2A22" stroke-width="4"/>
-<rect x="30" y="42" width="60" height="38" rx="15" fill="#0E2A22"/>
-<circle cx="48" cy="61" r="7.5" fill="#EAFBF3"/>
-<circle cx="72" cy="61" r="7.5" fill="#EAFBF3"/>
-<circle cx="49" cy="62" r="3.2" fill="#0E2A22"/>
-<circle cx="73" cy="62" r="3.2" fill="#0E2A22"/>
-<path d="M50 71 Q60 77 70 71" stroke="#EAFBF3" stroke-width="3" fill="none" stroke-linecap="round"/>
-</svg><div><div class="brand-name">РОБОВИТА</div><div class="brand-tag">учимся программировать роботов и игры</div></div></a>
-      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 1.3</div>
-    </div>
-    <div class="hero">
-      <div class="hex-badge">1.3</div>
-      <div>
-        <div class="module-pill">Раздел 1 · Введение</div>
-        <h1>Инструменты моделирования</h1>
-        <p class="subtitle">Explorer, Properties, Toolbox и первая сцена</p>
+<body class="lesson-page">
+
+  <!-- ===== ШАПКА ===== -->
+  <header class="site-header">
+    <div class="wrap">
+      <div class="top-bar">
+        <a class="brand" href="Карта_курса.html">
+          <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+          <div>
+            <div class="brand-name">РОБОВИТА</div>
+            <div class="brand-tag">учимся программировать роботов и игры</div>
+          </div>
+        </a>
+        <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 1.4</div>
+      </div>
+      <div class="hero">
+        <div class="hex-badge">1.4</div>
+        <div>
+          <div class="module-pill">Раздел 1 · Введение</div>
+          <h1>🏃 Восстанови паркур</h1>
+          <p class="subtitle">Собираем разрушенный обби — учимся дублировать, вращать и масштабировать</p>
+        </div>
       </div>
     </div>
-  </div>
-</header>
-<main class="wrap">
-<div class="objectives">
-<h2>🎯 Цели занятия</h2>
-<ul><li>Изучить главные окна Roblox Studio: Workspace, Explorer, Properties, Toolbox</li><li>Освоить инструменты Select, Move, Scale, Rotate</li><li>Создать первую сцену из нескольких объектов Part</li><li>Научиться группировать и сохранять свою модель</li></ul>
-</div>
-<div class="card"><table class="timetable">
-<tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
-<tr><td>Повторение камеры</td><td>5 мин</td><td>Вспоминаем управление из занятия 1.2</td></tr><tr><td>Главные окна Studio</td><td>15 мин</td><td>Workspace, Explorer, Properties, Toolbox</td></tr><tr><td>Инструменты Select/Move/Scale/Rotate</td><td>15 мин</td><td>Разбираем и пробуем каждый</td></tr><tr><td>Практика: строим комнату</td><td>40 мин</td><td>Part, стены, мебель из Toolbox</td></tr><tr><td>Сохранение модели</td><td>10 мин</td><td>Группировка и Save to Roblox</td></tr><tr><td>Опрос и итоги</td><td>5 мин</td><td>Проверяем себя</td></tr>
-<tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
-</table></div>
-<div class="card">
-<h2><span class="num">1</span> Главные окна-помощники Roblox Studio</h2>
-<p>Студия состоит из нескольких панелей. Если какого-то окна нет на экране — его всегда можно включить во вкладке <b>«Вид» (View)</b> на верхней панели.</p>
-<div class="data-table-wrap"><table class="data-table">
-<caption>Главные окна Roblox Studio</caption>
-<tr><th>Панель</th><th>Что это такое</th><th>Аналогия</th></tr>
-<tr><td><b>Workspace</b> (Рабочая область)</td><td>Главное окно, где виден и создаётся игровой мир</td><td>Стол, на котором собираешь конструктор</td></tr><tr><td><b>Explorer</b> (Проводник)</td><td>Список ВСЕГО, что есть в игре: объекты, скрипты, свет</td><td>Оглавление книги / дерево папок</td></tr><tr><td><b>Properties</b> (Свойства)</td><td>Показывает характеристики выбранного объекта</td><td>Паспорт объекта</td></tr><tr><td><b>Toolbox</b> (Инструменты)</td><td>Библиотека готовых моделей, звуков и скриптов</td><td>Огромный магазин деталей</td></tr>
-</table></div><div class="media-block"><img src="assets/images/lesson-1.3/studio_spawn.png" alt="Интерфейс Roblox Studio с SpawnLocation"></div>
-<div class="note">Главное правило Studio: <b>выделил объект → смотри на его свойства в Properties</b>. Если объект есть в Explorer, но не виден в Workspace — скорее всего, он просто скрыт за другими объектами или его позиция «за кадром».</div>
-</div>
-<div class="card">
-<h2><span class="num">2</span> Инструменты для работы с объектами</h2>
-<p>Это четыре главных инструмента на верхней панели — ими мы управляем объектами на сцене:</p>
-<div class="data-table-wrap"><table class="data-table">
-<caption>Инструменты преобразования объектов</caption>
-<tr><th>Инструмент</th><th>Горячая клавиша</th><th>Что делает</th></tr>
-<tr><td>Select (Выбор)</td><td>Q</td><td>Выбирает объект для работы с ним</td></tr><tr><td>Move (Перемещение)</td><td>W</td><td>Двигает объект по осям X (красная), Y (зелёная), Z (синяя)</td></tr><tr><td>Scale (Масштаб)</td><td>E</td><td>Меняет размер объекта, потянув за белые точки</td></tr><tr><td>Rotate (Вращение)</td><td>R</td><td>Вращает объект вокруг оси за цветные кольца</td></tr>
-</table></div><div class="media-placeholder ">
-<div class="mp-icon">📸</div>
-<p><b>Вставьте сюда фото:</b> GIF/скриншот, где по очереди показаны стрелки Move, кольца Rotate и точки Scale вокруг блока</p>
-</div>
-<h3>Свойства блока, которые стоит запомнить</h3>
-<div class="data-table-wrap"><table class="data-table">
+  </header>
 
-<tr><th>Свойство</th><th>За что отвечает</th></tr>
-<tr><td><code>Size</code></td><td>Размер по осям X, Y, Z</td></tr><tr><td><code>Anchored</code></td><td>Зафиксирован ли объект (не падает от физики), если включено</td></tr><tr><td><code>Material</code></td><td>Материал поверхности: Plastic, Wood, Metal, Water и др.</td></tr><tr><td><code>BrickColor</code> / <code>Color</code></td><td>Цвет объекта</td></tr><tr><td><code>CanCollide</code></td><td>Может ли игрок проходить сквозь объект</td></tr>
-</table></div>
-</div>
-<div class="ai-helper">
-<div class="ai-head"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Бит-помощник">
-<line x1="60" y1="20" x2="60" y2="6" stroke="#FFB238" stroke-width="4" stroke-linecap="round"/>
-<circle class="bit-antenna-tip" cx="60" cy="6" r="6" fill="#FFB238"/>
-<rect x="8" y="48" width="12" height="22" rx="6" fill="#129E6C"/>
-<rect x="100" y="48" width="12" height="22" rx="6" fill="#129E6C"/>
-<rect x="18" y="20" width="84" height="76" rx="24" fill="#17B57E" stroke="#08150F" stroke-width="4"/>
-<rect x="30" y="42" width="60" height="38" rx="15" fill="#08150F"/>
-<circle cx="48" cy="61" r="7.5" fill="#EAFBF3"/>
-<circle cx="72" cy="61" r="7.5" fill="#EAFBF3"/>
-<circle cx="49" cy="62" r="3.2" fill="#08150F"/>
-<circle cx="73" cy="62" r="3.2" fill="#08150F"/>
-<path d="M50 71 Q60 77 70 71" stroke="#EAFBF3" stroke-width="3" fill="none" stroke-linecap="round"/>
-</svg><div class="t">🤖 Спроси Бита <span>(ИИ-помощник)</span></div></div>
-<p class="ai-sub">Нажми на вопрос — Бит расскажет, как ИИ помогает с темой «инструменты моделирования».</p>
-<div class="ai-buttons"><button class="ai-q-btn" onclick="askBit(this,'aia0')">Я передвинул блок, а он потом упал вниз. Почему?</button><button class="ai-q-btn" onclick="askBit(this,'aia1')">Как найти красивую готовую модель дерева или стула?</button><button class="ai-q-btn" onclick="askBit(this,'aia2')">Чем Scale отличается от изменения Size в Properties?</button></div>
-<div class="ai-answer">Выбери один из вопросов выше 👆</div>
-<div id="aia0" hidden>Бит: Проверь свойство Anchored в Properties! Если галочка снята — на объект действует физика, и он падает под своим весом, как настоящий кубик.</div><div id="aia1" hidden>Бит: Открой панель Toolbox, в фильтре выбери «Модели» и впиши в поиск слово на английском, например tree или chair — и просто перетащи находку в Workspace.</div><div id="aia2" hidden>Бит: Это два способа одного и того же результата! Scale (E) — это «на глаз», мышкой и быстро. А ввод точных чисел в Properties → Size — это точно и одинаково с обеих сторон. Профи используют оба способа в зависимости от задачи.</div>
-<div class="ai-real-tip"><b>💡 Как спросить настоящий ИИ-помощник:</b> если дома есть доступ к ИИ (например, Claude или другой ассистент), можно попросить помочь с этой темой. Вот пример запроса:
-<span class="prompt-example">Объясни просто: чем отличаются инструменты Move, Scale и Rotate в Roblox Studio?</span>
-Только не отправляй ИИ личные данные (свой адрес, телефон, пароли) — эти вопросы обсуждай только с родителями и преподавателем.</div>
-</div>
+  <main class="wrap">
 
-<div class="interactive-box" id="toolQuiz">
-<h2>🔧 Угадай инструмент</h2>
-<p>Какой инструмент меняет размер объекта?</p>
-<div class="choice-grid">
-<div class="choice-card" data-correct-choice="false">Move (W)</div>
-<div class="choice-card" data-correct-choice="true">Scale (E)</div>
-<div class="choice-card" data-correct-choice="false">Rotate (R)</div>
-</div>
-<button class="action-btn" onclick="checkChoices('toolQuiz')">Проверить</button>
-<div class="activity-result"></div>
-</div>
-<div class="interactive-box" id="propQuiz">
-<h2>📋 Выбери правильное свойство</h2>
-<p>Чтобы объект не падал от физики, нужно включить...</p>
-<div class="choice-grid">
-<div class="choice-card" data-correct-choice="true">Anchored</div>
-<div class="choice-card" data-correct-choice="false">Material</div>
-<div class="choice-card" data-correct-choice="false">CanCollide</div>
-</div>
-<button class="action-btn" onclick="checkChoices('propQuiz')">Проверить</button>
-<div class="activity-result"></div>
-</div>
-<div class="reflection-box">
-<h2>💭 Рефлексия</h2>
-<textarea placeholder="Сегодня я построил...&#10;Самым полезным инструментом был...&#10;В следующий раз хочу..."></textarea>
-</div>
+    <!-- ===== ЦЕЛИ ===== -->
+    <div class="objectives">
+      <h2>🎯 Цели занятия</h2>
+      <ul>
+        <li>Создать испытания для паркура (obby)</li>
+        <li>Ориентироваться в интерфейсе Roblox Studio</li>
+        <li>Управлять камерой и трансформировать объекты</li>
+        <li>Дублировать и вращать объекты</li>
+      </ul>
+    </div>
 
-<div class="task-box">
-<h2>🛠️ Практическое задание: Построй свою первую комнату</h2>
-<div class="progress-track"><div class="progress-fill"></div></div>
-<span class="progress-label">Выполнено шагов: 0 из 8</span>
-<div class="note">Если стены не хотят вставать ровно встык — попробуй использовать Properties → Position и вводить числа вручную для точности.</div>
-<ul class="task-steps">
-<li><input type="checkbox" id="Постs0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Постs0">Создай Part и через Properties → Size сделай из него платформу-пол размером 50, 2, 50</label></li><li><input type="checkbox" id="Постs1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Постs1">Проверь, что у пола включён Anchored (иначе он улетит вниз)</label></li><li><input type="checkbox" id="Постs2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Постs2">Создай ещё один Part, инструментом Move (W) подними его над полом — это будет стена</label></li><li><input type="checkbox" id="Постs3" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Постs3">Инструментом Scale (E) сделай стену тонкой и высокой</label></li><li><input type="checkbox" id="Постs4" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Постs4">Скопируй стену сочетанием Ctrl+D и с помощью Move/Rotate расставь ещё 3 стены — получится комната</label></li><li><input type="checkbox" id="Постs5" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Постs5">Открой Toolbox, найди модель мебели (например «chair» или «table») и перетащи в комнату</label></li><li><input type="checkbox" id="Постs6" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Постs6">Выдели все части комнаты, нажми Ctrl+G, чтобы сгруппировать их в одну модель</label></li><li class="bonus-step"><input type="checkbox" id="Постbonus" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Постbonus">⭐ <b>Бонус:</b> сохрани свою модель через Save to Roblox → Model, придумай ей название и короткое описание</label></li>
-</ul>
-</div>
-<div class="quiz-wrap" id="quiz1">
-<h2>📝 Проверь себя</h2>
-<div class="quiz-question" data-name="quiz1q0" data-correct="b">
-<p class="quiz-q-text">1. В каком окне отображается иерархия всех объектов игры?</p>
-<label><input type="radio" name="quiz1q0" value="a"> Toolbox</label><label><input type="radio" name="quiz1q0" value="b"> Explorer</label><label><input type="radio" name="quiz1q0" value="c"> Properties</label>
-<div class="q-feedback"></div>
-</div><div class="quiz-question" data-name="quiz1q1" data-correct="c">
-<p class="quiz-q-text">2. Какой инструмент меняет размер объекта?</p>
-<label><input type="radio" name="quiz1q1" value="a"> Move</label><label><input type="radio" name="quiz1q1" value="b"> Rotate</label><label><input type="radio" name="quiz1q1" value="c"> Scale</label>
-<div class="q-feedback"></div>
-</div><div class="quiz-question" data-name="quiz1q2" data-correct="a">
-<p class="quiz-q-text">3. Какое свойство отвечает за то, падает объект или нет?</p>
-<label><input type="radio" name="quiz1q2" value="a"> Anchored</label><label><input type="radio" name="quiz1q2" value="b"> Material</label><label><input type="radio" name="quiz1q2" value="c"> CanCollide</label>
-<div class="q-feedback"></div>
-</div><div class="quiz-question" data-name="quiz1q3" data-correct="b">
-<p class="quiz-q-text">4. Где искать готовые модели мебели и деревьев?</p>
-<label><input type="radio" name="quiz1q3" value="a"> В Properties</label><label><input type="radio" name="quiz1q3" value="b"> В Toolbox</label><label><input type="radio" name="quiz1q3" value="c"> В Output</label>
-<div class="q-feedback"></div>
-</div><div class="quiz-question" data-name="quiz1q4" data-correct="b">
-<p class="quiz-q-text">5. Какое сочетание клавиш группирует несколько объектов в одну модель?</p>
-<label><input type="radio" name="quiz1q4" value="a"> Ctrl + D</label><label><input type="radio" name="quiz1q4" value="b"> Ctrl + G</label><label><input type="radio" name="quiz1q4" value="c"> Ctrl + C</label>
-<div class="q-feedback"></div>
-</div>
-<button class="quiz-btn" onclick="checkQuiz('quiz1')">Проверить ответы</button>
-<div class="quiz-result"></div>
-</div>
-<div class="lesson-nav"><a class="nav-btn prev" href="Занятие_1.2_Первый_урок_в_Roblox.html"><div class="lbl">← Назад</div><div class="ttl">1.2 Первый урок в Roblox</div></a><a class="nav-btn next" href="Карта_курса.html"><div class="lbl">Далее →</div><div class="ttl">4.1.1 Boolean — скоро</div></a></div>
-</main>
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="foot-brand"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Бит">
-<line x1="60" y1="20" x2="60" y2="6" stroke="#EAFBF3" stroke-width="4" stroke-linecap="round"/>
-<circle class="bit-antenna-tip" cx="60" cy="6" r="6" fill="#FFB238"/>
-<rect x="8" y="48" width="12" height="22" rx="6" fill="#0B7350"/>
-<rect x="100" y="48" width="12" height="22" rx="6" fill="#0B7350"/>
-<rect x="18" y="20" width="84" height="76" rx="24" fill="#129E6C" stroke="#0E2A22" stroke-width="4"/>
-<rect x="30" y="42" width="60" height="38" rx="15" fill="#0E2A22"/>
-<circle cx="48" cy="61" r="7.5" fill="#EAFBF3"/>
-<circle cx="72" cy="61" r="7.5" fill="#EAFBF3"/>
-<circle cx="49" cy="62" r="3.2" fill="#0E2A22"/>
-<circle cx="73" cy="62" r="3.2" fill="#0E2A22"/>
-<path d="M50 71 Q60 77 70 71" stroke="#EAFBF3" stroke-width="3" fill="none" stroke-linecap="round"/>
-</svg> Учебный центр «РОБОВИТА»</div>
-    <div>Занятие 1.3 · офлайн-курс по Roblox Studio и Lua</div>
-  </div>
-</footer>
-<script src="assets/js/lesson.js"></script>
+    <!-- ===== ПЛАН ===== -->
+    <div class="card">
+      <table class="timetable">
+        <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+        <tr><td>Введение, знакомство с картой</td><td>10 мин</td><td>Скачиваем карту, осматриваем обломки</td></tr>
+        <tr><td>Повторение инструментов</td><td>10 мин</td></tr>
+        <tr><td>Задание 1 — Цветная дорожка</td><td>15 мин</td></tr>
+        <tr><td>Задание 2 — Блоки с поворотом</td><td>10 мин</td></tr>
+        <tr><td>Задание 3 — Сферы</td><td>15 мин</td></tr>
+        <tr><td>Задание 4 — Восстанови лестницу</td><td>15 мин</td></tr>
+        <tr><td>Задание 5 — Твои два испытания</td><td>10 мин</td></tr>
+        <tr><td>Опрос и итоги</td><td>5 мин</td><td>Проверяем себя</td></tr>
+      </table>
+    </div>
+    <!-- ===== КАРТА И ЗАДАНИЯ (с ссылкой на скачивание) ===== -->
+    <div class="card">
+      <p>🗺️ Скачай карту с обломками и открой её в Roblox Studio. Попроси тренера помочь!</p>
+      <div class="note">
+        <b>Файл карты:</b>
+        <a href="assets/downloads/obby.rbxl" download style="font-weight:800; color:var(--primary-dark);">
+          ⬇️ Скачать Obby.rbxl
+        </a>
+        (правый клик → «Сохранить ссылку как...»)
+      </div>
+    </div>
+    <!-- ===== ЧАСТЬ 1: ПОВТОРЕНИЕ ИНСТРУМЕНТОВ (исправленная таблица) ===== -->
+    <div class="card">
+      <h2><span class="num">1</span> Инструменты — наши руки</h2>
+      <p>Чтобы восстановить паркур, нужно уверенно владеть четырьмя главными инструментами. Вспомним их:</p>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <caption>Инструменты трансформации</caption>
+          <tr>
+            <th>Инструмент</th>
+            <th>Горячая клавиша</th>
+            <th>Что делает</th>
+          </tr>
+          <tr>
+            <td>
+              <b>Select</b> (Выбор)
+              <img src="assets/images/lesson-1.3/select.png" alt="Иконка Select" style="display:block; margin-top:4px; max-width:80px;">
+            </td>
+            <td>Q</td>
+            <td>Выделяет объект</td>
+          </tr>
+          <tr>
+            <td>
+              <b>Move</b> (Перемещение)
+              <img src="assets/images/lesson-1.3/move.png" alt="Иконка Move" style="display:block; margin-top:4px; max-width:80px;">
+            </td>
+            <td>W</td>
+            <td>Двигает по осям X, Y, Z</td>
+          </tr>
+          <tr>
+            <td>
+              <b>Scale</b> (Масштаб)
+              <img src="assets/images/lesson-1.3/scale.png" alt="Иконка Scale" style="display:block; margin-top:4px; max-width:80px;">
+            </td>
+            <td>E</td>
+            <td>Меняет размер</td>
+          </tr>
+          <tr>
+            <td>
+              <b>Rotate</b> (Вращение)
+              <img src="assets/images/lesson-1.3/rotate.png" alt="Иконка Rotate" style="display:block; margin-top:4px; max-width:80px;">
+            </td>
+            <td>R</td>
+            <td>Вращает вокруг оси</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="note">
+        🏃 <b>Паркур-совет:</b> Чтобы быстро скопировать объект, используй <b>Ctrl+D</b> (дублирование). Это сэкономит кучу времени!
+      </div>
+
+      <div class="media-placeholder" style="display: block;">
+        <div class="mp-icon">🖥️</div>
+        <p><b>Как открыть свойства объекта в Roblox Studio</b></p>
+        <ol style="margin: 8px 0 12px 20px; font-size: 1.05rem;">
+          <li><b>Выдели объект</b> – кликни по нему в окне <b>Workspace</b> (3D-вид) или в <b>Explorer</b> (справа).</li>
+          <li><b>Открой панель Properties</b> – если её нет, включи через меню <b>View → Properties</b> (или нажми <kbd>Ctrl+1</kbd>).</li>
+          <li>В панели <b>Properties</b> ты увидишь все параметры объекта: <code>Size</code>, <code>Anchored</code>, <code>BrickColor</code>, <code>Material</code> и другие.</li>
+        </ol>
+        <img src="assets/images/lesson-1.3/properties.png" alt="Пример панели Properties в Roblox Studio" style="max-width: 100%; border-radius: 12px; margin-top: 8px; border: 2px solid var(--line);">
+      </div>
+
+      <h3>Свойства объектов в паркуре</h3>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <tr><th>Свойство</th><th>Зачем в паркуре</th></tr>
+          <tr><td><code>Anchored</code></td><td>Фиксирует объект — чтобы мины не падали</td></tr>
+          <tr><td><code>Size</code></td><td>Размер платформы, лужи, препятствия</td></tr>
+          <tr><td><code>Material</code></td><td>Визуальный вид (Neon для яркости)</td></tr>
+          <tr><td><code>BrickColor</code></td><td>Цвет (например, красный для мин)</td></tr>
+          <tr><td><code>CanCollide</code></td><td>Можно ли проходить сквозь</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== AI-помощник (Алиса) ===== -->
+    <div class="ai-helper">
+      <div class="ai-head">
+        <span style="font-size:32px; line-height:1;">🤖</span>
+        <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+      </div>
+      <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+
+      <div class="ai-buttons">
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B4%D1%83%D0%B1%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82%20%D0%B2%20Roblox%20Studio%3F%22%7D" target="_blank" class="alice-q-btn">Как дублировать объект в Roblox Studio?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9F%D0%BE%D1%87%D0%B5%D0%BC%D1%83%20%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82%20%D0%BF%D0%B0%D0%B4%D0%B0%D0%B5%D1%82%20%D0%B2%20Roblox%20Studio%3F%22%7D" target="_blank" class="alice-q-btn">Почему объект падает в Roblox Studio?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D0%B2%D0%B5%D1%80%D0%BD%D1%83%D1%82%D1%8C%20%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82%20%D0%BD%D0%B0%2090%20%D0%B3%D1%80%D0%B0%D0%B4%D1%83%D1%81%D0%BE%D0%B2%3F%22%7D" target="_blank" class="alice-q-btn">Как повернуть объект на 90 градусов?</a>
+      </div>
+
+      <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
+        💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+      </div>
+
+      <div class="ai-real-tip">
+        <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про Roblox Studio или программирование.<br>
+        <span class="prompt-example">Просто скажи: «Алиса, как включить Anchored в Roblox Studio?»</span>
+        <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+          ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ИНТЕРАКТИВ: УГАДАЙ ИНСТРУМЕНТ ===== -->
+    <div class="interactive-box" id="toolQuiz">
+      <h2>🔧 Какой инструмент?</h2>
+      <p>Выбери правильный инструмент для действия:</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Move (W)</div>
+        <div class="choice-card" data-correct-choice="true">Scale (E)</div>
+        <div class="choice-card" data-correct-choice="false">Rotate (R)</div>
+      </div>
+      <p style="margin-top: 6px;"><small>Инструмент, который меняет размер объекта.</small></p>
+      <button class="action-btn" onclick="checkChoices('toolQuiz')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- ===== КАРТА И ЗАДАНИЯ (с ссылкой на скачивание) ===== -->
+    <div class="card">
+      <h2><span class="num">2</span> Задания по восстановлению</h2>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 1 ===== -->
+    <div class="task-box" id="task1">
+      <h2>🧨 Задание 1 — Цветная дорожка</h2>
+      <div class="media-placeholder" style="margin-top:10px;">
+        <img src="assets/images/lesson-1.3/task1.png" alt="Задание 1 образец" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="task1Progress"></div></div>
+      <span class="progress-label" id="task1Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t1s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s0">Продублируй голубой блок (Ctrl+D) и поставь его рядом (Move), чтобы путь не обрывался</label></li>
+        <li><input type="checkbox" id="t1s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s1">Продублируй жёлтый блок (Ctrl+D) и поставь его рядом (Move), чтобы путь не обрывался</label></li>
+      </ul>
+      <span class="progress-label" style="font-weight:800; color:var(--primary-dark);">Должно получиться вот так:</span>
+      <div class="media-placeholder" style="margin-top:10px;">
+        <img src="assets/images/lesson-1.3/task1_complete.png" alt="Задание 1 результат" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 2 ===== -->
+    <div class="task-box" id="task2">
+      <h2>🔄 Задание 2 — Блоки с поворотом</h2>
+      <div class="media-placeholder" style="margin-top:10px;">
+        <img src="assets/images/lesson-1.3/task2.png" alt="Задание 2 образец" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="task2Progress"></div></div>
+      <span class="progress-label" id="task2Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t2s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t2s0">Продублируй красный блок, передвинь вперёд и <b>поверни</b> (Rotate)</label></li>
+        <li><input type="checkbox" id="t2s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t2s1">Расставь мины в шахматном порядке</label></li>
+      </ul>
+      <span class="progress-label" style="font-weight:800; color:var(--primary-dark);">Должно получиться вот так:</span>
+      <div class="media-placeholder" style="margin-top:10px;">
+        <img src="assets/images/lesson-1.3/task2_complete.png" alt="Задание 2 результат" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 3 (было 4) ===== -->
+    <div class="task-box" id="task4">
+      <h2>📐 Задание 3 — Сферы</h2>
+      <div class="progress-track"><div class="progress-fill" id="task4Progress"></div></div>
+      <span class="progress-label" id="task4Label">Выполнено шагов: 0 из 4</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t4s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s0">Создай парт-сферу</label>
+          <div class="media-placeholder" style="margin-top:8px;">
+            <img src="assets/images/lesson-1.3/sphere.png" alt="Создание сферы" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+          </div>
+        </li>
+        <li><input type="checkbox" id="t4s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s1">Добавь объект SelectionSphere</label>
+          <div class="media-placeholder" style="margin-top:8px;">
+            <img src="assets/images/lesson-1.3/selection.png" alt="SelectionSphere" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+          </div>
+        </li>
+        <li><input type="checkbox" id="t4s3" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s3">Измени цвет в Properties и укажи в Adornee нашу сферу (кликни на неё)</label>
+          <div class="media-placeholder" style="margin-top:8px;">
+            <img src="assets/images/lesson-1.3/selection_prop.png" alt="Свойства SelectionSphere" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+          </div>
+        </li>
+        <li><input type="checkbox" id="t4s4" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s4">Продублируй готовую сферу несколько раз, чтобы можно было прыгать</label>
+          <div class="media-placeholder" style="margin-top:8px;">
+            <img src="assets/images/lesson-1.3/task4comlete.png" alt="Готовые сферы" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 4 (было 5) ===== -->
+    <div class="task-box" id="task5">
+      <h2>🧩 Задание 4 — Восстанови лестницу</h2>
+      <div class="progress-track"><div class="progress-fill" id="task5Progress"></div></div>
+      <span class="progress-label" id="task5Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t5s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t5s0">Продублируй недостающие блоки</label></li>
+        <li><input type="checkbox" id="t5s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t5s1">Размести их, как показано на картинке</label></li>
+      </ul>
+      <div class="media-placeholder" style="margin-top:10px;">
+        <img src="assets/images/lesson-1.3/task5.png" alt="Лестница образец" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 7 ===== -->
+    <div class="task-box" id="task7">
+      <h2>✨ Задание 5 — Твои два испытания</h2>
+
+      <!-- Инструкция по Toolbox -->
+      <div class="note" style="border-left-color: var(--primary); background: var(--primary-light);">
+        <strong>🛠️ Как пользоваться Toolbox:</strong><br>
+        Чтобы добавить готовые модели в свою игру, открой панель <b>Toolbox</b> через меню <b>View → Toolbox</b> (или нажми <kbd>Ctrl+Alt+T</kbd>).<br>
+        В поиске введи ключевое слово (например, «chair», «tree», «spike») и перетащи понравившуюся модель прямо в <b>Workspace</b>.<br>
+        Помни: все модели можно перемещать, вращать и масштабировать инструментами <b>Move (W)</b>, <b>Rotate (R)</b> и <b>Scale (E)</b>.
+      </div>
+
+      <div class="media-placeholder" style="display: block;">
+        <div class="mp-icon">📦</div>
+        <p><b>Как выглядит панель Toolbox</b></p>
+        <p style="font-size: 0.95rem;">Найди её в верхнем меню <b>View → Toolbox</b> <img src="assets/images/lesson-1.3/tool.png" alt="Иконка Toolbox" style="display:inline-block; height:24px; vertical-align:middle; margin:0 6px;">. В открывшемся окне введи запрос и перетащи модель в сцену.</p>
+        <img src="assets/images/lesson-1.3/toolbox.png" alt="Пример панели Toolbox" style="max-width: 100%; border-radius: 12px; margin-top: 8px; border: 2px solid var(--line);">
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="task7Progress"></div></div>
+      <span class="progress-label" id="task7Label">Выполнено шагов: 0 из 2</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t7s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t7s0">Придумай и создай три своих уникальных испытания (используй мины, блоки, круги или готовые модели из Toolbox)</label></li>
+        <li class="bonus-step"><input type="checkbox" id="t7s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t7s1">⭐ <b>Бонус:</b> добавь яркие цвета (Neon) и анимацию (если умеешь)</label></li>
+      </ul>
+
+      <div class="note" style="border-left-color: var(--accent); background: var(--accent-light);">
+        <strong>💡 Фантазируй!</strong> Можно сделать вращающиеся платформы, прыжки через пропасть, движущиеся препятствия. Используй уже готовые детали из предыдущих заданий или найди новые в Toolbox.
+      </div>
+    </div>
+
+    <!-- ===== РЕФЛЕКСИЯ ===== -->
+    <div class="reflection-box">
+      <h2>💭 Ты доволен своей работой?</h2>
+      <p>Оцени свои ощущения:</p>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 8px 0 12px;">
+        <label style="display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px;">
+          <input type="radio" name="satisfaction" value="yes"> Да, мой паркур самый яркий и интересный!
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px;">
+          <input type="radio" name="satisfaction" value="ok"> Да, но могу лучше...
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px;">
+          <input type="radio" name="satisfaction" value="no"> Нет, получается криво!
+        </label>
+      </div>
+      <textarea placeholder="Что было самым сложным? Что понравилось больше всего?"></textarea>
+    </div>
+
+    <!-- ===== ИНТЕРАКТИВ: ВОПРОСЫ ПО ИНСТРУМЕНТАМ ===== -->
+    <div class="interactive-box" id="toolQuiz2">
+      <h2>🧩 Вопросы на закрепление</h2>
+      <p>Какой инструмент изменяет размер?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Select</div>
+        <div class="choice-card" data-correct-choice="true">Scale</div>
+        <div class="choice-card" data-correct-choice="false">Move</div>
+        <div class="choice-card" data-correct-choice="false">Rotate</div>
+      </div>
+      <p>Какой инструмент выделяет объекты?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Select</div>
+        <div class="choice-card" data-correct-choice="false">Move</div>
+        <div class="choice-card" data-correct-choice="false">Scale</div>
+        <div class="choice-card" data-correct-choice="false">Rotate</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('toolQuiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- ===== ИТОГОВЫЙ ОПРОС ===== -->
+    <div class="quiz-wrap" id="quiz1">
+      <h2>📝 Проверь себя, паркурщик!</h2>
+
+      <div class="quiz-question" data-name="quiz1q0" data-correct="b">
+        <p class="quiz-q-text">1. Какая клавиша дублирует объект?</p>
+        <label><input type="radio" name="quiz1q0" value="a"> Ctrl+C</label>
+        <label><input type="radio" name="quiz1q0" value="b"> Ctrl+D</label>
+        <label><input type="radio" name="quiz1q0" value="c"> Ctrl+V</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q1" data-correct="a">
+        <p class="quiz-q-text">2. Какой инструмент используется для вращения?</p>
+        <label><input type="radio" name="quiz1q1" value="a"> Rotate (R)</label>
+        <label><input type="radio" name="quiz1q1" value="b"> Move (W)</label>
+        <label><input type="radio" name="quiz1q1" value="c"> Scale (E)</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q2" data-correct="b">
+        <p class="quiz-q-text">3. Чтобы объект не падал, нужно включить свойство...</p>
+        <label><input type="radio" name="quiz1q2" value="a"> CanCollide</label>
+        <label><input type="radio" name="quiz1q2" value="b"> Anchored</label>
+        <label><input type="radio" name="quiz1q2" value="c"> Material</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q3" data-correct="c">
+        <p class="quiz-q-text">4. Что делает инструмент Scale (E)?</p>
+        <label><input type="radio" name="quiz1q3" value="a"> Перемещает объект</label>
+        <label><input type="radio" name="quiz1q3" value="b"> Вращает объект</label>
+        <label><input type="radio" name="quiz1q3" value="c"> Изменяет размер</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q4" data-correct="b">
+        <p class="quiz-q-text">5. Для чего используют Toolbox?</p>
+        <label><input type="radio" name="quiz1q4" value="a"> Чтобы смотреть свойства</label>
+        <label><input type="radio" name="quiz1q4" value="b"> Чтобы брать готовые модели</label>
+        <label><input type="radio" name="quiz1q4" value="c"> Чтобы писать скрипты</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q6" data-correct="c">
+        <p class="quiz-q-text">6. Где находится список всех объектов в игре?</p>
+        <label><input type="radio" name="quiz1q6" value="a"> В Properties</label>
+        <label><input type="radio" name="quiz1q6" value="b"> В Workspace</label>
+        <label><input type="radio" name="quiz1q6" value="c"> В Explorer</label>
+        <div class="q-feedback"></div>
+      </div>
+
+
+      <button class="quiz-btn" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+      <div class="quiz-result"></div>
+    </div>
+
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    <div class="lesson-nav">
+      <a class="nav-btn prev" href="Занятие_1.3_Инструменты_моделирования.html">
+        <div class="lbl">← Назад</div>
+        <div class="ttl">1.3 Инструменты моделирования</div>
+      </a>
+      <a class="nav-btn next" href="Занятие_1.5_Первый_скрипт.html">
+        <div class="lbl">Далее →</div>
+        <div class="ttl">1.5 Первый скрипт</div>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- ===== ФУТЕР ===== -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-brand">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+        Учебный центр «РОБОВИТА»
+      </div>
+      <div>Занятие 1.4 · офлайн-курс по Roblox Studio и Lua · 🏃 Восстанови паркур</div>
+    </div>
+  </footer>
+
+  <!-- ===== СКРИПТЫ ===== -->
+  <script src="assets/js/lesson.js"></script>
+  <script>
+    // Автоматическое обновление прогресса для всех task-box
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.task-box').forEach(function(box) {
+        if (window.updateTaskProgress) {
+          window.updateTaskProgress(box);
+        }
+      });
+    });
+  </script>
+
 </body>
 </html>
