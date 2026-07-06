@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2.1. Дерево + первый скрипт — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    /* Дополнительные стили для выбора карточек */
+    .choice-card {
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .choice-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .choice-card.selected {
+      border-color: var(--accent) !important;
+      background: var(--accent-light) !important;
+      box-shadow: 0 0 0 3px rgba(110, 0, 145, 0.2);
+    }
+    .choice-card.correct {
+      border-color: var(--primary) !important;
+      background: var(--primary-light) !important;
+    }
+    .choice-card.incorrect {
+      border-color: var(--danger) !important;
+      background: var(--danger-light) !important;
+    }
+    .choice-card.disabled {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    .activity-result.done {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .activity-result.neutral {
+      background: var(--accent-light);
+      color: var(--accent-ink);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+  <!-- ===== ШАПКА ===== -->
+  <header class="site-header">
+    <div class="wrap">
+      <div class="top-bar">
+        <a class="brand" href="Карта_курса.html">
+          <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+          <div>
+            <div class="brand-name">РОБОВИТА</div>
+            <div class="brand-tag">учимся программировать роботов и игры</div>
+          </div>
+        </a>
+        <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 2.1</div>
+      </div>
+      <div class="hero">
+        <div class="hex-badge">2.1</div>
+        <div>
+          <div class="module-pill">Раздел 1 · Введение</div>
+          <h1>🌳 Дерево + первый скрипт</h1>
+          <p class="subtitle">Создаём первую модель и оживляем её с помощью Lua</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- ===== ЦЕЛИ ===== -->
+    <div class="objectives">
+      <h2>🎯 Цели занятия</h2>
+      <ul>
+        <li>Создать свою первую 3D-модель — дерево в Roblox Studio</li>
+        <li>Научиться использовать инструменты Select, Move, Scale, Rotate</li>
+        <li>Познакомиться со скриптами — что это и зачем они нужны</li>
+        <li>Написать свой первый мини-скрипт для анимации дерева</li>
+      </ul>
+    </div>
+
+    <!-- ===== ПЛАН ===== -->
+    <div class="card">
+      <table class="timetable">
+        <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+        <tr><td>Введение</td><td>5 мин</td><td>Знакомство с темой, просмотр результата</td></tr>
+        <tr><td>Создание ствола</td><td>15 мин</td><td>Цилиндр, материал Wood, цвет, Scale</td></tr>
+        <tr><td>Создание веток</td><td>10 мин</td><td>Дублирование ствола, Rotate, Scale</td></tr>
+        <tr><td>Создание листвы</td><td>15 мин</td><td>Сфера, материал Grass, дублирование, Group</td></tr>
+        <tr><td>Сборка и закрепление</td><td>10 мин</td><td>Group, Anchor, финальная сборка</td></tr>
+        <tr><td>Что такое скрипт?</td><td>15 мин</td><td>Теория: скрипты в Roblox, Lua</td></tr>
+        <tr><td>Первый мини-скрипт</td><td>15 мин</td><td>Пишем скрипт для вращения дерева</td></tr>
+        <tr><td>Опрос и итоги</td><td>5 мин</td><td>Проверяем себя</td></tr>
+        <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+      </table>
+    </div>
+
+    <!-- ===== ЧАСТЬ 1: ИНСТРУМЕНТЫ ===== -->
+    <div class="card">
+      <h2><span class="num">1</span> Инструменты — наши руки</h2>
+      <p>Чтобы создать дерево, нужно уверенно владеть четырьмя главными инструментами. Вспомним их:</p>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <caption>Инструменты трансформации</caption>
+          <tr>
+            <th>Инструмент</th>
+            <th>Горячая клавиша</th>
+            <th>Что делает</th>
+          </tr>
+          <tr>
+            <td>
+              <b>Select</b> (Выбор)
+              <img src="assets/images/lesson-1.3/select.png" alt="Иконка Select" style="display:block; margin-top:4px; max-width:80px;">
+            </td>
+            <td>Q</td>
+            <td>Выделяет объект</td>
+          </tr>
+          <tr>
+            <td>
+              <b>Move</b> (Перемещение)
+              <img src="assets/images/lesson-1.3/move.png" alt="Иконка Move" style="display:block; margin-top:4px; max-width:80px;">
+            </td>
+            <td>W</td>
+            <td>Двигает по осям X, Y, Z</td>
+          </tr>
+          <tr>
+            <td>
+              <b>Scale</b> (Масштаб)
+              <img src="assets/images/lesson-1.3/scale.png" alt="Иконка Scale" style="display:block; margin-top:4px; max-width:80px;">
+            </td>
+            <td>E</td>
+            <td>Меняет размер</td>
+          </tr>
+          <tr>
+            <td>
+              <b>Rotate</b> (Вращение)
+              <img src="assets/images/lesson-1.3/rotate.png" alt="Иконка Rotate" style="display:block; margin-top:4px; max-width:80px;">
+            </td>
+            <td>R</td>
+            <td>Вращает вокруг оси</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="media-placeholder" style="display: block;">
+        <div class="mp-icon">🖥️</div>
+        <p><b>Как открыть свойства объекта в Roblox Studio</b></p>
+        <ol style="margin: 8px 0 12px 20px; font-size: 1.05rem;">
+          <li><b>Выдели объект</b> – кликни по нему в окне <b>Workspace</b> (3D-вид) или в <b>Explorer</b> (справа).</li>
+          <li><b>Открой панель Properties</b> – если её нет, включи через меню <b>View → Properties</b> (или нажми <kbd>Ctrl+1</kbd>).</li>
+          <li>В панели <b>Properties</b> ты увидишь все параметры объекта: <code>Size</code>, <code>Anchored</code>, <code>BrickColor</code>, <code>Material</code> и другие.</li>
+        </ol>
+        <img src="assets/images/lesson-1.3/properties.png" alt="Пример панели Properties в Roblox Studio" style="max-width: 100%; border-radius: 12px; margin-top: 8px; border: 2px solid var(--line);">
+      </div>
+
+      <div class="note">
+        🌳 <b>Совет:</b> Чтобы быстро скопировать объект, используй <b>Ctrl+D</b> (дублирование). Это пригодится для веток и листвы!
+      </div>
+    </div>
+
+    <!-- ===== AI-помощник (Алиса) ===== -->
+    <div class="ai-helper">
+      <div class="ai-head">
+        <span style="font-size:32px; line-height:1;">🤖</span>
+        <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+      </div>
+      <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+
+      <div class="ai-buttons">
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D1%82%D1%8C%20%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BE%20%D0%B2%20Roblox%20Studio%3F%22%7D" target="_blank" class="alice-q-btn">Как создать дерево в Roblox Studio?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%81%D0%BA%D1%80%D0%B8%D0%BF%D1%82%20%D0%B2%20Roblox%3F%22%7D" target="_blank" class="alice-q-btn">Что такое скрипт в Roblox?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BD%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%20%D1%81%D0%BA%D1%80%D0%B8%D0%BF%D1%82%20%D0%B2%20Roblox%20Studio%3F%22%7D" target="_blank" class="alice-q-btn">Как написать скрипт в Roblox Studio?</a>
+      </div>
+
+      <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
+        💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+      </div>
+
+      <div class="ai-real-tip">
+        <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про Roblox Studio или программирование.<br>
+        <span class="prompt-example">Просто скажи: «Алиса, как добавить скрипт в Roblox Studio?»</span>
+        <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+          ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ИНТЕРАКТИВ: УГАДАЙ ИНСТРУМЕНТ ===== -->
+    <div class="interactive-box" id="toolQuiz">
+      <h2>🔧 Какой инструмент?</h2>
+      <p>Выбери правильный инструмент для действия:</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Move (W)</div>
+        <div class="choice-card" data-correct-choice="true">Scale (E)</div>
+        <div class="choice-card" data-correct-choice="false">Rotate (R)</div>
+      </div>
+      <p style="margin-top: 6px;"><small>Инструмент, который меняет размер объекта.</small></p>
+      <button class="action-btn" onclick="checkChoices('toolQuiz')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- ===== ПОСТРОЕНИЕ ДЕРЕВА ===== -->
+    <div class="card">
+      <h2><span class="num">2</span> Строим дерево</h2>
+      <p>Добавление реквизитов, таких как деревья и растения, делает игровую среду более реалистичной. В этом проекте ты научишься:</p>
+      <ul style="margin: 8px 0 16px 20px; font-size: 1.05rem;">
+        <li>создавать свои собственные объекты в Roblox Studio,</li>
+        <li>использовать инструменты для изменения свойств объекта,</li>
+        <li>группировать несколько объектов в одну модель.</li>
+      </ul>
+      <div class="media-placeholder" style="display: block; border-style: solid; background: var(--primary-light);">
+        <div class="mp-icon">🌳</div>
+        <p><b>Вот такая модель дерева у тебя получится:</b></p>
+        <img src="assets/images/lesson-1.4/model.png" alt="Готовое дерево в Roblox Studio" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 1: СТВОЛ ===== -->
+    <div class="task-box" id="task1">
+      <h2>🧱 Задание 1 — Ствол дерева</h2>
+
+      <div class="media-placeholder" style="margin-top:8px;">
+        <img src="assets/images/lesson-1.4/1.png" alt="Выбор цилиндра в Roblox Studio" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">На вкладке <b>Home</b> найди фигуру <b>Cylinder</b> (цилиндр).</p>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="task1Progress"></div></div>
+      <span class="progress-label" id="task1Label">Выполнено шагов: 0 из 4</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t1s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s0">Создай <b>Cylinder</b> (цилиндр) через вкладку <b>Home → Part → Cylinder</b></label></li>
+        <li><input type="checkbox" id="t1s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s1">Выбери материал <b>Wood</b> (дерево) в Properties</label>
+          <div class="media-placeholder" style="margin-top:8px;">
+            <img src="assets/images/lesson-1.4/2.png" alt="Выбор материала Wood" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+          </div>
+        </li>
+        <li><input type="checkbox" id="t1s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s2">Установи коричневый цвет (<b>BrickColor</b> → Brown)</label>
+          <div class="media-placeholder" style="margin-top:8px;">
+            <img src="assets/images/lesson-1.4/3.png" alt="Выбор коричневого цвета" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+          </div>
+        </li>
+        <li><input type="checkbox" id="t1s3" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s3">Используй инструмент <b>Scale (E)</b>, чтобы увеличить ствол по высоте</label></li>
+      </ul>
+
+      <span class="progress-label" style="font-weight:800; color:var(--primary-dark);">Ствол готов!</span>
+      <div class="media-placeholder" style="margin-top:10px;">
+        <img src="assets/images/lesson-1.4/4.png" alt="Готовый ствол" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 2: ВЕТКИ ===== -->
+    <div class="task-box" id="task2">
+      <h2>🌿 Задание 2 — Ветки дерева</h2>
+
+      <div class="media-placeholder" style="margin-top:8px;">
+        <img src="assets/images/lesson-1.4/5.png" alt="Ветки дерева" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">Добавь ветки, которые растут из ствола дерева.</p>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="task2Progress"></div></div>
+      <span class="progress-label" id="task2Label">Выполнено шагов: 0 из 2</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t2s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t2s0">Продублируй ствол (<b>Ctrl+D</b>) — это будет ветка</label></li>
+        <li><input type="checkbox" id="t2s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t2s1">Используй инструменты <b>Scale (E)</b> и <b>Rotate (R)</b> для изменения размера и поворота веток. Сделай 3–5 веток</label></li>
+      </ul>
+
+      <div class="note" style="border-left-color: var(--accent); background: var(--accent-light);">
+        <strong>💡 Совет:</strong> Ветки должны быть тоньше и короче ствола. Поворачивай их в разные стороны, чтобы дерево выглядело естественно.
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 3: ЛИСТВА ===== -->
+    <div class="task-box" id="task3">
+      <h2>🍃 Задание 3 — Листва дерева</h2>
+
+      <div class="media-placeholder" style="margin-top:8px;">
+        <img src="assets/images/lesson-1.4/6.png" alt="Листва дерева" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">Для создания листвы тебе понадобится сфера (Sphere).</p>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="task3Progress"></div></div>
+      <span class="progress-label" id="task3Label">Выполнено шагов: 0 из 4</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t3s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s0">Создай <b>Sphere</b> (сферу) через <b>Home → Part → Sphere</b></label></li>
+        <li><input type="checkbox" id="t3s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s1">Установи зелёный цвет и выбери материал <b>Grass</b> (трава)</label>
+        </li>
+        <li><input type="checkbox" id="t3s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s2">Продублируй сферу 3–5 раз (<b>Ctrl+D</b>) и размести их вокруг веток</label></li>
+        <li><input type="checkbox" id="t3s3" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s3">Выдели все сферы (зажав ЛКМ) и нажми <b>Group</b> — объедини их в одну группу</label></li>
+      </ul>
+
+      <div class="media-placeholder" style="margin-top:10px;">
+        <img src="assets/images/lesson-1.4/9.png" alt="Группировка листвы" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">Сгруппируй листву при помощи кнопки <b>Group</b> на вкладке <b>Model</b>.</p>
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 4: СБОРКА ===== -->
+    <div class="task-box" id="task4">
+      <h2>🔧 Задание 4 — Сборка и закрепление</h2>
+
+      <div class="progress-track"><div class="progress-fill" id="task4Progress"></div></div>
+      <span class="progress-label" id="task4Label">Выполнено шагов: 0 из 3</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t4s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s0">Продублируй листву 3–5 раз и размести её красиво на дереве. Изменяй размер и вращай</label></li>
+        <li><input type="checkbox" id="t4s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s1">Выдели <b>все</b> части дерева (ствол, ветки, листву) — зажми ЛКМ и обведи всё</label></li>
+        <li><input type="checkbox" id="t4s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s2">Нажми на кнопки <b>Group</b> и <b>Anchor</b> — чтобы дерево не развалилось и не падало</label></li>
+      </ul>
+
+      <div class="media-placeholder" style="margin-top:10px;">
+        <img src="assets/images/lesson-1.4/g.png" alt="Group и Anchor" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">Выдели все части дерева, затем нажми <b>Group</b> и <b>Anchor</b>.</p>
+      </div>
+
+      <div class="note" style="border-left-color: var(--primary); background: var(--primary-light);">
+        <strong>🎉 Поздравляю!</strong> Ты создал свою первую 3D-модель в Roblox Studio! Запусти игру (F5) и посмотри на результат.
+      </div>
+
+      <div class="media-placeholder" style="margin-top:10px; border-style: solid; background: var(--primary-light);">
+        <div class="mp-icon">🌟</div>
+        <p><b>Результат должен быть таким:</b></p>
+        <img src="assets/images/lesson-1.4/result.png" alt="Готовое дерево" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);">
+      </div>
+    </div>
+
+    <!-- ===== ЧАСТЬ 2: СКРИПТЫ ===== -->
+    <div class="card">
+      <h2><span class="num">3</span> Что такое скрипт?</h2>
+
+      <p><b>Скрипт</b> — это программа, написанная на языке <b>Lua</b>, которая говорит игре, что делать. Скрипты оживляют игры: без них объекты просто стоят на месте.</p>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <caption>Скрипты в Roblox</caption>
+          <tr><th>Тип скрипта</th><th>Где находится</th><th>Что делает</th></tr>
+          <tr><td><b>Script</b></td><td>Внутри объекта (Server)</td><td>Выполняется на сервере — для игровой логики</td></tr>
+          <tr><td><b>LocalScript</b></td><td>Внутри игрока (Client)</td><td>Выполняется на клиенте — для интерфейса</td></tr>
+          <tr><td><b>ModuleScript</b></td><td>В ReplicatedStorage</td><td>Хранит общий код для других скриптов</td></tr>
+        </table>
+      </div>
+
+      <div class="media-placeholder" style="display: block; border-style: solid; background: var(--primary-light);">
+        <div class="mp-icon">📄</div>
+        <p><b>Как добавить скрипт в Roblox Studio</b></p>
+        <ol style="margin: 8px 0 12px 20px; font-size: 1.05rem;">
+          <li><b>Выбери объект</b> (например, твоё дерево) в <b>Explorer</b> (Проводник).</li>
+          <li>Нажми на <b>+</b> (плюс) рядом с объектом или нажми <kbd>Ctrl+Shift+S</kbd>.</li>
+          <li>Выбери <b>Script</b> — появится новый скрипт внутри объекта.</li>
+          <li>Дважды кликни по скрипту — откроется редактор кода.</li>
+        </ol>
+        <img src="assets/images/lesson-1.4/add.png" alt="Добавление скрипта" style="max-width: 100%; border-radius: 12px; margin-top: 8px; border: 2px solid var(--line);">
+      </div>
+
+      <div class="note">
+        💡 <b>Важно:</b> Скрипт выполняется, только когда объект находится в <b>Workspace</b>. Если объект скрыт или удалён — скрипт не работает.
+      </div>
+
+      <h3>Основы языка Lua</h3>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <tr><th>Код</th><th>Что делает</th></tr>
+          <tr><td><code>print("Привет!")</code></td><td>Выводит текст в консоль (Output)</td></tr>
+          <tr><td><code>wait(2)</code></td><td>Ждёт 2 секунды</td></tr>
+          <tr><td><code>script.Parent</code></td><td>Обращается к родительскому объекту (тому, в котором лежит скрипт)</td></tr>
+          <tr><td><code>object.Material = "Neon"</code></td><td>Меняет материал объекта на Neon</td></tr>
+          <tr><td><code>object.BrickColor = BrickColor.new("Bright red")</code></td><td>Меняет цвет объекта</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 5: ПЕРВЫЙ СКРИПТ ===== -->
+    <div class="task-box" id="task5">
+      <h2>💻 Задание 5 — Первый мини-скрипт для дерева</h2>
+
+      <p style="font-size:1.05rem; margin-bottom: 12px;">Давай оживим наше дерево! Мы напишем скрипт, который будет <b>вращать</b> дерево и <b>менять цвет</b> листвы.</p>
+
+      <div class="progress-track"><div class="progress-fill" id="task5Progress"></div></div>
+      <span class="progress-label" id="task5Label">Выполнено шагов: 0 из 4</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t5s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t5s0"><b>Добавь скрипт</b> в дерево: кликни правой кнопкой по дереву в Explorer → <b>Insert Object → Script</b></label></li>
+        <li><input type="checkbox" id="t5s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t5s1">Открой скрипт (двойной клик) и <b>удали</b> всё, что там написано</label></li>
+        <li><input type="checkbox" id="t5s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t5s2">Напиши код из примера ниже</label></li>
+        <li><input type="checkbox" id="t5s3" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t5s3">Запусти игру (<kbd>F5</kbd>) и посмотри, как дерево ожило! 🎉</label></li>
+      </ul>
+
+      <!-- Код -->
+      <div class="code-block">
+        <div class="code-head">
+          <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span class="fname">скрипт_дерева.lua</span>
+        </div>
+       <pre class="code"><code>while true do
+
+	for i, child in pairs(script.Parent:GetChildren()) do
+		if child:IsA("Part") then
+			child.BrickColor = BrickColor.random()
+		end
+	end
+
+	wait(0.3)
+end</code></pre>
+      </div>
+
+      <div class="note" style="border-left-color: var(--accent); background: var(--accent-light);">
+        <strong>🧠 Что делает этот скрипт?</strong><br>
+        1. <b>while true do</b> — бесконечный цикл (скрипт работает вечно).<br>
+        2. <b>script.Parent.Rotation</b> — вращает дерево на 1 градус по оси Y каждый раз.<br>
+        3. <b>for child in pairs(...)</b> — перебирает все части внутри дерева и меняет их цвет на случайный.<br>
+        4. <b>wait(0.3)</b> — делает паузу 0.3 секунды, чтобы всё не происходило слишком быстро.
+      </div>
+    </div>
+
+    <!-- ===== ДОПОЛНИТЕЛЬНЫЕ ЗАДАНИЯ ===== -->
+    <div class="card">
+      <h2><span class="num">4</span> Дополнительные задания</h2>
+
+      <!-- ИСПРАВЛЕНО: теперь передаётся ID контейнера -->
+      <div class="task-box" style="border: 2px solid var(--accent); background: var(--accent-light);" id="extraTask1">
+        <h3 style="font-size:1.3rem; margin-top:0;">🧩 Задание 1 — Проверь себя</h3>
+        <p><b>Вопрос 1.</b> Для чего нужны эти инструменты?</p>
+        <div class="choice-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="choice-card" data-correct-choice="false">для поворота объекта — <b>Scale</b></div>
+          <div class="choice-card" data-correct-choice="true">для поворота объекта — <b>Rotate</b></div>
+          <div class="choice-card" data-correct-choice="true">для выбора объекта — <b>Select</b></div>
+          <div class="choice-card" data-correct-choice="false">для перемещения объекта — <b>Rotate</b></div>
+          <div class="choice-card" data-correct-choice="true">для увеличения/уменьшения — <b>Scale</b></div>
+          <div class="choice-card" data-correct-choice="true">для перемещения объекта — <b>Move</b></div>
+        </div>
+        <button class="action-btn" onclick="checkChoices('extraTask1')">Проверить</button>
+        <div class="activity-result"></div>
+      </div>
+
+      <div class="task-box" style="border: 2px solid var(--accent); background: var(--accent-light); margin-top:16px;">
+        <h3 style="font-size:1.3rem; margin-top:0;">🧩 Задание 2 — Создай цветы</h3>
+        <p>Создай такие цветы, используя изученную технику (сфера + цилиндр + дублирование).</p>
+        <div class="media-placeholder" style="margin-top:8px; border-style: solid;">
+          <div class="mp-icon">🌸</div>
+          <p><b>Пример цветов:</b></p>
+          <div class="media-placeholder" style="display: block;"><img src="assets/images/lesson-1.4/flower.png" alt="Цветы в Roblox Studio" style="max-width: 100%; border-radius: 12px; border: 2px solid var(--line);"></div> 
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== РЕФЛЕКСИЯ ===== -->
+    <div class="reflection-box">
+      <h2>💭 Ты доволен своей работой?</h2>
+      <p>Оцени свои ощущения:</p>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 8px 0 12px;">
+        <label style="display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px;">
+          <input type="radio" name="satisfaction" value="yes"> 🌟 Да, у меня получилось красивое дерево!
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px;">
+          <input type="radio" name="satisfaction" value="ok"> 🌱 Да, но могу лучше...
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px;">
+          <input type="radio" name="satisfaction" value="no"> 🌿 Нет, получается криво!
+        </label>
+      </div>
+      <textarea placeholder="Что было самым сложным? Что понравилось больше всего? Что нового узнал про скрипты?"></textarea>
+    </div>
+
+    <!-- ===== ИНТЕРАКТИВ: ВОПРОСЫ НА ЗАКРЕПЛЕНИЕ ===== -->
+    <div class="interactive-box" id="toolQuiz2">
+      <h2>🧩 Вопросы на закрепление</h2>
+      <p>Какой инструмент изменяет размер?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Select</div>
+        <div class="choice-card" data-correct-choice="true">Scale</div>
+        <div class="choice-card" data-correct-choice="false">Move</div>
+        <div class="choice-card" data-correct-choice="false">Rotate</div>
+      </div>
+      <p>Что делает команда <b>Ctrl+D</b>?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Удаляет выбранный объект</div>
+        <div class="choice-card" data-correct-choice="true">Дублирует выбранный объект</div>
+        <div class="choice-card" data-correct-choice="false">Копирует выбранный объект</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('toolQuiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- ===== ИТОГОВЫЙ ОПРОС ===== -->
+    <div class="quiz-wrap" id="quiz1">
+      <h2>📝 Проверь себя</h2>
+
+      <div class="quiz-question" data-name="quiz1q0" data-correct="b">
+        <p class="quiz-q-text">1. Какая клавиша дублирует объект?</p>
+        <label><input type="radio" name="quiz1q0" value="a"> Ctrl+C</label>
+        <label><input type="radio" name="quiz1q0" value="b"> Ctrl+D</label>
+        <label><input type="radio" name="quiz1q0" value="c"> Ctrl+V</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q1" data-correct="a">
+        <p class="quiz-q-text">2. Какой инструмент используется для вращения объекта?</p>
+        <label><input type="radio" name="quiz1q1" value="a"> Rotate (R)</label>
+        <label><input type="radio" name="quiz1q1" value="b"> Move (W)</label>
+        <label><input type="radio" name="quiz1q1" value="c"> Scale (E)</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q2" data-correct="b">
+        <p class="quiz-q-text">3. Чтобы объект не падал, нужно включить свойство...</p>
+        <label><input type="radio" name="quiz1q2" value="a"> CanCollide</label>
+        <label><input type="radio" name="quiz1q2" value="b"> Anchored</label>
+        <label><input type="radio" name="quiz1q2" value="c"> Material</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q3" data-correct="c">
+        <p class="quiz-q-text">4. Что делает инструмент Scale (E)?</p>
+        <label><input type="radio" name="quiz1q3" value="a"> Перемещает объект</label>
+        <label><input type="radio" name="quiz1q3" value="b"> Вращает объект</label>
+        <label><input type="radio" name="quiz1q3" value="c"> Изменяет размер</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q4" data-correct="b">
+        <p class="quiz-q-text">5. Что такое скрипт в Roblox?</p>
+        <label><input type="radio" name="quiz1q4" value="a"> Это картинка на экране</label>
+        <label><input type="radio" name="quiz1q4" value="b"> Это программа на языке Lua</label>
+        <label><input type="radio" name="quiz1q4" value="c"> Это кнопка в интерфейсе</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q5" data-correct="c">
+        <p class="quiz-q-text">6. Где находится список всех объектов в игре?</p>
+        <label><input type="radio" name="quiz1q5" value="a"> В Properties</label>
+        <label><input type="radio" name="quiz1q5" value="b"> В Workspace</label>
+        <label><input type="radio" name="quiz1q5" value="c"> В Explorer</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q6" data-correct="a">
+        <p class="quiz-q-text">7. Для чего нужна команда <b>Group</b>?</p>
+        <label><input type="radio" name="quiz1q6" value="a"> Чтобы объединить несколько объектов в один</label>
+        <label><input type="radio" name="quiz1q6" value="b"> Чтобы удалить объект</label>
+        <label><input type="radio" name="quiz1q6" value="c"> Чтобы изменить цвет объекта</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q7" data-correct="b">
+        <p class="quiz-q-text">8. Что делает <code>wait(2)</code> в коде?</p>
+        <label><input type="radio" name="quiz1q7" value="a"> Печатает текст в консоль</label>
+        <label><input type="radio" name="quiz1q7" value="b"> Ждёт 2 секунды</label>
+        <label><input type="radio" name="quiz1q7" value="c"> Меняет цвет объекта</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <button class="quiz-btn" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+      <div class="quiz-result"></div>
+    </div>
+
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    <div class="lesson-nav">
+      <a class="nav-btn prev" href="Занятие_1.3_Инструменты_моделирования.html">
+        <div class="lbl">← Назад</div>
+        <div class="ttl">1.3 Инструменты моделирования</div>
+      </a>
+      <a class="nav-btn next" href="Занятие_1.5_Первый_скрипт.html">
+        <div class="lbl">Далее →</div>
+        <div class="ttl">1.5 Первый скрипт</div>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- ===== ФУТЕР ===== -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-brand">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+        Учебный центр «РОБОВИТА»
+      </div>
+      <div>Занятие 2.1 · офлайн-курс по Roblox Studio и Lua · 🌳 Дерево + первый скрипт</div>
+    </div>
+  </footer>
+
+  <!-- ===== СКРИПТЫ ===== -->
+  <!-- Только стандартный lesson.js, без переопределений -->
+  <script src="assets/js/lesson.js"></script>
+
+</body>
+</html>
