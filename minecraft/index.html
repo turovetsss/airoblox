@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Карта курса — Учебный центр «РОБОВИТА»</title>
+<link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+
+
+    /* вкладки */
+    .tab-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 28px;
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 2px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 14px 28px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: var(--muted);
+      border-radius: 40px 40px 0 0;
+      cursor: pointer;
+      transition: 0.2s;
+      border-bottom: 4px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+    }
+    .tab-btn.active {
+      color: var(--dark2);
+      border-bottom-color: var(--primary);
+      background: var(--surface);
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.02);
+    }
+    .theme-studio .tab-btn.active {
+      background: var(--surface);
+      color: var(--dark2);
+    }
+    .tab-pane {
+      display: none;
+      animation: fadeTab 0.25s ease;
+    }
+    .tab-pane.active {
+      display: block;
+    }
+    @keyframes fadeTab {
+      0% { opacity: 0.3; transform: translateY(6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+  </style>
+</head>
+<body class="course-map">
+<!-- ===== ШАПКА (светло-зелёная) ===== -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+    </div>
+    <div class="hero">
+      <div>
+        <div class="module-pill">Курс · Minecraft Education + Python</div>
+        <h1>Карта курса</h1>
+        <p class="subtitle">Полная программа обучения — 40 занятий</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Приветственный блок -->
+  <!-- <div class="card" style="background:linear-gradient(135deg,var(--primary-light),#F2FCE9);border:none;">
+    <h2 style="color:var(--primary-dark);">👋 Привет! Это карта курса РОБОВИТА</h2>
+    <p>Здесь собраны все занятия программы по порядку. Нажимайте на готовые занятия (отмечены ✅), чтобы открыть страницу. Занятия со статусом 🔜 ещё в разработке — как только они будут готовы, они тоже станут ссылками.</p>
+    <p>Для новых материалов используйте <a href="index.html"><b>интерактивный шаблон занятия</b></a> — в нём уже есть все блоки (теория, фото/видео, таблица, код, ИИ-помощник, задание, опрос), просто впишите свой текст.</p>
+  </div> -->
+
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="blockly">🧩 Блочное программирование</button>
+    <button class="tab-btn" data-tab="python">🐍 Python</button>
+  </div>
+
+  <div id="tab-blockly" class="tab-pane active">
+    <div class="card module-card">
+      <h2>Раздел 1 · Введение <span class="mod-count">1/6 готово</span></h2>
+      <div class="lrows">
+        <a class="lrow" href="Занятие_1.1_Знакомство_с_компьютером.html"><span class="code">1.1</span><span class="ttl">Знакомство с компьютером</span><span class="st done">✅ Готово</span></a>
+        <div class="lrow disabled"><span class="code">1.2</span><span class="ttl">Добро пожаловать в Minecraft + первый код</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">1.3</span><span class="ttl">Проходим лабиринт</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">1.4</span><span class="ttl">Циклы - ускоряем разработку</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">1.5</span><span class="ttl">Вложенные циклы</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">1.6</span><span class="ttl">Условные операторы</span><span class="st soon">🔜 В разработке</span></div>
+      </div>
+    </div>
+
+    <div class="card module-card">
+      <h2>Раздел 2 · Программирование Агента <span class="mod-count">0/4 готово</span></h2>
+      <div class="lrows">
+        <div class="lrow disabled"><span class="code">2.1</span><span class="ttl">Агент-строитель</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">2.2</span><span class="ttl">Агент-фермер</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">2.3</span><span class="ttl">Агент-шахтер</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">2.4</span><span class="ttl">Агент-воин</span><span class="st soon">🔜 В разработке</span></div>
+      </div>
+    </div>
+
+    <div class="card module-card">
+      <h2>Раздел 3 · Координаты и логика <span class="mod-count">0/5 готово</span></h2>
+      <div class="lrows">
+        <div class="lrow disabled"><span class="code">3.1</span><span class="ttl">Minecraft - это 3D игра. Система координат</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">3.2</span><span class="ttl">Относительные координаты</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">3.3</span><span class="ttl">Давайте что-нибудь запомним. Переменные</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">3.4</span><span class="ttl">Строим с переменными</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">3.5</span><span class="ttl">Мини-проект: Строим лес</span><span class="st soon">🔜 В разработке</span></div>
+      </div>
+    </div>
+
+    <div class="card module-card">
+      <h2>Раздел 4 · Функции <span class="mod-count">0/5 готово</span></h2>
+      <div class="lrows">
+        <div class="lrow disabled"><span class="code">4.1</span><span class="ttl">Функции</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">4.2</span><span class="ttl">Мини-проект: Эко-патруль</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">4.3</span><span class="ttl">Мини-проект: Шахтер-стратег</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">4.4</span><span class="ttl">Итоговый проект, ч.1</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">4.5</span><span class="ttl">Итоговый проект, ч.2 - Презентация</span><span class="st soon">🔜 В разработке</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-python" class="tab-pane">
+    <div class="card module-card">
+      <h2>Раздел 1 · Введение <span class="mod-count">0/3 готово</span></h2>
+      <div class="lrows">
+        <a class="lrow" href="#"><span class="code">1.1</span><span class="ttl">Знакомство с Python</span><span class="st soon">🔜 В разработке</span></a>
+        <a class="lrow" href="#"><span class="code">1.2</span><span class="ttl">Переменные и типы данных</span><span class="st soon">🔜 В разработке</span></a>
+        <div class="lrow disabled"><span class="code">1.3</span><span class="ttl">Условные операторы</span><span class="st soon">🔜 В разработке</span></div>
+      </div>
+    </div>
+
+    <div class="card module-card">
+      <h2>Раздел 2 · Программирование Агента <span class="mod-count">0/3 готово</span></h2>
+      <div class="lrows">
+        <div class="lrow disabled"><span class="code">2.1</span><span class="ttl">Агент и Python</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">2.2</span><span class="ttl">Агент-строитель</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">2.3</span><span class="ttl">Агент-шахтер</span><span class="st soon">🔜 В разработке</span></div>
+      </div>
+    </div>
+
+    <div class="card module-card">
+      <h2>Раздел 3 · Координаты <span class="mod-count">0/3 готово</span></h2>
+      <div class="lrows">
+        <div class="lrow disabled"><span class="code">3.1</span><span class="ttl">Координаты и Python</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">3.2</span><span class="ttl">Мини-проект: Очень странные дела</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">3.3</span><span class="ttl">Творческое занятие: строим с Python</span><span class="st soon">🔜 В разработке</span></div>
+      </div>
+    </div>
+
+    <div class="card module-card">
+      <h2>Раздел 4 · Искуственный интеллект <span class="mod-count">0/3 готово</span></h2>
+      <div class="lrows">
+        <div class="lrow disabled"><span class="code">4.1</span><span class="ttl">Мини-проект: Исследователь мира</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">4.2</span><span class="ttl">ИИ и Minecraft</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">4.3</span><span class="ttl">Использование ИИ в программировании</span><span class="st soon">🔜 В разработке</span></div>
+      </div>
+    </div>
+
+    <div class="card module-card">
+      <h2>Раздел 5 · Функции <span class="mod-count">0/3 готово</span></h2>
+      <div class="lrows">
+        <div class="lrow disabled"><span class="code">5.1</span><span class="ttl">Функции и Python</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">5.2</span><span class="ttl">Мини-проект: Игровой автомат</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">5.3</span><span class="ttl">Мини-проект: Квантовый шифровальщик</span><span class="st soon">🔜 В разработке</span></div>
+      </div>
+    </div>
+
+    <div class="card module-card">
+      <h2>Раздел 6 · Массивы и финальный проект <span class="mod-count">0/5 готово</span></h2>
+      <div class="lrows">
+        <div class="lrow disabled"><span class="code">6.1</span><span class="ttl">Массивы и списки</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">6.2</span><span class="ttl">Пиксель-арт с массивами</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">6.3</span><span class="ttl">Итоговый проект: от идеи до реализации</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">6.4</span><span class="ttl">Итоговый проект: готовимся к презентации</span><span class="st soon">🔜 В разработке</span></div>
+        <div class="lrow disabled"><span class="code">6.5</span><span class="ttl">Презентация и защита проектов</span><span class="st soon">🔜 В разработке</span></div>
+      </div>
+    </div>
+  
+</main>
+
+<!-- ===== ФУТЕР (светло-зелёный) ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Офлайн-курс по Roblox Studio и Lua для детей</div>
+  </div>
+</footer>
+<script src="assets/js/lesson.js"></script>
+<script>
+  (function() {
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panes = {
+      blockly: document.getElementById('tab-blockly'),
+      python: document.getElementById('tab-python')
+    };
+
+    function activateTab(tabId) {
+      // деактивировать все кнопки и панели
+      tabs.forEach(btn => btn.classList.remove('active'));
+      Object.values(panes).forEach(pane => pane.classList.remove('active'));
+
+      // активировать выбранное
+      const activeBtn = Array.from(tabs).find(btn => btn.dataset.tab === tabId);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (panes[tabId]) panes[tabId].classList.add('active');
+    }
+
+    tabs.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const tabId = this.dataset.tab;
+        if (tabId) activateTab(tabId);
+      });
+    });
+
+    // по умолчанию активна первая вкладка (уже есть класс active)
+    // но если вдруг не совпадает – подстрахуем
+    const activeTab = document.querySelector('.tab-btn.active');
+    if (activeTab) {
+      const id = activeTab.dataset.tab;
+      if (id && panes[id]) {
+        Object.values(panes).forEach(p => p.classList.remove('active'));
+        panes[id].classList.add('active');
+      }
+    } else {
+      // fallback
+      document.querySelector('.tab-btn[data-tab="blockly"]')?.classList.add('active');
+      document.getElementById('tab-blockly')?.classList.add('active');
+    }
+  })();
+</script>
+</body>
+</html>
