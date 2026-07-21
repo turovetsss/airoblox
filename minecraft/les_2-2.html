@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2.2. Агент-фермер — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+    .crop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin: 12px 0; }
+    .crop-card { background: #fafff7; border: 2px solid #d0e8c0; border-radius: 10px; padding: 10px; text-align: center; }
+    .crop-card .emoji { font-size: 2.5rem; display: flex; justify-content: center;}
+    .crop-card .name { font-weight: 600; color: #2b5e0e; }
+    .crop-card .id { font-size: 0.8rem; color: #888; }
+    .example-img{ width: 100px; height: 100px;}
+  </style>
+</head>
+<body class="lesson-page">
+<!-- ===== ШАПКА ===== -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 2.2</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">2.2</div>
+      <div>
+        <div class="module-pill">Раздел 2 · Программирование Агента</div>
+        <h1>Агент-фермер</h1>
+        <p class="subtitle">Учим агента обрабатывать землю и сажать урожай</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Цели -->
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Изучить команды для работы с землёй: вспахивание и посадка</li>
+      <li>Научиться использовать разные виды семян</li>
+      <li>Создать программу для автоматической посадки фермы</li>
+      <li>Построить ферму с разными культурами и декорациями</li>
+    </ul>
+  </div>
+
+  <!-- План -->
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Приветствие, настрой на занятие</td></tr>
+      <tr><td>Команды фермера</td><td>15 мин</td><td>Изучаем команды для работы с землёй</td></tr>
+      <tr><td>Семена и культуры</td><td>10 мин</td><td>Какие бывают семена и их ID</td></tr>
+      <tr><td>Практика: ферма</td><td>40 мин</td><td>Создаём программу для посадки фермы</td></tr>
+      <tr><td>Бонус: постройки</td><td>15 мин</td><td>Строим амбар, дом или мельницу</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Проверяем знания</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- Часть 1: Команды фермера -->
+  <div class="card">
+    <h2><span class="num">1</span> Команды для работы с землёй</h2>
+    <p>У агента есть специальные команды для работы с землёй и посадки растений:</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Команда</th><th>Действие</th><th>Описание</th></tr>
+        <tr><td><code>вспахать</code></td><td>Превращает землю в грядку</td><td>Используется перед посадкой</td></tr>
+        <tr><td><code>посадить</code></td><td>Сажает семена в грядку</td><td>Нужно выбрать слот с семенами</td></tr>
+        <tr><td><code>собрать урожай</code></td><td>Собирает выросшие растения</td><td>Собирает урожай с грядки</td></tr>
+        <tr><td><code>полить</code></td><td>Поливает грядку водой</td><td>Ускоряет рост растений</td></tr>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">обработка_земли.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Как агент сажает одну грядку</span>
+1. <span class="tok-n">вспахать</span>      <span class="tok-c">-- делаем грядку</span>
+2. <span class="tok-n">посадить</span>      <span class="tok-c">-- сажаем семена (из активного слота)</span>
+
+<span class="tok-c">-- Чтобы посадить целую ферму 5x5:</span>
+<span class="tok-k">повторить</span> 5 раз [
+    <span class="tok-k">повторить</span> 5 раз [
+        <span class="tok-n">вспахать</span>
+        <span class="tok-n">посадить</span>
+        <span class="tok-n">двигаться</span> вперёд
+    ]
+    <span class="tok-c">-- Переход на следующую строку</span>
+    <span class="tok-n">повернуть</span> налево
+    <span class="tok-n">двигаться</span> вперёд
+    <span class="tok-n">повернуть</span> налево
+]</code></pre>
+    </div>
+
+    <div class="note">
+      <b>💡 Важно:</b> перед посадкой убедись, что в активном слоте агента лежат нужные семена! Используй команду <code>выбрать слот N</code> для смены семян.
+    </div>
+  </div>
+
+  <!-- Часть 2: Семена и культуры -->
+  <div class="card">
+    <h2><span class="num">2</span> Какие бывают семена?</h2>
+    <p>В Minecraft есть много разных культур. Вот основные из них:</p>
+
+    <div class="crop-grid">
+      <div class="crop-card">
+        <div class="emoji"><img class="example-img" src="files/les_2-2_1.webp"/></div>
+        <div class="name">Пшеница</div>
+        <div class="id">ID: 59</div>
+      </div>
+      <div class="crop-card">
+        <div class="emoji"><img class="example-img" src="files/les_2-2_2.webp"/></div>
+        <div class="name">Морковь</div>
+        <div class="id">ID: 141</div>
+      </div>
+      <div class="crop-card">
+        <div class="emoji"><img class="example-img" src="files/les_2-2_3.webp"/></div>
+        <div class="name">Картофель</div>
+        <div class="id">ID: 142</div>
+      </div>
+      <div class="crop-card">
+        <div class="emoji"><img class="example-img" src="files/les_2-2_4.webp"/></div>
+        <div class="name">Свёкла</div>
+        <div class="id">ID: 207</div>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>🌱 Совет:</b> разные семена растут с разной скоростью. Пшеница и морковь растут быстрее всего. Для того, чтобы земля не засохла, нужно поставить воду рядом с грядками.
+    </div>
+
+    <!-- Интерактив: выбор семян -->
+    <div class="interactive-box" id="seedQuiz">
+      <h3>🧠 Какой слот выбрать?</h3>
+      <p>Агент хочет посадить пшеницу. Какой слот нужно выбрать, если в слоте 1 — пшеница, в слоте 2 — морковь, в слоте 3 — картофель?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Слот 1</div>
+        <div class="choice-card" data-correct-choice="false">Слот 2</div>
+        <div class="choice-card" data-correct-choice="false">Слот 3</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('seedQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- Часть 3: Практика -->
+  <div class="task-box" id="practiceFarm">
+    <h2>🛠️ Практическое задание: построй ферму</h2>
+    <div class="progress-track"><div class="progress-fill" id="farmProgressFill"></div></div>
+    <span class="progress-label" id="farmProgressLabel">Выполнено шагов: 0 из 4</span>
+    <p>Создай в Minecraft Education программу для автоматической посадки фермы с разными культурами.</p>
+
+    <h3>Основное задание:</h3>
+    <ul class="task-steps">
+      <li><input type="checkbox" id="f0" onchange="updateFarmProgress()"><label for="f0">Создай ровную площадку для фермы (минимум 5×5 блоков)</label></li>
+      <li><input type="checkbox" id="f1" onchange="updateFarmProgress()"><label for="f1">Напиши программу для вспахивания всей фермы</label></li>
+      <li><input type="checkbox" id="f2" onchange="updateFarmProgress()"><label for="f2">Посади разные культуры: пшеницу, морковь и картофель</label></li>
+      <li><input type="checkbox" id="f3" onchange="updateFarmProgress()"><label for="f3">Добавь полив (поставь воду рядом с грядками)</label></li>
+      <li class="bonus-step"><input type="checkbox" id="f4" onchange="updateFarmProgress()"><label for="f4"><b>⭐ Бонус:</b> построй амбар, мельницу или дом рядом с фермой <b>(+15 робокоинов)</b></label></li>
+    </ul>
+
+    <div class="note" style="margin-top: 12px;">
+      <b>💡 Подсказка:</b> для вспахивания используй команду <code>вспахать</code>. Для смены семян — <code>выбрать слот 1</code> (пшеница), <code>выбрать слот 2</code> (морковь), <code>выбрать слот 3</code> (картофель).
+    </div>
+
+    <div class="note" style="background: #fff8e1; border-left-color: #ffbd2e;">
+      <b>🌟 Идея:</b> сделай разные грядки для разных культур. Например, первый ряд — пшеница, второй — морковь, третий — картофель. Так ферма будет выглядеть красиво и разнообразно!
+    </div>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizFarm">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="fq0" data-correct="a">
+      <p class="quiz-q-text">1. Какая команда превращает землю в грядку?</p>
+      <label><input type="radio" name="fq0" value="a"> вспахать</label>
+      <label><input type="radio" name="fq0" value="b"> посадить</label>
+      <label><input type="radio" name="fq0" value="c"> собрать урожай</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq1" data-correct="b">
+      <p class="quiz-q-text">2. Что нужно сделать перед посадкой семян?</p>
+      <label><input type="radio" name="fq1" value="a"> Полить грядку</label>
+      <label><input type="radio" name="fq1" value="b"> Вспахать землю</label>
+      <label><input type="radio" name="fq1" value="c"> Собрать урожай</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq2" data-correct="a">
+      <p class="quiz-q-text">3. Какой культура быстрее растёт?</p>
+      <label><input type="radio" name="fq2" value="a"> Пшеница</label>
+      <label><input type="radio" name="fq2" value="b"> Тыква</label>
+      <label><input type="radio" name="fq2" value="c"> Картофель</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq3" data-correct="b">
+      <p class="quiz-q-text">4. Какую команду использовать для смены семян у агента?</p>
+      <label><input type="radio" name="fq3" value="a"> поставить блок</label>
+      <label><input type="radio" name="fq3" value="b"> выбрать слот N</label>
+      <label><input type="radio" name="fq3" value="c"> двигаться вперёд</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq4" data-correct="a">
+      <p class="quiz-q-text">5. Что ускоряет рост растений в Minecraft?</p>
+      <label><input type="radio" name="fq4" value="a"> Вода рядом с грядкой</label>
+      <label><input type="radio" name="fq4" value="b"> Камень вокруг грядки</label>
+      <label><input type="radio" name="fq4" value="c"> Дерево рядом</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizFarm')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- AI-помощник -->
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B2%20Minecraft%20Education%20%D0%BF%D0%BE%D1%81%D0%B0%D0%B4%D0%B8%D1%82%D1%8C%20%D1%84%D0%B5%D1%80%D0%BC%D1%83%20%D1%81%20%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E%20%D0%B0%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%3F%22%7D" target="_blank" class="alice-q-btn">Как посадить ферму агентом?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%D0%B8%D0%B5%20%D0%B5%D1%81%D1%82%D1%8C%20%D1%81%D0%B5%D0%BC%D0%B5%D0%BD%D0%B0%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="alice-q-btn">Какие есть семена в Minecraft?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%83%D1%81%D0%BA%D0%BE%D1%80%D0%B8%D1%82%D1%8C%20%D1%80%D0%BE%D1%81%D1%82%20%D1%80%D0%B0%D1%81%D1%82%D0%B5%D0%BD%D0%B8%D0%B9%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="alice-q-btn">Как ускорить рост растений?</a>
+    </div>
+    <div class="ai-answer">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про фермерство в Minecraft.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, как построить автоматическую ферму в Minecraft?»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_2-1.html"><div class="lbl">← Назад</div><div class="ttl">2.1 Агент-строитель</div></a>
+    <a class="nav-btn next" href="les_2-3.html"><div class="lbl">Далее →</div><div class="ttl">2.3 Агент-шахтёр</div></a>
+  </div>
+</main>
+
+<!-- ===== ФУТЕР ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 2.2 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  // === Интерактивные функции ===
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    let correct = 0;
+    cards.forEach(card => {
+      const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      if (isCorrect) {
+        card.classList.add('selected-correct');
+        correct++;
+      } else {
+        card.classList.add('selected-wrong');
+      }
+    });
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct === 1 ? '✅ Всё верно!' : '❌ Попробуй ещё раз. Подумай, какой ответ правильный.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      if (total === 0) {
+        resultDiv.innerHTML = 'Ответь на все вопросы.';
+      } else {
+        resultDiv.innerHTML = `Правильных ответов: ${correct} из ${questions.length}`;
+      }
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  // Прогресс практического задания
+  function updateFarmProgress() {
+    const checkboxes = document.querySelectorAll('#practiceFarm input[type="checkbox"]');
+    const total = checkboxes.length;
+    let checked = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    const fill = document.getElementById('farmProgressFill');
+    const label = document.getElementById('farmProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+  }
+</script>
+</body>
+</html>

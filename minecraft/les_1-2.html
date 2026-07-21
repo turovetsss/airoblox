@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.2. Знакомство с Minecraft Education + первый код — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+     .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+  </style>
+</head>
+<body class="lesson-page">
+<!-- ===== ШАПКА (светло-зелёная) ===== -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 1.2</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">1.2</div>
+      <div>
+        <div class="module-pill">Раздел 1 · Введение</div>
+        <h1>Добро пожаловать в Minecraft!</h1>
+        <p class="subtitle">Управление игроком и первая программа</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Цели -->
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Познакомиться с интерфейсом Minecraft Education</li>
+      <li>Узнать, что такое «Агент» и как им управлять</li>
+      <li>Научиться составлять простые алгоритмы в визуальном редакторе</li>
+      <li>Написать свой первый код: заставить агента двигаться и строить</li>
+    </ul>
+  </div>
+
+  <!-- План -->
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент, вход в Minecraft</td><td>10 мин</td><td>Запускаем Minecraft Education, создаем мир</td></tr>
+      <tr><td>Интерфейс и агент</td><td>15 мин</td><td>Кнопки, инвентарь, как вызвать агента</td></tr>
+      <tr><td>Визуальное программирование</td><td>25 мин</td><td>Знакомство с блоками: движение, поворот, разрушение</td></tr>
+      <tr><td>Первый алгоритм</td><td>20 мин</td><td>Собираем программу: пройти 5 шагов и поставить блок</td></tr>
+      <tr><td>Практика: постройка моста</td><td>15 мин</td><td>Самостоятельно пишем код для агента</td></tr>
+      <tr><td>Опрос и итоги</td><td>5 мин</td><td>Проверяем знания</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- Часть 1 -->
+  <div class="card">
+    <h2><span class="num">1</span> Знакомство с Minecraft Education</h2>
+    <p>Привет! Сегодня мы не просто играем — мы учимся программировать внутри Minecraft! У нас есть помощник — <b>Агент</b>. Это маленький робот, который выполняет команды. Мы будем давать ему инструкции с помощью визуальных блоков — это и есть программирование.</p>
+
+    <h3>Как управлять миром в Minecraft?</h3>
+    <p>Для управления игроком и игрой мы используем клавиатуру и мышь. Клавиатура - для управления ходьбой, открытия инвентаря, изменения предметов. Мышь - для поворота камеры и использования предметов (копать, ударять, ставить блок)</p>
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Клавиша</th><th>Что делает</th></tr>
+        <tr><td>W</td><td>Двигаться вперёд</td></tr>
+        <tr><td>A</td><td>Двигаться влево</td></tr>
+        <tr><td>S</td><td>Двигаться назад</td></tr>
+        <tr><td>D</td><td>Двигаться вправо</td></tr>
+        <tr><td>E</td><td>Открыть инвентарь</td></tr>
+        <tr><td>Q</td><td>Выбросить предмет</td></tr>
+        <tr><td>Левая кнопка мыши (ЛКМ)</td><td>Ударить/сломать блок</td></tr>
+        <tr><td>Правая кнопка мыши (ПКМ)</td><td>Поставить блок/использовать предмет</td></tr>
+      </table>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <caption>Основные элементы Minecraft Education</caption>
+        <tr><th>Элемент</th><th>Для чего нужен</th></tr>
+        <tr><td>Агент</td><td>Робот, который выполняет наш код</td></tr>
+        <tr><td>Кнопка «Агент»</td><td>Вызов агента и панели управления</td></tr>
+        <tr><td>Редактор кода</td><td>Здесь мы собираем программу из блоков</td></tr>
+        <tr><td>Инвентарь</td><td>Ресурсы, которые агент может использовать</td></tr>
+        <tr><td>Чат-команды</td><td>Специальные команды для программирования</td></tr>
+      </table>
+    </div>
+
+    <div class="media-block">
+      <img src="../assets/images/lesson-1.2/minecraft_interface.png" alt="Интерфейс Minecraft Education" style="max-width:100%; border-radius:12px; border:1px solid #d0e8c0;">
+    </div>
+
+    <h3>Как вызвать агента и начать программировать?</h3>
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Действие</th><th>Как сделать</th></tr>
+        <tr><td>Вызвать агента</td><td>Найти в инвентаре яйцо призыва Агента (самое последнее) или при нажатии на клавишу <code>C</code></td></tr>
+        <tr><td>Открыть редактор кода</td><td>Нажать клавишу <code>C</code></td></tr>
+        <tr><td>Выбрать блок</td><td>Перетащить блок из библиотеки в рабочую область</td></tr>
+        <tr><td>Запустить программу</td><td>Нажать «Выполнить» (Play) в редакторе кода</td></tr>
+      </table>
+    </div>
+
+    <div class="note">В Minecraft Education мы используем визуальный язык — блоки как пазлы. Они помогают понять логику программирования без сложного синтаксиса. А скоро мы перейдём к настоящему текстовому коду!</div>
+  </div>
+
+  <!-- Часть 2 - Алгоритмы и код -->
+  <div class="card">
+    <h2><span class="num">2</span> Первый алгоритм для агента</h2>
+    <p>Агент умеет двигаться, поворачиваться, ставить и разрушать блоки. Мы напишем алгоритм, чтобы агент прошёл вперёд 5 шагов и поставил блок изумруда.</p>
+
+    <h3>Блоки-команды (что мы будем использовать)</h3>
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Блок</th><th>Действие</th></tr>
+        <tr><td><code>двигаться вперёд</code></td><td>Агент делает шаг в направлении взгляда</td></tr>
+        <tr><td><code>повернуть налево</code></td><td>Поворот агента на 90° влево</td></tr>
+        <tr><td><code>повернуть направо</code></td><td>Поворот агента на 90° вправо</td></tr>
+        <tr><td><code>поставить блок</code></td><td>Ставит блок перед собой (из инвентаря)</td></tr>
+        <tr><td><code>разрушить блок</code></td><td>Разрушает блок перед агентом</td></tr>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div><span class="fname">алгоритм_агент.txt</span></div>
+      <pre class="code"><code><span class="tok-c">-- Алгоритм: агент строит башню</span>
+1. Двигаться впёред (повторить 5 раз)
+2. Поставить блок (изумруд)
+3. Повернуть направо
+4. Двигаться впёред (повторить 3 раза)
+5. Поставить блок (золотой)</code></pre>
+    </div>
+
+    <p>В Minecraft Education это выглядит как последовательность блоков-пазлов. Скоро мы изучим циклы, чтобы не писать одну и ту же команду много раз.</p>
+
+    <div class="media-block">
+      <img src="../assets/images/lesson-1.2/agent_code.png" alt="Визуальный код агента" style="max-width:100%; border-radius:12px; border:1px solid #d0e8c0;">
+    </div>
+
+    <!-- Интерактив: соответствие команд -->
+    <div class="match-block" id="matchMinecraft">
+      <h3>🔑 Сопоставь команду и действие агента</h3>
+      <p>Выбери правильное действие для каждой команды:</p>
+
+      <div class="match-row">
+        <div class="match-key">двигаться вперёд</div>
+        <select class="match-select" data-key="move" data-correct="шаг вперёд">
+          <option value="">— выбери —</option>
+          <option value="шаг вперёд">Шаг вперёд</option>
+          <option value="поворот">Поворот</option>
+          <option value="поставить блок">Поставить блок</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <div class="match-key">повернуть налево</div>
+        <select class="match-select" data-key="turn" data-correct="поворот на 90° влево">
+          <option value="">— выбери —</option>
+          <option value="шаг вперёд">Шаг вперёд</option>
+          <option value="поворот на 90° влево">Поворот на 90° влево</option>
+          <option value="поставить блок">Поставить блок</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <div class="match-key">поставить блок</div>
+        <select class="match-select" data-key="place" data-correct="установить блок">
+          <option value="">— выбери —</option>
+          <option value="убрать блок">Убрать блок</option>
+          <option value="установить блок">Установить блок</option>
+          <option value="передвинуть">Передвинуть</option>
+        </select>
+      </div>
+
+      <button class="match-btn" onclick="checkMatchBlock('matchMinecraft')">✅ Проверить</button>
+      <div class="match-result" id="matchResult"></div>
+    </div>
+  </div>
+
+  <!-- Интерактивные блоки -->
+  <div class="interactive-box" id="agentQuiz">
+    <h2>🧩 Кто такой агент в Minecraft Education?</h2>
+    <p>Выбери правильное определение:</p>
+    <div class="choice-grid">
+      <div class="choice-card" data-correct-choice="true">Это робот, который выполняет наши программы (команды)</div>
+      <div class="choice-card" data-correct-choice="false">Это игрок, который бегает по миру</div>
+      <div class="choice-card" data-correct-choice="false">Это блок, который можно поставить</div>
+    </div>
+    <button class="action-btn" onclick="checkChoices('agentQuiz')">Проверить</button>
+    <div class="activity-result"></div>
+  </div>
+
+  <!-- Задание на последовательность (алгоритм) -->
+  <div class="interactive-box" id="algoSequenceMinecraft">
+    <h2>🔀 Собери алгоритм для агента</h2>
+    <p>Перетащи шаги в правильном порядке, чтобы агент подлетел на 5 блоков вверх, поставил блок перед собой и вернулся назад:</p>
+    <div class="sequence-list" id="sequenceMinecraft">
+      <div class="sort-item" draggable="true" data-correct-step="2">Поставить блок</div>
+      <div class="sort-item" draggable="true" data-correct-step="1">Двигаться вверх на 5 блоков</div>
+      <div class="sort-item" draggable="true" data-correct-step="3">Двигаться вниз на 5 блоков</div>
+      <div class="sort-item" draggable="true" data-correct-step="0">Начать программу</div>
+    </div>
+    <button class="action-btn" onclick="checkSequence('algoSequenceMinecraft')">Проверить порядок</button>
+    <div class="activity-result"></div>
+  </div>
+
+  <!-- Практическое задание -->
+  <div class="task-box" id="practiceMinecraft">
+    <h2>🛠️ Практическое задание: постройка моста</h2>
+    <div class="progress-track"><div class="progress-fill" id="practiceProgressFill"></div></div>
+    <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 5</span>
+    <div class="note">Открой Minecraft Education, выполни шаги и отмечай галочками.</div>
+    <ul class="task-steps">
+      <li><input type="checkbox" id="pm0" onchange="updatePracticeProgress()"><label for="pm0">Запусти Minecraft Education и войди в свой мир</label></li>
+      <li><input type="checkbox" id="pm1" onchange="updatePracticeProgress()"><label for="pm1">Вызови агента (с помощи яйца призыва)</label></li>
+      <li><input type="checkbox" id="pm2" onchange="updatePracticeProgress()"><label for="pm2">Открой редактор кода (клавиша C) и создай новую программу</label></li>
+      <li><input type="checkbox" id="pm3" onchange="updatePracticeProgress()"><label for="pm3">Собери алгоритм: повтори 4 раза [двигаться вперёд, поставить блок]</label></li>
+      <li class="bonus-step"><input type="checkbox" id="pm4" onchange="updatePracticeProgress()"><label for="pm4">⭐ Бонус: добавь поворот и построй квадрат из блоков</label></li>
+    </ul>
+  </div>
+
+  <!-- Опрос (проверка знаний) -->
+  <div class="quiz-wrap" id="quizMinecraft">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="mq0" data-correct="a">
+      <p class="quiz-q-text">1. Как вызвать агента в Minecraft Education?</p>
+      <label><input type="radio" name="mq0" value="a"> Призвать с помощью яйца призыва или испрользовать клавишу C</label>
+      <label><input type="radio" name="mq0" value="b"> Просто побегать по миру</label>
+      <label><input type="radio" name="mq0" value="c"> Поставить блок изумруда</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq1" data-correct="b">
+      <p class="quiz-q-text">2. Как открыть редактор кода?</p>
+      <label><input type="radio" name="mq1" value="a"> Нажать ESC</label>
+      <label><input type="radio" name="mq1" value="b"> Нажать клавишу C</label>
+      <label><input type="radio" name="mq1" value="c"> Написать /code</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq2" data-correct="c">
+      <p class="quiz-q-text">3. Что делает команда «двигаться вперёд»?</p>
+      <label><input type="radio" name="mq2" value="a"> Агент прыгает</label>
+      <label><input type="radio" name="mq2" value="b"> Агент поворачивается</label>
+      <label><input type="radio" name="mq2" value="c"> Агент делает шаг вперёд</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq3" data-correct="b">
+      <p class="quiz-q-text">5. Для чего нужен агент в Minecraft Education?</p>
+      <label><input type="radio" name="mq3" value="a"> Чтобы атаковать мобов</label>
+      <label><input type="radio" name="mq3" value="b"> Чтобы выполнять наши программы и команды</label>
+      <label><input type="radio" name="mq3" value="c"> Чтобы строить дома вручную</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq4" data-correct="c">
+      <p class="quiz-q-text">6. Что произойдёт, если в алгоритме перепутать порядок команд?</p>
+      <label><input type="radio" name="mq4" value="a"> Ничего, всё сработает</label>
+      <label><input type="radio" name="mq4" value="b"> Агент исчезнет</label>
+      <label><input type="radio" name="mq4" value="c"> Агент сделает не то, что мы задумали</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizMinecraft')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- AI-помощник -->
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Что такое Minecraft Education?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BD%D0%B0%D1%83%D1%87%D0%B8%D1%82%D1%8C%D1%81%D1%8F%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как программировать в Minecraft?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое алгоритм?</a>
+    </div>
+
+    <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про Minecraft или программирование.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, как заставить агента построить дом?»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_1-1.html"><div class="lbl">← Назад</div><div class="ttl">1.1 Знакомство с компьютером</div></a>
+    <a class="nav-btn next" href="les_1-3.html"><div class="lbl">Далее →</div><div class="ttl">1.3 Проходим лабиринт</div></a>
+  </div>
+</main>
+
+<!-- ===== ФУТЕР ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 1.2 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  // Функции для интерактивности (копия из предыдущего урока с адаптацией)
+  function checkMatchBlock(containerId) {
+    const container = document.getElementById(containerId);
+    const selects = container.querySelectorAll('.match-select');
+    let correct = 0;
+    selects.forEach(sel => {
+      const correctVal = sel.getAttribute('data-correct');
+      if (sel.value === correctVal) {
+        sel.style.borderColor = '#2e7d32';
+        sel.style.background = '#e8f5e9';
+        correct++;
+      } else {
+        sel.style.borderColor = '#c62828';
+        sel.style.background = '#ffebee';
+      }
+    });
+    const resultDiv = container.querySelector('.match-result');
+    if (resultDiv) {
+      resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${selects.length}`;
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    let correct = 0;
+    cards.forEach(card => {
+      const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      if (isCorrect) {
+        card.classList.add('selected-correct');
+        correct++;
+      } else {
+        card.classList.add('selected-wrong');
+      }
+    });
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct === 1 ? '✅ Всё верно!' : '❌ Попробуй ещё раз. Подумай, какой ответ правильный.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkSequence(containerId) {
+    const container = document.getElementById(containerId);
+    const items = container.querySelectorAll('.sort-item');
+    let correct = true;
+    let prevStep = -1;
+    let sorted = Array.from(items).map(el => parseInt(el.getAttribute('data-correct-step'), 10));
+    for (let i = 0; i < sorted.length; i++) {
+      if (sorted[i] !== i) {
+        correct = false;
+        break;
+      }
+    }
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct ? '✅ Отличный порядок! Алгоритм собран верно.' : '❌ Порядок нарушен. Попробуй переставить шаги.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const name = q.getAttribute('data-name');
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      if (total === 0) {
+        resultDiv.innerHTML = 'Ответь на все вопросы.';
+      } else {
+        resultDiv.innerHTML = `Правильных ответов: ${correct} из ${questions.length}`;
+      }
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  // Прогресс практического задания
+  function updatePracticeProgress() {
+    const checkboxes = document.querySelectorAll('#practiceMinecraft input[type="checkbox"]');
+    const total = checkboxes.length;
+    let checked = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    const fill = document.getElementById('practiceProgressFill');
+    const label = document.getElementById('practiceProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+  }
+
+  // Перетаскивание для sequence (универсально)
+  document.querySelectorAll('.sequence-list').forEach(list => {
+    let dragItem = null;
+    list.addEventListener('dragstart', function(e) {
+      dragItem = e.target.closest('.sort-item');
+      if (!dragItem) return;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', '');
+      dragItem.style.opacity = '0.5';
+    });
+    list.addEventListener('dragend', function(e) {
+      if (dragItem) dragItem.style.opacity = '1';
+      dragItem = null;
+    });
+    list.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+    list.addEventListener('drop', function(e) {
+      e.preventDefault();
+      const target = e.target.closest('.sort-item');
+      if (!target || target === dragItem) return;
+      const parent = list;
+      const children = Array.from(parent.children);
+      const dragIndex = children.indexOf(dragItem);
+      const targetIndex = children.indexOf(target);
+      if (dragIndex < targetIndex) {
+        parent.insertBefore(dragItem, target.nextSibling);
+      } else {
+        parent.insertBefore(dragItem, target);
+      }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.6. Условные операторы — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+        .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+
+    /* Стили для модалки пароля и показа кода */
+    .code-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .code-modal-overlay.active { display: flex; }
+    .code-modal-box {
+      background: #fff;
+      max-width: 800px;
+      width: 92%;
+      max-height: 90vh;
+      padding: 32px 28px;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      position: relative;
+      animation: modalFade 0.3s ease;
+      overflow-y: auto;
+    }
+    @keyframes modalFade {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .code-modal-close {
+      position: absolute;
+      top: 16px; right: 20px;
+      font-size: 28px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #555;
+      transition: 0.2s;
+    }
+    .code-modal-close:hover { color: #c62828; }
+    .code-modal-box h2 {
+      margin-top: 0;
+      color: #2b5e0e;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .code-modal-box .password-input-area {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+    .code-modal-box .password-input-area input {
+      padding: 10px 16px;
+      border: 2px solid #d0e8c0;
+      border-radius: 10px;
+      font-size: 1rem;
+      flex: 1;
+      min-width: 200px;
+    }
+    .code-modal-box .password-input-area input:focus {
+      outline: none;
+      border-color: #61b01f;
+    }
+    .code-modal-box .code-image {
+      margin-top: 16px;
+      border-radius: 12px;
+      border: 1px solid #d0e8c0;
+      max-width: 100%;
+      display: none;
+    }
+    .code-modal-box .code-image.show { display: block; }
+    .code-modal-box .password-hint {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 4px;
+    }
+    .code-modal-box .wrong-password {
+      color: #c62828;
+      font-weight: 500;
+      display: none;
+    }
+    .code-modal-box .wrong-password.show { display: block; }
+    .view-code-btn {
+      background: #ffbd2e;
+      color: #2b5e0e;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 12px;
+    }
+    .view-code-btn:hover { background: #f0a800; transform: translateY(-2px); }
+  </style>
+</head>
+<body class="lesson-page">
+<!-- ===== ШАПКА ===== -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 1.6</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">1.6</div>
+      <div>
+        <div class="module-pill">Раздел 1 · Введение</div>
+        <h1>Условные операторы</h1>
+        <p class="subtitle">Учим агента принимать решения с помощью условий</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Цели -->
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Понять, что такое условие и зачем оно нужно в программировании</li>
+      <li>Научиться определять ID блоков в Minecraft</li>
+      <li>Использовать условный оператор <code>если ... то</code> в коде агента</li>
+      <li>Создать программу «Агент-продавец» с командами «цены» и «купить»</li>
+    </ul>
+  </div>
+
+  <!-- План -->
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Приветствие, настрой на занятие</td></tr>
+      <tr><td>Что такое условие?</td><td>15 мин</td><td>Теория: условия в жизни и программировании</td></tr>
+      <tr><td>ID блоков в Minecraft</td><td>15 мин</td><td>Как узнать ID блока и использовать его</td></tr>
+      <tr><td>Условный оператор</td><td>20 мин</td><td>Изучаем блок «если ... то» в Minecraft Education</td></tr>
+      <tr><td>Интерактивные задания</td><td>15 мин</td><td>Собираем алгоритмы с условиями</td></tr>
+      <tr><td>Практика: Агент-продавец</td><td>20 мин</td><td>Программа, которая реагирует на команды</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Проверяем знания</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- Часть 1: Что такое условие -->
+  <div class="card">
+    <h2><span class="num">1</span> Что такое условие?</h2>
+    <p>В жизни мы постоянно принимаем решения на основе условий:</p>
+    <ul>
+      <li><b>Если</b> на улице дождь, <b>то</b> я возьму зонт</li>
+      <li><b>Если</b> я голоден, <b>то</b> я поем</li>
+      <li><b>Если</b> светофор красный, <b>то</b> я стою</li>
+    </ul>
+    <p>В программировании то же самое! Условный оператор помогает компьютеру принимать решения.</p>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">условие_пример.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Простое условие</span>
+<span class="tok-k">если</span> на_улице_дождь <span class="tok-k">то</span>
+    <span class="tok-n">взять</span> зонт
+<span class="tok-k">иначе</span>
+    <span class="tok-n">зонт</span> не_брать
+
+<span class="tok-c">-- Условие в Minecraft</span>
+<span class="tok-k">если</span> перед_агентом_блок <span class="tok-k">то</span>
+    <span class="tok-n">повернуть</span> налево
+<span class="tok-k">иначе</span>
+    <span class="tok-n">двигаться</span> вперёд</code></pre>
+    </div>
+
+    <div class="note">
+      <b>💡 Важно:</b> условие — это вопрос, на который можно ответить «да» или «нет». Если ответ «да» — выполняются одни команды, если «нет» — другие (или ничего).
+    </div>
+  </div>
+
+  <!-- Часть 2: ID блоков -->
+  <div class="card">
+    <h2><span class="num">2</span> Определение ID блока</h2>
+    <p>В Minecraft каждый блок и предмет имеет уникальный номер — <b>ID</b>. Зная ID, мы можем проверять, какой блок находится перед агентом или в его инвентаре.</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Название блока</th><th>ID</th></tr>
+        <tr><td>Земля (Dirt)</td><td><code>3</code></td></tr>
+        <tr><td>Камень (Stone)</td><td><code>1</code></td></tr>
+        <tr><td>Дерево (Oak Wood)</td><td><code>17</code></td></tr>
+        <tr><td>Изумруд (Emerald)</td><td><code>133</code></td></tr>
+        <tr><td>Золото (Gold)</td><td><code>14</code></td></tr>
+        <tr><td>Алмаз (Diamond)</td><td><code>56</code></td></tr>
+      </table>
+    </div>
+
+    <p><b>Как узнать ID блока в игре?</b></p>
+    <ul>
+      <li>В творческом режиме наведи на блок — в подсказке будет ID</li>
+      <li>Используй команду <code>/testforblock</code> — она показывает ID блока</li>
+      <li>В редакторе кода есть блок <code>ID блока</code> — он показывает номер</li>
+    </ul>
+
+    <div class="interactive-box" id="idQuiz">
+      <h3>🧠 Проверь знание ID</h3>
+      <p>Какой ID у изумруда (Emerald)?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">56</div>
+        <div class="choice-card" data-correct-choice="true">133</div>
+        <div class="choice-card" data-correct-choice="false">3</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('idQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- Часть 3: Условный оператор в Minecraft -->
+  <div class="card">
+    <h2><span class="num">3</span> Условный оператор «если ... то»</h2>
+    <p>В Minecraft Education есть специальный блок для условий — <b>«если ... то»</b>. Он позволяет агенту проверять что-то и выполнять разные команды.</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Блок</th><th>Что проверяет</th><th>Пример</th></tr>
+        <tr><td><code>если [ID блока] == [значение]</code></td><td>Равны ли ID блока и число</td><td>если ID блока == 3 → это земля</td></tr>
+        <tr><td><code>если перед агентом блок</code></td><td>Есть ли блок перед агентом</td><td>если перед_агентом_блок → повернуть</td></tr>
+        <tr><td><code>если [условие] то [команды] иначе [команды]</code></td><td>Выполняет разные команды</td><td>если ID == 1 то поставить камень иначе поставить землю</td></tr>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">условие_агент.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Агент проверяет, какой блок перед ним</span>
+<span class="tok-k">если</span> ID_блока_перед_агентом == 3 <span class="tok-k">то</span>
+    <span class="tok-n">сказать</span> "Это земля!"
+    <span class="tok-n">поставить</span> блок_изумруда
+<span class="tok-k">иначе</span>
+    <span class="tok-n">сказать</span> "Это не земля"
+    <span class="tok-n">двигаться</span> вперёд</code></pre>
+    </div>
+
+    <div class="note">
+      <b>⚡ Важно:</b> условие может проверять ID блока, наличие блока, количество предметов и многое другое. Это основа для создания умных программ!
+    </div>
+  </div>
+
+  <!-- Интерактивные задания -->
+  <div class="card">
+    <h2><span class="num">4</span> Интерактивные задания</h2>
+
+    <div class="interactive-box" id="conditionSort">
+      <h3>🧩 Собери алгоритм с условием</h3>
+      <p>Перетащи шаги в правильном порядке, чтобы агент проверял блок перед собой (если перед ним <i>Земля</i>, то Агент говорит "Это земля!" и поворачивается налево):</p>
+      <div class="sequence-list" id="sequenceCondition">
+        <div class="sort-item" draggable="true" data-correct-step="2">повернуться налево</div>
+        <div class="sort-item" draggable="true" data-correct-step="0">если ID_блока == 3 то</div>
+        <div class="sort-item" draggable="true" data-correct-step="4">двигаться вперёд</div>
+        <div class="sort-item" draggable="true" data-correct-step="3">иначе</div>
+        <div class="sort-item" draggable="true" data-correct-step="1">сказать "Это земля!"</div>
+      </div>
+      <button class="action-btn" onclick="checkSequence('conditionSort')">✅ Проверить порядок</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="conditionQuiz">
+      <h3>🔍 Что сделает агент?</h3>
+      <p>Какой блок поставит агент, если ID блока перед ним равен 1 (камень)?</p>
+      <div class="code-block" style="margin: 8px 0;">
+        <pre class="code"><code>если ID_блока == 1 то
+    поставить блок_земли
+иначе
+    поставить блок_изумруда</code></pre>
+      </div>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Землю (ID 3)</div>
+        <div class="choice-card" data-correct-choice="false">Изумруд (ID 133)</div>
+        <div class="choice-card" data-correct-choice="false">Ничего</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('conditionQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- Практика: Агент-продавец -->
+  <div class="card">
+    <h2><span class="num">5</span> Практика: Агент-продавец</h2>
+    <p>Теперь создадим настоящую программу! Агент будет работать продавцом в магазине.</p>
+
+    <h3>Как это работает:</h3>
+    <ul>
+      <li>Игрок пишет в чате <b>«цены»</b> — агент показывает стоимость товаров</li>
+      <li>Игрок кидает изумруды на землю и пишет <b>«купить [1-5]»</b> — агент собирает их</li>
+      <li>Агент проверяет, какой предмет запросил игрок (число после «купить») и сколько изумрудов дал игрок</li>
+      <li>В зависимости от количества изумрудов агент выдаёт нужный предмет или говорит, что изумрудов не хватает</li>
+    </ul>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Предмет</th><th>ID</th><th>Цена (изумруды)</th></tr>
+        <tr><td>Земля (Dirt)</td><td>3</td><td>1</td></tr>
+        <tr><td>Камень (Stone)</td><td>1</td><td>2</td></tr>
+        <tr><td>Дерево (Oak Wood)</td><td>17</td><td>3</td></tr>
+        <tr><td>Золото (Gold)</td><td>14</td><td>5</td></tr>
+        <tr><td>Алмаз (Diamond)</td><td>56</td><td>10</td></tr>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">агент_продавец.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Агент-продавец: проверяет команды игрока</span>
+<span class="tok-k">если</span> команда == "цены" <span class="tok-k">то</span>
+    <span class="tok-n">сказать</span> "Земля - 1 изумруд, Камень - 2, Дерево - 3, Золото - 5, Алмаз - 10"
+
+<span class="tok-k">если</span> команда == "купить [1-5]" <span class="tok-k">то</span>
+    <span class="tok-c">-- Агент подбирает изумруды</span>
+    <span class="tok-n">подобрать</span> изумруд
+    <span class="tok-k">если</span> ID_предмета != 133 <span class="tok-k">то</span>
+        <span class="tok-n">сказать</span> "Неизвестная валюта"
+    <span class="tok-k">иначе</span>
+        <span class="tok-k">если</span> НУЖНЫЙ_ПРЕДМЕТ == 1 <span class="tok-k">и</span> КОЛ-ВО_изумрудов == 1 <span class="tok-k">то</span>
+            <span class="tok-n">выдать</span> Землю
+        <span class="tok-k">иначе</span> <span class="tok-k">если</span> НУЖНЫЙ_ПРЕДМЕТ == 2 <span class="tok-k">и</span> КОЛ-ВО_изумрудов == 2 <span class="tok-k">то</span>
+            <span class="tok-n">выдать</span> Камень
+        <span class="tok-k">иначе</span> <span class="tok-k">если</span> НУЖНЫЙ_ПРЕДМЕТ == 3 <span class="tok-k">и</span> КОЛ-ВО_изумрудов == 3 <span class="tok-k">то</span>
+            <span class="tok-n">выдать</span> Дерево 
+        <span class="tok-k">иначе</span> <span class="tok-k">если</span> НУЖНЫЙ_ПРЕДМЕТ == 4 <span class="tok-k">и</span> КОЛ-ВО_изумрудов == 5 <span class="tok-k">то</span>
+            <span class="tok-n">выдать</span> Золото
+        <span class="tok-k">иначе</span> <span class="tok-k">если</span> НУЖНЫЙ_ПРЕДМЕТ == 5 <span class="tok-k">и</span> КОЛ-ВО_изумрудов == 10 <span class="tok-k">то</span>
+            <span class="tok-n">выдать</span> Алмаз
+        <span class="tok-k">иначе</span>
+            <span class="tok-n">сказать</span> "Я не понимаю, что ты хочешь приобрести!"</code></pre>
+    </div>
+  </div>
+
+  <!-- Практическое задание с кнопкой -->
+  <div class="task-box" id="practiceSeller">
+    <h2>🛠️ Практическое задание: Агент-продавец</h2>
+    <div class="progress-track"><div class="progress-fill" id="sellerProgressFill"></div></div>
+    <span class="progress-label" id="sellerProgressLabel">Выполнено шагов: 0 из 3</span>
+    <p>Запусти Minecraft Education и создай программу «Агент-продавец»:</p>
+    <ul class="task-steps">
+      <li><input type="checkbox" id="sl0" onchange="updateSellerProgress()"><label for="sl0">Напиши код, который отвечает на команду «цены» — показывает список товаров</label></li>
+      <li><input type="checkbox" id="sl1" onchange="updateSellerProgress()"><label for="sl1">Напиши код, который подбирает предмет и определяет его тип</label></li>
+      <li><input type="checkbox" id="sl2" onchange="updateSellerProgress()"><label for="sl2">Добавь условия для выдачи предмета в зависимости от сообщения в чате</label></li>
+    </ul>
+
+    <button class="view-code-btn" onclick="openCodeModal()">🔍 Посмотреть код</button>
+    <div class="note" style="margin-top: 12px;">
+      <b>💡 Подсказка:</b> для подбора предмета с земли используй блок <code>подобрать предмет</code>. Для определения ID используй <code>ID предмета</code>.
+    </div>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizConditions">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="cq0" data-correct="b">
+      <p class="quiz-q-text">1. Что такое условный оператор?</p>
+      <label><input type="radio" name="cq0" value="a"> Команда для движения</label>
+      <label><input type="radio" name="cq0" value="b"> Конструкция, которая выполняет команды в зависимости от условия</label>
+      <label><input type="radio" name="cq0" value="c"> Цикл для повторения команд</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq1" data-correct="c">
+      <p class="quiz-q-text">2. Какой ID у камня (Stone) в Minecraft?</p>
+      <label><input type="radio" name="cq1" value="a"> 3</label>
+      <label><input type="radio" name="cq1" value="b"> 133</label>
+      <label><input type="radio" name="cq1" value="c"> 1</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq2" data-correct="a">
+      <p class="quiz-q-text">3. Какой блок в Minecraft Education используется для условий?</p>
+      <label><input type="radio" name="cq2" value="a"> если ... то</label>
+      <label><input type="radio" name="cq2" value="b"> повторить N раз</label>
+      <label><input type="radio" name="cq2" value="c"> двигаться вперёд</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq3" data-correct="b">
+      <p class="quiz-q-text">4. Зачем знать ID блоков?</p>
+      <label><input type="radio" name="cq3" value="a"> Чтобы красиво строить</label>
+      <label><input type="radio" name="cq3" value="b"> Чтобы проверять, какой блок перед агентом</label>
+      <label><input type="radio" name="cq3" value="c"> Чтобы телепортироваться</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq4" data-correct="b">
+      <p class="quiz-q-text">5. Что делает агент при команде «цены» в проекте «Агент-продавец»?</p>
+      <label><input type="radio" name="cq4" value="a"> Строит дом</label>
+      <label><input type="radio" name="cq4" value="b"> Показывает список товаров и их цену</label>
+      <label><input type="radio" name="cq4" value="c"> Покупает предметы</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizConditions')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- AI-помощник -->
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%BD%D1%8B%D0%B9%20%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое условный оператор?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%83%D0%B7%D0%BD%D0%B0%D1%82%D1%8C%20ID%20%D0%B1%D0%BB%D0%BE%D0%BA%D0%B0%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="alice-q-btn">Как узнать ID блока в Minecraft?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BD%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D1%83%20%D0%B4%D0%BB%D1%8F%20%D0%B0%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как программировать агента?</a>
+    </div>
+    <div class="ai-answer">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про условия или Minecraft.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, объясни условные операторы для детей»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_1-5.html"><div class="lbl">← Назад</div><div class="ttl">1.5 Вложенные циклы</div></a>
+    <a class="nav-btn next" href="les_2-1.html"><div class="lbl">Далее →</div><div class="ttl">2.1 Агент-строитель</div></a>
+  </div>
+</main>
+
+<!-- ===== ФУТЕР ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 1.6 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<!-- ===== МОДАЛЬНОЕ ОКНО ДЛЯ КОДА ===== -->
+<div class="code-modal-overlay" id="codeModal">
+  <div class="code-modal-box">
+    <button class="code-modal-close" onclick="closeCodeModal()">✕</button>
+    <h2>🔍 Код программы «Агент-продавец»</h2>
+    <p>Введи пароль, чтобы увидеть полный код программы:</p>
+    <div class="password-input-area">
+      <input type="password" id="codePasswordInput" placeholder="Введи пароль..." onkeydown="if(event.key==='Enter') checkCodePassword()">
+      <button class="action-btn" onclick="checkCodePassword()">🔓 Показать код</button>
+    </div>
+    <div class="password-hint">Попроси преподавателя ввести пароль. <b>Внимание:</b> получение подсказки лишает тебя 20 робокоинов</div>
+    <div class="wrong-password" id="wrongPasswordMsg">❌ Неверный пароль! Попробуй ещё раз.</div>
+    
+    <!-- КОД СКРЫТ ИЗНАЧАЛЬНО (display:none) -->
+    <div id="codeContainer" style="display:none; margin-top: 16px;">
+      <p>На фотографии показан не полный код программы. Посмотри внимательно, доделай программу самостоятельно по такому же принципу.</p>
+      <img src="files/les_1-6_1.png" alt="Код программы Агент-продавец" class="code-image" id="codeImage" style="max-width:100%; border-radius:12px; border:1px solid #d0e8c0; display:block;" onerror="this.style.display='none'; document.getElementById('codeFallback').style.display='block';">
+      <div id="codeFallback" style="display:none; background: #f6fcf2; padding: 16px; border-radius: 12px; border: 1px solid #b8d9a8; font-family: 'Courier New', monospace; white-space: pre-wrap; font-size: 0.9rem; line-height: 1.6;">
+        <span style="color:#6a9955;">-- Агент-продавец: полная программа</span>
+        <span style="color:#c678dd;">повторить</span> навсегда [
+            <span style="color:#c678dd;">если</span> команда_игрока == "цены" <span style="color:#c678dd;">то</span>
+                <span style="color:#e06c75;">сказать</span> "Земля - 1 изумруд, Камень - 2, Дерево - 3, Золото - 5, Алмаз - 10"
+            
+            <span style="color:#c678dd;">если</span> команда_игрока == "купить" <span style="color:#c678dd;">то</span>
+                <span style="color:#e06c75;">подобрать</span> предмет_с_земли
+                <span style="color:#c678dd;">если</span> ID_предмета == 3 <span style="color:#c678dd;">то</span>
+                    <span style="color:#e06c75;">выдать</span> 1 изумруд
+                <span style="color:#c678dd;">иначе</span> <span style="color:#c678dd;">если</span> ID_предмета == 1 <span style="color:#c678dd;">то</span>
+                    <span style="color:#e06c75;">выдать</span> 2 изумруда
+                <span style="color:#c678dd;">иначе</span> <span style="color:#c678dd;">если</span> ID_предмета == 17 <span style="color:#c678dd;">то</span>
+                    <span style="color:#e06c75;">выдать</span> 3 изумруда
+                <span style="color:#c678dd;">иначе</span> <span style="color:#c678dd;">если</span> ID_предмета == 14 <span style="color:#c678dd;">то</span>
+                    <span style="color:#e06c75;">выдать</span> 5 изумрудов
+                <span style="color:#c678dd;">иначе</span> <span style="color:#c678dd;">если</span> ID_предмета == 56 <span style="color:#c678dd;">то</span>
+                    <span style="color:#e06c75;">выдать</span> 10 изумрудов
+                <span style="color:#c678dd;">иначе</span>
+                    <span style="color:#e06c75;">сказать</span> "Этот предмет не продаётся!"
+        ]
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  // === Генерация пароля ===
+  function generatePassword() {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    return day + month; // например, 1407 для 14 июля
+  }
+  const CORRECT_PASSWORD = generatePassword();
+
+  // === Функции для модалки ===
+  function openCodeModal() {
+    document.getElementById('codeModal').classList.add('active');
+    document.getElementById('wrongPasswordMsg').classList.remove('show');
+    // Скрываем код при открытии (если он был показан)
+    document.getElementById('codeContainer').style.display = 'none';
+    document.getElementById('codePasswordInput').value = '';
+    document.getElementById('codePasswordInput').focus();
+  }
+
+  function closeCodeModal() {
+    document.getElementById('codeModal').classList.remove('active');
+    // Скрываем код при закрытии
+    document.getElementById('codeContainer').style.display = 'none';
+  }
+
+  function checkCodePassword() {
+    const input = document.getElementById('codePasswordInput');
+    const wrongMsg = document.getElementById('wrongPasswordMsg');
+    const codeContainer = document.getElementById('codeContainer');
+    const password = input.value.trim();
+
+    if (password === CORRECT_PASSWORD) {
+      wrongMsg.classList.remove('show');
+      codeContainer.style.display = 'block';
+      // Пытаемся показать картинку
+      const img = document.getElementById('codeImage');
+      if (img) {
+        img.style.display = 'block';
+        // Если картинка не загрузилась, показываем текстовую версию
+        if (!img.complete || img.naturalHeight === 0) {
+          document.getElementById('codeFallback').style.display = 'block';
+          img.style.display = 'none';
+        }
+      }
+    } else {
+      wrongMsg.classList.add('show');
+      codeContainer.style.display = 'none';
+      input.value = '';
+      input.focus();
+    }
+  }
+
+  // Закрытие по клику на фон
+  document.getElementById('codeModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCodeModal();
+  });
+
+  // === Интерактивные функции ===
+  // function checkChoices(containerId) {
+  //   const container = document.getElementById(containerId);
+  //   const cards = container.querySelectorAll('.choice-card');
+  //   let correct = 0;
+  //   cards.forEach(card => {
+  //     const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+  //     card.classList.remove('selected-correct', 'selected-wrong');
+  //     if (isCorrect) {
+  //       card.classList.add('selected-correct');
+  //       correct++;
+  //     } else {
+  //       card.classList.add('selected-wrong');
+  //     }
+  //   });
+  //   const result = container.querySelector('.activity-result');
+  //   if (result) {
+  //     result.innerHTML = correct === 1 ? '✅ Всё верно!' : '❌ Попробуй ещё раз. Подумай, какой ответ правильный.';
+  //     result.style.display = 'block';
+  //   }
+  // }
+
+  function checkSequence(containerId) {
+    const container = document.getElementById(containerId);
+    const items = container.querySelectorAll('.sort-item');
+    let correct = true;
+    let sorted = Array.from(items).map(el => parseInt(el.getAttribute('data-correct-step'), 10));
+    for (let i = 0; i < sorted.length; i++) {
+      if (sorted[i] !== i) {
+        correct = false;
+        break;
+      }
+    }
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct ? '✅ Отличный порядок! Алгоритм собран верно.' : '❌ Порядок нарушен. Попробуй переставить шаги.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      if (total === 0) {
+        resultDiv.innerHTML = 'Ответь на все вопросы.';
+      } else {
+        resultDiv.innerHTML = `Правильных ответов: ${correct} из ${questions.length}`;
+      }
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  // Прогресс практического задания
+  function updateSellerProgress() {
+    const checkboxes = document.querySelectorAll('#practiceSeller input[type="checkbox"]');
+    const total = checkboxes.length;
+    let checked = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    const fill = document.getElementById('sellerProgressFill');
+    const label = document.getElementById('sellerProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+  }
+
+  // Перетаскивание для sequence
+  document.querySelectorAll('.sequence-list').forEach(list => {
+    let dragItem = null;
+    list.addEventListener('dragstart', function(e) {
+      dragItem = e.target.closest('.sort-item');
+      if (!dragItem) return;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', '');
+      dragItem.style.opacity = '0.5';
+    });
+    list.addEventListener('dragend', function(e) {
+      if (dragItem) dragItem.style.opacity = '1';
+      dragItem = null;
+    });
+    list.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+    list.addEventListener('drop', function(e) {
+      e.preventDefault();
+      const target = e.target.closest('.sort-item');
+      if (!target || target === dragItem) return;
+      const parent = list;
+      const children = Array.from(parent.children);
+      const dragIndex = children.indexOf(dragItem);
+      const targetIndex = children.indexOf(target);
+      if (dragIndex < targetIndex) {
+        parent.insertBefore(dragItem, target.nextSibling);
+      } else {
+        parent.insertBefore(dragItem, target);
+      }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2.1. Агент-строитель — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+
+    /* Стили для фото-галереи примеров */
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .example-card {
+      background: #fafff7;
+      border: 2px solid #d0e8c0;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      transition: 0.2s;
+    }
+    .example-card:hover { border-color: #61b01f; transform: translateY(-3px); }
+    .example-card .preview {
+      font-size: 2rem;
+      line-height: 1.3;
+      font-family: 'Courier New', monospace;
+      background: #f0f9eb;
+      padding: 8px;
+      border-radius: 8px;
+      margin: 6px 0;
+    }
+    .example-card .label { font-weight: 600; color: #2b5e0e; }
+    .example-card .desc { font-size: 0.85rem; color: #666; }
+  </style>
+</head>
+<body class="lesson-page">
+<!-- ===== ШАПКА ===== -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 2.1</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">2.1</div>
+      <div>
+        <div class="module-pill">Раздел 2 · Программирование Агента</div>
+        <h1>Агент-строитель</h1>
+        <p class="subtitle">Создаём целую территорию с башнями и декорациями</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Цели -->
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Закрепить навыки программирования агента в Minecraft Education</li>
+      <li>Использовать команды чата для вызова строительства</li>
+      <li>Построить территорию с башнями и декоративными элементами</li>
+    </ul>
+  </div>
+
+  <!-- План -->
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Приветствие, настрой на занятие</td></tr>
+      <tr><td>Повторение: команды агента</td><td>10 мин</td><td>Вспоминаем основные блоки для строительства</td></tr>
+      <tr><td>Практика: строим башню</td><td>40 мин</td><td>Создаём программу для башни с командами чата</td></tr>
+      <tr><td>Бонус: декорации</td><td>30 мин</td><td>Дополнительные постройки для украшения</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Проверяем знания</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span> Повторяем команды для строительства</h2>
+    <p>Прежде чем строить, вспомним основные команды агента:</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Команда</th><th>Действие</th><th>Пример использования</th></tr>
+        <tr><td><code>двигаться вперёд</code></td><td>Шаг вперёд</td><td>двигаться вперёд 5 раз</td></tr>
+        <tr><td><code>повернуть налево/направо</code></td><td>Поворот на 90°</td><td>повернуть налево</td></tr>
+        <tr><td><code>поставить блок</code></td><td>Ставит блок перед агентом</td><td>поставить блок (земля)</td></tr>
+        <tr><td><code>подняться вверх</code></td><td>Поднимается на блок</td><td>подняться вверх 3 раза</td></tr>
+        <tr><td><code>опуститься вниз</code></td><td>Опускается на блок</td><td>опуститься вниз</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> Что можно построить?</h2>
+    <p>Вот несколько идей для построек, которые можно создать с помощью агента:</p>
+
+    <div class="example-grid">
+      <div class="example-card">
+        <div class="preview">🏰</div>
+        <div class="label">Башня</div>
+        <div class="desc">Высокая башня с крышей. Основа — 5×5 блоков, высота — 5 блоков.</div>
+      </div>
+      <div class="example-card">
+        <div class="preview">🌿</div>
+        <div class="label">Садик с деревьями</div>
+        <div class="desc">Несколько деревьев с листвой и цветами вокруг.</div>
+      </div>
+      <div class="example-card">
+        <div class="preview">🛤️</div>
+        <div class="label">Дорожка</div>
+        <div class="desc">Извилистая дорожка из камня или дерева.</div>
+      </div>
+      <div class="example-card">
+        <div class="preview">⛲</div>
+        <div class="label">Фонтан</div>
+        <div class="desc">Небольшой фонтан с водой и ступеньками.</div>
+      </div>
+      <div class="example-card">
+        <div class="preview">🏠</div>
+        <div class="label">Дом</div>
+        <div class="desc">Небольшой домик с крышей, дверью и окнами.</div>
+      </div>
+      <div class="example-card">
+        <div class="preview">🔲</div>
+        <div class="label">Площадка</div>
+        <div class="desc">Ровная площадка для постройки города.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Практическое задание -->
+  <div class="task-box" id="practiceBuilder">
+    <h2>🛠️ Практическое задание: построй территорию с башнями</h2>
+    <div class="progress-track"><div class="progress-fill" id="builderProgressFill"></div></div>
+    <span class="progress-label" id="builderProgressLabel">Выполнено шагов: 0 из 5</span>
+    <p>Создай в Minecraft Education программу, которая строит целую территорию с башнями и декорациями.</p>
+
+    <h3>Основное задание:</h3>
+    <ul class="task-steps">
+      <li><input type="checkbox" id="b0" onchange="updateBuilderProgress()"><label for="b0">Создай программу для постройки башни (команда чата "башня")</label></li>
+      <li><input type="checkbox" id="b1" onchange="updateBuilderProgress()"><label for="b1">Построй 3-4 башни в разных местах территории</label></li>
+      <li><input type="checkbox" id="b2" onchange="updateBuilderProgress()"><label for="b2">Соедини башни дорожкой из камня</label></li>
+    </ul>
+
+    <h3>⭐ Бонусные задания (дополнительные декорации):</h3>
+    <ul class="task-steps">
+      <li class="bonus-step"><input type="checkbox" id="b3" onchange="updateBuilderProgress()"><label for="b3">Создай программу "сад" — посади деревья и цветы вокруг башен <b>(+5 робокоинов)</b></label></li>
+      <li class="bonus-step"><input type="checkbox" id="b4" onchange="updateBuilderProgress()"><label for="b4">Создай программу "фонтан" — построй фонтан в центре территории <b>(+15 робокоинов)</b></label></li>
+    </ul>
+
+    <div class="note" style="margin-top: 12px;">
+      <b>💡 Подсказка:</b> для создания ровной площадки можно использовать команду <code>заполнить</code> или построить её с помощью агента. Используй разные блоки для украшения: земля, трава, камень, дерево, цветы.
+    </div>
+  </div>
+
+  <!-- Опрос -->
+<div class="quiz-wrap" id="quizBuilder">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="bq0" data-correct="a">
+      <p class="quiz-q-text">1. Какая команда заставляет агента поставить блок перед собой?</p>
+      <label><input type="radio" name="bq0" value="a"> поставить блок</label>
+      <label><input type="radio" name="bq0" value="b"> двигаться вперёд</label>
+      <label><input type="radio" name="bq0" value="c"> разрушить блок</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="bq1" data-correct="b">
+      <p class="quiz-q-text">2. Какую команду нужно использовать, чтобы агент поднялся на 1 блок вверх?</p>
+      <label><input type="radio" name="bq1" value="a"> двигаться вперёд</label>
+      <label><input type="radio" name="bq1" value="b"> подняться вверх</label>
+      <label><input type="radio" name="bq1" value="c"> повернуть налево</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="bq2" data-correct="c">
+      <p class="quiz-q-text">3. Как заставить агента повернуться на 90 градусов влево?</p>
+      <label><input type="radio" name="bq2" value="a"> повернуть направо</label>
+      <label><input type="radio" name="bq2" value="b"> двигаться назад</label>
+      <label><input type="radio" name="bq2" value="c"> повернуть налево</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="bq3" data-correct="b">
+      <p class="quiz-q-text">4. Какой блок позволяет повторить команду несколько раз?</p>
+      <label><input type="radio" name="bq3" value="a"> если ... то</label>
+      <label><input type="radio" name="bq3" value="b"> повторить N раз</label>
+      <label><input type="radio" name="bq3" value="c"> поставить блок</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="bq4" data-correct="a">
+      <p class="quiz-q-text">5. Что нужно сделать, чтобы агент начал строить башню на новом месте?</p>
+      <label><input type="radio" name="bq4" value="a"> Телепортировать или перенести агента в нужную точку</label>
+      <label><input type="radio" name="bq4" value="b"> Написать команду "башня"</label>
+      <label><input type="radio" name="bq4" value="c"> Просто запустить программу заново</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizBuilder')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- AI-помощник -->
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B8%D1%82%D1%8C%20%D0%B1%D0%B0%D1%88%D0%BD%D1%8E%20%D0%B2%20Minecraft%20Education%20%D1%81%20%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E%20%D0%B0%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%3F%22%7D" target="_blank" class="alice-q-btn">Как построить башню агентом?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D1%8F%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое функция?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D1%8B%20%D1%87%D0%B0%D1%82%D0%B0%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как использовать команды чата?</a>
+    </div>
+    <div class="ai-answer">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про строительство в Minecraft.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, как научить агента строить город?»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_1-6.html"><div class="lbl">← Назад</div><div class="ttl">1.6 Условные операторы</div></a>
+    <a class="nav-btn next" href="les_2-2.html"><div class="lbl">Далее →</div><div class="ttl">2.2 Агент-фермер</div></a>
+  </div>
+</main>
+
+<!-- ===== ФУТЕР ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 2.1 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  // === Интерактивные функции ===
+  function checkSequence(containerId) {
+    const container = document.getElementById(containerId);
+    const items = container.querySelectorAll('.sort-item');
+    let correct = true;
+    let sorted = Array.from(items).map(el => parseInt(el.getAttribute('data-correct-step'), 10));
+    for (let i = 0; i < sorted.length; i++) {
+      if (sorted[i] !== i) {
+        correct = false;
+        break;
+      }
+    }
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct ? '✅ Отличный порядок! Алгоритм собран верно.' : '❌ Порядок нарушен. Попробуй переставить шаги.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      if (total === 0) {
+        resultDiv.innerHTML = 'Ответь на все вопросы.';
+      } else {
+        resultDiv.innerHTML = `Правильных ответов: ${correct} из ${questions.length}`;
+      }
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  // Прогресс практического задания
+  function updateBuilderProgress() {
+    const checkboxes = document.querySelectorAll('#practiceBuilder input[type="checkbox"]');
+    const total = checkboxes.length;
+    let checked = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    const fill = document.getElementById('builderProgressFill');
+    const label = document.getElementById('builderProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+  }
+
+  // Перетаскивание для sequence
+  document.querySelectorAll('.sequence-list').forEach(list => {
+    let dragItem = null;
+    list.addEventListener('dragstart', function(e) {
+      dragItem = e.target.closest('.sort-item');
+      if (!dragItem) return;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', '');
+      dragItem.style.opacity = '0.5';
+    });
+    list.addEventListener('dragend', function(e) {
+      if (dragItem) dragItem.style.opacity = '1';
+      dragItem = null;
+    });
+    list.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+    list.addEventListener('drop', function(e) {
+      e.preventDefault();
+      const target = e.target.closest('.sort-item');
+      if (!target || target === dragItem) return;
+      const parent = list;
+      const children = Array.from(parent.children);
+      const dragIndex = children.indexOf(dragItem);
+      const targetIndex = children.indexOf(target);
+      if (dragIndex < targetIndex) {
+        parent.insertBefore(dragItem, target.nextSibling);
+      } else {
+        parent.insertBefore(dragItem, target);
+      }
+    });
+  });
+</script>
+</body>
+</html>

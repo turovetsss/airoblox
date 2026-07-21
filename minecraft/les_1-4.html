@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.4. Циклы — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    /* Сохраняем визуальную идентичность */
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+
+    /* Заменяем существующий .openai-btn на этот */
+.openai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, var(--accent));
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  padding: 4px 14px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  box-shadow: 0 4px 12px rgba(118, 31, 176, 0.25);
+  transition: 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.6;
+  min-height: 32px;
+  margin-left: 10px;
+}
+
+.openai-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(118, 31, 176, 0.35);
+  background: linear-gradient(135deg, var(--accent), #421375);
+}
+
+.openai-btn:active {
+  transform: scale(0.96);
+}
+  </style>
+</head>
+<body class="lesson-page">
+<!-- ===== ШАПКА ===== -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 1.4</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">1.4</div>
+      <div>
+        <div class="module-pill">Раздел 1 · Введение</div>
+        <h1>Циклы — ускоряем разработку</h1>
+        <p class="subtitle">Изучаем новый блок для упрощения работы</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Цели -->
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Понять, что такое цикл и зачем он нужен в программировании</li>
+      <li>Научиться использовать блок «повторить N раз» в Minecraft Education</li>
+      <li>Сравнить длинный код и код с циклом</li>
+      <li>Закрепить навыки на интерактивных заданиях</li>
+    </ul>
+  </div>
+
+  <!-- План -->
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Приветствие, настрой на занятие</td></tr>
+      <tr><td>Что такое цикл?</td><td>15 мин</td><td>Теория: зачем нужны циклы, примеры из жизни</td></tr>
+      <tr><td>Цикл в Minecraft</td><td>20 мин</td><td>Изучаем блок «повторить N раз», сравниваем с длинным кодом</td></tr>
+      <tr><td>Интерактивные задания</td><td>25 мин</td><td>Собираем алгоритмы, находим ошибки, пишем код</td></tr>
+      <tr><td>Практическое задание</td><td>15 мин</td><td>Закрепляем: строим башню и стену с помощью циклов</td></tr>
+      <tr><td>Опрос и итоги</td><td>10 мин</td><td>Проверяем знания, обсуждаем</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- Часть 1: Теория -->
+  <div class="card">
+    <h2><span class="num">1</span> Что такое цикл?</h2>
+    <p>Представь, что тебе нужно сказать «Привет!» 100 раз. Писать одну и ту же команду 100 раз — долго и скучно. В программировании для этого есть <b>циклы</b>.</p>
+    
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">пример_цикла.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Без цикла (10 раз повторяем одно и то же)</span>
+1. Сказать "Привет!"
+2. Сказать "Привет!"
+3. Сказать "Привет!"
+4. Сказать "Привет!"
+5. Сказать "Привет!"
+6. Сказать "Привет!"
+7. Сказать "Привет!"
+8. Сказать "Привет!"
+9. Сказать "Привет!"
+10. Сказать "Привет!"
+
+<span class="tok-c">-- С циклом (всего 2 строки!)</span>
+Повторить 10 раз [
+    Сказать "Привет!"
+]</code></pre>
+    </div>
+
+    <div class="note">
+      <b>💡 Цикл</b> — это способ сказать компьютеру: «Сделай это много раз, не заставляя меня писать одно и то же».
+    </div>
+
+    <div class="interactive-box" id="cycleQuiz">
+      <h3>🧠 Проверь понимание</h3>
+      <p>Какая команда заставит агента сделать 5 шагов вперёд?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">двигаться вперёд (написать 5 раз)</div>
+        <div class="choice-card" data-correct-choice="true">повторить 5 раз [двигаться вперёд]</div>
+        <div class="choice-card" data-correct-choice="false">повторить [двигаться вперёд] 3 раза</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('cycleQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- Часть 2: Цикл в Minecraft -->
+  <div class="card">
+    <h2><span class="num">2</span> Цикл в Minecraft Education</h2>
+    <p>В редакторе кода Minecraft Education есть специальный блок — <b>«повторить N раз»</b>. Он выглядит как жёлтый блок-пазл с числом внутри.</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Блок</th><th>Что делает</th><th>Пример</th></tr>
+        <tr><td><code>повторить 10 раз</code></td><td>Повторяет команды внутри 10 раз</td><td>повторить 4 раз [двигаться вперёд]</td></tr>
+        <tr><td><code>повторить пока</code></td><td>Повторяет, пока условие верно</td><td>повторить пока [есть блок впереди] ...</td></tr>
+        <tr><td><code>повторить навсегда</code></td><td>Бесконечный цикл (для игр)</td><td>повторить навсегда [двигаться вперёд]</td></tr>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">постройка_стены.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Без цикла (строим стену из 6 блоков)</span>
+1. Поставить блок
+2. Двигаться вперёд
+3. Поставить блок
+4. Двигаться вперёд
+5. Поставить блок
+6. Двигаться вперёд
+7. Поставить блок
+8. Двигаться вперёд
+9. Поставить блок
+10. Двигаться вперёд
+11. Поставить блок
+
+<span class="tok-c">-- С циклом (всего 4 строки!)</span>
+Повторить 6 раз [
+    Поставить блок
+    Двигаться вперёд
+]</code></pre>
+    </div>
+
+    <div class="note">
+      <b>⚡ Важно:</b> цикл сокращает код, делает его понятнее и легче для изменения. Хочешь построить стену из 100 блоков? Просто поменяй число в цикле!
+    </div>
+
+    <!-- Интерактив: найди цикл -->
+    <div class="interactive-box" id="findCycle">
+      <h3>🔍 Найди, где можно использовать цикл</h3>
+      <p>В каком случае лучше использовать цикл, а не писать команды по одной?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Нужно поставить 20 блоков подряд</div>
+        <div class="choice-card" data-correct-choice="false">Нужно поставить 1 блок</div>
+        <div class="choice-card" data-correct-choice="false">Нужно повернуть агента налево</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('findCycle')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- Часть 3: Интерактивные задания -->
+  <div class="card">
+    <h2><span class="num">3</span> Интерактивные задания</h2>
+    <p>Теперь попробуй сам собрать алгоритмы с циклами и найти ошибки.</p>
+
+    <!-- Задание 1: собрать алгоритм -->
+    <div class="interactive-box" id="algoCycle">
+      <h3>🧩 Собери алгоритм с циклом</h3>
+      <p>Перетащи шаги в правильном порядке, чтобы агент поставил 5 блоков по прямой:</p>
+      <div class="sequence-list" id="sequenceCycle">
+        <div class="sort-item" draggable="true" data-correct-step="1">Поставить блок</div>
+        <div class="sort-item" draggable="true" data-correct-step="0">Повторить 5 раз [</div>
+        <div class="sort-item" draggable="true" data-correct-step="3">]</div>
+        <div class="sort-item" draggable="true" data-correct-step="2">Двигаться вперёд</div>
+      </div>
+      <button class="action-btn" onclick="checkSequence('algoCycle')">✅ Проверить порядок</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- Задание 2: найди ошибку -->
+    <div class="interactive-box" id="findError">
+      <h3>🕵️ Найди ошибку в алгоритме</h3>
+      <p>Агент должен построить башню из 4 блоков, но алгоритм не работает. Какая ошибка?</p>
+      <div class="code-block" style="margin: 8px 0;">
+        <pre class="code"><code>Повторить 4 раз [
+    Двигаться вверх
+    Поставить блок
+]</code></pre>
+      </div>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Нужно поставить блок, а потом двигаться вверх</div>
+        <div class="choice-card" data-correct-choice="true">Сначала нужно поставить блок, а потом двигаться вверх</div>
+        <div class="choice-card" data-correct-choice="false">Цикл нужно повторять 3 раза</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('findError')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- Задание 3: сколько раз? -->
+    <div class="interactive-box" id="countCycles">
+      <h3>🔢 Сколько раз выполнится цикл?</h3>
+      <p>Посчитай, сколько блоков поставит агент, если выполнить этот код:</p>
+      <div class="code-block" style="margin: 8px 0;">
+        <pre class="code"><code>Повторить 3 раз [
+    Поставить блок
+    Двигаться вперёд
+    Поставить блок
+    Двигаться вперёд
+]</code></pre>
+      </div>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">3 блока</div>
+        <div class="choice-card" data-correct-choice="true">6 блоков</div>
+        <div class="choice-card" data-correct-choice="false">9 блоков</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('countCycles')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- Практическое задание -->
+  <div class="task-box" id="practiceCycle">
+    <h2>🛠️ Практическое задание: строим с циклом</h2>
+    <div class="progress-track"><div class="progress-fill" id="cycleProgressFill"></div></div>
+    <span class="progress-label" id="cycleProgressLabel">Выполнено шагов: 0 из 4</span>
+    <p>Перейдём к практике. Запусти Minecraft Education, создай плоский мир и выполни следующие задания, используя циклы.</p>
+    <ul class="task-steps">
+      <li><input type="checkbox" id="pc0" onchange="updateCycleProgress()"><label for="pc0">Напиши цикл для 10 шагов вперёд (без остановок)</label></li>
+      <li><input type="checkbox" id="pc1" onchange="updateCycleProgress()"><label for="pc1">Напиши цикл для постройки стены из 8 блоков (шаг + блок)</label></li>
+      <li><input type="checkbox" id="pc2" onchange="updateCycleProgress()"><label for="pc2">Напиши цикл для постройки квадрата 3×3</label></li>
+      <li class="bonus-step"><input type="checkbox" id="pc3" onchange="updateCycleProgress()"><label for="pc3">⭐ Бонус: попроси Алису сгенерировать идею, что можно еще построить с помощью циклов и построй это в Minecraft <a class="openai-btn" href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%94%D0%B0%D0%B9%20%D0%BC%D0%BD%D0%B5%20%D0%B8%D0%B4%D0%B5%D0%B9%2C%20%D1%87%D1%82%D0%BE%20%D0%BC%D0%BE%D0%B6%D0%BD%D0%BE%20%D0%BF%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B8%D1%82%D1%8C%20%D1%81%20%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E%20%D1%86%D0%B8%D0%BA%D0%BB%D0%BE%D0%B2%20%D0%B8%20%D0%90%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%20%D0%B2%20Minecraft%20Education%20%D1%81%20%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E%20%D0%B1%D0%BB%D0%BE%D0%BA%D0%BE%D0%B2.%22%7D" target="_blank">Открыть Алису</a></label> </li>
+    </ul>
+    <div class="note">
+      <b>💡 Подсказка:</b> в Codebuilder есть блок, который говорит Агенту ставить блоки по ходу его движения. Он называется: "строить на ходу [вкл/выкл]". Попробуй!
+    </div>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizCycles">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="cq0" data-correct="b">
+      <p class="quiz-q-text">1. Что такое цикл в программировании?</p>
+      <label><input type="radio" name="cq0" value="a"> Это блок для поворота агента</label>
+      <label><input type="radio" name="cq0" value="b"> Это способ повторять команды несколько раз</label>
+      <label><input type="radio" name="cq0" value="c"> Это название файла в Minecraft</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq1" data-correct="a">
+      <p class="quiz-q-text">2. Какой блок используется для циклов в Minecraft Education?</p>
+      <label><input type="radio" name="cq1" value="a"> повторить N раз</label>
+      <label><input type="radio" name="cq1" value="b"> двигаться вперёд</label>
+      <label><input type="radio" name="cq1" value="c"> поставить блок</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq2" data-correct="c">
+      <p class="quiz-q-text">3. Что произойдёт, если в цикле написать <code>повторить 0 раз</code>?</p>
+      <label><input type="radio" name="cq2" value="a"> Цикл будет бесконечным</label>
+      <label><input type="radio" name="cq2" value="b"> Компьютер зависнет</label>
+      <label><input type="radio" name="cq2" value="c"> Ничего не выполнится</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq3" data-correct="b">
+      <p class="quiz-q-text">4. Зачем использовать циклы вместо повторяющихся команд?</p>
+      <label><input type="radio" name="cq3" value="a"> Чтобы усложнить код</label>
+      <label><input type="radio" name="cq3" value="b"> Чтобы сократить и упростить код</label>
+      <label><input type="radio" name="cq3" value="c"> Чтобы замедлить работу агента</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq4" data-correct="a">
+      <p class="quiz-q-text">5. Сколько раз выполнится код: <code>повторить 5 раз [двигаться вперёд]</code>?</p>
+      <label><input type="radio" name="cq4" value="a"> 5 раз</label>
+      <label><input type="radio" name="cq4" value="b"> 1 раз</label>
+      <label><input type="radio" name="cq4" value="c"> Бесконечно</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizCycles')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- AI-помощник -->
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%86%D0%B8%D0%BA%D0%BB%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое цикл?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D1%86%D0%B8%D0%BA%D0%BB%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как использовать цикл в Minecraft?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%97%D0%B0%D1%87%D0%B5%D0%BC%20%D0%BD%D1%83%D0%B6%D0%BD%D1%8B%20%D1%86%D0%B8%D0%BA%D0%BB%D1%8B%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0%D1%85%3F%22%7D" target="_blank" class="alice-q-btn">Зачем нужны циклы?</a>
+    </div>
+    <div class="ai-answer">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про циклы или программирование.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, объясни циклы для детей»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_1-3.html"><div class="lbl">← Назад</div><div class="ttl">1.3 Проходим лабиринт</div></a>
+    <a class="nav-btn next" href="les_1-5.html"><div class="lbl">Далее →</div><div class="ttl">1.5 Вложенные циклы</div></a>
+  </div>
+</main>
+
+<!-- ===== ФУТЕР ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 1.4 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  // === Интерактивные функции ===
+function checkSequence(containerId) {
+    const container = document.getElementById(containerId);
+    const items = container.querySelectorAll('.sort-item');
+    let correct = true;
+    let sorted = Array.from(items).map(el => parseInt(el.getAttribute('data-correct-step'), 10));
+    for (let i = 0; i < sorted.length; i++) {
+      if (sorted[i] !== i) {
+        correct = false;
+        break;
+      }
+    }
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct ? '✅ Отличный порядок! Алгоритм собран верно.' : '❌ Порядок нарушен. Попробуй переставить шаги.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      if (total === 0) {
+        resultDiv.innerHTML = 'Ответь на все вопросы.';
+      } else {
+        resultDiv.innerHTML = `Правильных ответов: ${correct} из ${questions.length}`;
+      }
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  // Прогресс практического задания
+  function updateCycleProgress() {
+    const checkboxes = document.querySelectorAll('#practiceCycle input[type="checkbox"]');
+    const total = checkboxes.length;
+    let checked = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    const fill = document.getElementById('cycleProgressFill');
+    const label = document.getElementById('cycleProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+  }
+
+  // Перетаскивание для sequence
+  document.querySelectorAll('.sequence-list').forEach(list => {
+    let dragItem = null;
+    list.addEventListener('dragstart', function(e) {
+      dragItem = e.target.closest('.sort-item');
+      if (!dragItem) return;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', '');
+      dragItem.style.opacity = '0.5';
+    });
+    list.addEventListener('dragend', function(e) {
+      if (dragItem) dragItem.style.opacity = '1';
+      dragItem = null;
+    });
+    list.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+    list.addEventListener('drop', function(e) {
+      e.preventDefault();
+      const target = e.target.closest('.sort-item');
+      if (!target || target === dragItem) return;
+      const parent = list;
+      const children = Array.from(parent.children);
+      const dragIndex = children.indexOf(dragItem);
+      const targetIndex = children.indexOf(target);
+      if (dragIndex < targetIndex) {
+        parent.insertBefore(dragItem, target.nextSibling);
+      } else {
+        parent.insertBefore(dragItem, target);
+      }
+    });
+  });
+</script>
+</body>
+</html>

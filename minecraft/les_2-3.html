@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2.3. Агент-шахтёр — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+  </style>
+</head>
+<body class="lesson-page">
+<!-- ===== ШАПКА ===== -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 2.3</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">2.3</div>
+      <div>
+        <div class="module-pill">Раздел 2 · Программирование Агента</div>
+        <h1>Агент-шахтёр</h1>
+        <p class="subtitle">Учим агента копать тоннели и находить сокровища</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Цели -->
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Повторить команды для движения и разрушения блоков</li>
+      <li>Изучить команду для определения блока перед агентом</li>
+      <li>Научиться останавливать выполнение программы при нахождении ценного блока</li>
+      <li>Создать программу для автоматического копания тоннеля с установкой факелов</li>
+    </ul>
+  </div>
+
+  <!-- План -->
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Приветствие, настрой на занятие</td></tr>
+      <tr><td>Повторение команд</td><td>10 мин</td><td>Вспоминаем движение и разрушение блоков</td></tr>
+      <tr><td>Проверка блока</td><td>15 мин</td><td>Изучаем команду ID блока и остановку программы</td></tr>
+      <tr><td>Практика: копка тоннеля</td><td>40 мин</td><td>Создаём программу для копания тоннеля с факелами</td></tr>
+      <tr><td>Бонус: поиск руды</td><td>15 мин</td><td>Добавляем проверку на ценные блоки</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Проверяем знания</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- Часть 1: Повторение команд -->
+  <div class="card">
+    <h2><span class="num">1</span> Повторяем команды для шахтёра</h2>
+    <p>Для копания тоннеля нам понадобятся команды движения и разрушения блоков:</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Команда</th><th>Действие</th><th>Пример</th></tr>
+        <tr><td><code>двигаться вперёд</code></td><td>Шаг вперёд</td><td>двигаться вперёд 5 раз</td></tr>
+        <tr><td><code>разрушить блок</code></td><td>Ломает блок перед агентом</td><td>разрушить блок</td></tr>
+        <tr><td><code>подняться вверх</code></td><td>Поднимается на блок</td><td>подняться вверх</td></tr>
+        <tr><td><code>опуститься вниз</code></td><td>Опускается на блок</td><td>опуститься вниз</td></tr>
+        <tr><td><code>повернуть налево/направо</code></td><td>Поворот на 90°</td><td>повернуть налево</td></tr>
+        <tr><td><code>поставить блок</code></td><td>Ставит блок перед агентом</td><td>поставить блок (факел)</td></tr>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>⚡ Важно:</b> для копания тоннеля высотой 2 блока агент должен сначала разрушить блок на уровне головы, затем на уровне ног, и только потом двигаться вперёд!
+    </div>
+  </div>
+
+  <!-- Часть 2: Проверка блока -->
+  <div class="card">
+    <h2><span class="num">2</span> Проверяем блок перед агентом</h2>
+    <p>Чтобы агент мог определить, что за блок перед ним, используется команда <code>ID блока</code> в сочетании с условием.</p>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">проверка_блока.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Проверяем, что за блок перед агентом</span>
+<span class="tok-k">если</span> ID_блока_перед_агентом == 1 <span class="tok-k">то</span>  <span class="tok-c">-- 1 = камень</span>
+    <span class="tok-n">сказать</span> "Это камень, копаем дальше"
+<span class="tok-k">иначе</span> <span class="tok-k">если</span> ID_блока_перед_агентом == 56 <span class="tok-k">то</span>  <span class="tok-c">-- 56 = алмазная руда</span>
+    <span class="tok-n">сказать</span> "Я нашёл алмазы! 🎉"
+    <span class="tok-n">остановить</span> программу  <span class="tok-c">-- завершаем работу</span>
+<span class="tok-k">иначе</span>
+    <span class="tok-n">сказать</span> "Что-то странное..."</code></pre>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Блок</th><th>ID</th><th>Что делает агент</th></tr>
+        <tr><td>Камень (Stone)</td><td>1</td><td>Продолжает копать</td></tr>
+        <tr><td>Угольная руда</td><td>16</td><td>Продолжает копать</td></tr>
+        <tr><td>Железная руда</td><td>15</td><td>Продолжает копать</td></tr>
+        <tr><td>Золотая руда</td><td>14</td><td>Останавливается и сообщает</td></tr>
+        <tr><td>Алмазная руда</td><td>56</td><td>Останавливается и сообщает</td></tr>
+        <tr><td>Изумрудная руда</td><td>133</td><td>Останавливается и сообщает</td></tr>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>💡 Остановка программы:</b> команда <code>остановить программу</code> (или <code>выйти</code>) завершает выполнение всех команд. Это полезно, когда агент нашёл что-то ценное.
+    </div>
+
+    <!-- Интерактив: проверка блока -->
+    <div class="interactive-box" id="blockCheckQuiz">
+      <h3>🧠 Что сделает агент?</h3>
+      <p>Агент видит блок с ID = 56. Какую команду он выполнит?</p>
+      <div class="code-block" style="margin: 8px 0;">
+        <pre class="code"><code>если ID_блока == 1 то
+    сказать "Камень"
+иначе если ID_блока == 56 то
+    сказать "Алмаз!"
+    остановить программу
+иначе
+    сказать "Неизвестно"</code></pre>
+      </div>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Скажет "Камень"</div>
+        <div class="choice-card" data-correct-choice="true">Скажет "Алмаз!" и остановится</div>
+        <div class="choice-card" data-correct-choice="false">Скажет "Неизвестно"</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('blockCheckQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- Часть 3: Практика -->
+  <div class="task-box" id="practiceMiner">
+    <h2>🛠️ Практическое задание: копка тоннеля</h2>
+    <div class="progress-track"><div class="progress-fill" id="minerProgressFill"></div></div>
+    <span class="progress-label" id="minerProgressLabel">Выполнено шагов: 0 из 5</span>
+    <p>Создай в Minecraft Education программу для автоматического копания тоннеля высотой 2 блока.</p>
+
+    <h3>Основное задание:</h3>
+    <ul class="task-steps">
+      <li><input type="checkbox" id="m0" onchange="updateMinerProgress()"><label for="m0">Агент разрушает блок на уровне головы (вверх)</label></li>
+      <li><input type="checkbox" id="m1" onchange="updateMinerProgress()"><label for="m1">Агент разрушает блок на уровне ног (вперёд)</label></li>
+      <li><input type="checkbox" id="m2" onchange="updateMinerProgress()"><label for="m2">Агент двигается вперёд на 1 блок</label></li>
+      <li><input type="checkbox" id="m3" onchange="updateMinerProgress()"><label for="m3">Агент ставит факел на стену через каждые 5 блоков</label></li>
+      <li class="bonus-step"><input type="checkbox" id="m4" onchange="updateMinerProgress()"><label for="m4"><b>⭐ Бонус:</b> добавь проверку - если перед агентом не камень (ID != 1), то написать "Я что-то нашёл!" и остановить программу <b>(+5 робокоинов)</b></label></li>
+    </ul>
+
+    <div class="note" style="margin-top: 12px;">
+      <b>💡 Подсказка:</b> для копания тоннеля используй цикл <code>повторить N раз</code>. Факелы ставь на стену с помощью <code>повернуть налево</code>, <code>поставить блок</code>, <code>повернуть направо</code>.
+    </div>
+
+    <div class="note" style="background: #fff8e1; border-left-color: #ffbd2e;">
+      <b>🌟 Идея:</b> для проверки блока используй условие с ID блока. Если блок не камень (ID != 1), значит агент нашёл руду или что-то ценное!
+    </div>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizMiner">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="mq0" data-correct="b">
+      <p class="quiz-q-text">1. Какая команда ломает блок перед агентом?</p>
+      <label><input type="radio" name="mq0" value="a"> поставить блок</label>
+      <label><input type="radio" name="mq0" value="b"> разрушить блок</label>
+      <label><input type="radio" name="mq0" value="c"> двигаться вперёд</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq1" data-correct="c">
+      <p class="quiz-q-text">2. Как узнать, какой блок находится перед агентом?</p>
+      <label><input type="radio" name="mq1" value="a"> спросить у игрока</label>
+      <label><input type="radio" name="mq1" value="b"> посмотреть на экран</label>
+      <label><input type="radio" name="mq1" value="c"> использовать ID_блока_перед_агентом</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq2" data-correct="a">
+      <p class="quiz-q-text">3. Какой ID у камня (Stone)?</p>
+      <label><input type="radio" name="mq2" value="a"> 1</label>
+      <label><input type="radio" name="mq2" value="b"> 56</label>
+      <label><input type="radio" name="mq2" value="c"> 133</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq3" data-correct="b">
+      <p class="quiz-q-text">4. Какая команда останавливает выполнение программы?</p>
+      <label><input type="radio" name="mq3" value="a"> повторить</label>
+      <label><input type="radio" name="mq3" value="b"> остановить программу</label>
+      <label><input type="radio" name="mq3" value="c"> двигаться вперёд</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq4" data-correct="b">
+      <p class="quiz-q-text">5. Что нужно сделать, чтобы поставить факел на стену?</p>
+      <label><input type="radio" name="mq4" value="a"> Просто поставить блок перед собой</label>
+      <label><input type="radio" name="mq4" value="b"> Повернуться к стене и поставить блок</label>
+      <label><input type="radio" name="mq4" value="c"> Разрушить блок на стене</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizMiner')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- AI-помощник -->
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BD%D0%B0%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D0%B0%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%20%D0%BA%D0%BE%D0%BF%D0%B0%D1%82%D1%8C%20%D1%82%D0%BE%D0%BD%D0%BD%D0%B5%D0%BB%D1%8C%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как копать тоннель агентом?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%D0%B8%D0%B5%20%D0%B1%D1%8B%D0%B2%D0%B0%D1%8E%D1%82%20%D1%80%D1%83%D0%B4%D1%8B%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="alice-q-btn">Какие руды есть в Minecraft?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BE%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D1%83%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как остановить программу?</a>
+    </div>
+    <div class="ai-answer">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про шахтёрство в Minecraft.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, как найти алмазы в Minecraft?»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_2-2.html"><div class="lbl">← Назад</div><div class="ttl">2.2 Агент-фермер</div></a>
+    <a class="nav-btn next" href="les_2-4.html"><div class="lbl">Далее →</div><div class="ttl">2.4 Агент-воин</div></a>
+  </div>
+</main>
+
+<!-- ===== ФУТЕР ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 2.3 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  // === Интерактивные функции ===
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    let correct = 0;
+    cards.forEach(card => {
+      const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      if (isCorrect) {
+        card.classList.add('selected-correct');
+        correct++;
+      } else {
+        card.classList.add('selected-wrong');
+      }
+    });
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct === 1 ? '✅ Всё верно!' : '❌ Попробуй ещё раз. Подумай, какой ответ правильный.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      if (total === 0) {
+        resultDiv.innerHTML = 'Ответь на все вопросы.';
+      } else {
+        resultDiv.innerHTML = `Правильных ответов: ${correct} из ${questions.length}`;
+      }
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  // Прогресс практического задания
+  function updateMinerProgress() {
+    const checkboxes = document.querySelectorAll('#practiceMiner input[type="checkbox"]');
+    const total = checkboxes.length;
+    let checked = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    const fill = document.getElementById('minerProgressFill');
+    const label = document.getElementById('minerProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+  }
+</script>
+</body>
+</html>
