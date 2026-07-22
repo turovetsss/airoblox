@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.3. Проходим лабиринт — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+
+    /* Дополнительные стили для сохранения визуальной идентичности */
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+
+    /* Модалка для скачивания */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: #fff;
+      max-width: 560px;
+      width: 90%;
+      padding: 32px 28px;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      position: relative;
+      animation: modalFade 0.25s ease;
+    }
+    @keyframes modalFade {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 20px;
+      font-size: 28px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #555;
+      transition: 0.2s;
+    }
+    .modal-close:hover { color: #c62828; }
+    .modal-box h2 {
+      margin-top: 0;
+      color: #2b5e0e;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .modal-box h2 span { font-size: 32px; }
+    .modal-box ol {
+      padding-left: 20px;
+      margin: 20px 0;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+    .modal-box ol li { margin-bottom: 8px; }
+    .modal-box .download-btn {
+      display: inline-block;
+      background: #61b01f;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-top: 8px;
+      transition: 0.2s;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(97,176,31,0.3);
+    }
+    .modal-box .download-btn:hover { background: #4d8c18; transform: translateY(-2px); }
+    .modal-box .hint {
+      background: #f0f9eb;
+      padding: 12px 18px;
+      border-radius: 12px;
+      margin-top: 16px;
+      border-left: 4px solid #61b01f;
+    }
+    .modal-box .hint code { background: #e0ecd8; padding: 2px 8px; border-radius: 6px; }
+  </style>
+</head>
+<body class="lesson-page">
+<!-- ===== ШАПКА ===== -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 1.3</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">1.3</div>
+      <div>
+        <div class="module-pill">Раздел 1 · Введение</div>
+        <h1>Проходим лабиринт</h1>
+        <p class="subtitle">Повторяем команды агента и прокладываем маршрут</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Цели -->
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Закрепить навыки управления агентом в Minecraft Education</li>
+      <li>Вспомнить команды: движение, поворот, постановка блока</li>
+      <li>Применить алгоритмическое мышление для прохождения лабиринта</li>
+      <li>Познакомиться с уровнями сложности и телепортацией</li>
+    </ul>
+  </div>
+
+  <!-- План -->
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент, разминка</td><td>10 мин</td><td>Повторяем команды агента, вспоминаем управление</td></tr>
+      <tr><td>Скачивание мира</td><td>5 мин</td><td>Загружаем готовый мир с лабиринтом</td></tr>
+      <tr><td>Уровень 1 (лёгкий)</td><td>15 мин</td><td>Пишем программу для прохождения простого лабиринта</td></tr>
+      <tr><td>Уровень 2 (средний)</td><td>20 мин</td><td>Телепортируемся и проходим лабиринт с поворотами</td></tr>
+      <tr><td>Уровень 3 (сложный)</td><td>20 мин</td><td>Строим путь и смотрим на результат</td></tr>
+      <tr><td>Обсуждение и итоги</td><td>10 мин</td><td>Показываем решения, обсуждаем алгоритмы</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- Разминка: повторение команд -->
+  <div class="card">
+    <h2><span class="num">1</span> Повторяем команды агента</h2>
+    <p>Перед тем как отправиться в лабиринт, давай вспомним, какие команды умеет выполнять агент. Это поможет нам быстро написать программу.</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Команда</th><th>Действие</th></tr>
+        <tr><td><code>двигаться вперёд</code></td><td>Агент делает шаг вперёд</td></tr>
+        <tr><td><code>двигаться назад</code></td><td>Агент делает шаг назад</td></tr>
+        <tr><td><code>повернуть налево</code></td><td>Поворот на 90° влево</td></tr>
+        <tr><td><code>повернуть направо</code></td><td>Поворот на 90° вправо</td></tr>
+        <tr><td><code>поставить блок</code></td><td>Ставит блок перед агентом</td></tr>
+        <tr><td><code>разрушить блок</code></td><td>Разрушает блок перед агентом</td></tr>
+      </table>
+    </div>
+
+    <!-- Интерактив: управление в Minecraft -->
+    <div class="interactive-box" id="minecraftControls">
+      <h3>🎮 Управление игроком в Minecraft</h3>
+      <p>Сопоставь клавишу с действием (перетащи мышкой или выбери из списка):</p>
+      <div class="match-block" id="matchControls">
+        <div class="match-row">
+          <div class="match-key">W</div>
+          <select class="match-select" data-key="W" data-correct="вперёд">
+            <option value="">— выбери —</option>
+            <option value="вперёд">Вперёд</option>
+            <option value="назад">Назад</option>
+            <option value="влево">Влево</option>
+            <option value="вправо">Вправо</option>
+            <option value="прыжок">Прыжок</option>
+          </select>
+        </div>
+        <div class="match-row">
+          <div class="match-key">S</div>
+          <select class="match-select" data-key="S" data-correct="назад">
+            <option value="">— выбери —</option>
+            <option value="вперёд">Вперёд</option>
+            <option value="назад">Назад</option>
+            <option value="влево">Влево</option>
+            <option value="вправо">Вправо</option>
+            <option value="прыжок">Прыжок</option>
+          </select>
+        </div>
+        <div class="match-row">
+          <div class="match-key">A</div>
+          <select class="match-select" data-key="A" data-correct="влево">
+            <option value="">— выбери —</option>
+            <option value="вперёд">Вперёд</option>
+            <option value="назад">Назад</option>
+            <option value="влево">Влево</option>
+            <option value="вправо">Вправо</option>
+            <option value="прыжок">Прыжок</option>
+          </select>
+        </div>
+        <div class="match-row">
+          <div class="match-key">D</div>
+          <select class="match-select" data-key="D" data-correct="вправо">
+            <option value="">— выбери —</option>
+            <option value="вперёд">Вперёд</option>
+            <option value="назад">Назад</option>
+            <option value="влево">Влево</option>
+            <option value="вправо">Вправо</option>
+            <option value="прыжок">Прыжок</option>
+          </select>
+        </div>
+        <div class="match-row">
+          <div class="match-key">ЛКМ</div>
+          <select class="match-select" data-key="LMB" data-correct="сломать блок">
+            <option value="">— выбери —</option>
+            <option value="сломать блок">Сломать блок</option>
+            <option value="поставить блок">Поставить блок</option>
+            <option value="открыть инвентарь">Открыть инвентарь</option>
+          </select>
+        </div>
+        <div class="match-row">
+          <div class="match-key">ПКМ</div>
+          <select class="match-select" data-key="RMB" data-correct="поставить блок">
+            <option value="">— выбери —</option>
+            <option value="сломать блок">Сломать блок</option>
+            <option value="поставить блок">Поставить блок</option>
+            <option value="открыть инвентарь">Открыть инвентарь</option>
+          </select>
+        </div>
+        <button class="match-btn" onclick="checkMatchBlock('matchControls')">✅ Проверить</button>
+        <div class="match-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Скачивание мира -->
+  <div class="card" style="border: 2px dashed #61b01f; background: #fafff7;">
+    <h2><span class="num">2</span> Готовый мир: Лабиринт</h2>
+    <p>Для занятия мы подготовили специальный мир с тремя уровнями сложности. Скачай его и открой в Minecraft Education.</p>
+    <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-top: 16px;">
+      <button class="download-btn" onclick="openModal()" style="background: #61b01f; color: #fff; border: none; padding: 14px 32px; border-radius: 40px; font-weight: 600; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(97,176,31,0.3);">
+        ⬇️ Скачать мир «Лабиринт»
+      </button>
+      <span style="color: #555;">(файл .mcworld, 12 МБ)</span>
+    </div>
+    <div class="note" style="margin-top: 12px;">
+      <b>📌 Как установить:</b> после скачивания файл откроется автоматически в Minecraft Education. Если не открывается — дважды кликни по файлу.
+    </div>
+  </div>
+
+  <!-- Уровни -->
+  <div class="card">
+    <h2><span class="num">3</span> Уровни сложности</h2>
+    <p>В мире есть три уровня. На каждом — свой лабиринт. Используй команды телепортации, чтобы перемещаться между уровнями.</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Уровень</th><th>Команда для телепортации</th><th>Описание</th></tr>
+        <tr><td>🟢 Лёгкий</td><td><code>/tp -6 -60 1</code></td><td>Простой лабиринт без стен.</td></tr>
+        <tr><td>🟡 Средний</td><td><code>/tp -508 -60 3</code></td><td>Лабиринт с поворотами направо и налево.</td></tr>
+        <tr><td>🔴 Сложный (Бонусный)</td><td><code>/tp -260 -60 2</code></td><td>Лабиринт с тупиками, нужно использовать циклы.</td></tr>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>💡 Совет:</b> телепортируйся на уровень, открой редактор кода (клавиша C) и напиши программу для агента. Проверяй работу на каждом этапе.
+    </div>
+
+    <!-- Интерактив: порядок действий -->
+    <div class="interactive-box" id="algoLabyrinth">
+      <h2>🔀 Собери алгоритм прохождения лабиринта</h2>
+      <p>Перетащи шаги в правильном порядке (сверху вниз):</p>
+      <div class="sequence-list" id="sequenceLabyrinth">
+        <div class="sort-item" draggable="true" data-correct-step="2">Запустить программу</div>
+        <div class="sort-item" draggable="true" data-correct-step="0">Открыть редактор кода (C)</div>
+        <div class="sort-item" draggable="true" data-correct-step="1">Написать алгоритм для агента</div>
+      </div>
+      <button class="action-btn" onclick="checkSequence('algoLabyrinth')">Проверить порядок</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- Практическое задание -->
+  <div class="task-box" id="practiceLabyrinth">
+    <h2>🛠️ Практическое задание: пройди лабиринт</h2>
+    <div class="progress-track"><div class="progress-fill-minecraft" id="labProgressFill"></div></div>
+    <span class="progress-label" id="labProgressLabel">Выполнено шагов: 0 из 4</span>
+    <div class="note">Открой мир, выполни шаги и отмечай галочками.</div>
+    <ul class="task-steps">
+      <li><input type="checkbox" id="lb0" onchange="updateLabProgress()"><label for="lb0">Скачай и открой мир «Лабиринт»</label></li>
+      <li><input type="checkbox" id="lb1" onchange="updateLabProgress()"><label for="lb1">Телепортируйся на лёгкий уровень и пройди его (алгоритм из 10 шагов вперёд)</label></li>
+      <li><input type="checkbox" id="lb2" onchange="updateLabProgress()"><label for="lb2">Телепортируйся на средний уровень и пройди лабиринт с поворотами</label></li>
+      <li class="bonus-step"><input type="checkbox" id="lb3" onchange="updateLabProgress()"><label for="lb3">⭐ Бонус: пройди сложный уровень и поставь блок редстоуна на последний шаг</label></li>
+    </ul>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizLabyrinth">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="lq0" data-correct="b">
+      <p class="quiz-q-text">1. Какая команда перемещает агента вперёд?</p>
+      <label><input type="radio" name="lq0" value="a"> повернуть налево</label>
+      <label><input type="radio" name="lq0" value="b"> двигаться вперёд</label>
+      <label><input type="radio" name="lq0" value="c"> поставить блок</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="lq1" data-correct="c">
+      <p class="quiz-q-text">2. Как телепортироваться на другой уровень в нашем мире?</p>
+      <label><input type="radio" name="lq1" value="a"> Пройти через портал</label>
+      <label><input type="radio" name="lq1" value="b"> Нажать на кнопку</label>
+      <label><input type="radio" name="lq1" value="c"> Ввести команду /tp с координатами</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="lq2" data-correct="a">
+      <p class="quiz-q-text">3. Какой блок в редакторе кода заставляет агента повернуться?</p>
+      <label><input type="radio" name="lq2" value="a"> Переместиться на N блоков</label>
+      <label><input type="radio" name="lq2" value="b"> Повернуться ...</label>
+      <label><input type="radio" name="lq2" value="c"> Собрать урожай</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="lq3" data-correct="b">
+      <p class="quiz-q-text">4. Для чего нужен агент в Minecraft Education?</p>
+      <label><input type="radio" name="lq3" value="a"> Чтобы атаковать мобов</label>
+      <label><input type="radio" name="lq3" value="b"> Чтобы выполнять наши программы</label>
+      <label><input type="radio" name="lq3" value="c"> Чтобы строить дома вручную</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="lq4" data-correct="b">
+      <p class="quiz-q-text">5. Что произойдёт, если перепутать порядок команд в алгоритме?</p>
+      <label><input type="radio" name="lq4" value="a"> Ничего, всё сработает</label>
+      <label><input type="radio" name="lq4" value="b"> Агент сделает не то, что мы задумали</label>
+      <label><input type="radio" name="lq4" value="c"> Агент исчезнет</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizLabyrinth')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- AI-помощник -->
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D1%80%D0%BE%D0%B9%D1%82%D0%B8%20%D0%BB%D0%B0%D0%B1%D0%B8%D1%80%D0%B8%D0%BD%D1%82%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="alice-q-btn">Как пройти лабиринт в Minecraft?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%86%D0%B8%D0%BA%D0%BB%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое цикл?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%82%D0%B5%D0%BB%D0%B5%D0%BF%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="alice-q-btn">Как телепортироваться в Minecraft?</a>
+    </div>
+    <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про Minecraft или программирование.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, как заставить агента построить дом?»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_1-2.html"><div class="lbl">← Назад</div><div class="ttl">1.2 Знакомство с Minecraft</div></a>
+    <a class="nav-btn next" href="les_1-4.html"><div class="lbl">Далее →</div><div class="ttl">1.4 Циклы - ускоряем разработку</div></a>
+  </div>
+</main>
+
+<!-- ===== ФУТЕР ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 1.3 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<!-- ===== МОДАЛЬНОЕ ОКНО ===== -->
+<div class="modal-overlay" id="downloadModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2><span>⬇️</span> Скачать мир «Лабиринт»</h2>
+    <p>Чтобы начать занятие, скачай готовый мир с тремя уровнями сложности.</p>
+    <ol>
+      <li><strong>Скачай файл</strong> — нажми на кнопку ниже. Файл имеет расширение <code>.mcworld</code>.</li>
+      <li><strong>Открой файл</strong> — дважды кликни по скачанному файлу. Minecraft Education запустится автоматически и импортирует мир.</li>
+      <li><strong>Дождись загрузки</strong> — мир запустится сам. Нужно только подождать :)</li>
+    </ol>
+    <a class="download-btn" id="downloadBtn" onclick="downloadMap()">
+      ⬇️ Скачать labyrinth.mcworld
+    </a>
+    <div class="hint">
+      <b>💡 Телепорты:</b> в игре нужно будет использовать команды для телепортации. Для этого используй клавишу <code>T</code>.
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  // === Модалка ===
+  function openModal() {
+    document.getElementById('downloadModal').classList.add('active');
+  }
+  function closeModal() {
+    document.getElementById('downloadModal').classList.remove('active');
+  }
+  // Закрытие по клику на фон
+  document.getElementById('downloadModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // === Интерактивные функции (копия из предыдущих уроков) ===
+  function checkMatchBlock(containerId) {
+    const container = document.getElementById(containerId);
+    const selects = container.querySelectorAll('.match-select');
+    let correct = 0;
+    selects.forEach(sel => {
+      const correctVal = sel.getAttribute('data-correct');
+      if (sel.value === correctVal) {
+        sel.style.borderColor = '#2e7d32';
+        sel.style.background = '#e8f5e9';
+        correct++;
+      } else {
+        sel.style.borderColor = '#c62828';
+        sel.style.background = '#ffebee';
+      }
+    });
+    const resultDiv = container.querySelector('.match-result');
+    if (resultDiv) {
+      resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${selects.length}`;
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  function checkSequence(containerId) {
+    const container = document.getElementById(containerId);
+    const items = container.querySelectorAll('.sort-item');
+    let correct = true;
+    let sorted = Array.from(items).map(el => parseInt(el.getAttribute('data-correct-step'), 10));
+    for (let i = 0; i < sorted.length; i++) {
+      if (sorted[i] !== i) {
+        correct = false;
+        break;
+      }
+    }
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct ? '✅ Отличный порядок! Алгоритм собран верно.' : '❌ Порядок нарушен. Попробуй переставить шаги.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      if (total === 0) {
+        resultDiv.innerHTML = 'Ответь на все вопросы.';
+      } else {
+        resultDiv.innerHTML = `Правильных ответов: ${correct} из ${questions.length}`;
+      }
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  // Прогресс практического задания
+  function updateLabProgress() {
+    const checkboxes = document.querySelectorAll('#practiceLabyrinth input[type="checkbox"]');
+    const total = checkboxes.length;
+    let checked = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    const fill = document.getElementById('labProgressFill');
+    const label = document.getElementById('labProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+  }
+
+  // Перетаскивание для sequence (универсально)
+  document.querySelectorAll('.sequence-list').forEach(list => {
+    let dragItem = null;
+    list.addEventListener('dragstart', function(e) {
+      dragItem = e.target.closest('.sort-item');
+      if (!dragItem) return;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', '');
+      dragItem.style.opacity = '0.5';
+    });
+    list.addEventListener('dragend', function(e) {
+      if (dragItem) dragItem.style.opacity = '1';
+      dragItem = null;
+    });
+    list.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+    list.addEventListener('drop', function(e) {
+      e.preventDefault();
+      const target = e.target.closest('.sort-item');
+      if (!target || target === dragItem) return;
+      const parent = list;
+      const children = Array.from(parent.children);
+      const dragIndex = children.indexOf(dragItem);
+      const targetIndex = children.indexOf(target);
+      if (dragIndex < targetIndex) {
+        parent.insertBefore(dragItem, target.nextSibling);
+      } else {
+        parent.insertBefore(dragItem, target);
+      }
+    });
+  });
+
+  function downloadMap() {
+    const btn = document.getElementById('downloadBtn');
+    btn.textContent = '⏳ Загрузка...';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = 'files/les_1-3.mcworld';
+        link.download = 'labyrinth.mcworld';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        btn.textContent = '⬇️ Скачать мир';
+        btn.disabled = false;
+    closeModal()
+    }, 2000); 
+
+}
+</script>
+</body>
+</html>

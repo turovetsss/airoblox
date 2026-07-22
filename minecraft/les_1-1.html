@@ -5,20 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>1.1. Знакомство с компьютером — Учебный центр «РОБОВИТА»</title>
 <link rel="stylesheet" href="../assets/css/styles.css">
+<style>
+   .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+</style>
 </head>
 <body class="lesson-page">
 <!-- ===== ШАПКА (светло-зелёная) ===== -->
 <header class="site-header">
   <div class="wrap">
     <div class="top-bar">
-      <a class="brand" href="Карта_курса.html">
+      <a class="brand" href="index.html">
         <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
         <div>
           <div class="brand-name">РОБОВИТА</div>
           <div class="brand-tag">учимся программировать роботов и игры</div>
         </div>
       </a>
-      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 1.1</div>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 1.1</div>
     </div>
     <div class="hero">
       <div class="hex-badge">1.1</div>
@@ -45,6 +65,7 @@
 
   <!-- План -->
   <div class="card">
+    <h2>📋 План занятия</h2>
     <table class="timetable">
       <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
       <tr><td>Знакомство, орг. момент</td><td>10 мин</td><td>Знакомимся, рассказываем про курс РОБОВИТА</td></tr>
@@ -436,7 +457,7 @@
   <!-- Навигация -->
   <div class="lesson-nav">
     <a class="nav-btn prev" href="index.html"><div class="lbl">← Назад</div><div class="ttl">К карте курса</div></a>
-    <a class="nav-btn next" href="Занятие_1.2_Первый_урок_в_Roblox.html"><div class="lbl">Далее →</div><div class="ttl">1.2 Знакомство с Minecraft + первый код</div></a>
+    <a class="nav-btn next" href="les_1-2.html"><div class="lbl">Далее →</div><div class="ttl">1.2 Знакомство с Minecraft + первый код</div></a>
   </div>
 </main>
 
@@ -447,10 +468,10 @@
       <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
       Учебный центр «РОБОВИТА»
     </div>
-    <div>Занятие 1.1 · офлайн-курс по Roblox Studio и Lua</div>
+    <div>Занятие 1.1 · офлайн-курс по Minecraft Education и Python</div>
   </div>
 </footer>
-<script src="assets/js/lesson.js"></script>
+<script src="../assets/js/lesson.js"></script>
 <script>
   (function() {
     const list = document.getElementById('sequenceList');
