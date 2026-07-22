@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2.2. Первый скрипт в Roblox Studio — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    /* ===== ОСНОВНЫЕ СТИЛИ ===== */
+    .choice-card {
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      padding: 8px 16px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 30px;
+      display: inline-block;
+      margin: 4px 6px;
+    }
+    .choice-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      background: #f1f5f9;
+    }
+    .choice-card.selected {
+      border-color: var(--accent) !important;
+      background: var(--accent-light) !important;
+      box-shadow: 0 0 0 3px rgba(110, 0, 145, 0.2);
+    }
+    .choice-card.correct {
+      border-color: var(--primary) !important;
+      background: var(--primary-light) !important;
+    }
+    .choice-card.incorrect {
+      border-color: var(--danger) !important;
+      background: var(--danger-light) !important;
+    }
+    .activity-result.done {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .activity-result.neutral {
+      background: var(--accent-light);
+      color: var(--accent-ink);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .choice-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 16px;
+    }
+   /* Блоки кода — теперь более крупные и контрастные */
+.code-block {
+  background: #2a2f3a; /* тёмно-серый фон вместо чёрного */
+  color: #e2e8f0;
+  padding: 16px 20px; /* больше отступов */
+  border-radius: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.4rem; /* увеличенный шрифт */
+  overflow-x: auto;
+  margin: 12px 0;
+  line-height: 1.6;
+}
+.code-block .comment { color: #94a3b8; }
+.code-block .keyword { color: #f472b6; font-weight: 600; }
+.code-block .string { color: #a3e635; }
+.code-block .func { color: #60a5fa; }
+.code-block .number { color: #fbbf24; }
+
+/* Яркое выделение для важных строк (например, local part = script.Parent) */
+.code-block .hl {
+  background: #fde047; /* ярко-жёлтый */
+  color: #000; /* чёрный текст */
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  display: inline-block;
+}
+    .hint-btn {
+      background: var(--accent-light, #f0e6f5);
+      border: none;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-weight: 600;
+      color: var(--accent-ink, #4a1a5a);
+      cursor: pointer;
+      transition: 0.15s;
+      margin-top: 6px;
+    }
+    .hint-btn:hover {
+      background: var(--accent, #b47cdb);
+      color: white;
+    }
+    .hint-box {
+      display: none;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 8px;
+      border-left: 4px solid var(--accent, #6e0091);
+    }
+    .hint-box.show {
+      display: block;
+    }
+    .theory-section {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line, #e2e8f0);
+    }
+    .theory-section:last-child {
+      border-bottom: none;
+    }
+    .theory-section h3 {
+      margin-top: 12px;
+      color: var(--primary-dark, #1a4a0a);
+    }
+    .theory-section ul, .theory-section ol {
+      padding-left: 24px;
+      line-height: 1.7;
+    }
+    .theory-section li {
+      margin-bottom: 4px;
+    }
+    .prop-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+    }
+    .prop-table th, .prop-table td {
+      border: 1px solid var(--line, #e2e8f0);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .prop-table th {
+      background: var(--primary-light, #e8f5e0);
+      color: var(--primary-dark, #1a4a0a);
+    }
+    .prop-table td code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .step-guide {
+      background: var(--bg-light, #f8fafc);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin: 12px 0;
+      border: 1px solid var(--line, #e2e8f0);
+    }
+    .step-guide .step-num {
+      display: inline-block;
+      background: var(--primary, #61b01f);
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 28px;
+      font-weight: 700;
+      margin-right: 10px;
+      font-size: 0.9rem;
+    }
+    .step-guide .step-content {
+      display: inline;
+    }
+    .screenshot-placeholder {
+      background: #f1f5f9;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin: 12px 0;
+      color: #64748b;
+      font-style: italic;
+    }
+    .screenshot-placeholder img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+    .scenario-box {
+      background: linear-gradient(135deg, #f0e6f5, #e8f5e0);
+      border-radius: 20px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .scenario-avatar {
+      font-size: 3rem;
+      flex-shrink: 0;
+    }
+
+    /* Шпаргалка */
+    .cheat-sheet {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 20px 24px;
+      border: 2px solid var(--primary, #61b01f);
+      margin: 24px 0;
+      position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка юного скриптера";
+      position: absolute;
+      top: -14px;
+      left: 20px;
+      background: var(--primary-light, #e8f5e0);
+      color: var(--primary-dark, #1a4a0a);
+      padding: 2px 16px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border: 1px solid var(--primary, #61b01f);
+    }
+    .cheat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .cheat-item {
+      background: white;
+      border-radius: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--line, #e2e8f0);
+    }
+    .cheat-item .title {
+      font-weight: 700;
+      color: var(--primary-dark, #1a4a0a);
+      border-bottom: 2px solid var(--primary-light, #e8f5e0);
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+    .cheat-item .rule {
+      font-size: 0.92rem;
+      margin: 4px 0;
+    }
+    .cheat-item .rule code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .cheat-item .rule .hl {
+      color: var(--accent-ink, #4a1a5a);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+  <header class="site-header">
+    <div class="wrap">
+      <div class="top-bar">
+        <a class="brand" href="Карта_курса.html">
+          <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+          <div>
+            <div class="brand-name">РОБОВИТА</div>
+            <div class="brand-tag">учимся программировать роботов и игры</div>
+          </div>
+        </a>
+        <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 2.2</div>
+      </div>
+      <div class="hero">
+        <div class="hex-badge">2.2</div>
+        <div>
+          <div class="module-pill">Раздел 2 · Программирование</div>
+          <h1>💻 Первый скрипт в Roblox Studio</h1>
+          <p class="subtitle">Погружаемся в мир Lua: виды скриптов, свойства объектов и создание интерактивных Part</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- Персонаж-рассказчик -->
+    <div class="scenario-box">
+      <div class="scenario-avatar">🤖</div>
+      <div>
+        <strong>Привет! Я робот Бобик.</strong> Сегодня мы научим наши объекты в Roblox <em>думать</em> и <em>действовать</em> с помощью скриптов. Ты станешь настоящим программистом!
+      </div>
+    </div>
+
+    <!-- Цели -->
+    <div class="objectives">
+      <h2>🎯 Цели занятия</h2>
+      <ul>
+        <li>Понять, что такое скрипт и зачем он нужен в игре</li>
+        <li>Изучить <b>виды скриптов</b>: Script (серверный), LocalScript (клиентский), ModuleScript</li>
+        <li>Научиться создавать скрипты в разных контейнерах</li>
+        <li>Познакомиться с основными <b>свойствами объектов</b> (Part)</li>
+        <li>Написать свой первый скрипт, который управляет свойствами Part</li>
+      </ul>
+    </div>
+
+    <!-- План -->
+   <div class="card">
+      <table class="timetable">
+        <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+        <tr><td>Теория: скрипты и их виды</td><td>10 мин</td><td>Игровая аналогия с пультом управления</td></tr>
+        <tr><td>Теория: свойства объектов</td><td>10 мин</td><td>Таблица "волшебных кнопок"</td></tr>
+        <tr><td>Практика: создание скрипта</td><td>10 мин</td><td>Пошаговая инструкция с Бобиком</td></tr>
+        <tr><td>Задание 1 — Настройка Part</td><td>10 мин</td><td>Меняем размер, позицию, якорь</td></tr>
+        <tr><td>Задание 2 — Цвет и материал</td><td>10 мин</td><td>Превращаем куб в деревянный ящик</td></tr>
+        <tr><td>Задание 3 — Интерактивная кнопка</td><td>10 мин</td><td>ClickDetector + скрипт</td></tr>
+        <tr><td>Задание 4 — Творческое</td><td>10 мин</td><td>Создай свою уникальную Part</td></tr>
+        <tr><td>Задание 5 — Мини-светофор</td><td>10 мин</td><td>Три цветных сигнала по очереди</td></tr>
+        <tr><td>Задание 6 — Телепорт по клику</td><td>10 мин</td><td>Перемещаем игрока нажатием кнопки</td></tr>
+        <tr><td>Задание 7 — Счётчик нажатий</td><td>10 мин</td><td>Ведём подсчёт кликов и меняем цвет</td></tr>
+        <tr><td>Опрос и итоги</td><td>5 мин</td><td>Викторина «Что я узнал?»</td></tr>
+        <tr><td>Итого</td><td>95 мин</td><td>—</td></tr>
+      </table>
+    </div>
+
+
+    <!-- ========================================================== -->
+    <!--  ТЕОРИЯ: ЧТО ТАКОЕ СКРИПТ (с картинкой 1)                  -->
+    <!-- ========================================================== -->
+    <div class="card" id="theory-scripts">
+      <h2><span class="num">0</span> Теория: что такое скрипт?</h2>
+
+      <div class="theory-section">
+        <h3>📜 Представь себе пульт управления</h3>
+        <p>
+          <b>Скрипт</b> — это как пульт от телевизора. Сам телевизор (объект) умеет показывать картинку, но без пульта ты не можешь переключить канал или изменить громкость. Скрипт даёт объекту команды: «стань больше», «поменяй цвет», «двигайся».
+        </p>
+        <p>
+          Скрипты пишутся на языке <b>Lua</b> (читается «Лу́а»). Этот язык очень простой, и сегодня ты напишешь свой первый код!
+        </p>
+        <!-- Вставляем картинку 1.png -->
+        <div class="screenshot-placeholder">
+          <img src="assets/images/lesson-2.4/1.png" alt="Что такое скрипт?" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+        </div>
+      </div>
+
+      <div class="theory-section">
+        <h3>📂 Три вида скриптов — как разные пульты</h3>
+        <p>В Roblox Studio есть три типа скриптов. Они похожи на пульты от разных устройств:</p>
+
+        <table class="prop-table">
+          <tr>
+            <th>Тип скрипта</th>
+            <th>Для чего нужен</th>
+            <th>Где «живёт»</th>
+          </tr>
+          <tr>
+            <td><b>Script</b> (серверный)</td>
+            <td>Управляет всей игрой: врагами, дверями, правилами. Работает на <b>сервере</b> Roblox.</td>
+            <td>ServerScriptService, Workspace</td>
+          </tr>
+          <tr>
+            <td><b>LocalScript</b> (клиентский)</td>
+            <td>Управляет тем, что видит только один игрок: интерфейс, камера, звуки.</td>
+            <td>StarterPlayerScripts, StarterGui</td>
+          </tr>
+          <tr>
+            <td><b>ModuleScript</b> (модульный)</td>
+            <td>Библиотека готовых команд, которую можно использовать в других скриптах.</td>
+            <td>Любой контейнер</td>
+          </tr>
+        </table>
+
+        <div class="screenshot-placeholder">
+          <img src="assets/images/lesson-2.4/4.png" alt="Что такое скрипт?" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> </div>
+
+        <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+          🎯 <b>Запомни простое правило:</b> Если скрипт должен работать для всех игроков — выбирай <b>Script</b>. Если для одного игрока — <b>LocalScript</b>.
+        </div>
+      </div>
+
+      <div class="theory-section">
+        <h3>🔧 Свойства объектов — как кнопки на пульте</h3>
+        <p>
+          У каждого объекта в Roblox (например, Part) есть <b>свойства</b> — это как кнопки на пульте: «сделай громче» (размер), «переключи канал» (цвет), «включи/выключи» (прозрачность).
+        </p>
+        <p>Вот самые главные кнопки для Part:</p>
+
+        <table class="prop-table">
+          <tr><th>Свойство (кнопка)</th><th>Что делает</th><th>Пример команды в скрипте</th></tr>
+          <tr><td><b>Size</b></td><td>Размер (ширина, высота, глубина)</td><td><code>part.Size = Vector3.new(5,3,5)</code></td></tr>
+          <tr><td><b>Position</b></td><td>Позиция в мире</td><td><code>part.Position = Vector3.new(0,5,0)</code></td></tr>
+          <tr><td><b>Anchored</b></td><td>Закрепить на месте (true/false)</td><td><code>part.Anchored = true</code></td></tr>
+          <tr><td><b>Transparency</b></td><td>Прозрачность (0 — видимый, 1 — невидимый)</td><td><code>part.Transparency = 0.5</code></td></tr>
+          <tr><td><b>BrickColor</b></td><td>Цвет из палитры Roblox</td><td><code>part.BrickColor = BrickColor.new("Bright red")</code></td></tr>
+          <tr><td><b>Material</b></td><td>Материал (дерево, металл, стекло…)</td><td><code>part.Material = Enum.Material.Wood</code></td></tr>
+        </table>
+
+        <div class="screenshot-placeholder">
+         <img src="assets/images/lesson-2.4/5.png" alt="Что такое скрипт?" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> </div> </div>
+
+        <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">
+          💡 <b>Волшебное слово:</b> чтобы скрипт узнал, к какому объекту он прикреплён, используй <code>script.Parent</code>. Это как сказать: «Тот, кто меня держит».
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== КАК РАБОТАЕТ СКРИПТ (картинка 2) ===== -->
+    <div class="card" id="how-script-works">
+      <h2><span class="num">0</span> Как работает скрипт в игре?</h2>
+      <p>Представь, что ты нажимаешь на кнопку — и что-то происходит. Вот как это выглядит внутри:</p>
+      <ol>
+        <li><b>Событие:</b> игрок нажал на кнопку.</li>
+        <li><b>Скрипт получает сигнал:</b> игра замечает событие и передаёт его скрипту.</li>
+        <li><b>Скрипт выполняет команды:</b> например, меняет цвет Part или открывает дверь.</li>
+        <li><b>Изменения применяются в игре:</b> ты видишь результат!</li>
+      </ol>
+      <div class="screenshot-placeholder">
+        <img src="assets/images/lesson-2.4/2.png" alt="Как работает скрипт" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+      </div>
+      <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+        ⚙️ <b>Важно знать:</b> Скрипты работают на <b>сервере</b> игры. Они управляют логикой и делают игру интерактивной и живой!
+      </div>
+    </div>
+
+    <!-- ===== БЕЗ СКРИПТА / СО СКРИПТОМ (картинка 3) ===== -->
+    <div class="card" id="with-without-script">
+      <h2><span class="num">0</span> Без скрипта — стоит, со скриптом — действует!</h2>
+      <p>Сравни: обычный куб без кода и куб, которым управляет скрипт.</p>
+      <div class="screenshot-placeholder">
+        <img src="assets/images/lesson-2.4/3.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+      </div>
+      <p>Скрипт делает объекты <b>живыми</b> — они могут двигаться, меняться и взаимодействовать с игроком.</p>
+    </div>
+
+    <!-- ===== ШПАРГАЛКА ЮНОГО СКРИПТЕРА ===== -->
+    <div class="cheat-sheet">
+      <h3 style="margin-top:0; margin-bottom:12px;">📘 Шпаргалка юного скриптера</h3>
+      <p style="margin-top:0; color:#475569;">Основные правила и команды, которые пригодятся в каждом скрипте:</p>
+      <div class="cheat-grid">
+
+        <div class="cheat-item">
+          <div class="title">📌 Переменные и объекты</div>
+          <div class="rule"><code><span class="hl">local</span> part = <span class="hl">script.Parent</span></code> — ссылка на объект, в котором лежит скрипт.</div>
+          <div class="rule"><code><span class="hl">local</span> part = workspace:WaitForChild(<span class="string">"Имя"</span>)</code> — поиск Part по имени.</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">🔧 Изменение свойств</div>
+          <div class="rule"><code>part.Size = Vector3.new(<span class="number">5</span>, <span class="number">3</span>, <span class="number">5</span>)</code></div>
+          <div class="rule"><code>part.Position = Vector3.new(<span class="number">0</span>, <span class="number">5</span>, <span class="number">0</span>)</code></div>
+          <div class="rule"><code>part.Anchored = <span class="hl">true</span></code> (закрепить)</div>
+          <div class="rule"><code>part.Transparency = <span class="number">0.5</span></code> (0 — видимый, 1 — невидимый)</div>
+          <div class="rule"><code>part.BrickColor = BrickColor.new(<span class="string">"Bright red"</span>)</code></div>
+          <div class="rule"><code>part.Material = Enum.Material.Wood</code></div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">🕹️ События</div>
+          <div class="rule"><code>part.Touched:Connect(<span class="func">function</span>(hit) ... <span class="hl">end</span>)</code> — при касании.</div>
+          <div class="rule"><code>click.MouseClick:Connect(<span class="func">function</span>() ... <span class="hl">end</span>)</code> — при клике (нужен ClickDetector).</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">⏳ Задержка и вывод</div>
+          <div class="rule"><code><span class="hl">wait</span>(<span class="number">2</span>)</code> — пауза 2 секунды.</div>
+          <div class="rule"><code><span class="hl">print</span>(<span class="string">"Привет!"</span>)</code> — вывод в окно Output.</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">❓ Условия (if/else)</div>
+          <div class="rule"><code><span class="hl">if</span> part.BrickColor == BrickColor.Red() <span class="hl">then</span></code></div>
+          <div class="rule">&nbsp;&nbsp;... <span class="hl">else</span> ...</div>
+          <div class="rule"><span class="hl">end</span></div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">🔄 Циклы</div>
+          <div class="rule"><code><span class="hl">for</span> i = 1, 5 <span class="hl">do</span> ... <span class="hl">end</span></code> — повтор 5 раз.</div>
+          <div class="rule"><code><span class="hl">while true do</span> ... <span class="hl">end</span></code> — бесконечный цикл (осторожно!).</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">🧩 Полезные функции</div>
+          <div class="rule"><code>BrickColor.Random()</code> — случайный цвет.</div>
+          <div class="rule"><code>Instance.new(<span class="string">"Part"</span>)</code> — создать новую Part.</div>
+          <div class="rule"><code>part.Parent = workspace</code> — поместить объект в мир.</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">⚠️ Важные правила</div>
+          <div class="rule">📌 Всегда пиши <code><span class="hl">local</span></code> перед переменной.</div>
+          <div class="rule">📌 Комментарии начинай с <code><span class="hl">--</span></code></div>
+          <div class="rule">📌 Проверяй, существует ли объект: <code><span class="hl">if</span> part <span class="hl">then</span></code></div>
+          <div class="rule">📌 Не забывай закрывать функции и условия словом <code><span class="hl">end</span></code></div>
+        </div>
+
+      </div>
+      <p style="margin-top:12px; font-size:0.9rem; color:#475569;">⭐ Сохрани эту шпаргалку — она пригодится во всех следующих занятиях!</p>
+    </div>
+
+    <!-- ===== ПРАКТИКА: ПОШАГОВАЯ ИНСТРУКЦИЯ ===== -->
+    <div class="card" id="how-to-create">
+      <h2><span class="num">0</span> Как создать скрипт — пошаговая инструкция с Бобиком</h2>
+
+      <div class="step-guide">
+        <span class="step-num">1</span>
+        <span class="step-content">
+          Открой <b>Roblox Studio</b> и создай новый проект (Baseplate).
+        </span>
+      </div>
+
+      <div class="step-guide">
+        <span class="step-num">2</span>
+        <span class="step-content">
+          В окне <b>Explorer</b> найди <b>ServerScriptService</b>. Нажми на него правой кнопкой мыши → <b>Insert Object → Script</b>.
+        </span>
+      </div>
+      <div class="screenshot-placeholder">
+        <img src="assets/images/lesson-2.4/6.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+      </div>
+
+      <div class="step-guide">
+        <span class="step-num">3</span>
+        <span class="step-content">
+          Дважды кликни на скрипт — откроется редактор кода. Там уже будет строчка <code>print("Hello world!")</code>.
+        </span>
+          <img src="assets/images/lesson-2.4/9.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+      </div>
+
+      <div class="step-guide">
+        <span class="step-num">4</span>
+        <span class="step-content">
+          Напиши свой код. Например:
+          <div class="code-block" style="margin-top:6px;">
+            <span class="keyword">local</span> part = <span class="keyword">script</span>.Parent<br>
+            part.Size = Vector3.new(10, 5, 10)<br>
+            part.BrickColor = BrickColor.new(<span class="string">"Really red"</span>)
+          </div>
+          <small style="color:#64748b;">(Скрипт в ServerScriptService не имеет Parent-объекта, поэтому создай скрипт внутри Part)</small>
+            <img src="assets/images/lesson-2.4/8.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+        </span>
+      </div>
+
+      <div class="step-guide">
+        <span class="step-num">5</span>
+        <span class="step-content">
+          Нажми <b>F5</b> (Play), чтобы запустить игру. Скрипт выполнится, и ты увидишь результат!
+        </span>
+      </div>
+
+      <div class="step-guide">
+        <span class="step-num">6</span>
+        <span class="step-content">
+          Чтобы увидеть сообщения от <code>print()</code>, открой <b>Output</b> (меню Script → Output).
+        </span>
+        <img src="assets/images/lesson-2.4/7.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+      </div>
+    </div>
+<!-- ===== БЛОК AI-ПОМОЩНИКА ===== -->
+<div class="ai-helper">
+  <div class="ai-head">
+    <span style="font-size:32px; line-height:1;">🤖</span>
+    <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+  </div>
+  <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+  <div class="ai-buttons">
+    <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D1%82%D1%8C%20%D1%81%D0%BA%D1%80%D0%B8%D0%BF%D1%82%20%D0%B2%20Roblox%20Studio%3F%22%7D" target="_blank" class="alice-q-btn">Как создать скрипт?</a>
+    <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D1%8C%20%D1%86%D0%B2%D0%B5%D1%82%20Part%20%D0%B2%20Roblox%3F%22%7D" target="_blank" class="alice-q-btn">Как изменить цвет Part?</a>
+    <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20ClickDetector%20%D0%B2%20Roblox%3F%22%7D" target="_blank" class="alice-q-btn">Что такое ClickDetector?</a>
+  </div>
+  <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
+    💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+  </div>
+</div>
+    <!-- ===== ЗАДАНИЕ 1 ===== -->
+    <div class="task-box" id="task1">
+      <h2>📦 Задание 1 — Настраиваем Part (пульт в действии)</h2>
+      <p>Создай скрипт, который установит для Part параметры:</p>
+      <ul>
+        <li>Размер: <b>5, 3, 5</b></li>
+        <li>Позиция: <b>0, 10, 0</b></li>
+        <li>Якорь (Anchored): <b>true</b></li>
+        <li>Прозрачность: <b>0.3</b></li>
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task1Progress"></div></div>
+      <span class="progress-label" id="task1Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t1s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s0">Создай в Workspace новую Part. Назови её <b>MyPart</b>. (Правой кнопкой мыши нажми на Part->Rename)</label>
+        </li>
+          <img src="assets/images/lesson-2.4/10.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+        <li>
+          <input type="checkbox" id="t1s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s1">Добавь внутрь Part <b>Script</b> и напиши код.</label>
+          <button class="hint-btn" onclick="toggleHint('hint1')">📖 Показать подсказку</button>
+          <div id="hint1" class="hint-box">
+            <p><strong>Готовый скрипт:</strong></p>
+            <div class="code-block">
+              <span class="keyword">local</span> part = <span class="keyword">script</span>.Parent<br><br>
+              part.Size = Vector3.new(5, 3, 5)<br>
+              part.Position = Vector3.new(part.Position.X, 10, part.Position.Z)<br>
+              part.Anchored = <span class="keyword">true</span><br>
+              part.Transparency = 0.3
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t1s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s2">Запусти игру (F5) и проверь, что Part изменился.</label>
+        </li>
+      </ul>
+      <div class="note" style="border-left-color:var(--primary);">✅ <b>Проверь себя:</b> Part должен висеть в воздухе на высоте 10, быть полупрозрачным и не падать.</div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 2 ===== -->
+    <div class="task-box" id="task2">
+      <h2>🎨 Задание 2 — Превращаем куб в деревянный ящик</h2>
+      <p>Создай ещё один Part со скриптом, который задаст:</p>
+      <ul>
+        <li>Размер: <b>4, 2, 4</b></li>
+        <li>Цвет: <b>Nougat</b></li>
+        <li>Материал: <b>Wood</b></li>
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task2Progress"></div></div>
+      <span class="progress-label" id="task2Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t2s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s0">Создай Part с именем <b>WoodPart</b>.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t2s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s1">Добавь Script и напиши код.</label>
+          <button class="hint-btn" onclick="toggleHint('hint2')">📖 Показать подсказку</button>
+          <div id="hint2" class="hint-box">
+            <p><strong>Готовый скрипт:</strong></p>
+            <div class="code-block">
+              <span class="keyword">local</span> part = <span class="keyword">script</span>.Parent<br><br>
+              part.Size = Vector3.new(4, 2, 4)<br>
+              part.BrickColor = BrickColor.new(<span class="string">"Nougat"</span>)<br>
+              part.Material = Enum.Material.Wood
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t2s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s2">Запусти игру — теперь это настоящий деревянный ящик!</label>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 3 ===== -->
+    <div class="task-box" id="task3">
+      <h2>🔘 Задание 3 — Волшебная кнопка (ClickDetector)</h2>
+      <p>Создай кнопку, которая при нажатии меняет цвет на случайный.</p>
+
+      <div class="progress-track"><div class="progress-fill" id="task3Progress"></div></div>
+      <span class="progress-label" id="task3Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t3s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t3s0">Создай Part и добавь внутрь <b>ClickDetector</b>.</label>
+    
+        </li>
+        <li>
+          <input type="checkbox" id="t3s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t3s1">Добавь Script с кодом, который реагирует на клик.</label>
+          <button class="hint-btn" onclick="toggleHint('hint3')">📖 Показать подсказку</button>
+          <div id="hint3" class="hint-box">
+            <p><strong>Готовый скрипт:</strong></p>
+            <div class="code-block">
+              <span class="keyword">local</span> part = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> click = part:FindFirstChild(<span class="string">"ClickDetector"</span>)<br><br>
+              <span class="keyword">function</span> <span class="func">onClick</span>()<br>
+              &nbsp;&nbsp;part.BrickColor = BrickColor.Random()<br>
+              &nbsp;&nbsp;<span class="keyword">print</span>(<span class="string">"Кнопка нажата!"</span>)<br>
+              <span class="keyword">end</span><br><br>
+              click.MouseClick:Connect(onClick)
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t3s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t3s2">Запусти игру и щёлкай по кнопке — цвет будет меняться!</label>
+        </li>
+      </ul>
+      <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+        🎉 <b>Весело!</b> Каждый клик — новый случайный цвет. Можно сделать кнопку-сюрприз.
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 4 ===== -->
+    <div class="task-box" id="task4">
+      <h2>🌟 Задание 4 — Твой уникальный объект (свободное творчество)</h2>
+      <p>Придумай свою собственную Part и настрой её через скрипт. Используй <b>минимум 5 разных свойств</b> из таблицы выше.</p>
+      <p>Примеры идей:</p>
+      <ul>
+        <li>Тонкая пластина <b>0.5, 10, 0.5</b> цвета «Teal» и материал Glass (стекло).</li>
+        <li>Огромный золотой шар (Material = Metal, BrickColor = “Gold”).</li>
+        <li>Невидимый куб (Transparency = 1), который стоит на голове персонажа.</li>
+      </ul>
+      <p>Добавь <b>ClickDetector</b> и придумай, что будет происходить при клике (можешь менять цвет, размер или выводить сообщение).</p>
+      <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">
+        🏆 <b>Бонус для смелых:</b> добавь в скрипт строчку <code>part.Shape = Enum.PartType.Ball</code> и преврати куб в шар!
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 5 ===== -->
+    <div class="task-box" id="task5">
+      <h2>🚦 Задание 5 — Мини-светофор</h2>
+      <p>Создай три Part (красный, жёлтый, зелёный) и скрипт, который по очереди «зажигает» их, имитируя светофор.</p>
+      <p><b>Алгоритм:</b></p>
+      <ol>
+        <li>Создай три Part, назови их <b>RedLight</b>, <b>YellowLight</b>, <b>GreenLight</b>. Раскрась соответственно.</li>
+        <li>В одном общем Script (например, в ServerScriptService) напиши код, который бесконечно переключает цвета.</li>
+        <li>Используй <code>wait(секунды)</code> для пауз.</li>
+      </ol>
+
+      <div class="progress-track"><div class="progress-fill" id="task5Progress"></div></div>
+      <span class="progress-label" id="task5Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t5s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t5s0">Создай три Part, расположи их вертикально.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t5s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t5s1">Напиши скрипт в ServerScriptService.</label>
+          <button class="hint-btn" onclick="toggleHint('hint5')">📖 Показать подсказку</button>
+          <div id="hint5" class="hint-box">
+            <p><strong>Пример скрипта:</strong></p>
+            <div class="code-block">
+              <span class="comment">-- Получаем части по имени из Workspace</span><br>
+              <span class="keyword">local</span> red = workspace:WaitForChild(<span class="string">"RedLight"</span>)<br>
+              <span class="keyword">local</span> yellow = workspace:WaitForChild(<span class="string">"YellowLight"</span>)<br>
+              <span class="keyword">local</span> green = workspace:WaitForChild(<span class="string">"GreenLight"</span>)<br><br>
+              <span class="keyword">while</span> <span class="keyword">true</span> <span class="keyword">do</span><br>
+              &nbsp;&nbsp;red.BrickColor = BrickColor.Red()<br>
+              &nbsp;&nbsp;yellow.BrickColor = BrickColor.Gray()<br>
+              &nbsp;&nbsp;green.BrickColor = BrickColor.Gray()<br>
+              &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">3</span>)<br>
+              &nbsp;&nbsp;red.BrickColor = BrickColor.Gray()<br>
+              &nbsp;&nbsp;yellow.BrickColor = BrickColor.Yellow()<br>
+              &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">1</span>)<br>
+              &nbsp;&nbsp;red.BrickColor = BrickColor.Gray()<br>
+              &nbsp;&nbsp;yellow.BrickColor = BrickColor.Gray()<br>
+              &nbsp;&nbsp;green.BrickColor = BrickColor.Green()<br>
+              &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">3</span>)<br>
+              <span class="keyword">end</span>
+            </div>
+            <p>Не забудь, что все три Part должны быть Anchored = true!</p>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t5s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t5s2">Запусти и наблюдай, как работает твой светофор!</label>
+        </li>
+      </ul>
+      <div class="note" style="border-left-color:var(--accent);">
+        🚗 <b>Интересный факт:</b> такой же принцип используется в настоящих светофорах — программа по очереди включает лампы.
+      </div>
+    </div>
+   <div class="task-box" id="task6">
+      <h2>🌀 Задание 6 — Телепортация по клику</h2>
+      <p>Создай кнопку, которая при нажатии перемещает твоего персонажа в другую точку!</p>
+      <ul>
+        <li>Создай <b>две Part</b>: одна будет кнопкой (назовём <b>TeleportButton</b>), вторая — точкой назначения (<b>Destination</b>).</li>
+        <li>В TeleportButton добавь <b>ClickDetector</b>.</li>
+        <li>Напиши скрипт, который при клике берёт персонажа игрока и перемещает его на позицию <b>Destination</b>.</li>
+        <li>Подсказка: используй <code>player.Character</code> и <code>CFrame</code>.</li>
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task6Progress"></div></div>
+      <span class="progress-label" id="task6Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t6s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t6s0">Создай Part-кнопку и Part-точку назначения. Назови их <b>TeleportButton</b> и <b>Destination</b>.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t6s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t6s1">В <b>TeleportButton</b> добавь ClickDetector и Script с кодом.</label>
+           <img src="assets/images/lesson-2.4/11.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          <button class="hint-btn" onclick="toggleHint('hint6')">📖 Показать подсказку</button>
+          <div id="hint6" class="hint-box">
+            <p><strong>Готовый скрипт (в TeleportButton):</strong></p>
+            <div class="code-block">
+              <span class="keyword">local</span> button = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> click = button:FindFirstChild(<span class="string">"ClickDetector"</span>)<br>
+              <span class="keyword">local</span> destination = workspace:WaitForChild(<span class="string">"Destination"</span>)<br><br>
+              <span class="keyword">function</span> <span class="func">onClick</span>(player)<br>
+              &nbsp;&nbsp;<span class="keyword">local</span> character = player.Character<br>
+              &nbsp;&nbsp;<span class="keyword">if</span> character <span class="keyword">then</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;character:MoveTo(destination.Position)<br>
+              &nbsp;&nbsp;<span class="keyword">end</span><br>
+              <span class="keyword">end</span><br><br>
+              click.MouseClick:Connect(onClick)
+            </div>
+            <p>Убедись, что обе Part закреплены (Anchored = true).</p>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t6s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t6s2">Запусти игру, подойди к кнопке и нажми — ты телепортируешься!</label>
+        </li>
+      </ul>
+      <div class="note" style="border-left-color:var(--primary);">
+        🌠 <b>Попробуй улучшить:</b> поставь несколько точек назначения и кнопок, чтобы создать систему быстрого перемещения.
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 7: СЧЁТЧИК НАЖАТИЙ ===== -->
+    <div class="task-box" id="task7">
+      <h2>🔢 Задание 7 — Счётчик нажатий</h2>
+      <p>Создай кнопку, которая считает, сколько раз на неё нажали, и меняет цвет при каждом клике.</p>
+      <ul>
+        <li>Создай Part и назови его <b>CounterButton</b>.</li>
+        <li>Добавь <b>ClickDetector</b> и Script.</li>
+        <li>В скрипте заведи переменную-счётчик (<code>local count = 0</code>).</li>
+        <li>При каждом клике увеличивай счётчик на 1, выводи его в Output и меняй цвет Part.</li>
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task7Progress"></div></div>
+      <span class="progress-label" id="task7Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t7s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t7s0">Создай Part <b>CounterButton</b>, добавь ClickDetector.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t7s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t7s1">Напиши скрипт со счётчиком.</label>
+          <button class="hint-btn" onclick="toggleHint('hint7')">📖 Показать подсказку</button>
+          <div id="hint7" class="hint-box">
+            <p><strong>Готовый скрипт:</strong></p>
+            <div class="code-block">
+              <span class="keyword">local</span> part = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> click = part:FindFirstChild(<span class="string">"ClickDetector"</span>)<br>
+              <span class="keyword">local</span> count = <span class="number">0</span><br><br>
+              <span class="keyword">function</span> <span class="func">onClick</span>()<br>
+              &nbsp;&nbsp;count = count + <span class="number">1</span><br>
+              &nbsp;&nbsp;<span class="keyword">print</span>(<span class="string">"Кликов: "</span> .. count)<br>
+              &nbsp;&nbsp;part.BrickColor = BrickColor.Random()<br>
+              <span class="keyword">end</span><br><br>
+              click.MouseClick:Connect(onClick)
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t7s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t7s2">Запусти игру, несколько раз нажми на кнопку и смотри в Output.</label>
+        </li>
+           <img src="assets/images/lesson-2.4/13.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+      </ul>
+      <div class="note" style="border-left-color:var(--accent);">
+        🎯 <b>Усложни задачу:</b> сделай так, чтобы после 10 нажатий кнопка становилась зелёной и выводила сообщение «Победа!».
+      </div>
+    </div>
+
+    <!-- ===== ВОПРОСЫ НА ЗАКРЕПЛЕНИЕ ===== -->
+    <div class="interactive-box" id="toolQuiz2">
+      <h2>🧩 Быстрая проверка: выбери правильные карточки</h2>
+
+      <p><b>1. Какой скрипт работает на сервере?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Script</div>
+        <div class="choice-card" data-correct-choice="false">LocalScript</div>
+        <div class="choice-card" data-correct-choice="false">ModuleScript</div>
+      </div>
+
+      <p><b>2. Куда обычно кладут серверные скрипты?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">ServerScriptService</div>
+        <div class="choice-card" data-correct-choice="false">StarterPlayerScripts</div>
+        <div class="choice-card" data-correct-choice="false">StarterGui</div>
+      </div>
+
+      <p><b>3. Какая команда делает Part прозрачным наполовину?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">part.Transparency = 0.5</div>
+        <div class="choice-card" data-correct-choice="false">part.Transparent = true</div>
+        <div class="choice-card" data-correct-choice="false">part.Alpha = 0.5</div>
+      </div>
+
+      <p><b>4. Что означает script.Parent?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Объект, в котором лежит скрипт</div>
+        <div class="choice-card" data-correct-choice="false">Workspace</div>
+        <div class="choice-card" data-correct-choice="false">Сам скрипт</div>
+      </div>
+
+      <p><b>5. Как включить якорь у Part?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">part.Anchored = true</div>
+        <div class="choice-card" data-correct-choice="false">part.Locked = true</div>
+        <div class="choice-card" data-correct-choice="false">part.Fixed = true</div>
+      </div>
+
+      <button class="action-btn" onclick="checkChoices('toolQuiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- ===== ИТОГОВЫЙ ТЕСТ ===== -->
+    <div class="quiz-wrap" id="quiz1">
+      <h2>📝 Итоговый тест «Что я узнал?»</h2>
+
+      <div class="quiz-question" data-name="quiz1q0" data-correct="b">
+        <p class="quiz-q-text">1. На каком языке пишут скрипты в Roblox?</p>
+        <label><input type="radio" name="quiz1q0" value="a"> Python</label>
+        <label><input type="radio" name="quiz1q0" value="b"> Lua</label>
+        <label><input type="radio" name="quiz1q0" value="c"> JavaScript</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q1" data-correct="a">
+        <p class="quiz-q-text">2. Какой скрипт нужен для создания интерфейса, который видит только один игрок?</p>
+        <label><input type="radio" name="quiz1q1" value="a"> LocalScript</label>
+        <label><input type="radio" name="quiz1q1" value="b"> Script</label>
+        <label><input type="radio" name="quiz1q1" value="c"> ModuleScript</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q2" data-correct="b">
+        <p class="quiz-q-text">3. Как правильно изменить размер Part на (10,5,10)?</p>
+        <label><input type="radio" name="quiz1q2" value="a"> part.Size = (10,5,10)</label>
+        <label><input type="radio" name="quiz1q2" value="b"> part.Size = Vector3.new(10,5,10)</label>
+        <label><input type="radio" name="quiz1q2" value="c"> part.Size = {10,5,10}</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q3" data-correct="c">
+        <p class="quiz-q-text">4. Какое свойство меняет материал Part?</p>
+        <label><input type="radio" name="quiz1q3" value="a"> BrickColor</label>
+        <label><input type="radio" name="quiz1q3" value="b"> Texture</label>
+        <label><input type="radio" name="quiz1q3" value="c"> Material</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q4" data-correct="b">
+        <p class="quiz-q-text">5. Что делает команда <code>print("Привет!")</code>?</p>
+        <label><input type="radio" name="quiz1q4" value="a"> Ничего не делает</label>
+        <label><input type="radio" name="quiz1q4" value="b"> Выводит сообщение в окно Output</label>
+        <label><input type="radio" name="quiz1q4" value="c"> Создаёт новую Part</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q5" data-correct="a">
+        <p class="quiz-q-text">6. Что такое ClickDetector?</p>
+        <label><input type="radio" name="quiz1q5" value="a"> Объект, который позволяет Part реагировать на клики</label>
+        <label><input type="radio" name="quiz1q5" value="b"> Скрипт для изменения цвета</label>
+        <label><input type="radio" name="quiz1q5" value="c"> Инструмент для измерения размера</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <button class="quiz-btn" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+      <div class="quiz-result"></div>
+    </div>
+
+    <!-- ===== РЕФЛЕКСИЯ ===== -->
+    <div class="reflection-box" id="reflectionBlock">
+      <h2>💭 Твой опыт</h2>
+      <p>Оцени, как прошло занятие:</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="yes"> 🚀 Всё понял, сделал всё сам!
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="ok"> 🤔 Понял почти всё, иногда нужна была подсказка.
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="no"> 😕 Было сложно, нужно ещё раз повторить.
+        </label>
+      </div>
+      <textarea id="reflectionText" placeholder="Что нового ты узнал о скриптах?&#10;Какое свойство Part тебе понравилось больше всего?&#10;Что хочешь попробовать дальше?"></textarea>
+      <button class="action-btn" onclick="submitReflection()">Отправить</button>
+      <div id="reflectionResult" style="margin-top:10px; font-weight:700;"></div>
+    </div>
+
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    <div class="lesson-nav">
+      <a class="nav-btn prev" href="Занятие_2.1_Создание_ландшафта.html">
+        <div class="lbl">← Назад</div>
+        <div class="ttl">2.1 Создание ландшафта</div>
+      </a>
+      <a class="nav-btn next" href="Занятие_2.3_Строим_лес.html">
+        <div class="lbl">Далее →</div>
+        <div class="ttl">2.3 Строим лес</div>
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-brand">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+        Учебный центр «РОБОВИТА»
+      </div>
+      <div>Занятие 2.2 · офлайн-курс по Roblox Studio и Lua · 💻 Первый скрипт</div>
+    </div>
+  </footer>
+
+  <script src="assets/js/lesson.js"></script>
+  <script>
+    // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+    function toggleHint(id) {
+      const box = document.getElementById(id);
+      box.classList.toggle('show');
+      const btn = box.previousElementSibling;
+      if (box.classList.contains('show')) {
+        btn.textContent = '🙈 Скрыть подсказку';
+      } else {
+        btn.textContent = '📖 Показать подсказку';
+      }
+    }
+
+    function submitReflection() {
+      const textarea = document.getElementById('reflectionText');
+      const resultDiv = document.getElementById('reflectionResult');
+      if (textarea.value.trim() === '') {
+        resultDiv.textContent = 'Пожалуйста, напишите хотя бы несколько слов.';
+        resultDiv.style.color = '#C0392B';
+        return;
+      }
+      resultDiv.textContent = '✅ Спасибо! Твой ответ записан.';
+      resultDiv.style.color = '#2E7D32';
+      textarea.disabled = true;
+      const btn = document.querySelector('#reflectionBlock .action-btn');
+      if (btn) btn.disabled = true;
+    }
+
+    function updateTaskProgress(taskBox) {
+      const checkboxes = taskBox.querySelectorAll('.task-steps input[type=checkbox]');
+      let done = 0;
+      checkboxes.forEach(cb => { if (cb.checked) done++; });
+      const total = checkboxes.length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+      const fill = taskBox.querySelector('.progress-fill');
+      const label = taskBox.querySelector('.progress-label');
+      if (fill) fill.style.width = percent + '%';
+      if (label) label.textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+    }
+
+    function checkChoices(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const cards = container.querySelectorAll('.choice-card');
+      let allCorrect = true;
+      let anySelected = false;
+      cards.forEach(card => {
+        if (card.classList.contains('selected')) anySelected = true;
+        const isCorrect = card.dataset.correctChoice === 'true';
+        if (card.classList.contains('selected') && !isCorrect) {
+          card.classList.add('incorrect');
+          allCorrect = false;
+        } else if (card.classList.contains('selected') && isCorrect) {
+          card.classList.add('correct');
+        }
+      });
+      const resultDiv = container.querySelector('.activity-result');
+      if (!resultDiv) return;
+      if (!anySelected) {
+        resultDiv.textContent = '⚠️ Выбери ответы на все вопросы!';
+        resultDiv.className = 'activity-result neutral';
+        return;
+      }
+      if (allCorrect) {
+        resultDiv.textContent = '✅ Молодец! Всё верно.';
+        resultDiv.className = 'activity-result done';
+      } else {
+        resultDiv.textContent = '❌ Есть ошибки. Попробуй ещё раз.';
+        resultDiv.className = 'activity-result neutral';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('click', function(e) {
+        const card = e.target.closest('.choice-card');
+        if (!card) return;
+        const parent = card.closest('.choice-grid');
+        if (!parent) return;
+        parent.querySelectorAll('.choice-card').forEach(c => {
+          c.classList.remove('selected', 'correct', 'incorrect');
+        });
+        card.classList.add('selected');
+      });
+    });
+
+    function checkQuiz(quizId) {
+      const container = document.getElementById(quizId);
+      if (!container) return;
+      const questions = container.querySelectorAll('.quiz-question');
+      let correct = 0;
+      let allAnswered = true;
+      questions.forEach(q => {
+        const correctVal = q.dataset.correct;
+        const selected = q.querySelector('input[type=radio]:checked');
+        const feedback = q.querySelector('.q-feedback');
+        if (!feedback) return;
+        if (selected) {
+          if (selected.value === correctVal) {
+            feedback.textContent = '✅ Верно!';
+            feedback.style.color = '#2E7D32';
+            correct++;
+          } else {
+            feedback.textContent = '❌ Неправильно.';
+            feedback.style.color = '#C0392B';
+          }
+        } else {
+          feedback.textContent = '⚠️ Выбери ответ.';
+          feedback.style.color = '#B7950B';
+          allAnswered = false;
+        }
+      });
+      const resultDiv = container.querySelector('.quiz-result');
+      if (resultDiv) {
+        const total = questions.length;
+        if (!allAnswered) {
+          resultDiv.textContent = 'Ответь на все вопросы!';
+          resultDiv.style.color = '#B7950B';
+        } else {
+          resultDiv.textContent = `Результат: ${correct} из ${total}`;
+          resultDiv.style.color = '#2E7D32';
+        }
+        resultDiv.style.fontWeight = '700';
+        resultDiv.style.marginTop = '12px';
+      }
+    }
+  </script>
+</body>
+</html>

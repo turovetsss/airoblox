@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2.1. Создание ландшафта — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .choice-card {
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      padding: 8px 16px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 30px;
+      display: inline-block;
+      margin: 4px 6px;
+    }
+    .choice-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      background: #f1f5f9;
+    }
+    .choice-card.selected {
+      border-color: var(--accent) !important;
+      background: var(--accent-light) !important;
+      box-shadow: 0 0 0 3px rgba(110, 0, 145, 0.2);
+    }
+    .choice-card.correct {
+      border-color: var(--primary) !important;
+      background: var(--primary-light) !important;
+    }
+    .choice-card.incorrect {
+      border-color: var(--danger) !important;
+      background: var(--danger-light) !important;
+    }
+    .activity-result.done {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .activity-result.neutral {
+      background: var(--accent-light);
+      color: var(--accent-ink);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    /* Дополнительные стили для теории */
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+      margin: 20px 0 10px;
+    }
+    .mode-card {
+      background: var(--bg-light, #f8fafc);
+      border-radius: 16px;
+      padding: 16px 18px 18px;
+      border: 1px solid var(--line, #e2e8f0);
+      transition: 0.15s;
+    }
+    .mode-card:hover {
+      border-color: var(--primary, #61b01f);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .mode-card .mode-name {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--primary-dark, #1a4a0a);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .mode-card .mode-name .badge {
+      font-size: 0.7rem;
+      background: var(--accent-light, #f0e6f5);
+      color: var(--accent-ink, #4a1a5a);
+      padding: 2px 10px;
+      border-radius: 30px;
+      font-weight: 600;
+    }
+    .mode-card .mode-desc {
+      font-size: 0.95rem;
+      color: #1e293b;
+      margin: 6px 0 0;
+      line-height: 1.5;
+    }
+    .mode-card .mode-example {
+      font-size: 0.85rem;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 6px 12px;
+      border-radius: 30px;
+      display: inline-block;
+      margin-top: 8px;
+    }
+    .theory-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 16px 0 4px;
+    }
+    .theory-tabs span {
+      background: var(--primary-light, #e8f5e0);
+      color: var(--primary-dark, #1a4a0a);
+      padding: 4px 14px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .theory-tabs span.edit-tab {
+      background: var(--accent-light, #f0e6f5);
+      color: var(--accent-ink, #4a1a5a);
+    }
+    /* для новых блоков */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 16px 0 8px;
+    }
+    .settings-item {
+      background: white;
+      border-radius: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--line, #e2e8f0);
+      transition: 0.15s;
+    }
+    .settings-item:hover {
+      border-color: var(--primary, #61b01f);
+    }
+    .settings-item .label {
+      font-weight: 700;
+      color: var(--primary-dark, #1a4a0a);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .settings-item .desc {
+      font-size: 0.9rem;
+      color: #334155;
+      margin: 0;
+    }
+    .settings-item .example {
+      font-size: 0.8rem;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 2px 10px;
+      border-radius: 30px;
+      display: inline-block;
+      margin-top: 6px;
+    }
+    /* choice-grid для карточек в тестах */
+    .choice-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 16px;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+  <header class="site-header">
+    <div class="wrap">
+      <div class="top-bar">
+        <a class="brand" href="Карта_курса.html">
+          <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+          <div>
+            <div class="brand-name">РОБОВИТА</div>
+            <div class="brand-tag">учимся программировать роботов и игры</div>
+          </div>
+        </a>
+        <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 2.1</div>
+      </div>
+      <div class="hero">
+        <div class="hex-badge">2.1</div>
+        <div>
+          <div class="module-pill">Раздел 2 · Моделирование, ландшафт и карты</div>
+          <h1>🏞️ Создание ландшафта</h1>
+          <p class="subtitle">Работаем с Terrain Editor: холмы, горы, реки, озёра, пещеры</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- Цели -->
+    <div class="objectives">
+      <h2>🎯 Цели занятия</h2>
+      <ul>
+        <li>Познакомиться с Terrain Editor — главным инструментом для рельефа</li>
+        <li>Научиться генерировать, добавлять и вырезать ландшафт</li>
+        <li>Работать с материалами ландшафта: Grass, Sand, Water, Rock</li>
+        <li>Создать свой остров с холмами, рекой и озером</li>
+      </ul>
+    </div>
+
+    <!-- План -->
+    <div class="card">
+      <table class="timetable">
+        <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+        <tr><td>Теория: Terrain Editor</td><td>10 мин</td><td>Обзор панели Terrain, все режимы и материалы</td></tr>
+        <tr><td>Задание 1 — Генерация ландшафта</td><td>15 мин</td><td>Создаём базовый рельеф (холмы, горы)</td></tr>
+        <tr><td>Задание 2 — Вода и реки</td><td>15 мин</td><td>Добавляем реку, озеро, настраиваем уровень воды</td></tr>
+        <tr><td>Задание 3 — Пещеры и обрывы</td><td>10 мин</td><td>Вырезаем пещеру, создаём обрыв</td></tr>
+        <tr><td>Задание 4 — Остров своей мечты</td><td>20 мин</td><td>Строим целый остров по заданным параметрам</td></tr>
+        <tr><td>Опрос и итоги</td><td>10 мин</td><td>Проверяем себя</td></tr>
+        <tr><td>Итого</td><td>80 мин</td><td>—</td></tr>
+      </table>
+    </div>
+
+    <!-- ========================================================== -->
+    <!--  ТЕОРИЯ: ВСЕ РЕЖИМЫ TERRAIN EDITOR                          -->
+    <!-- ========================================================== -->
+    <div class="card" id="theory-all-modes">
+      <h2><span class="num">0</span> Terrain Editor — все режимы</h2>
+
+      <p>
+        <b>Terrain Editor</b> (Редактор ландшафта) — это главный инструмент Roblox Studio
+        для создания и изменения рельефа. Он позволяет строить горы, холмы, долины,
+        реки, озёра и пещеры. Вызывается через <b>View → Terrain Editor</b> или вкладку <b>Model</b>.
+      </p>
+
+      <div class="media-placeholder">
+          <img src="assets/images/lesson-2.3/23.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+      </div>
+
+      <!-- Вкладки -->
+      <h3 style="margin-top:24px;">📂 Вкладки</h3>
+      <div class="theory-tabs">
+        <span>🆕 Create</span>
+        <span class="edit-tab">✏️ Edit</span>
+      </div>
+
+      <div class="mode-grid">
+        <div class="mode-card">
+          <div class="mode-name">Create <span class="badge">вкладка</span></div>
+          <p class="mode-desc">
+            Создаёт новый ландшафт. Можно сгенерировать карту из готовых пресетов:
+            <b>Island</b> (остров), <b>Mountains</b> (горы), <b>Valley</b> (долина),
+            <b>Desert</b> (пустыня) и другие. Также доступен импорт карты высот из изображения.
+          </p>
+          <span class="mode-example">🏝️ Пример: создание острова для будущей игры</span>
+             <div><img src="assets/images/lesson-2.3/11.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-name">Edit <span class="badge">вкладка</span></div>
+          <p class="mode-desc">
+            Переключает в режим редактирования существующего ландшафта.
+            Все инструменты ниже (Select, Transform, Fill, Sea Level, Draw,
+            Sculpt, Smooth, Paint, Flatten) доступны именно в этой вкладке.
+          </p>
+          <span class="mode-example">🔧 Пример: доработка уже созданного рельефа</span>
+          <div><img src="assets/images/lesson-2.3/12.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </div>
+      </div>
+
+      <!-- Инструменты редактирования -->
+      <h3 style="margin-top:28px;">🛠️ Инструменты редактирования (вкладка Edit)</h3>
+
+      <div class="mode-grid">
+
+        <div class="mode-card">
+          <div class="mode-name">Select</div>
+          <p class="mode-desc">
+            Выделяет отдельные ячейки ландшафта (клетки). Удобно для точечного
+            редактирования: можно выделить конкретную область и применить к ней
+            <b>Transform</b> или <b>Fill</b>.
+          </p>
+          <span class="mode-example">🎯 Пример: выделение вершины горы для масштабирования</span>
+            <div><img src="assets/images/lesson-2.3/13.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-name">Transform</div>
+          <p class="mode-desc">
+            Трансформирует выделенную область. Позволяет <b>перемещать</b>,
+            <b>масштабировать</b> и <b>поворачивать</b> фрагменты ландшафта.
+            Работает только вместе с <b>Select</b>.
+          </p>
+          <span class="mode-example">📐 Пример: увеличение холма или поворот гряды</span>
+            <div><img src="assets/images/lesson-2.3/14.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-name">Fill</div>
+          <p class="mode-desc">
+            Заполняет выделенную область ландшафтом. Используется для быстрого
+            заполнения пустот, создания платформ или ровных оснований под постройки.
+          </p>
+          <span class="mode-example">🧱 Пример: создание ровной площадки под замок</span>
+            <div><img src="assets/images/lesson-2.3/15.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-name">Sea Level</div>
+          <p class="mode-desc">
+            Управляет <b>уровнем воды</b> во всём мире. Можно поднимать или опускать
+            воду — она автоматически заливает все области ниже установленной отметки.
+            Вода не заливается поверх ландшафта, а заполняет впадины.
+          </p>
+          <span class="mode-example">🌊 Пример: поднять уровень воды, чтобы создать море</span>
+            <div><img src="assets/images/lesson-2.3/16.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-name">Draw</div>
+          <p class="mode-desc">
+            <b>Рисует</b> новый ландшафт, наращивая землю на существующей поверхности.
+            Отлично подходит для создания холмов, гор, насыпей и любых выпуклых форм.
+            Работает как кисть — чем дольше держишь, тем выше поднимается terrain.
+          </p>
+          <span class="mode-example">⛰️ Пример: дорисовка горного хребта</span>
+            <div><img src="assets/images/lesson-2.3/17.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-name">Sculpt</div>
+          <p class="mode-desc">
+            <b>Скульптинг</b> — вытягивает или вдавливает поверхность ландшафта.
+            Позволяет создавать плавные формы, впадины, кратеры и возвышенности.
+            Более тонкий инструмент, чем Draw, для органических форм.
+          </p>
+          <span class="mode-example">🌀 Пример: создание кратера вулкана</span>
+            <div><img src="assets/images/lesson-2.3/18.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-name">Smooth</div>
+          <p class="mode-desc">
+            <b>Сглаживает</b> неровности ландшафта. Делает склоны более плавными
+            и естественными, убирает резкие перепады высот и «ступеньки».
+            Незаменим после грубой работы Draw или Sculpt.
+          </p>
+          <span class="mode-example">🌄 Пример: сгладить холмы для реалистичного пейзажа</span>
+            <div><img src="assets/images/lesson-2.3/19.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-name">Paint</div>
+          <p class="mode-desc">
+            <b>Закрашивает</b> поверхность материалами. Доступны:
+            <b>Grass</b> (трава), <b>Sand</b> (песок), <b>Rock</b> (камень),
+            <b>Snow</b> (снег) и другие. Можно смешивать материалы для
+            реалистичных переходов (например, трава → песок → вода).
+          </p>
+          <span class="mode-example">🎨 Пример: песчаный пляж + травянистый холм</span>
+            <div><img src="assets/images/lesson-2.3/20.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-name">Flatten</div>
+          <p class="mode-desc">
+            <b>Выравнивает</b> участок ландшафта до заданной высоты.
+            Полезно для создания ровных площадок под дома, дороги или целые города.
+            Можно задать целевую высоту в настройках.
+          </p>
+          <span class="mode-example">🏗️ Пример: площадка для строительства замка</span>
+            <div><img src="assets/images/lesson-2.3/21.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </div>
+
+      </div>
+
+      <!-- Важное примечание про воду -->
+      <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);margin-top:16px;">
+        💡 <b>Важно:</b> Вода добавляется не через Paint, а через <b>Sea Level</b> (уровень воды).
+        Если вы хотите создать озеро или реку, сначала вырежьте впадину (Subtract или Sculpt),
+        затем поднимите уровень воды через Sea Level — вода заполнит все низины.
+      </div>
+
+      <!-- Материалы для Paint -->
+      <h3 style="margin-top:28px;">🎨 Материалы для Paint</h3>
+        <img src="assets/images/lesson-2.3/22.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <caption>Материалы ландшафта</caption>
+          <tr><th>Материал</th><th>Вид</th><th>Где использовать</th></tr>
+          <tr><td><b>Grass</b></td><td>Зелёная трава</td><td>Холмы, равнины, луга</td></tr>
+          <tr><td><b>Sand</b></td><td>Песок</td><td>Пляжи, берега, пустыни</td></tr>
+          <tr><td><b>Rock</b></td><td>Скала, камень</td><td>Горы, обрывы, пещеры, утёсы</td></tr>
+          <tr><td><b>Snow</b></td><td>Снег</td><td>Вершины гор, холодные биомы</td></tr>
+          <tr><td><b>Asphalt</b></td><td>Асфальт</td><td>Дороги, городские зоны</td></tr>
+          <tr><td><b>Leaf</b></td><td>Листва</td><td>Для лесных массивов (редко)</td></tr>
+        </table>
+      </div>
+
+      <!-- ========== НОВЫЙ БЛОК: НАСТРОЙКИ КИСТИ ========== -->
+      <h3 style="margin-top:32px;">🖌️ Настройки кисти (Brush Settings)</h3>
+      <p style="margin-bottom:8px;">
+        Эти параметры управляют поведением кисти при использовании инструментов <b>Draw</b>, <b>Sculpt</b>, <b>Smooth</b>, <b>Paint</b> и <b>Flatten</b>.
+      </p>
+      <div class="settings-grid">
+        <div class="settings-item">
+          <span class="label">Brush Shape</span>
+          <p class="desc">Форма кисти: <b>Sphere</b> (сфера), <b>Cube</b> (куб) или <b>Plane</b> (плоскость). Влияет на форму создаваемого рельефа.</p>
+          <span class="example">⚪ Сфера — для холмов, куб — для террас</span>
+           <img src="assets/images/lesson-2.3/24.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        </div>
+        <div class="settings-item">
+          <span class="label">Brush Size</span>
+          <p class="desc">Размер кисти в вокселях (ячейках). Чем больше размер, тем шире область воздействия.</p>
+          <span class="example">📏 5 — точечная правка, 30 — глобальное изменение</span>
+           <img src="assets/images/lesson-2.3/25.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        </div>
+        <div class="settings-item">
+          <span class="label">Pivot Position</span>
+          <p class="desc">Точка привязки кисти: <b>Bottom</b> (низ), <b>Center</b> (центр) или <b>Top</b> (верх). Определяет, откуда начинается воздействие.</p>
+          <span class="example">📌 Bottom — для подъёма земли, Top — для углублений</span>
+           <img src="assets/images/lesson-2.3/26.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        </div>
+        <div class="settings-item">
+          <span class="label">Snapping</span>
+          <p class="desc"><b>Off</b> — свободное рисование, <b>Voxel</b> — привязка к сетке вокселей для точного позиционирования.</p>
+          <span class="example">🔲 Voxel — для аккуратных построек</span>
+           <img src="assets/images/lesson-2.3/27.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        </div>
+        <div class="settings-item">
+          <span class="label">Plane Lock</span>
+          <p class="desc"><b>Off</b> — кисть работает в 3D, <b>Auto</b> — автоматическая блокировка по плоскости, <b>Manual</b> — ручной выбор плоскости.</p>
+          <span class="example">🔒 Auto — удобно для рисования на склонах</span>
+           <img src="assets/images/lesson-2.3/28.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        </div>
+        <div class="settings-item">
+          <span class="label">Ignore Water</span>
+          <p class="desc">Если включено, кисть <b>не взаимодействует</b> с водой (не изменяет её уровень и не заливает).</p>
+          <span class="example">💧 Полезно при редактировании суши рядом с водой</span>
+           <img src="assets/images/lesson-2.3/29.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        </div>
+        <div class="settings-item">
+          <span class="label">Ignore Parts</span>
+          <p class="desc">Игнорирует детали (Part) — кисть не будет задевать расставленные объекты, что сохраняет их положение.</p>
+          <span class="example">🧱 Не даёт случайно задеть постройки</span>
+           <img src="assets/images/lesson-2.3/30.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        </div>
+      </div>
+
+      <!-- ========== НОВЫЙ БЛОК: НАСТРОЙКИ МАТЕРИАЛОВ ========== -->
+      <h3 style="margin-top:32px;">🎨 Настройки материалов (Material Settings)</h3>
+      <p style="margin-bottom:8px;">
+        Эти параметры определяют, как именно будет наноситься материал при использовании инструмента <b>Paint</b>.
+      </p>
+      <div class="settings-grid">
+        <div class="settings-item">
+          <span class="label">Material Mode</span>
+          <p class="desc">
+            <b>Paint</b> — наносит материал поверх существующего, смешиваясь с ним (градиент).
+            <b>Replace</b> — полностью заменяет старый материал на новый (без смешивания).
+          </p>
+          <span class="example">🎨 Paint — для плавных переходов; Replace — для чётких границ</span>
+           <img src="assets/images/lesson-2.3/31.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        </div>
+        <div class="settings-item">
+          <span class="label">Source Material</span>
+          <p class="desc">Выбор материала, который будет использоваться для покраски (Grass, Sand, Rock, Snow и т.д.).</p>
+          <span class="example">🏖️ Выбери Sand, чтобы нарисовать пляж</span>
+           <img src="assets/images/lesson-2.3/32.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        </div>
+      </div>
+
+      <!-- ===== КОНЕЦ БЛОКА ТЕОРИИ ===== -->
+    </div>
+    <!-- ===== КОНЕЦ КАРТЫ ТЕОРИИ ===== -->
+
+    <!-- AI-помощник -->
+    <div class="ai-helper">
+      <div class="ai-head">
+        <span style="font-size:32px; line-height:1;">🤖</span>
+        <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+      </div>
+      <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+      <div class="ai-buttons">
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20Terrain%20Editor%20%D0%B2%20Roblox%20Studio%3F%22%7D" target="_blank" class="alice-q-btn">Как пользоваться Terrain Editor?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%B8%D1%82%D1%8C%20%D0%B2%D0%BE%D0%B4%D1%83%20%D0%B2%20Roblox%20Studio%3F%22%7D" target="_blank" class="alice-q-btn">Как добавить воду?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%81%D0%B4%D0%B5%D0%BB%D0%B0%D1%82%D1%8C%20%D0%BF%D0%B5%D1%89%D0%B5%D1%80%D1%83%20%D0%B2%20Roblox%3F%22%7D" target="_blank" class="alice-q-btn">Как сделать пещеру?</a>
+      </div>
+      <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
+        💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 1: ГЕНЕРАЦИЯ БАЗОВОГО ЛАНДШАФТА ===== -->
+    <div class="task-box" id="task1">
+      <h2>🏔️ Задание 1 — Генерация базового ландшафта</h2>
+      <p>Открой <b>Terrain Editor</b> (View → Terrain Editor) и выбери вкладку <b>Generate</b>.</p>
+      <div class="progress-track"><div class="progress-fill" id="task1Progress"></div></div>
+      <span class="progress-label" id="task1Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t1s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s0">Нажми <b>Generate</b>, выбери пресет и создай ландшафт.</label>
+          <div><img src="assets/images/lesson-2.3/1.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t1s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s1">Перейди во вкладку <b>Edit</b>, выбери режим Draw (Рисовать) и нарисуй высокую гору в центре.</label>
+          <div><img src="assets/images/lesson-2.3/2.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t1s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s2">Нажми на режим <b>Paint</b> выбери материал <b>Grass(трава)</b> и добавь деталей своей горе</label>
+           <div><img src="assets/images/lesson-2.3/3.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </li>
+      </ul>
+      <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">
+        💡 Если ландшафт получился некрасивым, не бойся — следующими заданиями мы всё исправим!
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 2: ВОДА И РЕКИ ===== -->
+    <div class="task-box" id="task2">
+      <h2>💧 Задание 2 — Вода и берег</h2>
+      <div class="progress-track"><div class="progress-fill" id="task2Progress"></div></div>
+      <span class="progress-label" id="task2Label">Выполнено шагов: 0 из 4</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t2s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s0">Выбери режим <b>Sea Level</b> и создай реку от горы до края карты.</label>
+            <div><img src="assets/images/lesson-2.3/4.png" alt="Генерация холмов" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"> </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t2s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s1">С помощью режима <b>Draw</b> закрась берега реки песком (Sand)</label>
+           <div><img src="assets/images/lesson-2.3/5.png" alt="Озеро" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"></div>
+        </li>
+         <li>
+          <input type="checkbox" id="t2s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s2">Смени режим на <b>Subtract</b> и создай более натуральный эффект песка (впадины)</label>
+           <div><img src="assets/images/lesson-2.3/6.png" alt="Озеро" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"></div>
+        </li>
+         <li>
+          <input type="checkbox" id="t2s3" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s3">При помощи режимов <b>Draw и Paint</b> создай травяной берег и землю</label>
+           <div><img src="assets/images/lesson-2.3/7.png" alt="Озеро" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"></div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 3: ПЕЩЕРЫ И ОБРЫВЫ ===== -->
+    <div class="task-box" id="task3">
+      <h2>🕳️ Задание 3 — Пещера</h2>
+      <div class="progress-track"><div class="progress-fill" id="task3Progress"></div></div>
+      <span class="progress-label" id="task3Label">Выполнено шагов: 0 из 1</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t3s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t3s0">С помощью Subtract вырежи пещеру внутри горы. Начни с входа, затем расширяй внутри. Покрась стены пещеры в Rock.</label>
+            <div><img src="assets/images/lesson-2.3/8.png" alt="Озеро" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"></div>
+        </li>
+      </ul>
+    </div>
+  <div class="task-box" id="task4">
+      <h2>🕳️ Задание 4 — Холмы</h2>
+      <div class="progress-track"><div class="progress-fill" id="task3Progress"></div></div>
+      <span class="progress-label" id="task3Label">Выполнено шагов: 0 из 1</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t3s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t3s0">В режиме <b>Sculpt</b>  нарасти холмы в гашей долине.</label>
+            <div><img src="assets/images/lesson-2.3/9.png" alt="Озеро" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"></div>
+        </li>
+      </ul>
+    </div>
+    <!-- ===== ЗАДАНИЕ 5: ОСТРОВ СВОЕЙ МЕЧТЫ ===== -->
+    <div class="task-box" id="task5">
+      <h2>🏝️ Задание 5 — Остров своей мечты</h2>
+      <p>Теперь самостоятельно создай целый остров, используя все режимы. Параметры:</p>
+      <ul>
+        <li>Остров в форме, похожей на круг (Generate → Island или нарисуй вручную)</li>
+        <li>Гора в центре (Add + Paint → Rock)</li>
+        <li>Река, спускающаяся с горы к пляжу (Subtract + Water)</li>
+        <li>Песчаный пляж по всему берегу (Paint → Sand)</li>
+        <li>Маленькое озеро или лагуна</li>
+        <li>Пещера с входом на пляже</li>
+        <li>Добавь растения,деревья из Toolbox</li>
+      </ul>
+      <div class="progress-track"><div class="progress-fill" id="task4Progress"></div></div>
+      <span class="progress-label" id="task4Label">Выполнено шагов: 0 из 7</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t4s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s0">Сгенерировал основу острова</label></li>
+        <li><input type="checkbox" id="t4s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s1">Добавил гору в центре</label></li>
+        <li><input type="checkbox" id="t4s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s2">Вырезал реку, залил водой</label></li>
+        <li><input type="checkbox" id="t4s3" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s3">Покрасил пляж песком</label></li>
+        <li><input type="checkbox" id="t4s4" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s4">Создал озеро/лагуну</label></li>
+        <li><input type="checkbox" id="t4s5" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s5">Вырезал пещеру</label></li>
+        <li><input type="checkbox" id="t4s6" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s5">Добавил растений</label></li>
+      </ul>
+      <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+        🏆 Это твой авторский ландшафт! Сохрани его, он пригодится для будущих игр.
+      </div>
+    </div>
+
+    <!-- ===== РЕФЛЕКСИЯ ===== -->
+    <div class="reflection-box" id="reflectionBlock">
+      <h2>💭 Твой опыт</h2>
+      <p>Оцени свои ощущения:</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="yes"> 🏞️ Да, ландшафт выглядит здорово!
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="ok"> 🌳 Хорошо, но нужно доработать.
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="no"> 🏜️ Пока не очень, буду пробовать ещё.
+        </label>
+      </div>
+      <textarea id="reflectionText" placeholder="Что нового узнал о Terrain Editor?&#10;Что было самым интересным?&#10;Что хочешь попробовать дальше?"></textarea>
+      <button class="action-btn" onclick="submitReflection()">Отправить</button>
+      <div id="reflectionResult" style="margin-top:10px; font-weight:700;"></div>
+    </div>
+
+    <!-- ===== ЗАКРЕПЛЕНИЕ: НАСТРОЙКИ КИСТИ И МАТЕРИАЛОВ ===== -->
+    <div class="interactive-box" id="toolQuiz2">
+      <h2>🧩 Вопросы по настройкам (Brush & Material)</h2>
+
+      <p>1. Какая форма кисти лучше всего подходит для создания плавных холмов?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Sphere</div>
+        <div class="choice-card" data-correct-choice="false">Cube</div>
+        <div class="choice-card" data-correct-choice="false">Plane</div>
+      </div>
+
+      <p>2. Что определяет параметр Brush Size?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Форму кисти</div>
+        <div class="choice-card" data-correct-choice="true">Размер кисти</div>
+        <div class="choice-card" data-correct-choice="false">Точку привязки</div>
+      </div>
+
+      <p>3. Для чего служит Pivot Position?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Определяет точку привязки кисти</div>
+        <div class="choice-card" data-correct-choice="false">Определяет размер кисти</div>
+        <div class="choice-card" data-correct-choice="false">Определяет форму кисти</div>
+      </div>
+
+      <p>4. Что означает режим Snapping: Voxel?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Привязка к сетке вокселей</div>
+        <div class="choice-card" data-correct-choice="false">Свободное рисование</div>
+        <div class="choice-card" data-correct-choice="false">Блокировка плоскости</div>
+      </div>
+
+      <p>5. Какой Material Mode полностью заменяет старый материал на новый без смешивания?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Paint</div>
+        <div class="choice-card" data-correct-choice="true">Replace</div>
+        <div class="choice-card" data-correct-choice="false">Source</div>
+      </div>
+
+      <p>6. Где выбирается материал для покраски?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">В Source Material</div>
+        <div class="choice-card" data-correct-choice="false">В Material Mode</div>
+        <div class="choice-card" data-correct-choice="false">В Brush Shape</div>
+      </div>
+
+      <button class="action-btn" onclick="checkChoices('toolQuiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- ===== ИТОГОВЫЙ ОПРОС: ОБЩИЕ ВОПРОСЫ ПО ТЕРРЕЙНУ ===== -->
+    <div class="quiz-wrap" id="quiz1">
+      <h2>📝 Проверь себя (общие вопросы)</h2>
+
+      <div class="quiz-question" data-name="quiz1q0" data-correct="b">
+        <p class="quiz-q-text">1. Как открыть Terrain Editor?</p>
+        <label><input type="radio" name="quiz1q0" value="a"> File → Open</label>
+        <label><input type="radio" name="quiz1q0" value="b"> View → Terrain Editor</label>
+        <label><input type="radio" name="quiz1q0" value="c"> Edit → Preferences</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q1" data-correct="a">
+        <p class="quiz-q-text">2. Какой режим нужен, чтобы выкопать яму для озера?</p>
+        <label><input type="radio" name="quiz1q1" value="a"> Subtract</label>
+        <label><input type="radio" name="quiz1q1" value="b"> Add</label>
+        <label><input type="radio" name="quiz1q1" value="c"> Paint</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q2" data-correct="a">
+        <p class="quiz-q-text">3. Какой инструмент управляет уровнем воды во всём мире?</p>
+        <label><input type="radio" name="quiz1q2" value="a"> Sea Level</label>
+        <label><input type="radio" name="quiz1q2" value="b"> Paint</label>
+        <label><input type="radio" name="quiz1q2" value="c"> Flatten</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q3" data-correct="b">
+        <p class="quiz-q-text">4. Что делает режим Paint?</p>
+        <label><input type="radio" name="quiz1q3" value="a"> Удаляет ландшафт</label>
+        <label><input type="radio" name="quiz1q3" value="b"> Закрашивает поверхность материалом</label>
+        <label><input type="radio" name="quiz1q3" value="c"> Создаёт воду</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q4" data-correct="a">
+        <p class="quiz-q-text">5. Какой материал больше всего подходит для пляжа?</p>
+        <label><input type="radio" name="quiz1q4" value="a"> Sand</label>
+        <label><input type="radio" name="quiz1q4" value="b"> Grass</label>
+        <label><input type="radio" name="quiz1q4" value="c"> Rock</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q5" data-correct="b">
+        <p class="quiz-q-text">6. Можно ли смешивать материалы на одном участке ландшафта?</p>
+        <label><input type="radio" name="quiz1q5" value="a"> Нельзя</label>
+        <label><input type="radio" name="quiz1q5" value="b"> Можно, закрашивая разные области разными материалами</label>
+        <label><input type="radio" name="quiz1q5" value="c"> Только если использовать скрипты</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <button class="quiz-btn" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+      <div class="quiz-result"></div>
+    </div>
+
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    <div class="lesson-nav">
+      <a class="nav-btn prev" href="Занятие_1.6_Строим_карту_деревни.html">
+        <div class="lbl">← Назад</div>
+        <div class="ttl">1.6 Строим карту деревни</div>
+      </a>
+      <a class="nav-btn next" href="Занятие_2.2_Строим_лес.html">
+        <div class="lbl">Далее →</div>
+        <div class="ttl">2.2 Строим лес</div>
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-brand">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+        Учебный центр «РОБОВИТА»
+      </div>
+      <div>Занятие 2.1 · офлайн-курс по Roblox Studio и Lua · 🏞️ Создание ландшафта</div>
+    </div>
+  </footer>
+
+  <script src="assets/js/lesson.js"></script>
+  <script>
+    // Функция для кнопки "Отправить" в рефлексии
+    function submitReflection() {
+      const textarea = document.getElementById('reflectionText');
+      const resultDiv = document.getElementById('reflectionResult');
+      if (textarea.value.trim() === '') {
+        resultDiv.textContent = 'Пожалуйста, напишите хотя бы несколько слов.';
+        resultDiv.style.color = '#C0392B';
+        return;
+      }
+      resultDiv.textContent = '✅ Спасибо! Твой ответ записан.';
+      resultDiv.style.color = '#2E7D32';
+      textarea.disabled = true;
+      const btn = document.querySelector('#reflectionBlock .action-btn');
+      if (btn) btn.disabled = true;
+    }
+
+    // На случай, если в lesson.js нет updateTaskProgress и checkChoices
+    if (typeof updateTaskProgress === 'undefined') {
+      function updateTaskProgress(taskBox) {
+        const checkboxes = taskBox.querySelectorAll('.task-steps input[type=checkbox]');
+        let done = 0;
+        checkboxes.forEach(cb => { if (cb.checked) done++; });
+        const total = checkboxes.length;
+        const percent = total ? Math.round((done / total) * 100) : 0;
+        const fill = taskBox.querySelector('.progress-fill');
+        const label = taskBox.querySelector('.progress-label');
+        if (fill) fill.style.width = percent + '%';
+        if (label) label.textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+      }
+    }
+
+    if (typeof checkChoices === 'undefined') {
+      function checkChoices(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const cards = container.querySelectorAll('.choice-card');
+        let allCorrect = true;
+        let anySelected = false;
+        cards.forEach(card => {
+          if (card.classList.contains('selected')) anySelected = true;
+          const isCorrect = card.dataset.correctChoice === 'true';
+          if (card.classList.contains('selected') && !isCorrect) {
+            card.classList.add('incorrect');
+            allCorrect = false;
+          } else if (card.classList.contains('selected') && isCorrect) {
+            card.classList.add('correct');
+          }
+        });
+        const resultDiv = container.querySelector('.activity-result');
+        if (!resultDiv) return;
+        if (!anySelected) {
+          resultDiv.textContent = '⚠️ Выбери ответы на все вопросы!';
+          resultDiv.className = 'activity-result neutral';
+          return;
+        }
+        if (allCorrect) {
+          resultDiv.textContent = '✅ Молодец! Всё верно.';
+          resultDiv.className = 'activity-result done';
+        } else {
+          resultDiv.textContent = '❌ Есть ошибки. Попробуй ещё раз.';
+          resultDiv.className = 'activity-result neutral';
+        }
+      }
+    }
+
+    // Обработка кликов по карточкам выбора через делегирование
+    document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('click', function(e) {
+        const card = e.target.closest('.choice-card');
+        if (!card) return;
+        const parent = card.closest('.choice-grid');
+        if (!parent) return;
+        parent.querySelectorAll('.choice-card').forEach(c => {
+          c.classList.remove('selected', 'correct', 'incorrect');
+        });
+        card.classList.add('selected');
+      });
+    });
+
+    // Проверка итогового теста
+    if (typeof checkQuiz === 'undefined') {
+      function checkQuiz(quizId) {
+        const container = document.getElementById(quizId);
+        if (!container) return;
+        const questions = container.querySelectorAll('.quiz-question');
+        let correct = 0;
+        let allAnswered = true;
+        questions.forEach(q => {
+          const correctVal = q.dataset.correct;
+          const selected = q.querySelector('input[type=radio]:checked');
+          const feedback = q.querySelector('.q-feedback');
+          if (!feedback) return;
+          if (selected) {
+            if (selected.value === correctVal) {
+              feedback.textContent = '✅ Верно!';
+              feedback.style.color = '#2E7D32';
+              correct++;
+            } else {
+              feedback.textContent = '❌ Неправильно.';
+              feedback.style.color = '#C0392B';
+            }
+          } else {
+            feedback.textContent = '⚠️ Выбери ответ.';
+            feedback.style.color = '#B7950B';
+            allAnswered = false;
+          }
+        });
+        const resultDiv = container.querySelector('.quiz-result');
+        if (resultDiv) {
+          const total = questions.length;
+          if (!allAnswered) {
+            resultDiv.textContent = 'Ответь на все вопросы!';
+            resultDiv.style.color = '#B7950B';
+          } else {
+            resultDiv.textContent = `Результат: ${correct} из ${total}`;
+            resultDiv.style.color = '#2E7D32';
+          }
+          resultDiv.style.fontWeight = '700';
+          resultDiv.style.marginTop = '12px';
+        }
+      }
+    }
+  </script>
+</body>
+</html>

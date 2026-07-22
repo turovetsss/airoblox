@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Челлендж №1 — Волшебный лес — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .choice-card {
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .choice-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .choice-card.selected {
+      border-color: var(--accent) !important;
+      background: var(--accent-light) !important;
+      box-shadow: 0 0 0 3px rgba(110, 0, 145, 0.2);
+    }
+    .choice-card.correct {
+      border-color: var(--primary) !important;
+      background: var(--primary-light) !important;
+    }
+    .choice-card.incorrect {
+      border-color: var(--danger) !important;
+      background: var(--danger-light) !important;
+    }
+    .activity-result.done {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .activity-result.neutral {
+      background: var(--accent-light);
+      color: var(--accent-ink);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .task-box .media-placeholder {
+      margin-top: 8px;
+    }
+    .task-box .media-placeholder img {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 2px solid var(--line);
+    }
+    .task-box.hard {
+      border-left: 6px solid #FF3D00;
+      background: linear-gradient(135deg, #fff, #FFF5F0);
+    }
+    .task-box.medium {
+      border-left: 6px solid #FFB238;
+      background: linear-gradient(135deg, #fff, #FFF8E8);
+    }
+    .task-box.easy {
+      border-left: 6px solid var(--primary);
+      background: linear-gradient(135deg, #fff, var(--primary-light));
+    }
+    .task-box.bonus {
+      border-left: 6px solid #6E0091;
+      background: linear-gradient(135deg, #fff, var(--accent-light));
+    }
+    .star-rating {
+      display: flex;
+      gap: 4px;
+      margin: 4px 0;
+    }
+    .star-rating .star {
+      color: #FFB238;
+      font-size: 1.2rem;
+    }
+    .star-rating .star.empty {
+      color: #ddd;
+    }
+    .code-block {
+      margin: 16px 0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .code-block .code-head {
+      background: #0A2119;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: monospace;
+      color: #8abba5;
+    }
+    .code-block .code-head .dots span {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+    .code-block .code-head .dots .d1 { background: #ff5f57; }
+    .code-block .code-head .dots .d2 { background: #ffbd2e; }
+    .code-block .code-head .dots .d3 { background: #28c840; }
+    .code-block pre {
+      margin: 0;
+      padding: 16px 20px;
+      background: #0E1E18;
+      color: #d4eee2;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+    .code-block .tok-c { color: #6a9f86; font-style: italic; }
+    .code-block .tok-k { color: #ffb86c; font-weight: 700; }
+    .code-block .tok-s { color: #f1fa8c; }
+    .code-block .tok-n { color: #8be9fd; }
+    .code-block .tok-f { color: #50fa7b; }
+    .magic-icon {
+      display: inline-block;
+      background: linear-gradient(135deg, #6E0091, #9B30B5);
+      color: #fff;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      text-align: center;
+      line-height: 28px;
+      font-weight: 700;
+      font-size: 14px;
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+  <!-- ===== ШАПКА ===== -->
+  <header class="site-header">
+    <div class="wrap">
+      <div class="top-bar">
+        <a class="brand" href="Карта_курса.html">
+          <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+          <div>
+            <div class="brand-name">РОБОВИТА</div>
+            <div class="brand-tag">учимся программировать роботов и игры</div>
+          </div>
+        </a>
+        <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Челлендж №1</div>
+      </div>
+      <div class="hero">
+        <div class="hex-badge">🌿</div>
+        <div>
+          <div class="module-pill">⭐ ЧЕЛЛЕНДЖ</div>
+          <h1>Челлендж №1 — Волшебный лес</h1>
+          <p class="subtitle">Создай свой волшебный лес: светящиеся деревья, грибы, кристаллы, ручей и поляну с цветами!</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- ===== ЦЕЛИ ===== -->
+    <div class="objectives">
+      <h2>🎯 Цель челленджа</h2>
+      <ul>
+        <li>🌳 <b>Создать</b> волшебный лес: деревья, грибы, кристаллы, ручей, поляну</li>
+        <li>🛠️ <b>Применить</b> дублирование, вращение, масштабирование, группировку</li>
+        <li>🎨 <b>Использовать</b> цвета и материалы (Neon, Glass, Wood, Grass, Metal)</li>
+        <li>💻 <b>Добавить</b> скрипт для анимации (свечение и вращение)</li>
+        <li>🏆 <b>Сдать</b> готовый лес тренеру и получить награду!</li>
+      </ul>
+    </div>
+
+    <!-- ===== ПЛАН ===== -->
+    <div class="card">
+      <h2 style="font-size:1.8rem; display:flex; align-items:center; gap:12px;">
+        <span style="font-size:2rem;">📋</span> План челленджа
+        <span style="font-size:0.8rem; background:var(--accent-light); color:var(--accent-ink); padding:2px 14px; border-radius:30px; font-weight:700;">Время: 60–90 мин</span>
+      </h2>
+      <table class="timetable">
+        <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+        <tr><td>Введение</td><td>5 мин</td><td>Знакомство с темой, просмотр примера</td></tr>
+        <tr><td>Челлендж 1 — Волшебное дерево</td><td>12 мин</td><td>Ствол (Wood) + листва (Neon/Glass)</td></tr>
+        <tr><td>Челлендж 2 — Светящиеся грибы</td><td>10 мин</td><td>Ножка + шляпка с Neon</td></tr>
+        <tr><td>Челлендж 3 — Магические кристаллы</td><td>12 мин</td><td>Wedge + Neon + Glass</td></tr>
+        <tr><td>Челлендж 4 — Тропинка из камней</td><td>8 мин</td><td>Круги с Neon, дублирование</td></tr>
+        <tr><td>Челлендж 5 — Волшебный ручей</td><td>10 мин</td><td>Glass + Transparency</td></tr>
+        <tr><td>Челлендж 6 — Поляна с цветами</td><td>12 мин</td><td>Neon-цветы, группировка</td></tr>
+        <tr><td>Челлендж 7 — Анимация (скрипт)</td><td>10 мин</td><td>Скрипт для свечения и вращения</td></tr>
+        <tr><td>Сдача и проверка</td><td>5 мин</td><td>Показываем результат тренеру</td></tr>
+        <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+      </table>
+    </div>
+
+    <!-- ===== ПОВТОРЕНИЕ ===== -->
+    <div class="card">
+      <h2><span class="num">🔧</span> Что нам пригодится</h2>
+      <p>Вспомни главные инструменты и горячие клавиши — они понадобятся в челлендже!</p>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <caption>Инструменты трансформации</caption>
+          <tr><th>Инструмент</th><th>Горячая клавиша</th><th>Что делает</th></tr>
+          <tr><td><b>Select</b> (Выбор)</td><td>Q</td><td>Выделяет объект</td></tr>
+          <tr><td><b>Move</b> (Перемещение)</td><td>W</td><td>Двигает по осям X, Y, Z</td></tr>
+          <tr><td><b>Scale</b> (Масштаб)</td><td>E</td><td>Меняет размер</td></tr>
+          <tr><td><b>Rotate</b> (Вращение)</td><td>R</td><td>Вращает вокруг оси</td></tr>
+        </table>
+      </div>
+
+      <div class="note">
+        💡 <b>Напоминалка:</b> <kbd>Ctrl+D</kbd> — дублирование, <kbd>Ctrl+G</kbd> — группировка, <kbd>Ctrl+1</kbd> — панель Properties.
+        В Properties можно менять <b>BrickColor</b> (цвет) и <b>Material</b> (материал).
+      </div>
+    </div>
+
+    <!-- ===== СКАЧИВАНИЕ ===== -->
+    <div class="card">
+      <h2><span class="num">📥</span> Скачай заготовку</h2>
+      <p>🗺️ Скачай заготовку для волшебного леса и открой её в Roblox Studio.</p>
+      <div class="note" style="border-left-color: var(--accent); background: var(--accent-light);">
+        <b>Файл заготовки:</b>
+        <a href="assets/downloads/magic_forest.rbxl" download style="font-weight:800; color:var(--accent-ink); font-size:1.1rem;">
+          ⬇️ Скачать magic_forest.rbxl
+        </a>
+        (правый клик → «Сохранить ссылку как...»)
+      </div>
+      <p style="margin-top:12px; font-size:0.95rem; color:var(--muted);">
+        <b>Как открыть:</b> Файл → Открыть → Выбери скачанный файл.
+      </p>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== ЧЕЛЛЕНДЖ 1: ВОЛШЕБНОЕ ДЕРЕВО ===== -->
+    <!-- ============================================================ -->
+    <div class="task-box easy" id="task1">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+        <h2 style="margin-bottom:0;">🌳 Челлендж 1 — Волшебное дерево</h2>
+        <div class="star-rating">
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star empty">☆</span>
+          <span class="star empty">☆</span>
+          <span class="star empty">☆</span>
+        </div>
+      </div>
+      <p style="color:var(--muted);"><b>Сложность:</b> 🌱 Лёгкая</p>
+
+      <div class="media-placeholder" style="margin-top:8px;">
+        <img src="assets/images/lesson-1.6/magic_tree.png" alt="Волшебное дерево" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">Создай дерево: ствол (Wood) + светящаяся листва (Neon).</p>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="task1Progress"></div></div>
+      <span class="progress-label" id="task1Label">Выполнено шагов: 0 из 3</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t1s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s0">Создай ствол: <b>Cylinder</b> (высота 25, радиус 2). Материал <b>Wood</b>, цвет коричневый.</label></li>
+        <li><input type="checkbox" id="t1s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s1">Создай листву: 5–7 сфер (радиус 4–6) вокруг ствола. Материал <b>Neon</b>, цвет — зелёный, голубой или фиолетовый.</label></li>
+        <li><input type="checkbox" id="t1s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s2">Сгруппируй дерево (Ctrl+G) и размести на карте.</label></li>
+      </ul>
+
+      <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">
+        ✨ <b>Совет:</b> Используй разные оттенки Neon для листвы — зелёный, салатовый, голубой.
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== ЧЕЛЛЕНДЖ 2: СВЕТЯЩИЕСЯ ГРИБЫ ===== -->
+    <!-- ============================================================ -->
+    <div class="task-box easy" id="task2">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+        <h2 style="margin-bottom:0;">🍄 Челлендж 2 — Светящиеся грибы</h2>
+        <div class="star-rating">
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star empty">☆</span>
+          <span class="star empty">☆</span>
+          <span class="star empty">☆</span>
+        </div>
+      </div>
+      <p style="color:var(--muted);"><b>Сложность:</b> 🌱 Лёгкая</p>
+
+      <div class="media-placeholder" style="margin-top:8px;">
+        <img src="assets/images/lesson-1.6/magic_mushrooms.png" alt="Светящиеся грибы" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">Создай светящиеся грибы разных цветов.</p>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="task2Progress"></div></div>
+      <span class="progress-label" id="task2Label">Выполнено шагов: 0 из 3</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t2s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t2s0">Создай ножку гриба: <b>Cylinder</b> (высота 6, радиус 0.8). Материал — Plastic, цвет белый или кремовый.</label></li>
+        <li><input type="checkbox" id="t2s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t2s1">Создай шляпку: <b>Sphere</b> (радиус 3) или <b>Wedge</b>. Материал <b>Neon</b>, цвет яркий (красный, синий, жёлтый, фиолетовый).</label></li>
+        <li><input type="checkbox" id="t2s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t2s2">Сделай 3–5 грибов разных цветов, размести их под деревьями.</label></li>
+      </ul>
+
+      <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">
+        🍄 <b>Совет:</b> Используй маленькие сферы на шляпке как «светящиеся точки» (тоже Neon).
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== ЧЕЛЛЕНДЖ 3: МАГИЧЕСКИЕ КРИСТАЛЛЫ ===== -->
+    <!-- ============================================================ -->
+    <div class="task-box medium" id="task3">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+        <h2 style="margin-bottom:0;">💎 Челлендж 3 — Магические кристаллы</h2>
+        <div class="star-rating">
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star empty">☆</span>
+          <span class="star empty">☆</span>
+        </div>
+      </div>
+      <p style="color:var(--muted);"><b>Сложность:</b> 🌿🌿 Средняя</p>
+
+      <div class="media-placeholder" style="margin-top:8px;">
+        <img src="assets/images/lesson-1.6/magic_crystals.png" alt="Магические кристаллы" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">Создай острые кристаллы с материалом Neon и Glass.</p>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="task3Progress"></div></div>
+      <span class="progress-label" id="task3Label">Выполнено шагов: 0 из 3</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t3s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s0">Создай кристалл: <b>Wedge</b> (клин) с материалом <b>Neon</b> или <b>Glass</b>. Цвет — синий, фиолетовый или розовый.</label></li>
+        <li><input type="checkbox" id="t3s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s1">Используй <b>Rotate (R)</b> и <b>Scale (E)</b>, чтобы сделать кристалл острым и вытянутым.</label></li>
+        <li><input type="checkbox" id="t3s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s2">Создай группу из 3–5 кристаллов и размести на поляне или у ручья.</label></li>
+      </ul>
+
+      <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+        💎 <b>Совет:</b> Комбинируй Neon и Glass — сделай основу кристалла Glass, а ободок Neon.
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== ЧЕЛЛЕНДЖ 4: ТРОПИНКА ИЗ КАМНЕЙ ===== -->
+    <!-- ============================================================ -->
+    <div class="task-box easy" id="task4">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+        <h2 style="margin-bottom:0;">🪨 Челлендж 4 — Тропинка из светящихся камней</h2>
+        <div class="star-rating">
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star empty">☆</span>
+          <span class="star empty">☆</span>
+          <span class="star empty">☆</span>
+        </div>
+      </div>
+      <p style="color:var(--muted);"><b>Сложность:</b> 🌱 Лёгкая</p>
+
+      <div class="media-placeholder" style="margin-top:8px;">
+        <img src="assets/images/lesson-1.6/glowing_path.png" alt="Светящаяся тропинка" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">Тропинка из светящихся камней ведёт через лес.</p>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="task4Progress"></div></div>
+      <span class="progress-label" id="task4Label">Выполнено шагов: 0 из 2</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t4s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s0">Создай камень: <b>Sphere</b> (радиус 2–3) с материалом <b>Neon</b>. Цвет — голубой, фиолетовый или белый.</label></li>
+        <li><input type="checkbox" id="t4s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s1">Продублируй камни (Ctrl+D) и размести их цепочкой — получится тропинка.</label></li>
+      </ul>
+
+      <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">
+        ✨ <b>Совет:</b> Сделай камни разного размера (Scale) и цвета для красоты.
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== ЧЕЛЛЕНДЖ 5: ВОЛШЕБНЫЙ РУЧЕЙ ===== -->
+    <!-- ============================================================ -->
+    <div class="task-box medium" id="task5">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+        <h2 style="margin-bottom:0;">💧 Челлендж 5 — Волшебный ручей</h2>
+        <div class="star-rating">
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star empty">☆</span>
+          <span class="star empty">☆</span>
+        </div>
+      </div>
+      <p style="color:var(--muted);"><b>Сложность:</b> 🌿🌿 Средняя</p>
+
+      <div class="media-placeholder" style="margin-top:8px;">
+        <img src="assets/images/lesson-1.6/magic_stream.png" alt="Волшебный ручей" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">Создай ручей из материала Glass с небольшой прозрачностью.</p>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="task5Progress"></div></div>
+      <span class="progress-label" id="task5Label">Выполнено шагов: 0 из 3</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t5s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t5s0">Создай русло ручья: длинный плоский <b>Block</b> (Part). Материал <b>Glass</b>.</label></li>
+        <li><input type="checkbox" id="t5s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t5s1">Измени <b>Transparency</b> (прозрачность) на 0.3–0.5, чтобы вода была полупрозрачной.</label></li>
+        <li><input type="checkbox" id="t5s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t5s2">Добавь блики: маленькие сферы с Neon (голубой) на поверхности воды.</label></li>
+      </ul>
+
+      <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+        💧 <b>Совет:</b> Сделай ручей извилистым — используй несколько блоков и поверни их (Rotate).
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== ЧЕЛЛЕНДЖ 6: ПОЛЯНА С ЦВЕТАМИ ===== -->
+    <!-- ============================================================ -->
+    <div class="task-box hard" id="task6">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+        <h2 style="margin-bottom:0;">🌸 Челлендж 6 — Поляна с цветами</h2>
+        <div class="star-rating">
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star empty">☆</span>
+        </div>
+      </div>
+      <p style="color:var(--muted);"><b>Сложность:</b> 🌿🌿🌿 Высокая</p>
+
+      <div class="media-placeholder" style="margin-top:8px;">
+        <img src="assets/images/lesson-1.6/flower_meadow.png" alt="Поляна с цветами" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">Создай поляну со светящимися цветами (Neon).</p>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="task6Progress"></div></div>
+      <span class="progress-label" id="task6Label">Выполнено шагов: 0 из 3</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t6s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t6s0">Создай основание поляны: круглый плоский <b>Block</b> (Part) с материалом <b>Grass</b> (трава).</label></li>
+        <li><input type="checkbox" id="t6s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t6s1">Создай цветы: маленькие сферы (радиус 0.8–1.5) с материалом <b>Neon</b> разных цветов (красный, жёлтый, фиолетовый, розовый).</label></li>
+        <li><input type="checkbox" id="t6s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t6s2">Размести 10–15 цветов на поляне и сгруппируй всё (Ctrl+G).</label></li>
+      </ul>
+
+      <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+        🌸 <b>Совет:</b> Используй разные оттенки Neon — чем ярче, тем красивее!
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== ЧЕЛЛЕНДЖ 7: СКРИПТ (БОНУС) ===== -->
+    <!-- ============================================================ -->
+    <div class="task-box bonus" id="task7">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+        <h2 style="margin-bottom:0;">💻 Челлендж 7 — Анимация леса (БОНУС)</h2>
+        <div class="star-rating">
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+        </div>
+      </div>
+      <p style="color:var(--muted);"><b>Сложность:</b> 🌿🌿🌿🌿 Экспертная ⭐ БОНУС</p>
+
+      <div class="media-placeholder" style="margin-top:8px;">
+        <img src="assets/images/lesson-1.6/forest_script.png" alt="Скрипт для леса" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">Добавь скрипт, который оживит лес: свечение, вращение кристаллов и мерцание цветов.</p>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="task7Progress"></div></div>
+      <span class="progress-label" id="task7Label">Выполнено шагов: 0 из 4</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t7s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t7s0">Кликни правой кнопкой по группе леса → <b>Insert Object → Script</b></label></li>
+        <li><input type="checkbox" id="t7s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t7s1">Открой скрипт и <b>удали</b> всё, что там написано</label></li>
+        <li><input type="checkbox" id="t7s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t7s2">Скопируй код из примера ниже</label></li>
+        <li><input type="checkbox" id="t7s3" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t7s3">Запусти игру (<kbd>F5</kbd>) и наслаждайся волшебством! ✨</label></li>
+      </ul>
+
+      <!-- Код -->
+      <div class="code-block">
+        <div class="code-head">
+          <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span class="fname">скрипт_волшебный_лес.lua</span>
+        </div>
+        <pre class="code"><code><span style="color:#6a9f86;font-style:italic;">-- Оживляем волшебный лес</span>
+
+<span style="color:#50fa7b;">local</span> <span style="color:#50fa7b;">isGlowing</span> <span style="color:#ffb86c;font-weight:700;">=</span> <span style="color:#8be9fd;">true</span>
+
+<span style="color:#ffb86c;font-weight:700;">while</span> <span style="color:#8be9fd;">true</span> <span style="color:#ffb86c;font-weight:700;">do</span>
+    <span style="color:#6a9f86;font-style:italic;">-- Проходим по всем частям леса</span>
+    <span style="color:#ffb86c;font-weight:700;">for</span> <span style="color:#50fa7b;">i</span>, <span style="color:#50fa7b;">child</span> <span style="color:#ffb86c;font-weight:700;">in</span> <span style="color:#8be9fd;">pairs</span>(<span style="color:#50fa7b;">script</span>.<span style="color:#8be9fd;">Parent</span>:<span style="color:#8be9fd;">GetChildren</span>()) <span style="color:#ffb86c;font-weight:700;">do</span>
+        <span style="color:#ffb86c;font-weight:700;">if</span> <span style="color:#50fa7b;">child</span>:<span style="color:#8be9fd;">IsA</span>(<span style="color:#f1fa8c;">"BasePart"</span>) <span style="color:#ffb86c;font-weight:700;">then</span>
+            <span style="color:#6a9f86;font-style:italic;">-- Меняем материал на Neon (если ещё не Neon)</span>
+            <span style="color:#ffb86c;font-weight:700;">if</span> <span style="color:#50fa7b;">child</span>.<span style="color:#8be9fd;">Material</span> <span style="color:#ffb86c;font-weight:700;">~=</span> <span style="color:#f1fa8c;">"Neon"</span> <span style="color:#ffb86c;font-weight:700;">then</span>
+                <span style="color:#6a9f86;font-style:italic;">-- Сохраняем оригинальный цвет</span>
+                <span style="color:#50fa7b;">local</span> <span style="color:#50fa7b;">origColor</span> <span style="color:#ffb86c;font-weight:700;">=</span> <span style="color:#50fa7b;">child</span>.<span style="color:#8be9fd;">BrickColor</span>
+                <span style="color:#50fa7b;">child</span>.<span style="color:#8be9fd;">Material</span> <span style="color:#ffb86c;font-weight:700;">=</span> <span style="color:#f1fa8c;">"Neon"</span>
+                <span style="color:#50fa7b;">child</span>.<span style="color:#8be9fd;">BrickColor</span> <span style="color:#ffb86c;font-weight:700;">=</span> <span style="color:#50fa7b;">origColor</span>
+            <span style="color:#ffb86c;font-weight:700;">end</span>
+
+            <span style="color:#6a9f86;font-style:italic;">-- Меняем цвет на случайный каждые 2 секунды</span>
+            <span style="color:#ffb86c;font-weight:700;">if</span> <span style="color:#50fa7b;">math</span>.<span style="color:#8be9fd;">random</span>(<span style="color:#f1fa8c;">1</span>, <span style="color:#f1fa8c;">20</span>) <span style="color:#ffb86c;font-weight:700;">==</span> <span style="color:#f1fa8c;">1</span> <span style="color:#ffb86c;font-weight:700;">then</span>
+                <span style="color:#50fa7b;">child</span>.<span style="color:#8be9fd;">BrickColor</span> <span style="color:#ffb86c;font-weight:700;">=</span> <span style="color:#8be9fd;">BrickColor</span>.<span style="color:#8be9fd;">random</span>()
+            <span style="color:#ffb86c;font-weight:700;">end</span>
+
+            <span style="color:#6a9f86;font-style:italic;">-- Вращаем кристаллы (если они есть)</span>
+            <span style="color:#ffb86c;font-weight:700;">if</span> <span style="color:#50fa7b;">child</span>.<span style="color:#8be9fd;">Name</span>:<span style="color:#8be9fd;">find</span>(<span style="color:#f1fa8c;">"Crystal"</span>) <span style="color:#ffb86c;font-weight:700;">then</span>
+                <span style="color:#50fa7b;">child</span>.<span style="color:#8be9fd;">Rotation</span> <span style="color:#ffb86c;font-weight:700;">=</span> <span style="color:#50fa7b;">child</span>.<span style="color:#8be9fd;">Rotation</span> <span style="color:#ffb86c;font-weight:700;">+</span> <span style="color:#8be9fd;">Vector3</span>.<span style="color:#8be9fd;">new</span>(<span style="color:#f1fa8c;">0</span>, <span style="color:#f1fa8c;">0.5</span>, <span style="color:#f1fa8c;">0</span>)
+            <span style="color:#ffb86c;font-weight:700;">end</span>
+        <span style="color:#ffb86c;font-weight:700;">end</span>
+    <span style="color:#ffb86c;font-weight:700;">end</span>
+
+    <span style="color:#6a9f86;font-style:italic;">-- Пауза 0.1 секунды</span>
+    <span style="color:#8be9fd;">wait</span>(<span style="color:#f1fa8c;">0.1</span>)
+<span style="color:#ffb86c;font-weight:700;">end</span></code></pre>
+      </div>
+
+      <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+        🧠 <b>Что делает скрипт?</b> Он превращает все части леса в Neon, периодически меняет их цвет на случайный, а кристаллы (если их назвать "Crystal") вращает.
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== ФИНАЛ: ГРУППИРОВКА ===== -->
+    <!-- ============================================================ -->
+    <div class="task-box" id="taskFinal">
+      <h2>📁 Финальный шаг — Группировка и сохранение</h2>
+
+      <div class="media-placeholder">
+        <img src="assets/images/lesson-1.4/g.png" alt="Группировка">
+        <p style="margin-top:8px; font-size:0.95rem;">Выдели все объекты и нажми <b>Group</b>.</p>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="taskFinalProgress"></div></div>
+      <span class="progress-label" id="taskFinalLabel">Выполнено шагов: 0 из 3</span>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="tfs0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="tfs0">Выдели все части леса (зажми ЛКМ и обведи всё)</label></li>
+        <li><input type="checkbox" id="tfs1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="tfs1">Нажми <b>Group</b> (вкладка Model) — теперь это единая модель</label></li>
+        <li><input type="checkbox" id="tfs2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="tfs2">Нажми <b>Anchor</b> — чтобы лес не двигался во время игры</label></li>
+      </ul>
+
+      <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);font-size:1.1rem;">
+        🌿 <b>Челлендж выполнен!</b> Ты создал свой волшебный лес! Позови тренера и покажи свою работу!
+      </div>
+    </div>
+
+    <!-- ===== РЕФЛЕКСИЯ ===== -->
+    <div class="reflection-box">
+      <h2>💭 Ты справился с челленджем?</h2>
+      <p>Оцени свои ощущения:</p>
+      <div style="display:flex; gap:16px; flex-wrap:wrap; margin:8px 0 12px;">
+        <label style="display:flex; align-items:center; gap:6px; background:var(--primary-light); padding:6px 14px; border-radius:30px;">
+          <input type="radio" name="satisfaction" value="yes"> 🌟 Да, мой лес волшебный и красивый!
+        </label>
+        <label style="display:flex; align-items:center; gap:6px; background:var(--primary-light); padding:6px 14px; border-radius:30px;">
+          <input type="radio" name="satisfaction" value="ok"> 🌿 Хорошо, но можно добавить ещё магии.
+        </label>
+        <label style="display:flex; align-items:center; gap:6px; background:var(--primary-light); padding:6px 14px; border-radius:30px;">
+          <input type="radio" name="satisfaction" value="no"> 🍄 Нужно ещё потренироваться.
+        </label>
+      </div>
+      <textarea placeholder="Что было самым сложным? Что понравилось больше всего? Какой элемент леса самый волшебный?"></textarea>
+    </div>
+
+    <!-- ===== ЗАКРЕПЛЕНИЕ ===== -->
+    <div class="interactive-box" id="toolQuiz2">
+      <h2>🧩 Вопросы на закрепление</h2>
+      <p>Какой инструмент изменяет размер?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Select</div>
+        <div class="choice-card" data-correct-choice="true">Scale</div>
+        <div class="choice-card" data-correct-choice="false">Move</div>
+        <div class="choice-card" data-correct-choice="false">Rotate</div>
+      </div>
+      <p>Какой материал делает объект светящимся?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Plastic</div>
+        <div class="choice-card" data-correct-choice="true">Neon</div>
+        <div class="choice-card" data-correct-choice="false">Wood</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('toolQuiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- ===== ИТОГОВЫЙ ОПРОС ===== -->
+    <div class="quiz-wrap" id="quiz1">
+      <h2>📝 Проверь себя</h2>
+
+      <div class="quiz-question" data-name="quiz1q0" data-correct="b">
+        <p class="quiz-q-text">1. Какая клавиша дублирует объект?</p>
+        <label><input type="radio" name="quiz1q0" value="a"> Ctrl+C</label>
+        <label><input type="radio" name="quiz1q0" value="b"> Ctrl+D</label>
+        <label><input type="radio" name="quiz1q0" value="c"> Ctrl+V</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q1" data-correct="a">
+        <p class="quiz-q-text">2. Какой инструмент используется для вращения?</p>
+        <label><input type="radio" name="quiz1q1" value="a"> Rotate (R)</label>
+        <label><input type="radio" name="quiz1q1" value="b"> Move (W)</label>
+        <label><input type="radio" name="quiz1q1" value="c"> Scale (E)</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q2" data-correct="b">
+        <p class="quiz-q-text">3. Чтобы объект не падал, нужно включить свойство...</p>
+        <label><input type="radio" name="quiz1q2" value="a"> CanCollide</label>
+        <label><input type="radio" name="quiz1q2" value="b"> Anchored</label>
+        <label><input type="radio" name="quiz1q2" value="c"> Material</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q3" data-correct="c">
+        <p class="quiz-q-text">4. Что делает инструмент Scale (E)?</p>
+        <label><input type="radio" name="quiz1q3" value="a"> Перемещает объект</label>
+        <label><input type="radio" name="quiz1q3" value="b"> Вращает объект</label>
+        <label><input type="radio" name="quiz1q3" value="c"> Изменяет размер</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q4" data-correct="b">
+        <p class="quiz-q-text">5. Какой материал делает объект светящимся?</p>
+        <label><input type="radio" name="quiz1q4" value="a"> Plastic</label>
+        <label><input type="radio" name="quiz1q4" value="b"> Neon</label>
+        <label><input type="radio" name="quiz1q4" value="c"> Glass</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q5" data-correct="c">
+        <p class="quiz-q-text">6. Где находится список всех объектов в игре?</p>
+        <label><input type="radio" name="quiz1q5" value="a"> В Properties</label>
+        <label><input type="radio" name="quiz1q5" value="b"> В Workspace</label>
+        <label><input type="radio" name="quiz1q5" value="c"> В Explorer</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q6" data-correct="a">
+        <p class="quiz-q-text">7. Как объединить несколько объектов в одну модель?</p>
+        <label><input type="radio" name="quiz1q6" value="a"> Group</label>
+        <label><input type="radio" name="quiz1q6" value="b"> Lock</label>
+        <label><input type="radio" name="quiz1q6" value="c"> Anchor</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <button class="quiz-btn" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+      <div class="quiz-result"></div>
+    </div>
+
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    <div class="lesson-nav">
+      <a class="nav-btn prev" href="Занятие_1.6_Строим_карту_деревни.html">
+        <div class="lbl">← Назад</div>
+        <div class="ttl">1.6 Строим карту деревни</div>
+      </a>
+      <a class="nav-btn next" href="Карта_курса.html">
+        <div class="lbl">Далее →</div>
+        <div class="ttl">К карте курса</div>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- ===== ФУТЕР ===== -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-brand">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+        Учебный центр «РОБОВИТА»
+      </div>
+      <div>Челлендж №1 · офлайн-курс по Roblox Studio и Lua · 🌿 Волшебный лес</div>
+    </div>
+  </footer>
+
+  <script src="assets/js/lesson.js"></script>
+<script>   function submitReflection() {
+            const textarea = document.getElementById('reflectionText');
+            const resultDiv = document.getElementById('reflectionResult');
+            if (textarea.value.trim() === '') {
+                resultDiv.textContent = 'Пожалуйста, напишите хотя бы несколько слов.';
+                resultDiv.style.color = '#C0392B';
+                return;
+            }
+            // Имитация сохранения
+            resultDiv.textContent = '✅ Спасибо! Твой ответ записан.';
+            resultDiv.style.color = '#2E7D32';
+            // Можно заблокировать повторную отправку
+            textarea.disabled = true;
+            document.querySelector('#reflectionBlock .action-btn').disabled = true;
+        }</script>
+</body>
+</html>

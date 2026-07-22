@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.6. Строим карту деревни — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .choice-card { cursor: pointer; transition: all 0.15s; user-select: none; }
+    .choice-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .choice-card.selected { border-color: var(--accent) !important; background: var(--accent-light) !important; box-shadow: 0 0 0 3px rgba(110, 0, 145, 0.2); }
+    .choice-card.correct { border-color: var(--primary) !important; background: var(--primary-light) !important; }
+    .choice-card.incorrect { border-color: var(--danger) !important; background: var(--danger-light) !important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+  </style>
+</head>
+<body class="lesson-page">
+
+  <header class="site-header">
+    <div class="wrap">
+      <div class="top-bar">
+        <a class="brand" href="Карта_курса.html">
+          <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+          <div>
+            <div class="brand-name">РОБОВИТА</div>
+            <div class="brand-tag">учимся программировать роботов и игры</div>
+          </div>
+        </a>
+        <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 1.6</div>
+      </div>
+      <div class="hero">
+        <div class="hex-badge">1.6</div>
+        <div>
+          <div class="module-pill">Раздел 1 · Введение</div>
+          <h1>🏘️ Строим карту деревни</h1>
+          <p class="subtitle">Создаём игровую локацию: дом, фонарь, деревья, заборы, колодцы, мосты, атмосфера</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- Цели -->
+    <div class="objectives">
+      <h2>🎯 Цели занятия</h2>
+      <ul>
+        <li>Самостоятельно построить дом и светящийся фонарь</li>
+        <li>Использовать Toolbox для быстрой вставки готовых объектов (деревья, забор, колодец, скамейка)</li>
+        <li>Работать с материалами (Neon, Glass, Wood, Metal) и цветами</li>
+        <li>Настроить атмосферу (небо, время суток) и добавить точечный свет (PointLight)</li>
+      </ul>
+    </div>
+
+    <!-- План -->
+    <div class="card">
+      <table class="timetable">
+        <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+        <tr><td>Теория: Toolbox, PointLight, материалы</td><td>10 мин</td><td>Обзор инструментов</td></tr>
+        <tr><td>Задание 1 — Дом</td><td>25 мин</td><td>Строим дом с окнами, дверью, стеклом</td></tr>
+        <tr><td>Задание 2 — Фонарь (PointLight)</td><td>15 мин</td><td>Строим фонарь, добавляем Neon и свет</td></tr>
+        <tr><td>Задание 3 — Toolbox-деревня</td><td>15 мин</td><td>Вставляем готовые деревья, забор, колодец, скамейку, мост</td></tr>
+        <tr><td>Задание 4 — Атмосфера</td><td>10 мин</td><td>Меняем небо, время суток, туман</td></tr>
+        <tr><td>Задание 5 — Группировка и сохранение</td><td>5 мин</td><td>Объединяем карту</td></tr>
+        <tr><td>Опрос и итоги</td><td>5 мин</td><td>Проверяем себя</td></tr>
+        <tr><td>Итого</td><td>85 мин</td><td>—</td></tr>
+      </table>
+    </div>
+
+    <!-- Теория: Toolbox + PointLight + материалы -->
+    <div class="card">
+      <h2><span class="num">0</span> Инструменты: Toolbox и PointLight</h2>
+      <h3>🧰 Toolbox — магазин готовых моделей</h3>
+      <p>Панель Toolbox (слева или <b>View → Toolbox</b>) содержит тысячи бесплатных моделей. Достаточно ввести в поиске «tree», «fence» или «bench» и перетащить понравившийся объект на карту. Не нужно строить всё вручную!</p>
+      <div class="media-placeholder">
+                     <img src="assets/images/lesson-2.2/tree.png" alt="Model tab" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+     
+      </div>
+
+      <h3>💡 PointLight — точечный свет</h3>
+      <p>PointLight превращает объект в лампочку, которая светит во все стороны. У него есть настройки: <b>Range</b> (дальность света), <b>Brightness</b> (яркость), <b>Color</b> (цвет).</p>
+      <p>Чтобы добавить: выдели объект → нажми <b>+</b> в окне Properties → выбери <b>PointLight</b>.</p>
+      <div class="media-placeholder">
+           <img src="assets/images/lesson-2.2/point.png" alt="Model tab" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+     
+      </div>
+
+      <h3>🎨 Быстрый доступ к цвету и материалу</h3>
+      <p>На вкладке <b>Model</b> есть готовые кнопки для изменения цвета и материала. Выдели объект → выбери цвет или материал из выпадающего списка.</p>
+      <div class="media-placeholder">
+        <img src="assets/images/lesson-2.2/2.png" alt="Model tab" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        <img src="assets/images/lesson-2.2/3.png" alt="Material selector" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+      </div>
+    </div>
+
+    <!-- AI-помощник -->
+    <div class="ai-helper">
+      <div class="ai-head">
+        <span style="font-size:32px; line-height:1;">🤖</span>
+        <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+      </div>
+      <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+      <div class="ai-buttons">
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20Toolbox%20%D0%B2%20Roblox%20Studio%3F%22%7D" target="_blank" class="alice-q-btn">Как пользоваться Toolbox?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%B8%D1%82%D1%8C%20%D1%81%D0%B2%D0%B5%D1%82%20%D0%B2%20Roblox%20Studio%3F%22%7D" target="_blank" class="alice-q-btn">Как добавить свет PointLight?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D0%BC%D0%B5%D0%BD%D1%8F%D1%82%D1%8C%20%D0%BD%D0%B5%D0%B1%D0%BE%20%D0%B2%20Roblox%3F%22%7D" target="_blank" class="alice-q-btn">Как поменять небо и время?</a>
+      </div>
+      <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
+        💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 1: ДОМ ===== -->
+    <div class="task-box" id="task1">
+      <h2>🏠 Задание 1 — Строим дом</h2>
+      <div class="progress-track"><div class="progress-fill" id="task1Progress"></div></div>
+      <span class="progress-label" id="task1Label">Выполнено шагов: 0 из 12</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t1s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s0">Создай <b>Block</b> — фундамент (size: 30×30×5).</label><div><img src="assets/images/lesson-2.2/4.png" alt="фундамент" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"></div></li>
+        <li><input type="checkbox" id="t1s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s1">Поставь 4 стены по краям фундамента (Scale).</label><div><img src="assets/images/lesson-2.2/5.png" alt="стены" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"></div></li>
+        <li><input type="checkbox" id="t1s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s2">Сделай крышу из <b>Wedge</b> (клин), поверни.</label><div><img src="assets/images/lesson-2.2/6.png" alt="крыша" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"></div></li>
+        <li><input type="checkbox" id="t1s3" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s3">Создай блок для двери (6×8×4) внутри стены.</label><div><img src="assets/images/lesson-2.2/7.png" alt="блок двери" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"></div></li>
+        <li><input type="checkbox" id="t1s4" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s4">Включи для дверного блока <b>Negate</b>, объедини со стеной (Union).</label><div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">⚡ Ctrl+выделение → Union</div></li>
+        <li><input type="checkbox" id="t1s5" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s5">У Union отключи <b>CanCollide</b>.</label><div><img src="assets/images/lesson-2.2/8.png" alt="CanCollide" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"></div></li>
+        <li><input type="checkbox" id="t1s6" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s6">Создай блоки для окон (5×5×4), скопируй (Ctrl+D).</label></li>
+        <li><input type="checkbox" id="t1s7" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s7">Оконные блоки → <b>Negate</b>, объедини со стеной.</label></li>
+        <li><input type="checkbox" id="t1s8" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s8">В оконные проёмы вставь блоки (5×5×0.2) — будущее стекло.</label></li>
+        <li><input type="checkbox" id="t1s9" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s9">Материал стекла — <b>Glass</b>, прозрачность 0.3.</label><div><img src="assets/images/lesson-2.2/9.png" alt="Glass" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"></div></li>
+        <li><input type="checkbox" id="t1s10" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s10">Убедись, что у стекла <b>CanCollide</b> включено (или выключи для открытых окон).</label></li>
+        <li><input type="checkbox" id="t1s11" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t1s11">Выдели весь домик и нажми <b>Anchor</b> (якорь).</label><div><img src="assets/images/lesson-2.2/10.png" alt="Anchor" style="max-width:100%; border-radius:12px; border:2px solid var(--line);"></div></li>
+      </ul>
+      <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">💡 Используй Ctrl+D для симметричных частей.</div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 2: ФОНАРЬ (POINTLIGHT) ===== -->
+    <div class="task-box" id="task2">
+      <h2>💡 Задание 2 — Светящийся фонарь (PointLight)</h2>
+      <div class="media-placeholder">
+        <img src="assets/images/lesson-2.2/16.png" alt="Светящийся фонарь" style="max-width:100%;border-radius:12px;border:2px solid var(--line);">
+        <p style="margin-top:8px; font-size:0.95rem;">Фонарь со светящейся сферой из материала Neon и точечным светом.</p>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="task2Progress"></div></div>
+      <span class="progress-label" id="task2Label">Выполнено шагов: 0 из 5</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t2s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t2s0">Создай столб фонаря: <b>Cylinder</b> (высота 20, радиус 1). Измени цвет.</label><div><img src="assets/images/lesson-2.2/11.png" alt="столб" style="max-width:100%;border-radius:12px;border:2px solid var(--line);"></div></li>
+        <li><input type="checkbox" id="t2s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t2s1">Добавь основание: <b>Block</b> 4×4×2 под столбом.</label><div><img src="assets/images/lesson-2.2/12.png" alt="основание" style="max-width:100%;border-radius:12px;border:2px solid var(--line);"></div></li>
+        <li><input type="checkbox" id="t2s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t2s2">Создай сферу (Sphere) наверху столба — это свет. Материал <b>Neon</b>, цвет жёлтый или белый.</label><div><img src="assets/images/lesson-2.2/13.png" alt="сфера Neon" style="max-width:100%;border-radius:12px;border:2px solid var(--line);"></div></li>
+        <li><input type="checkbox" id="t2s3" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t2s3">Добавь к сфере компонент <b>PointLight</b> (кнопка + в Properties).</label><div><img src="assets/images/lesson-2.2/14.png" alt="PointLight add" style="max-width:100%;border-radius:12px;border:2px solid var(--line);"></div></li>
+        <li><input type="checkbox" id="t2s4" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t2s4">Настрой PointLight: <b>Range</b> = 20, <b>Brightness</b> = 2, <b>Color</b> = жёлтый.</label><div><img src="assets/images/lesson-2.2/15.png" alt="настройки PointLight" style="max-width:100%;border-radius:12px;border:2px solid var(--line);"></div></li>
+      </ul>
+      <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+        ✨ <b>Neon</b> светится в темноте, а <b>PointLight</b> освещает пространство вокруг. Поставь несколько таких фонарей вдоль дороги.
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 3: TOOLBOX-ДЕРЕВНЯ ===== -->
+    <div class="task-box" id="task3">
+      <h2>🧰 Задание 3 — Собираем деревню из Toolbox</h2>
+      <p>Теперь наполним карту готовыми объектами из Toolbox. Открой <b>Toolbox</b> (View → Toolbox) и найди нужные модели.</p>
+        <div class="media-placeholder">
+        <img src="assets/images/lesson-2.2/17.png" alt="Model tab" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="task3Progress"></div></div>
+      <span class="progress-label" id="task3Label">Выполнено шагов: 0 из 6</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t3s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s0">Найди и перетащи <b>3–4 дерева</b> (поиск "tree").</label></li>
+        <li><input type="checkbox" id="t3s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s1">Добавь <b>забор</b> вокруг дома (поиск "fence").</label></li>
+        <li><input type="checkbox" id="t3s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s2">Поставь <b>колодец</b> (поиск "well").</label></li>
+        <li><input type="checkbox" id="t3s3" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s3">Добавь <b>скамейку</b> у дома (поиск "bench").</label></li>
+        <li><input type="checkbox" id="t3s4" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s4">Перетащи <b>мост</b> через воображаемую реку (поиск "bridge").</label></li>
+        <li><input type="checkbox" id="t3s5" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t3s5">Расставь объекты красиво, подвинь их с помощью Move (W).</label></li>
+      </ul>
+      <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">
+        💡 Если модель слишком большая или маленькая — используй <b>Scale (E)</b> и <b>Move (W)</b>.
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 4: АТМОСФЕРА ===== -->
+    <div class="task-box" id="task4">
+      <h2>🌅 Задание 4 — Атмосфера: небо и время суток</h2>
+      <p>Найдём объект <b>Lighting</b> в Explorer. Он управляет освещением, небом и временем суток.</p>
+      <div class="progress-track"><div class="progress-fill" id="task4Progress"></div></div>
+      <span class="progress-label" id="task4Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t4s0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s0">Выдели <b>Lighting</b> в Explorer.</label></li>
+          <img src="assets/images/lesson-2.2/18.png" alt="Model tab" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        <li><input type="checkbox" id="t4s1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s1">В Properties измени <b>TimeOfDay</b> (например, "14:00" — день, "20:00" — закат).</label></li>
+           <img src="assets/images/lesson-2.2/19.png" alt="Model tab" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+        <li><input type="checkbox" id="t4s2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="t4s2">Поменяй <b>OutdoorAmbient</b> (цвет фона)</label></li>
+                   <img src="assets/images/lesson-2.2/20.png" alt="Model tab" style="max-width:100%; border-radius:12px; border:2px solid var(--line);">
+      </ul>
+      <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+        🌙 Вечером фонари с PointLight выглядят особенно красиво!
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 5: ГРУППИРОВКА ===== -->
+    <div class="task-box" id="taskFinal">
+      <h2>📁 Задание 5 — Группировка и сохранение</h2>
+      <div class="progress-track"><div class="progress-fill" id="taskFinalProgress"></div></div>
+      <span class="progress-label" id="taskFinalLabel">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="tfs0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="tfs0">Выдели все объекты карты (обведи рамкой или Ctrl+A).</label></li>
+        <li><input type="checkbox" id="tfs1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="tfs1">Нажми <b>Group</b> (вкладка Model).</label></li>
+        <li><input type="checkbox" id="tfs2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="tfs2">Включи <b>Anchor</b> для группы, чтобы ничего не падало.</label></li>
+      </ul>
+      <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+        🏆 Ты создал свою первую игровую карту! Запусти игру (F5) и прогуляйся по деревне.
+      </div>
+    </div>
+
+    <!-- ===== РЕФЛЕКСИЯ ===== -->
+      <!-- ===== РЕФЛЕКСИЯ ===== -->
+    <div class="reflection-box">
+      <h2>💭 Ты доволен своей деревней?</h2>
+      <p>Оцени свои ощущения:</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="yes"> 🏡 Да, деревня получилась уютной и красивой!
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="ok"> 🌳 Хорошо, но можно добавить деталей.
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="no"> 🏚️ Получилось не очень, попробую ещё.
+        </label>
+      </div>
+        <textarea id="reflectionText" placeholder="Сегодня я узнал...&#10;Больше всего меня удивило...&#10;Хочу попробовать..."></textarea>
+            <button class="action-btn" onclick="submitReflection()">Отправить</button>
+            <div id="reflectionResult" style="margin-top:10px; font-weight:700;"></div>
+    </div>
+
+    <!-- ===== ЗАКРЕПЛЕНИЕ ===== -->
+    <div class="interactive-box" id="toolQuiz2">
+      <h2>🧩 Вопросы на закрепление</h2>
+      <p>Какой инструмент изменяет размер?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Select</div>
+        <div class="choice-card" data-correct-choice="true">Scale</div>
+        <div class="choice-card" data-correct-choice="false">Move</div>
+        <div class="choice-card" data-correct-choice="false">Rotate</div>
+      </div>
+      <p>Какой материал светится в темноте?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Plastic</div>
+        <div class="choice-card" data-correct-choice="true">Neon</div>
+        <div class="choice-card" data-correct-choice="false">Wood</div>
+      </div>
+      <p>Где взять готовые деревья, заборы и скамейки?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">В Properties</div>
+        <div class="choice-card" data-correct-choice="true">В Toolbox</div>
+        <div class="choice-card" data-correct-choice="false">В Explorer</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('toolQuiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- ===== ИТОГОВЫЙ ОПРОС ===== -->
+    <div class="quiz-wrap" id="quiz1">
+      <h2>📝 Проверь себя</h2>
+      <div class="quiz-question" data-name="quiz1q0" data-correct="b">
+        <p class="quiz-q-text">1. Какая клавиша дублирует объект?</p>
+        <label><input type="radio" name="quiz1q0" value="a"> Ctrl+C</label>
+        <label><input type="radio" name="quiz1q0" value="b"> Ctrl+D</label>
+        <label><input type="radio" name="quiz1q0" value="c"> Ctrl+V</label>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-name="quiz1q1" data-correct="a">
+        <p class="quiz-q-text">2. Какой компонент добавляет точечный свет?</p>
+        <label><input type="radio" name="quiz1q1" value="a"> PointLight</label>
+        <label><input type="radio" name="quiz1q1" value="b"> Sparkles</label>
+        <label><input type="radio" name="quiz1q1" value="c"> Fire</label>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-name="quiz1q2" data-correct="b">
+        <p class="quiz-q-text">3. Чтобы объект не падал, нужно включить свойство...</p>
+        <label><input type="radio" name="quiz1q2" value="a"> CanCollide</label>
+        <label><input type="radio" name="quiz1q2" value="b"> Anchored</label>
+        <label><input type="radio" name="quiz1q2" value="c"> Material</label>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-name="quiz1q3" data-correct="c">
+        <p class="quiz-q-text">4. Что такое Toolbox?</p>
+        <label><input type="radio" name="quiz1q3" value="a"> Окно настроек объекта</label>
+        <label><input type="radio" name="quiz1q3" value="b"> Список всех частей</label>
+        <label><input type="radio" name="quiz1q3" value="c"> Магазин готовых моделей</label>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-name="quiz1q4" data-correct="b">
+        <p class="quiz-q-text">5. Какой материал делает объект светящимся?</p>
+        <label><input type="radio" name="quiz1q4" value="a"> Plastic</label>
+        <label><input type="radio" name="quiz1q4" value="b"> Neon</label>
+        <label><input type="radio" name="quiz1q4" value="c"> Glass</label>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-name="quiz1q5" data-correct="b">
+        <p class="quiz-q-text">6. Где меняют время суток и небо?</p>
+        <label><input type="radio" name="quiz1q5" value="a"> В Workspace</label>
+        <label><input type="radio" name="quiz1q5" value="b"> В Lighting</label>
+        <label><input type="radio" name="quiz1q5" value="c"> В Toolbox</label>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-btn" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+      <div class="quiz-result"></div>
+    </div>
+
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    <div class="lesson-nav">
+      <a class="nav-btn prev" href="Занятие_1.5_Первый_скрипт.html">
+        <div class="lbl">← Назад</div>
+        <div class="ttl">1.5 Первый скрипт</div>
+      </a>
+      <a class="nav-btn next" href="Карта_курса.html">
+        <div class="lbl">Далее →</div>
+        <div class="ttl">К карте курса</div>
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-brand">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+        Учебный центр «РОБОВИТА»
+      </div>
+      <div>Занятие 1.6 · офлайн-курс по Roblox Studio и Lua · 🏘️ Строим карту деревни</div>
+    </div>
+  </footer>
+
+  <script src="assets/js/lesson.js"></script>
+ <script>
+    // Функция для кнопки "Отправить" в рефлексии
+    function submitReflection() {
+      const textarea = document.getElementById('reflectionText');
+      const resultDiv = document.getElementById('reflectionResult');
+      if (textarea.value.trim() === '') {
+        resultDiv.textContent = 'Пожалуйста, напишите хотя бы несколько слов.';
+        resultDiv.style.color = '#C0392B';
+        return;
+      }
+      resultDiv.textContent = '✅ Спасибо! Твой ответ записан.';
+      resultDiv.style.color = '#2E7D32';
+      textarea.disabled = true;
+      // Отключаем кнопку после отправки
+      const btn = document.querySelector('#reflectionBlock .action-btn');
+      if (btn) btn.disabled = true;
+    }
+
+    // На всякий случай, если в lesson.js нет updateTaskProgress, определяем универсальную
+    if (typeof updateTaskProgress === 'undefined') {
+      function updateTaskProgress(taskBox) {
+        const checkboxes = taskBox.querySelectorAll('.task-steps input[type=checkbox]');
+        let done = 0;
+        checkboxes.forEach(cb => { if (cb.checked) done++; });
+        const total = checkboxes.length;
+        const percent = total ? Math.round((done / total) * 100) : 0;
+        const fill = taskBox.querySelector('.progress-fill');
+        const label = taskBox.querySelector('.progress-label');
+        if (fill) fill.style.width = percent + '%';
+        if (label) label.textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+      }
+    }
+
+    if (typeof checkChoices === 'undefined') {
+      function checkChoices(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const cards = container.querySelectorAll('.choice-card');
+        let allCorrect = true;
+        cards.forEach(card => {
+          const isCorrect = card.dataset.correctChoice === 'true';
+          if (card.classList.contains('selected') && !isCorrect) {
+            card.classList.add('incorrect');
+            allCorrect = false;
+          } else if (card.classList.contains('selected') && isCorrect) {
+            card.classList.add('correct');
+          }
+        });
+        const resultDiv = container.querySelector('.activity-result');
+        if (!resultDiv) return;
+        if (allCorrect) {
+          resultDiv.textContent = '✅ Молодец! Всё верно.';
+          resultDiv.className = 'activity-result done';
+        } else {
+          resultDiv.textContent = '❌ Есть ошибки. Попробуй ещё раз.';
+          resultDiv.className = 'activity-result neutral';
+        }
+      }
+    }
+  </script>
+</body>
+</html>

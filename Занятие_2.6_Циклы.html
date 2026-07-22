@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2.4. Циклы — Спасение космической станции — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    /* ===== ОСНОВНЫЕ СТИЛИ (как в предыдущих занятиях) ===== */
+    .choice-card {
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      padding: 8px 16px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 30px;
+      display: inline-block;
+      margin: 4px 6px;
+    }
+    .choice-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      background: #f1f5f9;
+    }
+    .choice-card.selected {
+      border-color: var(--accent) !important;
+      background: var(--accent-light) !important;
+      box-shadow: 0 0 0 3px rgba(110, 0, 145, 0.2);
+    }
+    .choice-card.correct {
+      border-color: var(--primary) !important;
+      background: var(--primary-light) !important;
+    }
+    .choice-card.incorrect {
+      border-color: var(--danger) !important;
+      background: var(--danger-light) !important;
+    }
+    .activity-result.done {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .activity-result.neutral {
+      background: var(--accent-light);
+      color: var(--accent-ink);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .choice-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 16px;
+    }
+    .code-block {
+      background: #2a2f3a;
+      color: #e2e8f0;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 1.2rem;
+      overflow-x: auto;
+      margin: 12px 0;
+      line-height: 1.6;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .code-block .hl {
+      background: #fde047;
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      display: inline-block;
+    }
+    .hint-btn {
+      background: var(--accent-light, #f0e6f5);
+      border: none;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-weight: 600;
+      color: var(--accent-ink, #4a1a5a);
+      cursor: pointer;
+      transition: 0.15s;
+      margin-top: 6px;
+    }
+    .hint-btn:hover {
+      background: var(--accent, #b47cdb);
+      color: white;
+    }
+    .hint-box {
+      display: none;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 8px;
+      border-left: 4px solid var(--accent, #6e0091);
+    }
+    .hint-box.show {
+      display: block;
+    }
+    .theory-section {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line, #e2e8f0);
+    }
+    .theory-section:last-child {
+      border-bottom: none;
+    }
+    .theory-section h3 {
+      margin-top: 12px;
+      color: var(--primary-dark, #1a4a0a);
+    }
+    .theory-section ul, .theory-section ol {
+      padding-left: 24px;
+      line-height: 1.7;
+    }
+    .theory-section li {
+      margin-bottom: 4px;
+    }
+    .prop-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+    }
+    .prop-table th, .prop-table td {
+      border: 1px solid var(--line, #e2e8f0);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .prop-table th {
+      background: var(--primary-light, #e8f5e0);
+      color: var(--primary-dark, #1a4a0a);
+    }
+    .prop-table td code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .scenario-box {
+      background: linear-gradient(135deg, #0a0e2a, #1a1a4a);
+      border-radius: 20px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      color: #e2e8f0;
+      border: 1px solid #3b3b8a;
+    }
+    .scenario-avatar {
+      font-size: 3rem;
+      flex-shrink: 0;
+    }
+    .scenario-box strong {
+      color: #fbbf24;
+    }
+    .cheat-sheet {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 20px 24px;
+      border: 2px solid var(--primary, #61b01f);
+      margin: 24px 0;
+      position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка по циклам";
+      position: absolute;
+      top: -14px;
+      left: 20px;
+      background: var(--primary-light, #e8f5e0);
+      color: var(--primary-dark, #1a4a0a);
+      padding: 2px 16px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border: 1px solid var(--primary, #61b01f);
+    }
+    .cheat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .cheat-item {
+      background: white;
+      border-radius: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--line, #e2e8f0);
+    }
+    .cheat-item .title {
+      font-weight: 700;
+      color: var(--primary-dark, #1a4a0a);
+      border-bottom: 2px solid var(--primary-light, #e8f5e0);
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+    .cheat-item .rule {
+      font-size: 0.92rem;
+      margin: 4px 0;
+    }
+    .cheat-item .rule code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .screenshot-placeholder {
+      background: #f1f5f9;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin: 12px 0;
+      color: #64748b;
+      font-style: italic;
+    }
+    .screenshot-placeholder img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+    .match-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    .match-table th, .match-table td {
+      border: 1px solid var(--line, #e2e8f0);
+      padding: 10px 12px;
+      vertical-align: middle;
+    }
+    .match-table th {
+      background: var(--primary-light, #e8f5e0);
+      color: var(--primary-dark, #1a4a0a);
+    }
+    .match-table td code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+    .match-table select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 2px solid var(--line, #e2e8f0);
+      background: white;
+      font-size: 0.95rem;
+      width: 100%;
+      max-width: 280px;
+    }
+    .match-table select.correct {
+      border-color: var(--primary, #61b01f);
+      background: var(--primary-light, #e8f5e0);
+    }
+    .match-table select.incorrect {
+      border-color: var(--danger, #e74c3c);
+      background: var(--danger-light, #fce4e4);
+    }
+    /* Дополнительный стиль для космической атмосферы */
+    .space-note {
+      background: #1a1a4a;
+      color: #fbbf24;
+      border-left: 4px solid #fbbf24;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin: 12px 0;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+  <header class="site-header">
+    <div class="wrap">
+      <div class="top-bar">
+        <a class="brand" href="Карта_курса.html">
+          <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+          <div>
+            <div class="brand-name">РОБОВИТА</div>
+            <div class="brand-tag">учимся программировать роботов и игры</div>
+          </div>
+        </a>
+        <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 2.4</div>
+      </div>
+      <div class="hero">
+        <div class="hex-badge">2.4</div>
+        <div>
+          <div class="module-pill">Раздел 2 · Программирование</div>
+          <h1>🔄 Циклы — Спасение космической станции</h1>
+          <p class="subtitle">Учимся повторять действия: for, while, бесконечные циклы</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- Сюжет -->
+    <div class="scenario-box">
+      <div class="scenario-avatar">🚀</div>
+      <div>
+        <strong>Космическая станция «Галактика-7»</strong> теряет энергию! Ты — бортинженер. 
+        Чтобы спасти станцию, нужно <strong>повторять</strong> одни и те же действия много раз. 
+        Именно для этого существуют <strong>циклы</strong>!
+      </div>
+    </div>
+
+    <!-- Цели -->
+    <div class="objectives">
+      <h2>🎯 На этом уроке ты:</h2>
+      <ul>
+        <li>🔄 узнаешь, что такое цикл и зачем он нужен</li>
+        <li>📐 научишься писать цикл <b>for</b> со счётчиком</li>
+        <li>♾️ познакомишься с <b>бесконечным циклом</b> <code>while true do</code></li>
+        <li>🚀 запрограммируешь поворот солнечных панелей</li>
+        <li>⛽ создашь заправку топливных баков</li>
+        <li>💡 сделаешь мигающий маяк</li>
+        <li>🛸 отправишь спасательный зонд к планете</li>
+        <li>⚡ соберёшь энергетические сферы дроном</li>
+      </ul>
+    </div>
+
+    <!-- План (обновлён с учётом нового задания) -->
+    <div class="card">
+      <table class="timetable">
+        <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+        <tr><td>Теория: что такое цикл</td><td>10 мин</td><td>Циклы for, while, бесконечные</td></tr>
+        <tr><td>Задание 1 — Солнечные панели</td><td>12 мин</td><td>Цикл для поворота 4 панелей</td></tr>
+        <tr><td>Задание 2 — Топливные баки</td><td>12 мин</td><td>Цикл для заполнения 3 баков</td></tr>
+        <tr><td>Задание 3 — Аварийный маяк</td><td>12 мин</td><td>Бесконечный цикл с миганием</td></tr>
+        <tr><td>Задание 4 — Спасательный зонд</td><td>12 мин</td><td>Цикл for для движения вперёд</td></tr>
+        <tr><td>Задание 5 — Энергетические сферы</td><td>14 мин</td><td>Дрон собирает сферы по кругу</td></tr>
+        <tr><td>Творческое задание</td><td>10 мин</td><td>Придумай свой механизм с циклами</td></tr>
+        <tr><td>Опрос и итоги</td><td>10 мин</td><td>Проверяем себя</td></tr>
+        <tr><td>Итого</td><td>80 мин</td><td>—</td></tr>
+      </table>
+    </div>
+
+
+    <!-- ========================================================== -->
+    <!--  ТЕОРИЯ: ЧТО ТАКОЕ ЦИКЛ (улучшено)                        -->
+    <!-- ========================================================== -->
+    <div class="card" id="theory-loops">
+      <h2><span class="num">0</span> Теория: что такое цикл?</h2>
+
+      <div class="theory-section">
+        <h3>🤖 Робот-повторюшка</h3>
+        <p>
+          <b>Цикл</b> — это как робот, который умеет выполнять одну и ту же команду много раз подряд. 
+          Вместо того чтобы писать 100 одинаковых строчек кода, мы говорим циклу: «Сделай это 100 раз!»
+        </p>
+        <div class="screenshot-placeholder">
+          <img src="assets/images/lesson-2.6/1.png" alt="Робот повторяет действие" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          <p style="font-size:0.9rem; color:#64748b;">Цикл — это робот, который повторяет команды</p>
+        </div>
+      </div>
+
+      <div class="theory-section">
+        <h3>📝 Строение цикла <code>for</code></h3>
+        <p>Цикл <code>for</code> состоит из трёх частей:</p>
+        <ol>
+          <li><b>Счётчик</b> — переменная, которая считает шаги (обычно <code>i</code>).</li>
+          <li><b>Начало и конец</b> — от какого до какого числа считать.</li>
+          <li><b>Тело цикла</b> — команды, которые выполняются на каждом шаге.</li>
+        </ol>
+        <div class="code-block">
+          <span class="keyword">for</span> i = <span class="number">1</span>, <span class="number">5</span> <span class="keyword">do</span><br>
+          &nbsp;&nbsp;<span class="keyword">print</span>(<span class="string">"Шаг номер "</span> .. i)<br>
+          <span class="keyword">end</span>
+        </div>
+        <p>Результат в Output:</p>
+        <pre style="background:#f1f5f9; padding:8px; border-radius:8px;">Шаг номер 1
+Шаг номер 2
+Шаг номер 3
+Шаг номер 4
+Шаг номер 5</pre>
+        <p>Переменная <code>i</code> сама увеличивается на 1 после каждого круга.</p>
+      </div>
+
+      <div class="theory-section">
+        <h3>♾️ Бесконечный цикл <code>while true do</code></h3>
+        <p>Иногда нужно, чтобы действие повторялось <b>вечно</b>, пока игра работает. Например, мигающий маяк или вращение планеты.</p>
+        <div class="code-block">
+          <span class="keyword">while</span> <span class="keyword">true</span> <span class="keyword">do</span><br>
+          &nbsp;&nbsp;<span class="comment">-- код, который выполняется бесконечно</span><br>
+          &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">1</span>) <span class="comment">-- обязательно делаем паузу!</span><br>
+          <span class="keyword">end</span>
+        </div>
+        <div class="space-note">
+          ⚠️ <b>Важно!</b> Если забыть <code>wait()</code> внутри бесконечного цикла, Roblox Studio может зависнуть. 
+          Всегда давай игре «подышать» с помощью <code>wait()</code>.
+        </div>
+      </div>
+
+      <div class="theory-section">
+        <h3>📊 Сравнение циклов</h3>
+        <table class="prop-table">
+          <tr><th>Цикл</th><th>Когда использовать</th><th>Пример из космоса</th></tr>
+          <tr>
+            <td><code>for i = 1, N do</code></td>
+            <td>Знаешь точное количество повторений</td>
+            <td>Повернуть 4 солнечные панели</td>
+          </tr>
+          <tr>
+            <td><code>while true do</code></td>
+            <td>Нужно выполнять бесконечно</td>
+            <td>Мигающий аварийный маяк</td>
+          </tr>
+          <tr>
+            <td><code>for i = N, 1, -1 do</code></td>
+            <td>Обратный отсчёт</td>
+            <td>Таймер до запуска ракеты (10,9,8...)</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+ <div class="ai-helper">
+      <div class="ai-head">
+        <span style="font-size:32px; line-height:1;">🤖</span>
+        <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+      </div>
+      <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+
+      <div class="ai-buttons">
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82%20%D1%86%D0%B8%D0%BA%D0%BB%20for%20%D0%B2%20Roblox%3F%22%7D" target="_blank" class="alice-q-btn">Как работает цикл for в Roblox?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D0%B1%D0%B5%D1%81%D0%BA%D0%BE%D0%BD%D0%B5%D1%87%D0%BD%D1%8B%D0%B9%20%D1%86%D0%B8%D0%BA%D0%BB%20%D0%B2%20Roblox%3F%22%7D" target="_blank" class="alice-q-btn">Что такое бесконечный цикл?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9F%D0%BE%D1%87%D0%B5%D0%BC%D1%83%20%D0%B8%D0%B3%D1%80%D0%B0%20%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B0%D0%B5%D1%82%20%D0%B1%D0%B5%D0%B7%20wait()%20%D0%B2%20%D1%86%D0%B8%D0%BA%D0%BB%D0%B5%3F%22%7D" target="_blank" class="alice-q-btn">Почему игра зависает без wait()?</a>
+      </div>
+
+      <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
+        💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+      </div>
+
+      <div class="ai-real-tip">
+        <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про циклы в Roblox.<br>
+        <span class="prompt-example">Просто скажи: «Алиса, как сделать обратный отсчёт в Roblox?»</span>
+        <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+          ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ШПАРГАЛКА ПО ЦИКЛАМ (расширена) ===== -->
+    <div class="cheat-sheet">
+      <h3 style="margin-top:0; margin-bottom:12px;">📘 Шпаргалка по циклам</h3>
+      <div class="cheat-grid">
+
+        <div class="cheat-item">
+          <div class="title">🔢 Цикл for (прямой)</div>
+          <div class="rule"><code><span class="keyword">for</span> i = <span class="number">1</span>, <span class="number">5</span> <span class="keyword">do</span></code></div>
+          <div class="rule">i принимает значения: 1, 2, 3, 4, 5</div>
+          <div class="rule">Тело цикла выполняется 5 раз</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">🔄 Цикл for (обратный)</div>
+          <div class="rule"><code><span class="keyword">for</span> i = <span class="number">5</span>, <span class="number">1</span>, <span class="number">-1</span> <span class="keyword">do</span></code></div>
+          <div class="rule">i принимает: 5, 4, 3, 2, 1</div>
+          <div class="rule">Шаг -1 — движение назад</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">♾️ Бесконечный цикл</div>
+          <div class="rule"><code><span class="keyword">while</span> <span class="keyword">true</span> <span class="keyword">do</span></code></div>
+          <div class="rule">Выполняется, пока игра работает</div>
+          <div class="rule">Всегда добавляй <code>wait()</code>, чтобы не зависло</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">🎯 Переменная-счётчик</div>
+          <div class="rule"><code>i</code>, <code>j</code>, <code>step</code> — часто используют</div>
+          <div class="rule">Можно использовать любую букву или слово</div>
+          <div class="rule">Пример: <code>for panel = 1, 4 do</code></div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">⏱️ Задержка в цикле</div>
+          <div class="rule"><code><span class="func">wait</span>(<span class="number">0.5</span>)</code> — пауза полсекунды</div>
+          <div class="rule">Без <code>wait()</code> цикл выполнится мгновенно</div>
+          <div class="rule">Для анимаций всегда добавляй задержку</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">🧩 Таблицы и циклы</div>
+          <div class="rule">Часто используют вместе: <code>for i = 1, #items do</code></div>
+          <div class="rule"><code>#items</code> — количество элементов в таблице</div>
+          <div class="rule">Позволяет обработать все элементы списка</div>
+        </div>
+
+      </div>
+    </div>
+  <div class="card" style="margin-bottom: 20px;">
+      <p>🗺️ Для этого урока приготовлена готовая карта «Галактика‑7». Скачай её и открой в Roblox Studio.</p>
+      <div class="note">
+        <b>Файл карты:</b>
+        <a href="assets/downloads/Galaktica.rbxl" download style="font-weight:800; color:var(--primary-dark);">
+          ⬇️ Скачать Galaktika.rblx
+        </a>
+        (правый клик → «Сохранить ссылку как...»)
+      </div>
+    </div>
+    <div class="task-box" id="task1">
+      <h2>☀️ Задание 1 — Солнечные панели</h2>
+      <p>На станции есть 4 солнечные панели. Нужно активировать каждую, повернув её на 90 градусов. <b>После поворота панель должна изменить цвет на жёлтый и засветиться</b>, чтобы показать, что она активирована.</p>
+      <ul>
+        <li>Найди 4 Part с именами <b>Panel1</b>, <b>Panel2</b>, <b>Panel3</b>, <b>Panel4</b>.</li>
+        <li>Напиши скрипт, который в цикле поворачивает каждую панель на 90° <b>и меняет её цвет на жёлтый (Bright yellow)</b> и <b>материал на Neon</b>.</li>
+         <div class="code-block">
+             for i = 1, 4 do<br>
+    local panel = [найти панель в Workspace по имени]<br>
+
+    if panel then<br>
+        panel.CFrame = panel.CFrame * CFrame.Angles([угол X], [угол Y], [угол Z])<br>
+
+        panel.BrickColor = BrickColor.new([название цвета])<br>
+
+        panel.Material = Enum.Material.[название материала]<br>
+
+        print("Панель " .. i .. " активирована и светится!")<br>
+    end<br>
+end<br>
+            </div>
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task1Progress"></div></div>
+      <span class="progress-label" id="task1Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t1s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s0">Найди в Workspace 4 солнечные панели: Panel1, Panel2, Panel3, Panel4.</label>
+          <div class="screenshot-placeholder">
+            <img src="assets/images/lesson-2.6/2.png" alt="Создание панелей" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t1s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s1">Создай Script в ServerScriptService и напиши код с циклом, который поворачивает и подсвечивает панели.</label>
+          <button class="hint-btn" onclick="toggleHint('hint1')">📖 Показать подсказку</button>
+          <div id="hint1" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">for</span> i = <span class="number">1</span>, <span class="number">4</span> <span class="keyword">do</span><br>
+              &nbsp;&nbsp;<span class="keyword">local</span> panel = workspace:FindFirstChild(<span class="string">"Panel"</span> .. i)<br>
+              &nbsp;&nbsp;<span class="keyword">if</span> panel <span class="keyword">then</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">-- Поворачиваем на 90° (1.57 радиан)</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;panel.CFrame = panel.CFrame * CFrame.Angles(<span class="number">-1.5</span>, <span class="number">0</span>, <span class="number">0</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">-- Подсвечиваем: меняем цвет на жёлтый и делаем материал Neon</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;panel.BrickColor = BrickColor.new(<span class="string">"Bright yellow"</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;panel.Material = Enum.Material.Neon<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">print</span>(<span class="string">"Панель "</span> .. i .. <span class="string">" активирована и светится!"</span>)<br>
+              &nbsp;&nbsp;<span class="keyword">end</span><br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t1s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s2">Запусти игру и проверь — все панели должны повернуться и засветиться жёлтым.</label>
+          <div class="screenshot-placeholder">
+            <img src="assets/images/lesson-2.6/3.png" alt="Результат" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          </div>
+        </li>
+      </ul>
+      <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">
+        💡 <code>CFrame.Angles(-1.5, 0, 0)</code> — поворот на 90° вокруг оси Y. <br>
+        🌟 <b>Neon</b> — специальный материал, который делает объект светящимся. В сочетании с жёлтым цветом панель будет выглядеть как активная.
+      </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!--  ЗАДАНИЕ 2: ТОПЛИВНЫЕ БАКИ                                 -->
+    <!-- ========================================================== -->
+    <div class="task-box" id="task2">
+      <h2>⛽ Задание 2 — Топливные баки</h2>
+      <p>На станции есть 3 топливных бака. Их нужно заполнить — каждый бак должен стать зелёным.</p>
+      <ul>
+        <li>Найди 3 Part с именами <b>Tank1</b>, <b>Tank2</b>, <b>Tank3</b>.</li>
+        <li>Напиши скрипт в ServerScriptService, который в цикле меняет цвет каждого бака на зелёный.</li>
+          <div class="code-block">
+           local tanks = {[впиши имена баков через запятую]}<br>
+for i = 1, 3 do<br>
+    local tank =  [найти танки в Workspace](tanks[i])<br>
+    if tank then<br>
+        tank.BrickColor = BrickColor.new([впиши цвет])<br>
+        print(tanks[i] .. " заполнен!")<br>
+    end<br>
+end<br>
+            </div>
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task2Progress"></div></div>
+      <span class="progress-label" id="task2Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t2s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s0">Найди 3 Part: Tank1, Tank2, Tank3.</label>
+          <div class="screenshot-placeholder">
+             <img src="assets/images/lesson-2.6/4.png" alt="Создание панелей" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t2s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s1">Напиши скрипт с циклом, который заполняет баки.</label>
+          <button class="hint-btn" onclick="toggleHint('hint2')">📖 Показать подсказку</button>
+          <div id="hint2" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> tanks = {<span class="string">"Tank1"</span>, <span class="string">"Tank2"</span>, <span class="string">"Tank3"</span>}<br>
+              <span class="keyword">for</span> i = <span class="number">1</span>, <span class="number">3</span> <span class="keyword">do</span><br>
+              &nbsp;&nbsp;<span class="keyword">local</span> tank = workspace:FindFirstChild(tanks[i])<br>
+              &nbsp;&nbsp;<span class="keyword">if</span> tank <span class="keyword">then</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;tank.BrickColor = BrickColor.new(<span class="string">"Bright green"</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">print</span>(tanks[i] .. <span class="string">" заполнен!"</span>)<br>
+              &nbsp;&nbsp;<span class="keyword">end</span><br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t2s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s2">Запусти и проверь — баки должны стать зелёными.</label>
+          <div class="screenshot-placeholder">
+            <img src="assets/images/lesson-2.6/5.png" alt="Результат" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          </div>
+        </li>
+      </ul>
+      <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">
+        💡 <b>Совет:</b> Используй таблицу с именами баков — это удобно, если баков много.
+      </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!--  ЗАДАНИЕ 3: АВАРИЙНЫЙ МАЯК                                 -->
+    <!-- ========================================================== -->
+    <div class="task-box" id="task3">
+      <h2>💡 Задание 3 — Аварийный маяк</h2>
+      <p>Маяк на вершине станции должен постоянно мигать, привлекая внимание спасателей.</p>
+      <ul>
+        <li>Создай Part с именем <b>Beacon</b>.</li>
+        <li>Напиши <b>бесконечный цикл</b>, который мигает маяком (включает/выключает прозрачность).</li>
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task3Progress"></div></div>
+      <span class="progress-label" id="task3Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t3s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t3s0">Создай Part с именем <b>Beacon</b> на вершине станции.</label>
+          <div class="screenshot-placeholder">
+            <img src="assets/images/lesson-2.6/6.png" alt="Создание панелей" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t3s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t3s1">Создай Script внутри Beacon и напиши бесконечный цикл.</label>
+          <button class="hint-btn" onclick="toggleHint('hint3')">📖 Показать подсказку</button>
+          <div id="hint3" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> beacon = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">while</span> <span class="keyword">true</span> <span class="keyword">do</span><br>
+              &nbsp;&nbsp;beacon.Transparency = <span class="number">0</span>  <span class="comment">-- включён</span><br>
+              &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.5</span>)<br>
+              &nbsp;&nbsp;beacon.Transparency = <span class="number">1</span>  <span class="comment">-- выключен</span><br>
+              &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.5</span>)<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t3s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t3s2">Запусти игру — маяк должен мигать.</label>
+        </li>
+      </ul>
+      <div class="space-note">
+        💡 <b>Важно:</b> В бесконечном цикле всегда добавляй <code>wait()</code>, иначе игра зависнет!
+      </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!--  ЗАДАНИЕ 4: СПАСАТЕЛЬНЫЙ ЗОНД                              -->
+    <!-- ========================================================== -->
+    <div class="task-box" id="task4">
+      <h2>🛸 Задание 4 — Спасательный зонд</h2>
+      <p>Отправь зонд к планете. Зонд должен двигаться вверх 50 раз, по 0.5 студии за шаг.</p>
+      <ul>
+        <li>Создай Part с именем <b>Probe</b>.</li>
+        <li>Напиши цикл <code>for</code>, который двигает зонд вверх на 0.5 каждый шаг.</li>
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task4Progress"></div></div>
+      <span class="progress-label" id="task4Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t4s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t4s0">Создай Part с именем <b>Probe</b> на стартовой позиции.</label>
+          <div class="screenshot-placeholder">
+            <img src="assets/images/lesson-2.6/7.png" alt="Создание зонда" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t4s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t4s1">Создай Script внутри Probe и напиши цикл для движения.</label>
+          <button class="hint-btn" onclick="toggleHint('hint4')">📖 Показать подсказку</button>
+          <div id="hint4" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> probe = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> step = <span class="number">0.5</span><br>
+              <span class="keyword">for</span> i = <span class="number">1</span>, <span class="number">50</span> <span class="keyword">do</span><br>
+              &nbsp;&nbsp;probe.Position = probe.Position + Vector3.new(0, <span class="number">step</span>, <span class="number">0</span>)<br>
+              &nbsp;&nbsp;<span class="keyword">print</span>(<span class="string">"Шаг "</span> .. i .. <span class="string">": зонд летит!"</span>)<br>
+              &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.1</span>)<br>
+              <span class="keyword">end</span><br>
+              <span class="keyword">print</span>(<span class="string">"🚀 Зонд достиг планеты!"</span>)
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t4s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t4s2">Запусти и наблюдай, как зонд летит к планете.</label>
+          <div class="screenshot-placeholder">
+            <img src="assets/images/lesson-2.6/8.png" alt="Результат" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          </div>
+        </li>
+      </ul>
+      <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">
+        🎯 <b>Задание со звездочкой:</b> Измени скрипт так, чтобы зонд двигался по дуге (вверх и вперёд).
+      </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!--  ЗАДАНИЕ 5: ЭНЕРГЕТИЧЕСКИЕ СФЕРЫ (новое)                  -->
+    <!-- ========================================================== -->
+    <div class="task-box" id="task5">
+  <h2>⚡ Задание 5 — Энергетические сферы</h2>
+  <p>В открытом космосе бесконечно появляются энергетические сферы. Запрограммируй дрона, чтобы он собирал их все по очереди.</p>
+  <img src="assets/images/lesson-2.6/9.png" alt="Сферы и дрон" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+  <ul>
+    <li>Создай дрона — обычный чёрный Part с именем <b>Drone</b>.</li>
+    <li>Напиши внутри дрона скрипт, который <b>бесконечно</b> ищет следующую сферу (Sphere1, Sphere2, …) и собирает её.</li>
+  </ul>
+
+  <div class="progress-track"><div class="progress-fill" id="task5Progress"></div></div>
+  <span class="progress-label" id="task5Label">Выполнено шагов: 0 из 3</span>
+  <ul class="task-steps">
+    <li>
+      <input type="checkbox" id="t5s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t5s0">Создай дрон</label>
+      <div class="screenshot-placeholder">
+        <img src="assets/images/lesson-2.6/10.png" alt="Создание дрона" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" id="t5s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t5s1">Внутри Drone создай Script и напиши бесконечный цикл сбора.</label>
+      <button class="hint-btn" onclick="toggleHint('hint5')">📖 Показать подсказку</button>
+      <div id="hint5" class="hint-box">
+        <div class="code-block">
+          <span class="keyword">local</span> drone = <span class="keyword">script</span>.Parent<br>
+          <span class="keyword">local</span> i = <span class="number">1</span><br>
+          <span class="keyword">while</span> <span class="keyword">true</span> <span class="keyword">do</span><br>
+          &nbsp;&nbsp;<span class="keyword">local</span> sphere = workspace:FindFirstChild(<span class="string">"Sphere"</span> .. i)<br>
+          &nbsp;&nbsp;<span class="keyword">if</span> sphere <span class="keyword">then</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;drone.Position = sphere.Position<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;sphere.Transparency = <span class="number">1</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">print</span>(<span class="string">"Сфера "</span> .. i .. <span class="string">" собрана!"</span>)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;i = i + <span class="number">1</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">2</span>)<br>
+          &nbsp;&nbsp;<span class="keyword">else</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">1</span>) <span class="comment">-- ждём появления новой сферы</span><br>
+          &nbsp;&nbsp;<span class="keyword">end</span><br>
+          <span class="keyword">end</span>
+        </div>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" id="t5s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t5s2">Запусти игру и проверь, как дрон бесконечно собирает сферы.</label>
+    </li>
+  </ul>
+  <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+    🤖 <b>Улучшение:</b> добавь плавное движение дрона с помощью цикла <code>for</code> внутри перемещения, чтобы он летел красиво.
+  </div>
+</div>
+ <div class="task-box" id="task6">
+      <h2>🎨 Творческое задание — Твой космический механизм</h2>
+      <p>Придумай и запрограммируй на станции любой механизм, который использует <b>циклы</b>. Вот несколько идей:</p>
+      <ul>
+        <li>🔄 Вращающаяся антенна, которая делает 10 оборотов.</li>
+        <li>🔵 Мигающие лампочки на шлюзе (5 лампочек загораются по очереди).</li>
+        <li>📡 Сканер, который двигается вперёд-назад.</li>
+        <li>🛰️ Спутник, который облетает станцию по кругу.</li>
+      </ul>
+      <p>Ты можешь использовать любые Part на карте или создать свои. Главное — чтобы работал цикл!</p>
+      <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">
+        🤖 <b>Совет:</b> начни с простого: заставь один объект менять цвет 5 раз с паузой, используя <code>for i = 1, 5 do</code>.
+      </div>
+    </div>
+    <!-- ========================================================== -->
+    <!--  БЫСТРАЯ ПРОВЕРКА (ВЫБЕРИ КАРТОЧКИ)                       -->
+    <!-- ========================================================== -->
+    <div class="interactive-box" id="toolQuiz2">
+      <h2>🧩 Быстрая проверка: выбери правильные карточки</h2>
+
+      <p><b>1. Что делает цикл?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Повторяет команды</div>
+        <div class="choice-card" data-correct-choice="false">Выводит значение в консоль</div>
+        <div class="choice-card" data-correct-choice="false">Сравнивает числа</div>
+      </div>
+
+      <p><b>2. Какой цикл выполняется бесконечно?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">for i = 1, 10 do</div>
+        <div class="choice-card" data-correct-choice="true">while true do</div>
+        <div class="choice-card" data-correct-choice="false">for i = 10, 1, -1 do</div>
+      </div>
+
+      <p><b>3. Сколько раз выполнится код: <code>for i = 1, 5 do</code>?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">4</div>
+        <div class="choice-card" data-correct-choice="true">5</div>
+        <div class="choice-card" data-correct-choice="false">6</div>
+      </div>
+
+      <p><b>4. Что нужно добавить в бесконечный цикл, чтобы игра не зависла?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">wait()</div>
+        <div class="choice-card" data-correct-choice="false">print()</div>
+        <div class="choice-card" data-correct-choice="false">break</div>
+      </div>
+
+      <p><b>5. Какой код правильно пишет цикл for?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">for i = 1, 10 do</div>
+        <div class="choice-card" data-correct-choice="false">for i 1, 1 do</div>
+        <div class="choice-card" data-correct-choice="false">for i - 1, 1 do</div>
+      </div>
+
+      <button class="action-btn" onclick="checkChoices('toolQuiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!--  ИТОГОВЫЙ ТЕСТ                                              -->
+    <!-- ========================================================== -->
+    <div class="quiz-wrap" id="quiz1">
+      <h2>📝 Итоговый тест «Циклы»</h2>
+
+      <div class="quiz-question" data-name="quiz1q0" data-correct="a">
+        <p class="quiz-q-text">1. Какой цикл используется, когда известно точное количество повторений?</p>
+        <label><input type="radio" name="quiz1q0" value="a"> for</label>
+        <label><input type="radio" name="quiz1q0" value="b"> while true</label>
+        <label><input type="radio" name="quiz1q0" value="c"> repeat</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q1" data-correct="b">
+        <p class="quiz-q-text">2. Сколько раз выполнится цикл: <code>for i = 1, 3 do</code>?</p>
+        <label><input type="radio" name="quiz1q1" value="a"> 2</label>
+        <label><input type="radio" name="quiz1q1" value="b"> 3</label>
+        <label><input type="radio" name="quiz1q1" value="c"> 4</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q2" data-correct="a">
+        <p class="quiz-q-text">3. Какой цикл выполняется вечно?</p>
+        <label><input type="radio" name="quiz1q2" value="a"> while true do</label>
+        <label><input type="radio" name="quiz1q2" value="b"> for i = 1, 10 do</label>
+        <label><input type="radio" name="quiz1q2" value="c"> for i = 1, 0, -1 do</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q3" data-correct="c">
+        <p class="quiz-q-text">4. Что выведет код: <code>for i = 3, 1, -1 do print(i) end</code>?</p>
+        <label><input type="radio" name="quiz1q3" value="a"> 1, 2, 3</label>
+        <label><input type="radio" name="quiz1q3" value="b"> 3, 2, 1, 0</label>
+        <label><input type="radio" name="quiz1q3" value="c"> 3, 2, 1</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q4" data-correct="b">
+        <p class="quiz-q-text">5. Зачем нужен <code>wait()</code> в бесконечном цикле?</p>
+        <label><input type="radio" name="quiz1q4" value="a"> Чтобы остановить цикл</label>
+        <label><input type="radio" name="quiz1q4" value="b"> Чтобы игра не зависла</label>
+        <label><input type="radio" name="quiz1q4" value="c"> Чтобы вывести сообщение</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <button class="quiz-btn" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+      <div class="quiz-result"></div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!--  ЗАДАНИЕ: СООТНЕСИ ЦИКЛ И ЕГО ДЕЙСТВИЕ                    -->
+    <!-- ========================================================== -->
+    <div class="interactive-box" id="matchQuiz">
+      <h2>🧩 Задание: соотнеси цикл с его описанием</h2>
+      <p>Выбери для каждого цикла правильное описание.</p>
+      <table class="match-table">
+        <thead>
+          <tr><th>Цикл</th><th>Описание</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>for i = 1, 5 do print(i) end</code></td>
+            <td>
+              <select data-correct="0">
+                <option value="">Выбери...</option>
+                <option value="0">Выводит числа от 1 до 5</option>
+                <option value="1">Выводит числа от 5 до 1</option>
+                <option value="2">Выполняется вечно</option>
+                <option value="3">Выполняется 10 раз</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><code>for i = 5, 1, -1 do print(i) end</code></td>
+            <td>
+              <select data-correct="1">
+                <option value="">Выбери...</option>
+                <option value="0">Выводит числа от 1 до 5</option>
+                <option value="1">Выводит числа от 5 до 1</option>
+                <option value="2">Выполняется вечно</option>
+                <option value="3">Выполняется 10 раз</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><code>while true do wait(1) end</code></td>
+            <td>
+              <select data-correct="2">
+                <option value="">Выбери...</option>
+                <option value="0">Выводит числа от 1 до 5</option>
+                <option value="1">Выводит числа от 5 до 1</option>
+                <option value="2">Выполняется вечно</option>
+                <option value="3">Выполняется 10 раз</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><code>for i = 1, 10 do wait() end</code></td>
+            <td>
+              <select data-correct="3">
+                <option value="">Выбери...</option>
+                <option value="0">Выводит числа от 1 до 5</option>
+                <option value="1">Выводит числа от 5 до 1</option>
+                <option value="2">Выполняется вечно</option>
+                <option value="3">Выполняется 10 раз</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="action-btn" onclick="checkMatch()">Проверить</button>
+      <div class="activity-result" id="matchResult"></div>
+    </div>
+ <div class="interactive-box" id="fillBlanks">
+      <h2>🧩 Заполни пропуски в коде</h2>
+      <p>Впиши правильные числа или слова, чтобы цикл заработал как надо.</p>
+
+      <div style="margin-bottom:16px;">
+        <p><b>1. Цикл, который повторяется 5 раз:</b></p>
+        <code>for i = 1, <input type="text" class="fill-input" data-answer="5" placeholder="?"> do</code>
+      </div>
+      <div style="margin-bottom:16px;">
+        <p><b>2. Бесконечный цикл (впиши ключевые слова):</b></p>
+        <code><input type="text" class="fill-input" data-answer="while" placeholder="?"> <input type="text" class="fill-input" data-answer="true" placeholder="?"> do</code>
+      </div>
+      <div style="margin-bottom:16px;">
+        <p><b>3. Обратный отсчёт от 3 до 1:</b></p>
+        <code>for i = 3, 1, <input type="text" class="fill-input" data-answer="-1" placeholder="?"> do</code>
+      </div>
+
+      <button class="action-btn" onclick="checkFillBlanks()">Проверить</button>
+      <div class="activity-result" id="fillResult"></div>
+    </div>
+    <!-- ========================================================== -->
+    <!--  РЕФЛЕКСИЯ                                                  -->
+    <!-- ========================================================== -->
+    <div class="reflection-box" id="reflectionBlock">
+      <h2>💭 Твой опыт</h2>
+      <p>Оцени, как прошло занятие:</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="yes"> 🚀 Всё понял, сделал всё сам!
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="ok"> 🤔 Понял почти всё, иногда нужна была подсказка.
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="no"> 😕 Было сложно, нужно ещё раз повторить.
+        </label>
+      </div>
+      <textarea id="reflectionText" placeholder="Что нового ты узнал о циклах?&#10;Какой цикл тебе понравился больше всего?&#10;Где в играх могут пригодиться циклы?"></textarea>
+      <button class="action-btn" onclick="submitReflection()">Отправить</button>
+      <div id="reflectionResult" style="margin-top:10px; font-weight:700;"></div>
+    </div>
+
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    <div class="lesson-nav">
+      <a class="nav-btn prev" href="Занятие_2.3_Переменные_в_Lua.html">
+        <div class="lbl">← Назад</div>
+        <div class="ttl">2.3 Переменные в Lua</div>
+      </a>
+      <a class="nav-btn next" href="Занятие_2.5_Строим_лес.html">
+        <div class="lbl">Далее →</div>
+        <div class="ttl">2.5 Строим лес</div>
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-brand">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+        Учебный центр «РОБОВИТА»
+      </div>
+      <div>Занятие 2.4 · офлайн-курс по Roblox Studio и Lua · 🔄 Циклы</div>
+    </div>
+  </footer>
+
+  <script src="assets/js/lesson.js"></script>
+  <script>
+    // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+    function toggleHint(id) {
+      const box = document.getElementById(id);
+      box.classList.toggle('show');
+      const btn = box.previousElementSibling;
+      if (box.classList.contains('show')) {
+        btn.textContent = '🙈 Скрыть подсказку';
+      } else {
+        btn.textContent = '📖 Показать подсказку';
+      }
+    }
+
+    function submitReflection() {
+      const textarea = document.getElementById('reflectionText');
+      const resultDiv = document.getElementById('reflectionResult');
+      if (textarea.value.trim() === '') {
+        resultDiv.textContent = 'Пожалуйста, напишите хотя бы несколько слов.';
+        resultDiv.style.color = '#C0392B';
+        return;
+      }
+      resultDiv.textContent = '✅ Спасибо! Твой ответ записан.';
+      resultDiv.style.color = '#2E7D32';
+      textarea.disabled = true;
+      const btn = document.querySelector('#reflectionBlock .action-btn');
+      if (btn) btn.disabled = true;
+    }
+
+    function updateTaskProgress(taskBox) {
+      const checkboxes = taskBox.querySelectorAll('.task-steps input[type=checkbox]');
+      let done = 0;
+      checkboxes.forEach(cb => { if (cb.checked) done++; });
+      const total = checkboxes.length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+      const fill = taskBox.querySelector('.progress-fill');
+      const label = taskBox.querySelector('.progress-label');
+      if (fill) fill.style.width = percent + '%';
+      if (label) label.textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+    }
+
+    function checkChoices(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const cards = container.querySelectorAll('.choice-card');
+      let allCorrect = true;
+      let anySelected = false;
+      cards.forEach(card => {
+        if (card.classList.contains('selected')) anySelected = true;
+        const isCorrect = card.dataset.correctChoice === 'true';
+        if (card.classList.contains('selected') && !isCorrect) {
+          card.classList.add('incorrect');
+          allCorrect = false;
+        } else if (card.classList.contains('selected') && isCorrect) {
+          card.classList.add('correct');
+        }
+      });
+      const resultDiv = container.querySelector('.activity-result');
+      if (!resultDiv) return;
+      if (!anySelected) {
+        resultDiv.textContent = '⚠️ Выбери ответы на все вопросы!';
+        resultDiv.className = 'activity-result neutral';
+        return;
+      }
+      if (allCorrect) {
+        resultDiv.textContent = '✅ Молодец! Всё верно.';
+        resultDiv.className = 'activity-result done';
+      } else {
+        resultDiv.textContent = '❌ Есть ошибки. Попробуй ещё раз.';
+        resultDiv.className = 'activity-result neutral';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('click', function(e) {
+        const card = e.target.closest('.choice-card');
+        if (!card) return;
+        const parent = card.closest('.choice-grid');
+        if (!parent) return;
+        parent.querySelectorAll('.choice-card').forEach(c => {
+          c.classList.remove('selected', 'correct', 'incorrect');
+        });
+        card.classList.add('selected');
+      });
+    });
+
+    function checkQuiz(quizId) {
+      const container = document.getElementById(quizId);
+      if (!container) return;
+      const questions = container.querySelectorAll('.quiz-question');
+      let correct = 0;
+      let allAnswered = true;
+      questions.forEach(q => {
+        const correctVal = q.dataset.correct;
+        const selected = q.querySelector('input[type=radio]:checked');
+        const feedback = q.querySelector('.q-feedback');
+        if (!feedback) return;
+        if (selected) {
+          if (selected.value === correctVal) {
+            feedback.textContent = '✅ Верно!';
+            feedback.style.color = '#2E7D32';
+            correct++;
+          } else {
+            feedback.textContent = '❌ Неправильно.';
+            feedback.style.color = '#C0392B';
+          }
+        } else {
+          feedback.textContent = '⚠️ Выбери ответ.';
+          feedback.style.color = '#B7950B';
+          allAnswered = false;
+        }
+      });
+      const resultDiv = container.querySelector('.quiz-result');
+      if (resultDiv) {
+        const total = questions.length;
+        if (!allAnswered) {
+          resultDiv.textContent = 'Ответь на все вопросы!';
+          resultDiv.style.color = '#B7950B';
+        } else {
+          resultDiv.textContent = `Результат: ${correct} из ${total}`;
+          resultDiv.style.color = '#2E7D32';
+        }
+        resultDiv.style.fontWeight = '700';
+        resultDiv.style.marginTop = '12px';
+      }
+    }
+
+    function checkMatch() {
+      const selects = document.querySelectorAll('#matchQuiz select');
+      let correct = 0;
+      let total = selects.length;
+
+      selects.forEach(sel => {
+        const correctValue = sel.dataset.correct;
+        const selectedValue = sel.value;
+        sel.classList.remove('correct', 'incorrect');
+        if (selectedValue === correctValue) {
+          sel.classList.add('correct');
+          correct++;
+        } else if (selectedValue !== '') {
+          sel.classList.add('incorrect');
+        }
+      });
+
+      const resultDiv = document.getElementById('matchResult');
+      if (correct === total) {
+        resultDiv.textContent = '🎉 Отлично! Все сопоставления верны!';
+        resultDiv.className = 'activity-result done';
+      } else {
+        resultDiv.textContent = `⚠️ Правильно: ${correct} из ${total}. Попробуй ещё раз.`;
+        resultDiv.className = 'activity-result neutral';
+      }
+    }
+      function checkFillBlanks() {
+      const inputs = document.querySelectorAll('#fillBlanks .fill-input');
+      let correct = 0;
+      inputs.forEach(inp => {
+        const answer = inp.dataset.answer;
+        const userVal = inp.value.trim().toLowerCase();
+        inp.classList.remove('correct-fill', 'incorrect-fill');
+        if (userVal === answer.toLowerCase()) {
+          inp.classList.add('correct-fill');
+          correct++;
+        } else {
+          inp.classList.add('incorrect-fill');
+        }
+      });
+      const resultDiv = document.getElementById('fillResult');
+      if (correct === inputs.length) {
+        resultDiv.textContent = '🎉 Отлично! Все пропуски заполнены верно.';
+        resultDiv.className = 'activity-result done';
+      } else {
+        resultDiv.textContent = `⚠️ Правильно: ${correct} из ${inputs.length}. Попробуй ещё раз.`;
+        resultDiv.className = 'activity-result neutral';
+      }
+    }
+  </script>
+</body>
+</html>

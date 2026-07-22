@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2.3. Переменные в Lua — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    /* ===== ОСНОВНЫЕ СТИЛИ (аналогичны занятию 2.2) ===== */
+    .choice-card {
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      padding: 8px 16px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 30px;
+      display: inline-block;
+      margin: 4px 6px;
+    }
+    .choice-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      background: #f1f5f9;
+    }
+    .choice-card.selected {
+      border-color: var(--accent) !important;
+      background: var(--accent-light) !important;
+      box-shadow: 0 0 0 3px rgba(110, 0, 145, 0.2);
+    }
+    .choice-card.correct {
+      border-color: var(--primary) !important;
+      background: var(--primary-light) !important;
+    }
+    .choice-card.incorrect {
+      border-color: var(--danger) !important;
+      background: var(--danger-light) !important;
+    }
+    .activity-result.done {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .activity-result.neutral {
+      background: var(--accent-light);
+      color: var(--accent-ink);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .choice-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 16px;
+    }
+    .code-block {
+      background: #2a2f3a;
+      color: #e2e8f0;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 1.4rem;
+      overflow-x: auto;
+      margin: 12px 0;
+      line-height: 1.6;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .code-block .hl {
+      background: #fde047;
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      display: inline-block;
+    }
+    .hint-btn {
+      background: var(--accent-light, #f0e6f5);
+      border: none;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-weight: 600;
+      color: var(--accent-ink, #4a1a5a);
+      cursor: pointer;
+      transition: 0.15s;
+      margin-top: 6px;
+    }
+    .hint-btn:hover {
+      background: var(--accent, #b47cdb);
+      color: white;
+    }
+    .hint-box {
+      display: none;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 8px;
+      border-left: 4px solid var(--accent, #6e0091);
+    }
+    .hint-box.show {
+      display: block;
+    }
+    .theory-section {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line, #e2e8f0);
+    }
+    .theory-section:last-child {
+      border-bottom: none;
+    }
+    .theory-section h3 {
+      margin-top: 12px;
+      color: var(--primary-dark, #1a4a0a);
+    }
+    .theory-section ul, .theory-section ol {
+      padding-left: 24px;
+      line-height: 1.7;
+    }
+    .theory-section li {
+      margin-bottom: 4px;
+    }
+    .prop-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+    }
+    .prop-table th, .prop-table td {
+      border: 1px solid var(--line, #e2e8f0);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .prop-table th {
+      background: var(--primary-light, #e8f5e0);
+      color: var(--primary-dark, #1a4a0a);
+    }
+    .prop-table td code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .step-guide {
+      background: var(--bg-light, #f8fafc);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin: 12px 0;
+      border: 1px solid var(--line, #e2e8f0);
+    }
+    .step-guide .step-num {
+      display: inline-block;
+      background: var(--primary, #61b01f);
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 28px;
+      font-weight: 700;
+      margin-right: 10px;
+      font-size: 0.9rem;
+    }
+    .step-guide .step-content {
+      display: inline;
+    }
+    .screenshot-placeholder {
+      background: #f1f5f9;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin: 12px 0;
+      color: #64748b;
+      font-style: italic;
+    }
+    .screenshot-placeholder img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+    .scenario-box {
+      background: linear-gradient(135deg, #f0e6f5, #e8f5e0);
+      border-radius: 20px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .scenario-avatar {
+      font-size: 3rem;
+      flex-shrink: 0;
+    }
+    .cheat-sheet {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 20px 24px;
+      border: 2px solid var(--primary, #61b01f);
+      margin: 24px 0;
+      position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка юного скриптера";
+      position: absolute;
+      top: -14px;
+      left: 20px;
+      background: var(--primary-light, #e8f5e0);
+      color: var(--primary-dark, #1a4a0a);
+      padding: 2px 16px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border: 1px solid var(--primary, #61b01f);
+    }
+    .cheat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .cheat-item {
+      background: white;
+      border-radius: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--line, #e2e8f0);
+    }
+    .cheat-item .title {
+      font-weight: 700;
+      color: var(--primary-dark, #1a4a0a);
+      border-bottom: 2px solid var(--primary-light, #e8f5e0);
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+    .cheat-item .rule {
+      font-size: 0.92rem;
+      margin: 4px 0;
+    }
+    .cheat-item .rule code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .cheat-item .rule .hl {
+      color: var(--accent-ink, #4a1a5a);
+      font-weight: 600;
+    }
+
+    /* Стили для задания "Соотнеси" */
+    .match-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    .match-table th, .match-table td {
+      border: 1px solid var(--line, #e2e8f0);
+      padding: 10px 12px;
+      vertical-align: middle;
+    }
+    .match-table th {
+      background: var(--primary-light, #e8f5e0);
+      color: var(--primary-dark, #1a4a0a);
+    }
+    .match-table td code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+    .match-table select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 2px solid var(--line, #e2e8f0);
+      background: white;
+      font-size: 0.95rem;
+      width: 100%;
+      max-width: 280px;
+    }
+    .match-table select.correct {
+      border-color: var(--primary, #61b01f);
+      background: var(--primary-light, #e8f5e0);
+    }
+    .match-table select.incorrect {
+      border-color: var(--danger, #e74c3c);
+      background: var(--danger-light, #fce4e4);
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+  <header class="site-header">
+    <div class="wrap">
+      <div class="top-bar">
+        <a class="brand" href="Карта_курса.html">
+          <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+          <div>
+            <div class="brand-name">РОБОВИТА</div>
+            <div class="brand-tag">учимся программировать роботов и игры</div>
+          </div>
+        </a>
+        <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 2.3</div>
+      </div>
+      <div class="hero">
+        <div class="hex-badge">2.3</div>
+        <div>
+          <div class="module-pill">Раздел 2 · Программирование</div>
+          <h1>📦 Переменные и типы данных в Lua</h1>
+          <p class="subtitle">Учимся хранить и использовать информацию в игре: числа, строки, булевы значения и таблицы</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- Персонаж-рассказчик -->
+    <div class="scenario-box">
+      <div class="scenario-avatar">🤖</div>
+      <div>
+        <strong>Снова я, робот Бобик!</strong> Сегодня мы научимся давать <em>имена данным</em>. Переменная — это такая коробочка, в которую можно положить любое значение и потом использовать его в скрипте. Поехали!
+      </div>
+    </div>
+
+    <!-- Цели -->
+    <div class="objectives">
+      <h2>🎯 Цели занятия</h2>
+      <ul>
+        <li>Понять, что такое переменная и зачем она нужна</li>
+        <li>Изучить основные <b>типы данных</b>: number, string, boolean, nil</li>
+        <li>Научиться создавать и использовать переменные с <code>local</code></li>
+        <li>Познакомиться с <b>таблицами (table)</b> как способом хранить много значений</li>
+        <li>Применить переменные для управления объектами в Roblox</li>
+      </ul>
+    </div>
+
+    <!-- План -->
+    <div class="card">
+      <table class="timetable">
+        <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+        <tr><td>Теория: что такое переменная</td><td>10 мин</td><td>Аналогия с коробочками и этикетками</td></tr>
+        <tr><td>Теория: типы данных</td><td>10 мин</td><td>Числа, строки, булевы, nil и таблицы</td></tr>
+        <tr><td>Практика: объявление переменных</td><td>10 мин</td><td>Пишем первые строки кода с переменными</td></tr>
+        <tr><td>Задание 1 — Приветствие</td><td>10 мин</td><td>Переменная с именем и вывод в Output</td></tr>
+        <tr><td>Задание 2 — Калькулятор площади</td><td>10 мин</td><td>Переменные width, height, area</td></tr>
+        <tr><td>Задание 3 — Изменение Part</td><td>10 мин</td><td>Цвет и размер через переменные</td></tr>
+        <tr><td>Задание 4 — Счётчик монет</td><td>10 мин</td><td>Переменная-счётчик и ClickDetector</td></tr>
+        <tr><td>Задание 5 — Изменение размера Part</td><td>10 мин</td><td>Переменная scale и изменение размера</td></tr>
+        <tr><td>Задание 6 — Таблица цветов</td><td>10 мин</td><td>Хранение нескольких цветов в таблице</td></tr>
+        <tr><td>Опрос и итоги</td><td>5 мин</td><td>Викторина «Что я узнал?»</td></tr>
+        <tr><td>Итого</td><td>85 мин</td><td>—</td></tr>
+      </table>
+    </div>
+
+    <!-- ========================================================== -->
+    <!--  ТЕОРИЯ: ЧТО ТАКОЕ ПЕРЕМЕННАЯ                             -->
+    <!-- ========================================================== -->
+    <div class="card" id="theory-variables">
+      <h2><span class="num">0</span> Теория: что такое переменная?</h2>
+
+      <div class="theory-section">
+        <h3>📦 Коробочка с именем</h3>
+        <p>
+          <b>Переменная</b> — это контейнер, в котором можно сохранить какое-то значение (число, текст и т.д.). У каждой переменной есть <b>имя</b>, по которому мы к ней обращаемся.
+        </p>
+        <p>Представь, что у тебя есть пустая коробка. Ты наклеиваешь на неё этикетку «монеты» и кладёшь туда число 100. Потом в любом месте программы ты можешь сказать: «Дай мне содержимое коробки 'монеты'» и получить 100.</p>
+        <div class="screenshot-placeholder">
+        <img src="assets/images/lesson-2.5/1.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> </div>
+      </div>
+
+      <div class="theory-section">
+        <h3>📝 Как объявить переменную в Lua</h3>
+        <p>В Roblox Lua переменные обычно объявляют с ключевым словом <code>local</code>, чтобы они были видны только в текущем скрипте.</p>
+        <p>Синтаксис:</p>
+        <div class="code-block">
+          <span class="keyword">local</span> имяПеременной = значение
+        </div>
+        <p>Примеры:</p>
+        <div class="code-block">
+          <span class="keyword">local</span> age = <span class="number">12</span><br>
+          <span class="keyword">local</span> name = <span class="string">"Бобик"</span><br>
+          <span class="keyword">local</span> isReady = <span class="keyword">true</span><br>
+          <span class="keyword">local</span> price = <span class="number">2.5</span>
+        </div>
+        <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">
+          💡 <b>Правило хорошего тона:</b> всегда используй <code>local</code>, чтобы переменная не «убежала» в другие скрипты.
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ТЕОРИЯ: ТИПЫ ДАННЫХ ===== -->
+    <div class="card" id="theory-types">
+      <h2><span class="num">0</span> Теория: типы данных в Lua</h2>
+      <p>В переменную можно положить данные разных видов. Вот самые главные:</p>
+
+      <table class="prop-table">
+        <tr><th>Тип</th><th>Описание</th><th>Пример</th></tr>
+        <tr>
+          <td><b>number</b></td>
+          <td>Числа (целые и дробные)</td>
+          <td><code>local score = 150<br>local pi = 3.14</code></td>
+        </tr>
+        <tr>
+          <td><b>string</b></td>
+          <td>Текст (строка)</td>
+          <td><code>local hello = "Привет"<br>local path = 'game.Workspace'</code></td>
+        </tr>
+        <tr>
+          <td><b>boolean</b></td>
+          <td>Логическое значение: <code>true</code> или <code>false</code></td>
+          <td><code>local flag = true<br>local gameOver = false</code></td>
+        </tr>
+        <tr>
+          <td><b>nil</b></td>
+          <td>Отсутствие значения («пусто»)</td>
+          <td><code>local nothing = nil</code></td>
+        </tr>
+        <tr>
+          <td><b>table</b></td>
+          <td>Таблица — может хранить много значений</td>
+          <td><code>local colors = {"Red", "Green", "Blue"}</code></td>
+        </tr>
+      </table>
+
+      <div class="theory-section">
+        <h3>📋 Таблицы — переменные с ячейками</h3>
+        <p>Таблица похожа на список или шкаф с ящиками. В ней можно хранить сразу несколько значений под одним именем.</p>
+        <div class="code-block">
+          <span class="keyword">local</span> fruits = {<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"cherry"</span>}<br>
+          <span class="keyword">print</span>(fruits[1])  <span class="comment">-- выведет "apple"</span><br>
+          <span class="keyword">print</span>(fruits[2])  <span class="comment">-- выведет "banana"</span>
+        </div>
+        <p>Нумерация начинается с <b>1</b> (не с нуля, как в некоторых других языках).</p>
+      </div>
+    </div>
+
+    <!-- ===== ШПАРГАЛКА ПО ПЕРЕМЕННЫМ ===== -->
+    <div class="cheat-sheet">
+      <h3 style="margin-top:0; margin-bottom:12px;">📘 Шпаргалка: переменные и типы данных</h3>
+      <div class="cheat-grid">
+
+        <div class="cheat-item">
+          <div class="title">📌 Объявление переменной</div>
+          <div class="rule"><code><span class="hl">local</span> myVar = значение</code> — правильное объявление.</div>
+          <div class="rule">Имя переменной: буквы, цифры, символ подчёркивания. Не может начинаться с цифры.</div>
+          <div class="rule">Примеры имён: <code>playerName</code>, <code>_count</code>, <code>box2</code>.</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">🔢 Числа (number)</div>
+          <div class="rule"><code><span class="keyword">local</span> a = <span class="number">10</span></code></div>
+          <div class="rule"><code><span class="keyword">local</span> b = <span class="number">3.14</span></code></div>
+          <div class="rule">Можно выполнять арифметику: <code>a + b</code>, <code>a * 2</code>, <code>a / 5</code>.</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">📝 Строки (string)</div>
+          <div class="rule"><code><span class="keyword">local</span> s1 = <span class="string">"Привет"</span></code></div>
+          <div class="rule"><code><span class="keyword">local</span> s2 = <span class="string">'Мир'</span></code></div>
+          <div class="rule">Склеивание: <code>s1 .. " " .. s2</code> → "Привет Мир".</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">✔️ Логические (boolean)</div>
+          <div class="rule"><code><span class="keyword">local</span> isActive = <span class="keyword">true</span></code></div>
+          <div class="rule"><code><span class="keyword">local</span> isHidden = <span class="keyword">false</span></code></div>
+          <div class="rule">Используются в условиях <code>if</code>.</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">📋 Таблицы (table)</div>
+          <div class="rule"><code><span class="keyword">local</span> t = {<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>}</code></div>
+          <div class="rule">Доступ: <code>t[1]</code> → 10, <code>t[2]</code> → 20.</div>
+          <div class="rule">Добавление: <code>table.insert(t, 40)</code>.</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">🌍 Область видимости</div>
+          <div class="rule">Переменная <code>local</code> видна только внутри своего блока/функции.</div>
+          <div class="rule">Если объявить без <code>local</code>, переменная станет глобальной — лучше так не делать.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ===== ПРАКТИКА: ПЕРВЫЕ СТРОКИ С ПЕРЕМЕННЫМИ ===== -->
+    <div class="card" id="practice-vars">
+      <h2><span class="num">0</span> Первый код с переменными</h2>
+      <p>Давай сразу попробуем! Открой Roblox Studio, создай новый Script в ServerScriptService и напиши:</p>
+      <div class="code-block">
+        <span class="keyword">local</span> myName = <span class="string">"Бобик"</span><br>
+        <span class="keyword">local</span> myAge = <span class="number">7</span><br>
+        <span class="keyword">print</span>(<span class="string">"Меня зовут "</span> .. myName .. <span class="string">", мне "</span> .. myAge .. <span class="string">" лет."</span>)
+      </div>
+      <p>Запусти (F5) и посмотри в Output. Ты увидишь сообщение!</p>
+      <div class="screenshot-placeholder">
+          <img src="assets/images/lesson-2.5/2.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> </div>
+     
+      </div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 1: ПРИВЕТСТВИЕ ===== -->
+    <div class="task-box" id="task1">
+      <h2>👋 Задание 1 — Приветствие</h2>
+      <p>Создай скрипт, который объявляет переменную <b>playerName</b> со значением твоего имени и выводит приветствие.</p>
+      <ul>
+        <li>Объяви переменную <code>local playerName = "Твоё имя"</code></li>
+        <li>Используй <code>print</code> для вывода: <b>"Привет, Твоё имя! Добро пожаловать в игру!"</b></li>
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task1Progress"></div></div>
+      <span class="progress-label" id="task1Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t1s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s0">Создай Script в ServerScriptService, объяви переменную playerName.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t1s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s1">Напиши print с приветствием, используя оператор <code>..</code> для склеивания.</label>
+          <button class="hint-btn" onclick="toggleHint('hint1')">📖 Показать подсказку</button>
+          <div id="hint1" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> playerName = <span class="string">"Максим"</span><br>
+              <span class="keyword">print</span>(<span class="string">"Привет, "</span> .. playerName .. <span class="string">"! Добро пожаловать в игру!"</span>)
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 2: КАЛЬКУЛЯТОР ПЛОЩАДИ ===== -->
+    <div class="task-box" id="task2">
+      <h2>📐 Задание 2 — Калькулятор площади</h2>
+      <p>Создай две переменные <b>width</b> и <b>height</b> с числами. Вычисли площадь прямоугольника и сохрани в переменную <b>area</b>. Выведи результат.</p>
+
+      <div class="progress-track"><div class="progress-fill" id="task2Progress"></div></div>
+      <span class="progress-label" id="task2Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t2s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s0">Объяви <code>local width = 8</code> и <code>local height = 5</code>.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t2s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s1">Вычисли <code>local area = width * height</code> и выведи <code>print("Площадь: " .. area)</code>.</label>
+          <button class="hint-btn" onclick="toggleHint('hint2')">📖 Показать подсказку</button>
+          <div id="hint2" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> width = <span class="number">8</span><br>
+              <span class="keyword">local</span> height = <span class="number">5</span><br>
+              <span class="keyword">local</span> area = width * height<br>
+              <span class="keyword">print</span>(<span class="string">"Площадь прямоугольника: "</span> .. area)
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="note" style="border-left-color:var(--primary);">📏 В Output должно появиться: <b>Площадь прямоугольника: 40</b></div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 3: ИЗМЕНЕНИЕ PART ===== -->
+    <div class="task-box" id="task3">
+      <h2>🎨 Задание 3 — Изменяем Part через переменные</h2>
+      <p>Создай Part и скрипт внутри него. Используй переменные для установки размера и цвета.</p>
+      <ul>
+        <li>Объяви переменные <code>mySize</code> (Vector3) и <code>myColor</code> (BrickColor).</li>
+        <li>Примени их к Part через <code>script.Parent</code>.</li>
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task3Progress"></div></div>
+      <span class="progress-label" id="task3Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t3s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t3s0">Создай Part, назови <b>VarPart</b>.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t3s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t3s1">Внутри Part создай Script и напиши код.</label>
+          <button class="hint-btn" onclick="toggleHint('hint3')">📖 Показать подсказку</button>
+          <div id="hint3" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> part = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> mySize = Vector3.new(<span class="number">6</span>, <span class="number">2</span>, <span class="number">6</span>)<br>
+              <span class="keyword">local</span> myColor = BrickColor.new(<span class="string">"Bright green"</span>)<br>
+              part.Size = mySize<br>
+              part.BrickColor = myColor
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t3s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t3s2">Запусти игру и проверь изменения.</label>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 4: СЧЁТЧИК МОНЕТ ===== -->
+    <div class="task-box" id="task4">
+      <h2>🪙 Задание 4 — Счётчик монет</h2>
+      <p>Создай кнопку, которая при каждом нажатии увеличивает количество монет. Используй переменную-счётчик.</p>
+
+      <div class="progress-track"><div class="progress-fill" id="task4Progress"></div></div>
+      <span class="progress-label" id="task4Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t4s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t4s0">Создай Part <b>CoinButton</b>, добавь ClickDetector.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t4s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t4s1">Напиши скрипт с переменной <code>coins</code> и увеличивай её при клике.</label>
+          <button class="hint-btn" onclick="toggleHint('hint4')">📖 Показать подсказку</button>
+          <div id="hint4" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> part = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> click = part:FindFirstChild(<span class="string">"ClickDetector"</span>)<br>
+              <span class="keyword">local</span> coins = <span class="number">0</span><br>
+              <span class="keyword">function</span> <span class="func">onClick</span>()<br>
+              &nbsp;&nbsp;coins = coins + <span class="number">1</span><br>
+              &nbsp;&nbsp;<span class="keyword">print</span>(<span class="string">"Монет: "</span> .. coins)<br>
+              <span class="keyword">end</span><br>
+              click.MouseClick:Connect(onClick)
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t4s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t4s2">Запусти игру, нажимай на кнопку и следи за Output.</label>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 5: ИЗМЕНЕНИЕ РАЗМЕРА PART ===== -->
+    <div class="task-box" id="task5">
+      <h2>📏 Задание 5 — Изменение размера Part при клике</h2>
+      <p>Создай кнопку, которая при каждом нажатии увеличивает размер Part на 20%. Используй переменную <b>scale</b> для хранения текущего масштаба.</p>
+      <ul>
+        <li>Начальный размер Part: <b>4 × 2 × 4</b>.</li>
+        <li>При каждом клике умножайте размер на новый масштаб <code>scale = scale + 0.2</code>.</li>
+        <li>Выводи в Output текущий масштаб.</li>
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task5Progress"></div></div>
+      <span class="progress-label" id="task5Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t5s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t5s0">Создай Part с именем <b>ScalePart</b>, добавь ClickDetector.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t5s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t5s1">Напиши скрипт с переменной <code>scale</code>, которая увеличивается при клике.</label>
+          <button class="hint-btn" onclick="toggleHint('hint5')">📖 Показать подсказку</button>
+          <div id="hint5" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> part = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> click = part:FindFirstChild(<span class="string">"ClickDetector"</span>)<br>
+              <span class="keyword">local</span> scale = <span class="number">1</span><br><br>
+              <span class="keyword">function</span> <span class="func">onClick</span>()<br>
+              &nbsp;&nbsp;scale = scale + <span class="number">0.2</span><br>
+              &nbsp;&nbsp;part.Size = Vector3.new(<span class="number">4</span>, <span class="number">2</span>, <span class="number">4</span>) * scale<br>
+              &nbsp;&nbsp;<span class="keyword">print</span>(<span class="string">"Новый масштаб: "</span> .. scale)<br>
+              <span class="keyword">end</span><br><br>
+              click.MouseClick:Connect(onClick)
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t5s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t5s2">Запусти игру, кликай по Part и наблюдай, как она растёт.</label>
+        </li>
+      </ul>
+      <div class="note" style="border-left-color:var(--primary);">💡 <b>Подсказка:</b> Размер умножается на коэффициент <code>scale</code> — чем больше кликов, тем больше Part.</div>
+    </div>
+
+    <!-- ===== ЗАДАНИЕ 6: ТАБЛИЦА ЦВЕТОВ ===== -->
+    <div class="task-box" id="task6">
+      <h2>🌈 Задание 6 — Таблица цветов</h2>
+      <p>Создай скрипт, в котором есть <b>таблица</b> из трёх цветов. При запуске игры скрипт должен по очереди красить Part в эти цвета с паузой 1 секунда.</p>
+
+      <div class="progress-track"><div class="progress-fill" id="task6Progress"></div></div>
+      <span class="progress-label" id="task6Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t6s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t6s0">Создай Part и Script внутри него.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t6s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t6s1">Напиши скрипт с таблицей цветов и циклом <code>for</code>.</label>
+          <button class="hint-btn" onclick="toggleHint('hint6')">📖 Показать подсказку</button>
+          <div id="hint6" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> part = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> colors = {<span class="string">"Bright red"</span>, <span class="string">"Bright yellow"</span>, <span class="string">"Bright blue"</span>}<br>
+              <span class="keyword">for</span> i = <span class="number">1</span>, <span class="number">3</span> <span class="keyword">do</span><br>
+              &nbsp;&nbsp;part.BrickColor = BrickColor.new(colors[i])<br>
+              &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">1</span>)<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t6s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t6s2">Запусти и наблюдай смену цветов!</label>
+        </li>
+      </ul>
+      <div class="note" style="border-left-color:var(--primary);">🎨 <b>Творческое задание:</b> добавь ещё 2 цвета в таблицу и измени цикл до 5.</div>
+    </div>
+
+    <!-- ===== ВОПРОСЫ НА ЗАКРЕПЛЕНИЕ (БЫСТРАЯ ПРОВЕРКА) ===== -->
+    <div class="interactive-box" id="toolQuiz2">
+      <h2>🧩 Быстрая проверка: выбери правильные карточки</h2>
+
+      <p><b>1. Как правильно объявить переменную с числом 10?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">local a = 10</div>
+        <div class="choice-card" data-correct-choice="false">variable a = 10</div>
+        <div class="choice-card" data-correct-choice="false">int a = 10</div>
+      </div>
+
+      <p><b>2. Какой тип данных у значения "Hello"?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">string</div>
+        <div class="choice-card" data-correct-choice="false">number</div>
+        <div class="choice-card" data-correct-choice="false">boolean</div>
+      </div>
+
+      <p><b>3. Что выведет <code>print(2 .. 3)</code>?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">23</div>
+        <div class="choice-card" data-correct-choice="false">5</div>
+        <div class="choice-card" data-correct-choice="false">Ошибка</div>
+      </div>
+
+      <p><b>4. Как обратиться к первому элементу таблицы <code>t = {5,10,15}</code>?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">t[1]</div>
+        <div class="choice-card" data-correct-choice="false">t[0]</div>
+        <div class="choice-card" data-correct-choice="false">t.first</div>
+      </div>
+
+      <p><b>5. Какое ключевое слово делает переменную видимой только внутри скрипта?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">local</div>
+        <div class="choice-card" data-correct-choice="false">global</div>
+        <div class="choice-card" data-correct-choice="false">var</div>
+      </div>
+
+      <button class="action-btn" onclick="checkChoices('toolQuiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- ===== ИТОГОВЫЙ ТЕСТ ===== -->
+    <div class="quiz-wrap" id="quiz1">
+      <h2>📝 Итоговый тест «Переменные и типы данных»</h2>
+
+      <div class="quiz-question" data-name="quiz1q0" data-correct="b">
+        <p class="quiz-q-text">1. Какой тип данных у значения <code>true</code>?</p>
+        <label><input type="radio" name="quiz1q0" value="a"> string</label>
+        <label><input type="radio" name="quiz1q0" value="b"> boolean</label>
+        <label><input type="radio" name="quiz1q0" value="c"> number</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q1" data-correct="a">
+        <p class="quiz-q-text">2. Что будет в переменной <code>local x = 5 + 3 * 2</code>?</p>
+        <label><input type="radio" name="quiz1q1" value="a"> 11</label>
+        <label><input type="radio" name="quiz1q1" value="b"> 16</label>
+        <label><input type="radio" name="quiz1q1" value="c"> 10</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q2" data-correct="c">
+        <p class="quiz-q-text">3. Как склеить две строки?</p>
+        <label><input type="radio" name="quiz1q2" value="a"> +</label>
+        <label><input type="radio" name="quiz1q2" value="b"> &</label>
+        <label><input type="radio" name="quiz1q2" value="c"> ..</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q3" data-correct="b">
+        <p class="quiz-q-text">4. Что выведет <code>print(# {10,20,30})</code>?</p>
+        <label><input type="radio" name="quiz1q3" value="a"> 0</label>
+        <label><input type="radio" name="quiz1q3" value="b"> 3</label>
+        <label><input type="radio" name="quiz1q3" value="c"> nil</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q4" data-correct="a">
+        <p class="quiz-q-text">5. Какой оператор используется для присваивания значения?</p>
+        <label><input type="radio" name="quiz1q4" value="a"> =</label>
+        <label><input type="radio" name="quiz1q4" value="b"> ==</label>
+        <label><input type="radio" name="quiz1q4" value="c"> :=</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <div class="quiz-question" data-name="quiz1q5" data-correct="c">
+        <p class="quiz-q-text">6. Можно ли изменить значение переменной после объявления?</p>
+        <label><input type="radio" name="quiz1q5" value="a"> Нет, переменная — константа</label>
+        <label><input type="radio" name="quiz1q5" value="b"> Можно, только если убрать local</label>
+        <label><input type="radio" name="quiz1q5" value="c"> Да, просто присвоить новое значение</label>
+        <div class="q-feedback"></div>
+      </div>
+
+      <button class="quiz-btn" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+      <div class="quiz-result"></div>
+    </div>
+
+    <!-- ===== НОВОЕ ЗАДАНИЕ: СООТНЕСИ СКРИПТ И ДЕЙСТВИЕ ===== -->
+    <div class="interactive-box" id="matchQuiz">
+      <h2>🧩 Задание: соотнеси скрипт с его действием</h2>
+      <p>Выбери для каждого скрипта правильное действие из выпадающего списка.</p>
+      <table class="match-table">
+        <thead>
+          <tr><th>Скрипт</th><th>Действие</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>local x = 5; print(x)</code></td>
+            <td>
+              <select data-correct="0">
+                <option value="">Выбери...</option>
+                <option value="0">Выводит число 5</option>
+                <option value="1">Выводит приветствие с именем</option>
+                <option value="2">Выводит сумму чисел</option>
+                <option value="3">Выводит второй элемент таблицы</option>
+                <option value="4">Выводит "Истина"</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><code>local name = "Алиса"; print("Привет, " .. name)</code></td>
+            <td>
+              <select data-correct="1">
+                <option value="">Выбери...</option>
+                <option value="0">Выводит число 5</option>
+                <option value="1">Выводит приветствие с именем</option>
+                <option value="2">Выводит сумму чисел</option>
+                <option value="3">Выводит второй элемент таблицы</option>
+                <option value="4">Выводит "Истина"</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><code>local a = 3; local b = 7; print(a + b)</code></td>
+            <td>
+              <select data-correct="2">
+                <option value="">Выбери...</option>
+                <option value="0">Выводит число 5</option>
+                <option value="1">Выводит приветствие с именем</option>
+                <option value="2">Выводит сумму чисел</option>
+                <option value="3">Выводит второй элемент таблицы</option>
+                <option value="4">Выводит "Истина"</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><code>local t = {10,20,30}; print(t[2])</code></td>
+            <td>
+              <select data-correct="3">
+                <option value="">Выбери...</option>
+                <option value="0">Выводит число 5</option>
+                <option value="1">Выводит приветствие с именем</option>
+                <option value="2">Выводит сумму чисел</option>
+                <option value="3">Выводит второй элемент таблицы</option>
+                <option value="4">Выводит "Истина"</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><code>local flag = true; if flag then print("Истина") end</code></td>
+            <td>
+              <select data-correct="4">
+                <option value="">Выбери...</option>
+                <option value="0">Выводит число 5</option>
+                <option value="1">Выводит приветствие с именем</option>
+                <option value="2">Выводит сумму чисел</option>
+                <option value="3">Выводит второй элемент таблицы</option>
+                <option value="4">Выводит "Истина"</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="action-btn" onclick="checkMatch()">Проверить</button>
+      <div class="activity-result" id="matchResult"></div>
+    </div>
+
+    <!-- ===== РЕФЛЕКСИЯ ===== -->
+    <div class="reflection-box" id="reflectionBlock">
+      <h2>💭 Твой опыт</h2>
+      <p>Оцени, как прошло занятие:</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="yes"> 🚀 Всё понял, сделал всё сам!
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="ok"> 🤔 Понял почти всё, иногда нужна была подсказка.
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="no"> 😕 Было сложно, нужно ещё раз повторить.
+        </label>
+      </div>
+      <textarea id="reflectionText" placeholder="Что нового ты узнал о переменных?&#10;Какой тип данных тебе показался самым интересным?&#10;Где в игре могут пригодиться таблицы?"></textarea>
+      <button class="action-btn" onclick="submitReflection()">Отправить</button>
+      <div id="reflectionResult" style="margin-top:10px; font-weight:700;"></div>
+    </div>
+
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    <div class="lesson-nav">
+      <a class="nav-btn prev" href="Занятие_2.2_Первый_скрипт.html">
+        <div class="lbl">← Назад</div>
+        <div class="ttl">2.2 Первый скрипт</div>
+      </a>
+      <a class="nav-btn next" href="Занятие_2.4_Строим_лес.html">
+        <div class="lbl">Далее →</div>
+        <div class="ttl">2.4 Строим лес</div>
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-brand">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+        Учебный центр «РОБОВИТА»
+      </div>
+      <div>Занятие 2.3 · офлайн-курс по Roblox Studio и Lua · 📦 Переменные и типы данных</div>
+    </div>
+  </footer>
+
+  <script src="assets/js/lesson.js"></script>
+  <script>
+    // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (те же, что и в занятии 2.2) =====
+    function toggleHint(id) {
+      const box = document.getElementById(id);
+      box.classList.toggle('show');
+      const btn = box.previousElementSibling;
+      if (box.classList.contains('show')) {
+        btn.textContent = '🙈 Скрыть подсказку';
+      } else {
+        btn.textContent = '📖 Показать подсказку';
+      }
+    }
+
+    function submitReflection() {
+      const textarea = document.getElementById('reflectionText');
+      const resultDiv = document.getElementById('reflectionResult');
+      if (textarea.value.trim() === '') {
+        resultDiv.textContent = 'Пожалуйста, напишите хотя бы несколько слов.';
+        resultDiv.style.color = '#C0392B';
+        return;
+      }
+      resultDiv.textContent = '✅ Спасибо! Твой ответ записан.';
+      resultDiv.style.color = '#2E7D32';
+      textarea.disabled = true;
+      const btn = document.querySelector('#reflectionBlock .action-btn');
+      if (btn) btn.disabled = true;
+    }
+
+    function updateTaskProgress(taskBox) {
+      const checkboxes = taskBox.querySelectorAll('.task-steps input[type=checkbox]');
+      let done = 0;
+      checkboxes.forEach(cb => { if (cb.checked) done++; });
+      const total = checkboxes.length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+      const fill = taskBox.querySelector('.progress-fill');
+      const label = taskBox.querySelector('.progress-label');
+      if (fill) fill.style.width = percent + '%';
+      if (label) label.textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+    }
+
+    function checkChoices(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const cards = container.querySelectorAll('.choice-card');
+      let allCorrect = true;
+      let anySelected = false;
+      cards.forEach(card => {
+        if (card.classList.contains('selected')) anySelected = true;
+        const isCorrect = card.dataset.correctChoice === 'true';
+        if (card.classList.contains('selected') && !isCorrect) {
+          card.classList.add('incorrect');
+          allCorrect = false;
+        } else if (card.classList.contains('selected') && isCorrect) {
+          card.classList.add('correct');
+        }
+      });
+      const resultDiv = container.querySelector('.activity-result');
+      if (!resultDiv) return;
+      if (!anySelected) {
+        resultDiv.textContent = '⚠️ Выбери ответы на все вопросы!';
+        resultDiv.className = 'activity-result neutral';
+        return;
+      }
+      if (allCorrect) {
+        resultDiv.textContent = '✅ Молодец! Всё верно.';
+        resultDiv.className = 'activity-result done';
+      } else {
+        resultDiv.textContent = '❌ Есть ошибки. Попробуй ещё раз.';
+        resultDiv.className = 'activity-result neutral';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('click', function(e) {
+        const card = e.target.closest('.choice-card');
+        if (!card) return;
+        const parent = card.closest('.choice-grid');
+        if (!parent) return;
+        parent.querySelectorAll('.choice-card').forEach(c => {
+          c.classList.remove('selected', 'correct', 'incorrect');
+        });
+        card.classList.add('selected');
+      });
+    });
+
+    function checkQuiz(quizId) {
+      const container = document.getElementById(quizId);
+      if (!container) return;
+      const questions = container.querySelectorAll('.quiz-question');
+      let correct = 0;
+      let allAnswered = true;
+      questions.forEach(q => {
+        const correctVal = q.dataset.correct;
+        const selected = q.querySelector('input[type=radio]:checked');
+        const feedback = q.querySelector('.q-feedback');
+        if (!feedback) return;
+        if (selected) {
+          if (selected.value === correctVal) {
+            feedback.textContent = '✅ Верно!';
+            feedback.style.color = '#2E7D32';
+            correct++;
+          } else {
+            feedback.textContent = '❌ Неправильно.';
+            feedback.style.color = '#C0392B';
+          }
+        } else {
+          feedback.textContent = '⚠️ Выбери ответ.';
+          feedback.style.color = '#B7950B';
+          allAnswered = false;
+        }
+      });
+      const resultDiv = container.querySelector('.quiz-result');
+      if (resultDiv) {
+        const total = questions.length;
+        if (!allAnswered) {
+          resultDiv.textContent = 'Ответь на все вопросы!';
+          resultDiv.style.color = '#B7950B';
+        } else {
+          resultDiv.textContent = `Результат: ${correct} из ${total}`;
+          resultDiv.style.color = '#2E7D32';
+        }
+        resultDiv.style.fontWeight = '700';
+        resultDiv.style.marginTop = '12px';
+      }
+    }
+
+    // ===== ФУНКЦИЯ ДЛЯ ЗАДАНИЯ "СООТНЕСИ" =====
+    function checkMatch() {
+      const selects = document.querySelectorAll('#matchQuiz select');
+      let correct = 0;
+      let total = selects.length;
+
+      selects.forEach(sel => {
+        const correctValue = sel.dataset.correct;
+        const selectedValue = sel.value;
+
+        // Сброс стилей
+        sel.classList.remove('correct', 'incorrect');
+
+        if (selectedValue === correctValue) {
+          sel.classList.add('correct');
+          correct++;
+        } else if (selectedValue !== '') {
+          sel.classList.add('incorrect');
+        }
+        // Если ничего не выбрано — не подсвечиваем
+      });
+
+      const resultDiv = document.getElementById('matchResult');
+      if (correct === total) {
+        resultDiv.textContent = '🎉 Отлично! Все сопоставления верны!';
+        resultDiv.className = 'activity-result done';
+      } else {
+        const wrong = total - correct;
+        resultDiv.textContent = `⚠️ Правильно: ${correct} из ${total}. Попробуй ещё раз.`;
+        resultDiv.className = 'activity-result neutral';
+      }
+    }
+  </script>
+</body>
+</html>

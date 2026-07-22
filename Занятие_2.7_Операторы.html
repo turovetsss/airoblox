@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2.5. Операторы в Lua — Драконья математика — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    /* ===== ОСНОВНЫЕ СТИЛИ ===== */
+    .choice-card {
+      cursor: pointer; transition: all 0.15s; user-select: none; padding: 8px 16px;
+      background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 30px; display: inline-block; margin: 4px 6px;
+    }
+    .choice-card:hover { border-color: var(--primary); transform: translateY(-2px); background: #f1f5f9; }
+    .choice-card.selected { border-color: var(--accent) !important; background: var(--accent-light) !important; box-shadow: 0 0 0 3px rgba(110, 0, 145, 0.2); }
+    .choice-card.correct { border-color: var(--primary) !important; background: var(--primary-light) !important; }
+    .choice-card.incorrect { border-color: var(--danger) !important; background: var(--danger-light) !important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .choice-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 16px; }
+    .code-block { background: #2a2f3a; color: #e2e8f0; padding: 16px 20px; border-radius: 12px; font-family: 'Courier New', monospace; font-size: 1.2rem; overflow-x: auto; margin: 12px 0; line-height: 1.6; }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .code-block .hl { background: #fde047; color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 700; display: inline-block; }
+    .hint-btn { background: var(--accent-light, #f0e6f5); border: none; padding: 6px 16px; border-radius: 30px; font-weight: 600; color: var(--accent-ink, #4a1a5a); cursor: pointer; transition: 0.15s; margin-top: 6px; }
+    .hint-btn:hover { background: var(--accent, #b47cdb); color: white; }
+    .hint-box { display: none; background: #f1f5f9; border-radius: 12px; padding: 12px; margin-top: 8px; border-left: 4px solid var(--accent, #6e0091); }
+    .hint-box.show { display: block; }
+    .theory-section { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--line, #e2e8f0); }
+    .theory-section:last-child { border-bottom: none; }
+    .theory-section h3 { margin-top: 12px; color: var(--primary-dark, #1a4a0a); }
+    .theory-section ul, .theory-section ol { padding-left: 24px; line-height: 1.7; }
+    .theory-section li { margin-bottom: 4px; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line, #e2e8f0); padding: 8px 12px; text-align: left; }
+    .prop-table th { background: var(--primary-light, #e8f5e0); color: var(--primary-dark, #1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+    .scenario-box { background: linear-gradient(135deg, #2e1a0f, #4a2a1a); border-radius: 20px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #f5e6d3; border: 1px solid #8b5a2b; }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .cheat-sheet { background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary, #61b01f); margin: 24px 0; position: relative; }
+    .cheat-sheet::before { content: "📘 Шпаргалка по операторам"; position: absolute; top: -14px; left: 20px; background: var(--primary-light, #e8f5e0); color: var(--primary-dark, #1a4a0a); padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: 0.9rem; border: 1px solid var(--primary, #61b01f); }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 12px; }
+    .cheat-item { background: white; border-radius: 14px; padding: 14px 16px; border: 1px solid var(--line, #e2e8f0); }
+    .cheat-item .title { font-weight: 700; color: var(--primary-dark, #1a4a0a); border-bottom: 2px solid var(--primary-light, #e8f5e0); padding-bottom: 4px; margin-bottom: 6px; }
+    .cheat-item .rule { font-size: 0.92rem; margin: 4px 0; }
+    .cheat-item .rule code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
+    .screenshot-placeholder { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 20px; text-align: center; margin: 12px 0; color: #64748b; font-style: italic; }
+    .screenshot-placeholder img { max-width: 100%; border-radius: 8px; border: 1px solid var(--line); }
+    .fill-input { width: 80px; padding: 4px 8px; border: 2px solid var(--line, #e2e8f0); border-radius: 8px; font-family: 'Courier New', monospace; font-size: 1rem; }
+    .fill-input.correct-fill { border-color: var(--primary, #61b01f); background: var(--primary-light, #e8f5e0); }
+    .fill-input.incorrect-fill { border-color: var(--danger, #e74c3c); background: var(--danger-light, #fce4e4); }
+    .match-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    .match-table th, .match-table td { border: 1px solid var(--line, #e2e8f0); padding: 10px 12px; vertical-align: middle; }
+    .match-table th { background: var(--primary-light, #e8f5e0); color: var(--primary-dark, #1a4a0a); }
+    .match-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.95rem; }
+    .match-table select { padding: 4px 8px; border-radius: 6px; border: 2px solid var(--line, #e2e8f0); background: white; font-size: 0.95rem; width: 100%; max-width: 280px; }
+    .match-table select.correct { border-color: var(--primary, #61b01f); background: var(--primary-light, #e8f5e0); }
+    .match-table select.incorrect { border-color: var(--danger, #e74c3c); background: var(--danger-light, #fce4e4); }
+    .card-instruction { background: #fef9e7; border-left: 6px solid #f39c12; padding: 16px 20px; border-radius: 16px; margin: 20px 0; }
+    .card-instruction h3 { margin-top: 0; color: #d35400; }
+    .card-instruction ul { margin: 8px 0; padding-left: 20px; }
+    .card-instruction li { margin-bottom: 6px; }
+    .step-card { background: #ffffff; border-radius: 16px; padding: 16px 20px; margin: 12px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; gap: 16px; align-items: flex-start; }
+    .step-num { background: var(--primary, #61b01f); color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; flex-shrink: 0; }
+    .step-content { flex: 1; }
+    .step-content h4 { margin: 0 0 6px; color: var(--primary-dark, #1a4a0a); }
+    .step-content ul { margin: 4px 0; padding-left: 20px; }
+    .step-screenshot { background: #f1f5f9; border: 1px dashed #cbd5e1; border-radius: 10px; padding: 8px; text-align: center; font-style: italic; color: #64748b; margin-top: 8px; }
+    .step-screenshot img { max-width: 100%; border-radius: 6px; border: 1px solid var(--line); }
+    .toolbox-tip { background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 14px; border-radius: 10px; margin: 10px 0; font-size: 0.95rem; }
+    
+    /* drag-and-drop */
+    .drag-container {
+      display: flex;
+      gap: 20px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+    .drag-source, .drag-target {
+      background: #f8fafc;
+      border: 2px dashed var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      min-width: 150px;
+      min-height: 60px;
+    }
+    .drag-item {
+      background: var(--primary-light);
+      border: 2px solid var(--primary);
+      border-radius: 20px;
+      padding: 6px 14px;
+      margin: 6px;
+      display: inline-block;
+      cursor: grab;
+      user-select: none;
+      font-weight: 600;
+    }
+    .drag-target .drag-item {
+      background: #e8f5e0;
+      border-color: #61b01f;
+    }
+    .drag-target.correct {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .drag-target.incorrect {
+      border-color: var(--danger);
+      background: var(--danger-light);
+    }
+    .code-slot {
+      display: inline-block;
+      width: 80px;
+      border-bottom: 2px solid var(--line);
+      margin: 0 6px;
+      text-align: center;
+      font-family: monospace;
+    }
+    /* интерактивный поиск ошибок */
+    .error-code {
+      background: #ffe6e6;
+      border: 1px solid #ff4d4d;
+      border-radius: 8px;
+      padding: 8px;
+      font-family: monospace;
+      cursor: pointer;
+      margin: 6px 0;
+      transition: 0.2s;
+    }
+    .error-code:hover {
+      background: #ffcccc;
+    }
+    .error-code.correct-fix {
+      background: #e6ffe6;
+      border-color: #2eb82e;
+    }
+    .error-highlight {
+      background: yellow;
+      font-weight: bold;
+      padding: 0 2px;
+    }
+    /* интерактивная сборка выражения */
+    .expression-builder {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .expr-part {
+      padding: 6px 12px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      cursor: pointer;
+      user-select: none;
+    }
+    .expr-part.selected {
+      background: var(--accent-light);
+      border-color: var(--accent);
+    }
+    .expr-result {
+      font-family: monospace;
+      font-size: 1.2rem;
+      padding: 8px;
+      background: #e8f5e0;
+      border-radius: 8px;
+      min-width: 200px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+  <header class="site-header">
+    <div class="wrap">
+      <div class="top-bar">
+        <a class="brand" href="Карта_курса.html">
+          <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+          <div>
+            <div class="brand-name">РОБОВИТА</div>
+            <div class="brand-tag">учимся программировать роботов и игры</div>
+          </div>
+        </a>
+        <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 2.5</div>
+      </div>
+      <div class="hero">
+        <div class="hex-badge">2.5</div>
+        <div>
+          <div class="module-pill">Раздел 2 · Программирование</div>
+          <h1>➕ Операторы в Lua — Драконья математика</h1>
+          <p class="subtitle">Считаем еду, сравниваем силу и заставляем драконов расти!</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <div class="scenario-box">
+      <div class="scenario-avatar">🐉</div>
+      <div>
+        <strong>Добро пожаловать в школу драконоводов «Драконий пик»!</strong>
+        Сегодня ты не просто будешь считать — ты заставишь драконов <strong>меняться</strong> прямо в игре.
+        С помощью операторов ты вырастишь дракона, раскрасишь его, откроешь сундук с золотом и даже запустишь салют!
+      </div>
+    </div>
+
+      <div class="objectives">
+      <h2>🎯 На этом уроке ты:</h2>
+      <ul>
+        <li>➕ используешь арифметику, чтобы накормить дракона и увеличить его размер</li>
+        <li>⚖️ сравнишь силу двух драконов и перекрасишь сильнейшего</li>
+        <li>🧠 проверишь здоровье и готовность к полёту с помощью and/or</li>
+        <li>📝 склеишь строки для создания таблички с именем дракона</li>
+        <li>💰 рассчитаешь богатство и зажжёшь сундук с золотом</li>
+        <li>📈 поднимешь уровень дракону и заставишь его расти</li>
+        <li>🧪 вычислишь зельеварение: поделишь и остаток</li>
+        <li>🎆 устроишь салют, если выполнены условия</li>
+        <li>📊 создашь рейтинг драконов</li>
+        <li>🧙‍♂️ проверишь, может ли дракон колдовать (логическое НЕ)</li>
+        <li>🥚 инкубируешь яйцо и зарядишь кристалл</li>
+        <li>🪹 проверишь гнездо и отправишь дракона в полёт</li>
+      </ul>
+    </div>
+
+    <!-- ===== ПОШАГОВАЯ ИНСТРУКЦИЯ ПО СОЗДАНИЮ КАРТЫ ===== -->
+    <div class="card" id="build-map">
+      <h2>🗺️ Пошаговая инструкция: создаём карту «Драконий пик»</h2>
+      <p>Внимательно выполняй каждый шаг. Если что-то непонятно, попроси тренера помочь. Все объекты должны быть <b>Anchored = true</b> (закреплены).</p>
+  <div class="step-card">
+        <div class="step-num">0</div>
+        <div class="step-content">
+          <h4>Ландшафт и атмосфера</h4>
+          <ul>
+            <li>В Terrain Editor сгенерируй лавовый ландшафт.</li>
+              <div class="step-screenshot"><img src="assets/images/lesson-2.7/1.png" alt="Feeder"></div>
+            <li>Добавь темное небо из ToolBox.</li>
+             <div class="step-screenshot"><img src="assets/images/lesson-2.7/2.png" alt="Feeder"></div>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Кормушка для дракона (Feeder)</h4>
+          <ul>
+            <li>На панели <b>Model</b> нажми <b>Part</b> (куб).</li>
+            <li>В <b>Explorer</b> переименуй его в <code>Feeder</code>.</li>
+            <li>В <b>Properties</b> задай размер (Size) примерно <b>2, 1, 2</b>.</li>
+            <li>Цвет (BrickColor) выбери коричневый, например <b>"Brown"</b>.</li>
+            <li>Убедись, что <b>Anchored</b> включён (галочка).</li>
+          </ul>
+          <div class="step-screenshot"><img src="assets/images/lesson-2.7/3.png" alt="Feeder"></div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Два дракона для арены (DragonRed и DragonBlue)</h4>
+          <div class="toolbox-tip">
+            💡 <b>Совет:</b> Можешь найти готовых драконов в <b>Toolbox</b> (окно слева). Введи в поиск "dragon" и выбери понравившуюся модель. Перетащи на сцену, переименуй в <code>DragonRed</code> и <code>DragonBlue</code>.<br>
+            Если интернета нет, сделай драконов из нескольких Part: туловище, голова, крылья (треугольные Wedge).
+          </div>
+          <ul>
+            <li>Создай (или вставь) модель дракона, назови <code>DragonRed</code>.</li>
+            <li>Создай (или вставь) ещё одного, назови <code>DragonBlue</code>.</li>
+            <li>Оба должны быть <b>Anchored = true</b>. Цвет пока оставь серым — скрипт сам раскрасит.</li>
+            <li>Поставь их рядом, например, на арене.</li>
+          </ul>
+          <div class="step-screenshot"><img src="assets/images/lesson-2.7/4.png" alt="Feeder"></div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Дракон Спайро (Spyro)</h4>
+          <ul>
+            <li>Создай Part, назови <code>Spyro</code>.</li>
+            <li>Размер примерно <b>3, 2, 3</b>.</li>
+            <li>Материал (<b>Material</b>) выбери <b>Plastic</b>.</li>
+            <li>Цвет пока серый.</li>
+            <li>Anchored = true.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Табличка (Sign)</h4>
+          <ul>
+            <li>Создай Part, назови <code>Sign</code>.</li>
+            <li>Размер: <b>4, 2, 0.2</b> (плоская).</li>
+            <li>Цвет белый или деревянный.</li>
+            <li>Anchored = true.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>Сундук с сокровищами (TreasureChest)</h4>
+          <div class="toolbox-tip">
+            💡 В Toolbox можно найти модель "treasure chest".
+          </div>
+          <ul>
+            <li>Создай Part, назови <code>TreasureChest</code>.</li>
+            <li>Размер примерно <b>3, 2, 2</b>, цвет коричневый.</li>
+            <li>Можно добавить маленькую крышку (Part) сверху.</li>
+            <li>Anchored = true.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <h4>Малыш-дракон (BabyDragon)</h4>
+          <ul>
+            <li>Создай маленький Part, назови <code>BabyDragon</code>.</li>
+            <li>Размер <b>1, 1, 1</b>.</li>
+            <li>Цвет зелёный или жёлтый.</li>
+            <li>Anchored = true.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">7</div>
+        <div class="step-content">
+          <h4>Стол зельевара и ингредиенты</h4>
+          <ul>
+            <li>Создай Part — стол, назови <code>PotionTable</code>. Размер <b>4, 0.5, 2</b>, цвет серый.</li>
+            <li>Создай маленький Part — ингредиент A, назови <code>IngredientA</code>. Размер <b>0.5, 0.5, 0.5</b>, цвет красный.</li>
+            <li>Создай такой же — ингредиент B, назови <code>IngredientB</code>, цвет синий.</li>
+            <li>Положи их на стол (подними Y).</li>
+            <li>Все Anchored = true.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">8</div>
+        <div class="step-content">
+          <h4>Ящик для салюта и цель в небе</h4>
+          <ul>
+            <li>Создай Part, назови <code>FireworkBox</code>. Размер <b>2, 1, 1</b>, цвет красный.</li>
+            <li>Создай Part, назови <code>SkyTarget</code>. Поставь его высоко (Y = 30). Сделай шаром (<b>Shape = Ball</b>) и красным.</li>
+            <li>Оба Anchored = true.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">9</div>
+        <div class="step-content">
+          <h4>Три дракона для рейтинга</h4>
+          <ul>
+            <li>Создай три Part разных размеров: <code>Dragon1</code> (размер 2,2,2), <code>Dragon2</code> (4,4,4), <code>Dragon3</code> (3,3,3).</li>
+            <li>Цвета любые, потом скрипт перекрасит.</li>
+            <li>Все Anchored = true.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">10</div>
+        <div class="step-content">
+          <h4>Дракон-волшебник (WizardDragon) с атрибутами</h4>
+          <ul>
+            <li>Создай Part, назови <code>WizardDragon</code>. Размер <b>3, 3, 3</b>, цвет фиолетовый.</li>
+            <li>В <b>Explorer</b> кликни правой кнопкой по <code>WizardDragon</code>, выбери <b>Insert Object</b> → <b>BoolValue</b>. Назови его <code>HasMana</code>. Оставь галочку (Value = true).</li>
+            <li>Точно так же добавь ещё один <b>BoolValue</b> и назови <code>IsTired</code>. Сними галочку (Value = false).</li>
+            <li>Anchored = true.</li>
+          </ul>
+          <div class="step-screenshot"><img src="assets/images/lesson-2.5/build-wizard.png" alt="WizardDragon с BoolValues"></div>
+        </div>
+      </div>
+ <div class="step-card">
+        <div class="step-num">11</div>
+        <div class="step-content">
+          <h4>Яйцо дракона (DragonEgg)</h4>
+          <ul><li>Создай Part, Shape = Ball, назови <code>DragonEgg</code>, размер 2,2,2, цвет золотой.</li></ul>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">12</div>
+        <div class="step-content">
+          <h4>Магический кристалл (MagicCrystal)</h4>
+          <ul><li>Создай Part, материал Neon, цвет фиолетовый, размер 1,3,1.</li></ul>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">13</div>
+        <div class="step-content">
+          <h4>Гнездо дракона (DragonNest)</h4>
+          <ul><li>Создай большой Part (5,1,5) как основание, добавь несколько маленьких Part для веток.</li></ul>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">14</div>
+        <div class="step-content">
+          <h4>Летающий дракон (FlyingDragon)</h4>
+          <ul><li>Используй модель дракона из Toolbox, назови <code>FlyingDragon</code>, Anchored=false (он будет падать, но мы в скрипте его поднимем).</li></ul>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">15</div>
+        <div class="step-content">
+          <h4>Тренировочный манекен (TargetDummy)</h4>
+          <ul><li>Создай Part (2,4,1), цвет коричневый, назови <code>TargetDummy</code>.</li></ul>
+        </div>
+      </div>
+    </div>
+
+      <p>✅ Карта готова! Сохрани её (<b>File → Save to File</b>) и используй для выполнения заданий.</p>
+    </div>
+
+     <!-- План занятия -->
+    <div class="card">
+      <table class="timetable">
+        <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+        <tr><td>Теория: операторы</td><td>10 мин</td><td>Подробно арифметика, сравнения, логика</td></tr>
+        <tr><td>Задание 1 — Кормушка</td><td>6 мин</td><td>Умножение и размер</td></tr>
+        <tr><td>Задание 2 — Боевая арена</td><td>6 мин</td><td>Сравнение и раскраска</td></tr>
+        <tr><td>Задание 3 — Медицинский осмотр</td><td>6 мин</td><td>Логическое И, материал</td></tr>
+        <tr><td>Задание 4 — Табличка</td><td>6 мин</td><td>Конкатенация, изменение имени</td></tr>
+        <tr><td>Задание 5 — Сундук с золотом</td><td>6 мин</td><td>Арифметика и сравнение</td></tr>
+        <tr><td>Задание 6 — Рост дракона</td><td>6 мин</td><td>Сравнение >= и умножение размера</td></tr>
+        <tr><td>Задание 7 — Зельеварение</td><td>6 мин</td><td>Деление и остаток %</td></tr>
+        <tr><td>Задание 8 — Салют</td><td>6 мин</td><td>Логическое ИЛИ и телепортация</td></tr>
+        <tr><td>Задание 9 — Рейтинг драконов</td><td>6 мин</td><td>Сложение и сравнение по сумме</td></tr>
+        <tr><td>Задание 10 — Проверка на колдовство</td><td>6 мин</td><td>Логическое НЕ, прозрачность</td></tr>
+        <tr><td>Задание 11 — Инкубация яйца</td><td>6 мин</td><td>and, размер, цвет</td></tr>
+        <tr><td>Задание 12 — Зарядка кристалла</td><td>6 мин</td><td>~=, <, Neon</td></tr>
+        <tr><td>Задание 13 — Гнездо дракона</td><td>6 мин</td><td>+ и <=, масштабирование</td></tr>
+        <tr><td>Задание 14 — Полёт дракона</td><td>6 мин</td><td>and, изменение позиции</td></tr>
+        <tr><td>Творческое задание</td><td>5 мин</td><td>Свой операторный механизм</td></tr>
+        <tr><td>Опрос и итоги</td><td>5 мин</td><td>Проверяем знания</td></tr>
+        <tr><td>Итого</td><td>80 мин</td><td>—</td></tr>
+      </table>
+    </div>
+
+    <!-- ТЕОРИЯ -->
+     <div class="card" id="theory-operators-detailed">
+      <h2><span class="num">0</span> Теория: операторы в Lua</h2>
+      <div class="theory-section">
+        <h3>➕ Арифметические операторы – «Кормим дракона»</h3>
+        <p>Арифметические операторы работают с числами, как в математике. Они помогают считать еду, силу, расстояния и всё, что можно измерить.</p>
+        <table class="prop-table">
+          <tr><th>Оператор</th><th>Название</th><th>Пример</th><th>Результат</th><th>Драконий пример</th></tr>
+          <tr><td><b>+</b></td><td>Сложение</td><td><code>5 + 2</code></td><td>7</td><td>У тебя было 5 яблок, дракон дал ещё 2 → стало 7.</td></tr>
+          <tr><td><b>-</b></td><td>Вычитание</td><td><code>5 - 2</code></td><td>3</td><td>Из 5 порций мяса дракон съел 2 → осталось 3.</td></tr>
+          <tr><td><b>*</b></td><td>Умножение</td><td><code>5 * 2</code></td><td>10</td><td>4 дракона, каждому по 3 рыбы → всего 12 рыб (<code>4 * 3</code>).</td></tr>
+          <tr><td><b>/</b></td><td>Деление</td><td><code>5 / 2</code></td><td>2.5</td><td>10 кристаллов на 4 драконов → каждому по 2.5 кристалла.</td></tr>
+          <tr><td><b>^</b></td><td>Возведение в степень</td><td><code>5 ^ 2</code></td><td>25</td><td>Магическая сила растёт: 3^3 = 27 (трижды трижды три).</td></tr>
+          <tr><td><b>%</b></td><td>Остаток от деления</td><td><code>5 % 2</code></td><td>1</td><td>7 мандаринов делим на 3 драконов поровну – останется 1 лишний (<code>7 % 3 = 1</code>).</td></tr>
+        </table>
+        <div class="note" style="border-left-color:var(--primary);background:var(--primary-light);">💡 <b>Порядок действий:</b> сначала скобки, потом ^, потом * и /, потом + и -. Пример: <code>2 + 3 * 4</code> → сначала 3*4=12, потом 2+12=14.</div>
+      </div>
+      <div class="theory-section">
+        <h3>⚖️ Операторы сравнения – «Кто сильнее?»</h3>
+        <p>Эти операторы сравнивают два значения и всегда дают результат <code>true</code> (истина) или <code>false</code> (ложь). Их используют в условиях <code>if</code>.</p>
+        <table class="prop-table">
+          <tr><th>Оператор</th><th>Значение</th><th>Пример</th><th>Результат</th><th>Драконий вопрос</th></tr>
+          <tr><td><b>==</b></td><td>Равно</td><td><code>5 == 5</code></td><td>true</td><td>У обоих драконов по 5 монет?</td></tr>
+          <tr><td><b>~=</b></td><td>Не равно</td><td><code>5 ~= 3</code></td><td>true</td><td>Сила Грома не равна силе Вихря?</td></tr>
+          <tr><td><b><</b></td><td>Меньше</td><td><code>3 < 5</code></td><td>true</td><td>Малыш легче взрослого дракона?</td></tr>
+          <tr><td><b>></b></td><td>Больше</td><td><code>5 > 3</code></td><td>true</td><td>Запас маны больше 100?</td></tr>
+          <tr><td><b><=</b></td><td>Меньше или равно</td><td><code>5 <= 5</code></td><td>true</td><td>Драконов в стае <= 10?</td></tr>
+          <tr><td><b>>=</b></td><td>Больше или равно</td><td><code>5 >= 3</code></td><td>true</td><td>Опыт >= 1000?</td></tr>
+        </table>
+        <div class="note" style="border-left-color:var(--accent);background:var(--accent-light);">⚠️ <b>Не путай!</b> Один знак <code>=</code> – это присваивание (<code>local x = 5</code>), а два знака <code>==</code> – сравнение (<code>if x == 5 then</code>).</div>
+      </div>
+      <div class="theory-section">
+        <h3>🧠 Логические операторы – «Можно ли лететь?»</h3>
+        <p>Логические операторы связывают несколько условий вместе. Они работают со значениями <code>true/false</code>.</p>
+        <ul>
+          <li><b><code>and</code></b> — логическое <b>И</b>. Результат <code>true</code>, только если <b>оба</b> условия истинны.<br>Пример: <code>if health > 50 and hunger < 30 then</code> – дракон полетит, только если он здоров <b>и</b> не голоден.</li>
+          <li><b><code>or</code></b> — логическое <b>ИЛИ</b>. Результат <code>true</code>, если <b>хотя бы одно</b> условие истинно.<br>Пример: <code>if hasWings or hasMagic then</code> – дракон может подняться в воздух, если у него есть крылья <b>или</b> магия.</li>
+          <li><b><code>not</code></b> — логическое <b>НЕ</b> (отрицание). Переворачивает значение: <code>true</code> → <code>false</code>, <code>false</code> → <code>true</code>.<br>Пример: <code>if not isSleeping then</code> – если дракон <b>не</b> спит, то можно тренироваться.</li>
+        </ul>
+        <div class="code-block">
+          <span class="comment">-- Дракон готов к турниру, если он здоров ИЛИ у него есть зелье силы</span><br>
+          <span class="keyword">if</span> health > <span class="number">80</span> <span class="keyword">or</span> hasPotion <span class="keyword">then</span><br>
+          &nbsp;&nbsp;<span class="keyword">print</span>(<span class="string">"На турнир!"</span>)<br>
+          <span class="keyword">end</span>
+        </div>
+      </div>
+      <div class="theory-section">
+        <h3>📝 Конкатенация (..) – «Склеиваем строки»</h3>
+        <p>Оператор <b>две точки</b> <code>..</code> склеивает (объединяет) строки в одну. Это как складывать слова.</p>
+        <div class="code-block">
+          <span class="keyword">local</span> dragonName = <span class="string">"Смертокрыл"</span><br>
+          <span class="keyword">local</span> title = <span class="string">"Великий "</span> .. dragonName<br>
+          <span class="keyword">print</span>(title)  <span class="comment">-- Выведет: Великий Смертокрыл</span>
+        </div>
+        <p>Можно подставлять числа – они автоматически превратятся в строки.</p>
+      </div>
+      <div class="theory-section">
+        <h3>📊 Таблица приоритетов (что выполняется раньше)</h3>
+        <ol>
+          <li><code>^</code> (степень)</li>
+          <li><code>not</code>, <code>-</code> (унарный минус)</li>
+          <li><code>*</code>, <code>/</code>, <code>%</code></li>
+          <li><code>+</code>, <code>-</code></li>
+          <li><code>..</code> (конкатенация)</li>
+          <li><code><</code>, <code>></code>, <code><=</code>, <code>>=</code>, <code>~=</code>, <code>==</code></li>
+          <li><code>and</code></li>
+          <li><code>or</code></li>
+        </ol>
+        <p><b>Совет:</b> если сомневаешься, используй скобки <code>()</code> – они самые главные!</p>
+      </div>
+    </div>
+    <!-- ШПАРГАЛКА -->
+     <div class="cheat-sheet">
+      <h3 style="margin-top:0; margin-bottom:12px;">📘 Шпаргалка: операторы Lua</h3>
+      <div class="cheat-grid">
+        <div class="cheat-item"><div class="title">➕ Арифметика</div><div class="rule"><code>+ - * / ^ %</code></div></div>
+        <div class="cheat-item"><div class="title">⚖️ Сравнения</div><div class="rule"><code>== ~= < > <= >=</code></div></div>
+        <div class="cheat-item"><div class="title">🧠 Логика</div><div class="rule"><code>and, or, not</code></div></div>
+        <div class="cheat-item"><div class="title">📝 Строки</div><div class="rule"><code>..</code> — склеивание</div></div>
+        <div class="cheat-item"><div class="title">⚠️ Важно</div><div class="rule"><code>=</code> — присваивание, <code>==</code> — сравнение</div></div>
+      </div>
+    </div>
+
+    <!-- 10 ЗАДАНИЙ -->
+    <!-- Задание 1 -->
+    <div class="task-box" id="task1">
+      <h2>🥩 Задание 1 — Кормушка для дракона</h2>
+      <p>В вольере стоит кормушка <b>Feeder</b>. Дракон съедает <b>4</b> порции мяса. Сделай так, чтобы ширина кормушки стала равна <b>4 × 2</b> (ширина = 8, высота = 2, глубина = 4). Используй умножение в скрипте!</p>
+      <ul>
+        <li>Найди в Workspace объект <b>Feeder</b>.</li>
+        <li>Внутри Feeder создай Script и напиши код, который меняет Size, используя переменную <code>portions</code> и умножение.</li>
+      </ul>
+      <div class="progress-track"><div class="progress-fill" id="task1Progress"></div></div>
+      <span class="progress-label" id="task1Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t1s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t1s0">Создай Script внутри <b>Feeder</b>.</label></li>
+        <li><input type="checkbox" id="t1s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t1s1">Напиши код и запусти игру.</label>
+          <button class="hint-btn" onclick="toggleHint('hint1')">📖 Подсказка</button>
+          <div id="hint1" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> feeder = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> portions = <span class="number">4</span><br>
+              feeder.Size = Vector3.new(portions * <span class="number">2</span>, <span class="number">2</span>, <span class="number">4</span>)
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Задание 2 -->
+    <div class="task-box" id="task2">
+      <h2>⚔️ Задание 2 — Боевая арена</h2>
+      <p>В Workspace есть два дракона: <b>DragonRed</b> и <b>DragonBlue</b>. У них сила: <code>powerRed = 85</code>, <code>powerBlue = 72</code>. Покрась более сильного дракона в <b>Bright red</b>, а слабого — в <b>Bright blue</b>.</p>
+      <div class="progress-track"><div class="progress-fill" id="task2Progress"></div></div>
+      <span class="progress-label" id="task2Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t2s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t2s0">Создай Script в <b>ServerScriptService</b>.</label></li>
+        <li><input type="checkbox" id="t2s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t2s1">Используй <code>if</code> и операторы сравнения, чтобы раскрасить драконов.</label>
+          <button class="hint-btn" onclick="toggleHint('hint2')">📖 Подсказка</button>
+          <div id="hint2" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> dragonRed = workspace:WaitForChild(<span class="string">"DragonRed"</span>)<br>
+              <span class="keyword">local</span> dragonBlue = workspace:WaitForChild(<span class="string">"DragonBlue"</span>)<br>
+              <span class="keyword">local</span> powerRed = <span class="number">85</span><br>
+              <span class="keyword">local</span> powerBlue = <span class="number">72</span><br>
+              <span class="keyword">if</span> powerRed > powerBlue <span class="keyword">then</span><br>
+              &nbsp;&nbsp;dragonRed.BrickColor = BrickColor.new(<span class="string">"Bright red"</span>)<br>
+              &nbsp;&nbsp;dragonBlue.BrickColor = BrickColor.new(<span class="string">"Bright blue"</span>)<br>
+              <span class="keyword">else</span><br>
+              &nbsp;&nbsp;dragonRed.BrickColor = BrickColor.new(<span class="string">"Bright blue"</span>)<br>
+              &nbsp;&nbsp;dragonBlue.BrickColor = BrickColor.new(<span class="string">"Bright red"</span>)<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Задание 3 -->
+    <div class="task-box" id="task3">
+      <h2>🏥 Задание 3 — Медицинский осмотр</h2>
+      <p>Дракон <b>Spyro</b> может лететь, если его здоровье <b>> 50</b> И он не голоден (<code>hunger < 30</code>). Если условия выполнены, заставь дракона светиться (материал <b>Neon</b>). Иначе — обычный пластик (<b>Plastic</b>).</p>
+      <div class="progress-track"><div class="progress-fill" id="task3Progress"></div></div>
+      <span class="progress-label" id="task3Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t3s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t3s0">Создай Script внутри <b>Spyro</b>.</label></li>
+        <li><input type="checkbox" id="t3s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t3s1">Проверь здоровье и голод, измени Material.</label>
+          <button class="hint-btn" onclick="toggleHint('hint3')">📖 Подсказка</button>
+          <div id="hint3" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> dragon = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> health = <span class="number">80</span><br>
+              <span class="keyword">local</span> hunger = <span class="number">20</span><br>
+              <span class="keyword">if</span> health > <span class="number">50</span> <span class="keyword">and</span> hunger < <span class="number">30</span> <span class="keyword">then</span><br>
+              &nbsp;&nbsp;dragon.Material = Enum.Material.Neon<br>
+              <span class="keyword">else</span><br>
+              &nbsp;&nbsp;dragon.Material = Enum.Material.Plastic<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Задание 4 -->
+    <div class="task-box" id="task4">
+      <h2>📛 Задание 4 — Табличка на вольере</h2>
+      <p>Создай табличку (Part) с именем <b>Sign</b>. С помощью скрипта внутри неё составь строку: <code>"Дракон " .. name .. ", уровень " .. level</code> и установи её как <b>Name</b> таблички. Переменные: <code>name = "Терра"</code>, <code>level = 7</code>.</p>
+      <div class="progress-track"><div class="progress-fill" id="task4Progress"></div></div>
+      <span class="progress-label" id="task4Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t4s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t4s0">Создай Part <b>Sign</b> и Script внутри него.</label></li>
+        <li><input type="checkbox" id="t4s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t4s1">Используй оператор <code>..</code> для склеивания.</label>
+          <button class="hint-btn" onclick="toggleHint('hint4')">📖 Подсказка</button>
+          <div id="hint4" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> sign = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> name = <span class="string">"Терра"</span><br>
+              <span class="keyword">local</span> level = <span class="number">7</span><br>
+              sign.Name = <span class="string">"Дракон "</span> .. name .. <span class="string">", уровень "</span> .. level
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="note" style="border-left-color:var(--primary);">💡 Теперь в Explorer ты увидишь новое имя таблички!</div>
+    </div>
+
+    <!-- Задание 5 -->
+    <div class="task-box" id="task5">
+      <h2>💰 Задание 5 — Сундук с золотом</h2>
+      <p>В пещере лежит сундук <b>TreasureChest</b>. Посчитай, сколько золота в нём: <code>coins = 100</code>, бонус <b>20%</b> (<code>coins * 0.2</code>), итоговая сумма = coins + бонус. Если итог > 120, покрась сундук в <b>Gold</b> и зажги Neon.</p>
+      <div class="progress-track"><div class="progress-fill" id="task5Progress"></div></div>
+      <span class="progress-label" id="task5Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t5s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t5s0">Создай Script внутри <b>TreasureChest</b>.</label></li>
+        <li><input type="checkbox" id="t5s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t5s1">Вычисли сумму и проверь условие.</label>
+          <button class="hint-btn" onclick="toggleHint('hint5')">📖 Подсказка</button>
+          <div id="hint5" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> chest = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> coins = <span class="number">100</span><br>
+              <span class="keyword">local</span> bonus = coins * <span class="number">0.2</span><br>
+              <span class="keyword">local</span> total = coins + bonus<br>
+              <span class="keyword">if</span> total > <span class="number">120</span> <span class="keyword">then</span><br>
+              &nbsp;&nbsp;chest.BrickColor = BrickColor.new(<span class="string">"Gold"</span>)<br>
+              &nbsp;&nbsp;chest.Material = Enum.Material.Neon<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Задание 6 -->
+    <div class="task-box" id="task6">
+      <h2>📈 Задание 6 — Рост дракона</h2>
+      <p>Дракон <b>BabyDragon</b> получает опыт: <code>xp = 150</code>. Чтобы вырасти, нужно <b>100</b> XP. Если <code>xp >= 100</code>, увеличь размер дракона в <b>1.5 раза</b> и выведи в Output «Дракон вырос!».</p>
+      <div class="progress-track"><div class="progress-fill" id="task6Progress"></div></div>
+      <span class="progress-label" id="task6Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t6s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t6s0">Создай Script внутри <b>BabyDragon</b>.</label></li>
+        <li><input type="checkbox" id="t6s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t6s1">Проверь условие и измени Size.</label>
+          <button class="hint-btn" onclick="toggleHint('hint6')">📖 Подсказка</button>
+          <div id="hint6" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> dragon = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> xp = <span class="number">150</span><br>
+              <span class="keyword">if</span> xp >= <span class="number">100</span> <span class="keyword">then</span><br>
+              &nbsp;&nbsp;dragon.Size = dragon.Size * <span class="number">1.5</span><br>
+              &nbsp;&nbsp;<span class="keyword">print</span>(<span class="string">"Дракон вырос!"</span>)<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Задание 7 -->
+    <div class="task-box" id="task7">
+      <h2>🧪 Задание 7 — Зельеварение</h2>
+      <p>На столе <b>PotionTable</b> лежат два ингредиента: <b>IngredientA</b> и <b>IngredientB</b>. У тебя есть <code>totalUnits = 17</code> единиц магии. Подели их поровну между двумя ингредиентами (используй <code>/</code>) и вычисли остаток (<code>%</code>). Затем установи размер IngredientA равным <b>(unitsPer, 0.5, 0.5)</b>, а IngredientB — <b>(remainder, 0.5, 0.5)</b>.</p>
+      <div class="progress-track"><div class="progress-fill" id="task7Progress"></div></div>
+      <span class="progress-label" id="task7Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t7s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t7s0">Создай Script внутри <b>PotionTable</b>.</label></li>
+        <li><input type="checkbox" id="t7s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t7s1">Используй деление и остаток.</label>
+          <button class="hint-btn" onclick="toggleHint('hint7')">📖 Подсказка</button>
+          <div id="hint7" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> total = <span class="number">17</span><br>
+              <span class="keyword">local</span> unitsPer = total / <span class="number">2</span><br>
+              <span class="keyword">local</span> remainder = total % <span class="number">2</span><br>
+              <span class="keyword">local</span> ingA = workspace:WaitForChild(<span class="string">"IngredientA"</span>)<br>
+              <span class="keyword">local</span> ingB = workspace:WaitForChild(<span class="string">"IngredientB"</span>)<br>
+              ingA.Size = Vector3.new(unitsPer, <span class="number">0.5</span>, <span class="number">0.5</span>)<br>
+              ingB.Size = Vector3.new(remainder, <span class="number">0.5</span>, <span class="number">0.5</span>)
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Задание 8 -->
+    <div class="task-box" id="task8">
+      <h2>🎆 Задание 8 — Салют</h2>
+      <p>Если у тебя есть <b>FireworkBox</b> ИЛИ специальный ключ (<code>hasKey = true</code>), то ящик должен взлететь к <b>SkyTarget</b> (телепортироваться на его позицию). Если ни одного условия нет — ящик становится прозрачным.</p>
+      <div class="progress-track"><div class="progress-fill" id="task8Progress"></div></div>
+      <span class="progress-label" id="task8Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t8s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t8s0">Создай Script внутри <b>FireworkBox</b>.</label></li>
+        <li><input type="checkbox" id="t8s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t8s1">Используй <code>or</code> и телепортацию.</label>
+          <button class="hint-btn" onclick="toggleHint('hint8')">📖 Подсказка</button>
+          <div id="hint8" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> box = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> hasKey = <span class="keyword">true</span><br>
+              <span class="keyword">local</span> sky = workspace:WaitForChild(<span class="string">"SkyTarget"</span>)<br>
+              <span class="keyword">if</span> box <span class="keyword">or</span> hasKey <span class="keyword">then</span><br>
+              &nbsp;&nbsp;box.Position = sky.Position<br>
+              <span class="keyword">else</span><br>
+              &nbsp;&nbsp;box.Transparency = <span class="number">1</span><br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Задание 9 -->
+    <div class="task-box" id="task9">
+      <h2>📊 Задание 9 — Рейтинг драконов</h2>
+      <p>Три дракона <b>Dragon1</b>, <b>Dragon2</b>, <b>Dragon3</b> имеют размеры: <code>size1 = 3</code>, <code>size2 = 5</code>, <code>size3 = 4</code>. Сложи их размеры (<code>total = size1 + size2 + size3</code>) и если сумма больше 10, сделай всех трёх драконов золотыми. Иначе — серыми.</p>
+      <div class="progress-track"><div class="progress-fill" id="task9Progress"></div></div>
+      <span class="progress-label" id="task9Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t9s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t9s0">Создай Script в <b>ServerScriptService</b>.</label></li>
+        <li><input type="checkbox" id="t9s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t9s1">Сложи размеры и проверь условие.</label>
+          <button class="hint-btn" onclick="toggleHint('hint9')">📖 Подсказка</button>
+          <div id="hint9" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> d1 = workspace:WaitForChild(<span class="string">"Dragon1"</span>)<br>
+              <span class="keyword">local</span> d2 = workspace:WaitForChild(<span class="string">"Dragon2"</span>)<br>
+              <span class="keyword">local</span> d3 = workspace:WaitForChild(<span class="string">"Dragon3"</span>)<br>
+              <span class="keyword">local</span> s1, s2, s3 = <span class="number">3</span>, <span class="number">5</span>, <span class="number">4</span><br>
+              <span class="keyword">local</span> total = s1 + s2 + s3<br>
+              <span class="keyword">if</span> total > <span class="number">10</span> <span class="keyword">then</span><br>
+              &nbsp;&nbsp;d1.BrickColor = BrickColor.new(<span class="string">"Gold"</span>)<br>
+              &nbsp;&nbsp;d2.BrickColor = BrickColor.new(<span class="string">"Gold"</span>)<br>
+              &nbsp;&nbsp;d3.BrickColor = BrickColor.new(<span class="string">"Gold"</span>)<br>
+              <span class="keyword">else</span><br>
+              &nbsp;&nbsp;d1.BrickColor = BrickColor.Gray()<br>
+              &nbsp;&nbsp;d2.BrickColor = BrickColor.Gray()<br>
+              &nbsp;&nbsp;d3.BrickColor = BrickColor.Gray()<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Задание 10 -->
+    <div class="task-box" id="task10">
+      <h2>🧙‍♂️ Задание 10 — Проверка на колдовство</h2>
+      <p>Дракон <b>WizardDragon</b> может колдовать, если у него <b>есть мана</b> (BoolValue <code>HasMana</code> = true) И он <b>не устал</b> (<code>not IsTired</code>). Проверь: если <code>HasMana.Value</code> истинно И <code>not IsTired.Value</code> истинно, сделай дракона фиолетовым и прозрачным на 50%. Если нет — оставь серым.</p>
+      <div class="progress-track"><div class="progress-fill" id="task10Progress"></div></div>
+      <span class="progress-label" id="task10Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t10s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t10s0">Создай Script внутри <b>WizardDragon</b>.</label></li>
+        <li><input type="checkbox" id="t10s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t10s1">Используй <code>and</code> и <code>not</code>.</label>
+          <button class="hint-btn" onclick="toggleHint('hint10')">📖 Подсказка</button>
+          <div id="hint10" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> dragon = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> hasMana = dragon:FindFirstChild(<span class="string">"HasMana"</span>)<br>
+              <span class="keyword">local</span> isTired = dragon:FindFirstChild(<span class="string">"IsTired"</span>)<br>
+              <span class="keyword">if</span> hasMana <span class="keyword">and</span> hasMana.Value <span class="keyword">and</span> isTired <span class="keyword">and</span> <span class="keyword">not</span> isTired.Value <span class="keyword">then</span><br>
+              &nbsp;&nbsp;dragon.BrickColor = BrickColor.new(<span class="string">"Bright violet"</span>)<br>
+              &nbsp;&nbsp;dragon.Transparency = <span class="number">0.5</span><br>
+              <span class="keyword">else</span><br>
+              &nbsp;&nbsp;dragon.BrickColor = BrickColor.Gray()<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+   <div class="task-box" id="task11">
+      <h2>🥚 Задание 11 — Инкубация яйца</h2>
+      <p>Яйцо <b>DragonEgg</b> должно вылупиться, если температура выше 100 И влажность больше 60%. Переменные: <code>temp = 120</code>, <code>humidity = 75</code>. Если условия верны, измени цвет яйца на ярко-оранжевый и размер на 3,3,3.</p>
+      <div class="progress-track"><div class="progress-fill" id="task11Progress"></div></div>
+      <span class="progress-label" id="task11Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t11s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t11s0">Создай Script внутри <b>DragonEgg</b>.</label></li>
+        <li><input type="checkbox" id="t11s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t11s1">Напиши код с проверкой условий.</label>
+          <button class="hint-btn" onclick="toggleHint('hint11')">📖 Подсказка</button>
+          <div id="hint11" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> egg = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> temp = <span class="number">120</span><br>
+              <span class="keyword">local</span> humidity = <span class="number">75</span><br>
+              <span class="keyword">if</span> temp > <span class="number">100</span> <span class="keyword">and</span> humidity > <span class="number">60</span> <span class="keyword">then</span><br>
+              &nbsp;&nbsp;egg.BrickColor = BrickColor.new(<span class="string">"Bright orange"</span>)<br>
+              &nbsp;&nbsp;egg.Size = Vector3.new(<span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>)<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Задание 12: Зарядка кристалла -->
+    <div class="task-box" id="task12">
+      <h2>💎 Задание 12 — Зарядка магического кристалла</h2>
+      <p>Кристалл <b>MagicCrystal</b> заряжается, если количество маны (mana) не равно 0 И заряд (charge) меньше 100. Используй операторы <code>~=</code> и <code><</code>. Если да, установи Material = Neon, а цвет — случайный.</p>
+      <div class="progress-track"><div class="progress-fill" id="task12Progress"></div></div>
+      <span class="progress-label" id="task12Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t12s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t12s0">Создай Script внутри <b>MagicCrystal</b>.</label></li>
+        <li><input type="checkbox" id="t12s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t12s1">Напиши проверку с ~= и <.</label>
+          <button class="hint-btn" onclick="toggleHint('hint12')">📖 Подсказка</button>
+          <div id="hint12" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> crystal = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> mana = <span class="number">50</span><br>
+              <span class="keyword">local</span> charge = <span class="number">80</span><br>
+              <span class="keyword">if</span> mana ~= <span class="number">0</span> <span class="keyword">and</span> charge < <span class="number">100</span> <span class="keyword">then</span><br>
+              &nbsp;&nbsp;crystal.Material = Enum.Material.Neon<br>
+              &nbsp;&nbsp;crystal.BrickColor = BrickColor.Random()<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Задание 13: Гнездо -->
+    <div class="task-box" id="task13">
+      <h2>🪹 Задание 13 — Гнездо дракона</h2>
+      <p>В гнезде <b>DragonNest</b> может поместиться <code>capacity = 5</code> яиц. Сейчас там <code>eggs = 3</code>. Используя операторы сложения и сравнения, выясни, можно ли добавить ещё 3 яйца (<code>eggs + 3 <= capacity</code>). Если да, увеличь размер гнезда на 10%.</p>
+      <div class="progress-track"><div class="progress-fill" id="task13Progress"></div></div>
+      <span class="progress-label" id="task13Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t13s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t13s0">Создай Script внутри <b>DragonNest</b>.</label></li>
+        <li><input type="checkbox" id="t13s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t13s1">Проверь <code>eggs + 3 <= capacity</code>.</label>
+          <button class="hint-btn" onclick="toggleHint('hint13')">📖 Подсказка</button>
+          <div id="hint13" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> nest = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> eggs = <span class="number">3</span><br>
+              <span class="keyword">local</span> capacity = <span class="number">5</span><br>
+              <span class="keyword">if</span> eggs + <span class="number">3</span> <= capacity <span class="keyword">then</span><br>
+              &nbsp;&nbsp;nest.Size = nest.Size * <span class="number">1.1</span><br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Задание 14: Полёт дракона -->
+    <div class="task-box" id="task14">
+      <h2>🪽 Задание 14 — Полёт дракона</h2>
+      <p>Дракон <b>FlyingDragon</b> должен подняться в воздух, если его вес (weight=200) меньше подъёмной силы (lift=250) И скорость ветра (wind=15) больше 10. Используй <code>and</code>. Если условие верно, подними дракона на 20 единиц по Y.</p>
+      <div class="progress-track"><div class="progress-fill" id="task14Progress"></div></div>
+      <span class="progress-label" id="task14Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t14s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t14s0">Создай Script внутри <b>FlyingDragon</b>.</label></li>
+        <li><input type="checkbox" id="t14s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t14s1">Проверь условия и измени Position.</label>
+          <button class="hint-btn" onclick="toggleHint('hint14')">📖 Подсказка</button>
+          <div id="hint14" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> dragon = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> weight = <span class="number">200</span><br>
+              <span class="keyword">local</span> lift = <span class="number">250</span><br>
+              <span class="keyword">local</span> wind = <span class="number">15</span><br>
+              <span class="keyword">if</span> weight < lift <span class="keyword">and</span> wind > <span class="number">10</span> <span class="keyword">then</span><br>
+              &nbsp;&nbsp;dragon.Position = dragon.Position + Vector3.new(<span class="number">0</span>, <span class="number">20</span>, <span class="number">0</span>)<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Творческое задание -->
+    <div class="task-box" id="taskCreative">
+      <h2>🎨 Творческое задание — Твой операторный мир</h2>
+      <p>Придумай собственную сцену, где операторы управляют объектами. Например, драконья ферма, гонка или магазин зелий. Используй минимум 4 разных оператора!</p>
+    </div>
+    <!-- БЫСТРАЯ ПРОВЕРКА -->
+    <div class="interactive-box" id="toolQuiz2">
+      <h2>🧩 Быстрая проверка: выбери правильные карточки</h2>
+      <p><b>1. Какой оператор возводит в степень?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">^</div>
+        <div class="choice-card" data-correct-choice="false">*</div>
+        <div class="choice-card" data-correct-choice="false">**</div>
+      </div>
+      <p><b>2. Какой оператор проверяет «не равно»?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">~=</div>
+        <div class="choice-card" data-correct-choice="false">!=</div>
+        <div class="choice-card" data-correct-choice="false"><></div>
+      </div>
+      <p><b>3. Что делает оператор <code>..</code>?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Склеивает строки</div>
+        <div class="choice-card" data-correct-choice="false">Сравнивает числа</div>
+        <div class="choice-card" data-correct-choice="false">Делит с остатком</div>
+      </div>
+      <p><b>4. Какой оператор означает логическое «И»?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">and</div>
+        <div class="choice-card" data-correct-choice="false">or</div>
+        <div class="choice-card" data-correct-choice="false">not</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('toolQuiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+ <!-- ИНТЕРАКТИВ: найди ошибку в коде -->
+    <div class="interactive-box" id="findMistakes">
+      <h2>🔍 Найди ошибку в коде</h2>
+      <p>Кликни на строчку с ошибкой. Всего ошибок: 3.</p>
+      <div class="error-code" data-error="true" onclick="fixError(this)"><code>local x = 5 = 3</code></div>
+      <div class="error-code" data-error="false" onclick="fixError(this)"><code>if x > 10 then print("Много") end</code></div>
+      <div class="error-code" data-error="true" onclick="fixError(this)"><code>local name = "Дракон" + 5</code></div>
+      <div class="error-code" data-error="false" onclick="fixError(this)"><code>if health > 0 and mana > 0 then</code></div>
+      <div class="error-code" data-error="true" onclick="fixError(this)"><code>local result = 10 % 0</code></div>
+      <button class="action-btn" onclick="checkErrors()">Проверить</button>
+      <div class="activity-result" id="errorResult"></div>
+    </div>
+    <div class="interactive-box" id="expressionBuilder">
+      <h2>🧩 Собери правильное выражение</h2>
+      <p>Выбери по порядку части, чтобы получилось <code>total = coins + bonus</code></p>
+      <div class="expression-builder" id="exprParts">
+        <span class="expr-part" data-part="total">total</span>
+        <span class="expr-part" data-part="=">=</span>
+        <span class="expr-part" data-part="coins">coins</span>
+        <span class="expr-part" data-part="+">+</span>
+        <span class="expr-part" data-part="bonus">bonus</span>
+      </div>
+      <div class="expr-result" id="exprResult">Твой результат: </div>
+      <button class="action-btn" onclick="checkExpression()">Проверить</button>
+      <div class="activity-result" id="exprCheckResult"></div>
+    </div>
+      <div class="interactive-box" id="dragDropQuiz">
+      <h2>🖱️ Перетащи оператор в правильное место</h2>
+      <p>Перетащи нужный оператор в пропуск в коде.</p>
+      <div class="drag-container">
+        <div class="drag-source" id="dragSource">
+          <div class="drag-item" draggable="true" data-operator="+">+</div>
+          <div class="drag-item" draggable="true" data-operator="-">-</div>
+          <div class="drag-item" draggable="true" data-operator="*">*</div>
+          <div class="drag-item" draggable="true" data-operator="/">/</div>
+          <div class="drag-item" draggable="true" data-operator="==">==</div>
+          <div class="drag-item" draggable="true" data-operator=">=">>=</div>
+          <div class="drag-item" draggable="true" data-operator="and">and</div>
+          <div class="drag-item" draggable="true" data-operator="or">or</div>
+        </div>
+        <div>
+          <p><code>local result = 5 <span id="slot1" class="code-slot" data-answer="*">___</span> 2</code></p>
+          <p><code>if xp <span id="slot2" class="code-slot" data-answer=">=">___</span> 100 then</code></p>
+          <p><code>if health > 0 <span id="slot3" class="code-slot" data-answer="and">___</span> mana > 0 then</code></p>
+          <button class="action-btn" onclick="checkDragDrop()">Проверить</button>
+          <div class="activity-result" id="dragResult"></div>
+        </div>
+      </div>
+    </div>
+    <!-- ИТОГОВЫЙ ТЕСТ -->
+    <div class="quiz-wrap" id="quiz1">
+      <h2>📝 Итоговый тест «Операторы»</h2>
+      <div class="quiz-question" data-name="quiz1q0" data-correct="b">
+        <p class="quiz-q-text">1. Что выведет <code>print(10 % 3)</code>?</p>
+        <label><input type="radio" name="quiz1q0" value="a"> 3</label>
+        <label><input type="radio" name="quiz1q0" value="b"> 1</label>
+        <label><input type="radio" name="quiz1q0" value="c"> 0</label>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-name="quiz1q1" data-correct="a">
+        <p class="quiz-q-text">2. Какой оператор присваивает значение?</p>
+        <label><input type="radio" name="quiz1q1" value="a"> =</label>
+        <label><input type="radio" name="quiz1q1" value="b"> ==</label>
+        <label><input type="radio" name="quiz1q1" value="c"> :=</label>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-name="quiz1q2" data-correct="c">
+        <p class="quiz-q-text">3. Результат выражения <code>5 > 3 and 2 < 1</code>?</p>
+        <label><input type="radio" name="quiz1q2" value="a"> true</label>
+        <label><input type="radio" name="quiz1q2" value="b"> 5</label>
+        <label><input type="radio" name="quiz1q2" value="c"> false</label>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-name="quiz1q3" data-correct="b">
+        <p class="quiz-q-text">4. Что делает <code>not true</code>?</p>
+        <label><input type="radio" name="quiz1q3" value="a"> true</label>
+        <label><input type="radio" name="quiz1q3" value="b"> false</label>
+        <label><input type="radio" name="quiz1q3" value="c"> ошибка</label>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-btn" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+      <div class="quiz-result"></div>
+    </div>
+
+    <!-- ЗАПОЛНИ ПРОПУСКИ -->
+    <div class="interactive-box" id="fillBlanks">
+      <h2>🧩 Заполни пропуски в коде</h2>
+      <div><p><b>1. Умножение:</b> <code>local size = 3 <input type="text" class="fill-input" data-answer="*" placeholder="?"> 2</code></p></div>
+      <div><p><b>2. Сравнение «больше или равно»:</b> <code>if xp <input type="text" class="fill-input" data-answer=">=" placeholder="?"> 100 then</code></p></div>
+      <div><p><b>3. Логическое ИЛИ:</b> <code>if hasKey <input type="text" class="fill-input" data-answer="or" placeholder="?"> isAdmin then</code></p></div>
+      <button class="action-btn" onclick="checkFillBlanks()">Проверить</button>
+      <div class="activity-result" id="fillResult"></div>
+    </div>
+
+    <!-- AI-ПОМОЩНИК -->
+    <div class="ai-helper">
+      <div class="ai-head"><span style="font-size:32px;">🤖</span> <div class="t">Спроси Алису</div></div>
+      <div class="ai-buttons">
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%83%D0%B2%D0%B5%D0%BB%D0%B8%D1%87%D0%B8%D1%82%D1%8C%20%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80%20Part%20%D0%B2%20Roblox%3F%22%7D" target="_blank" class="alice-q-btn">Как увеличить размер Part?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D1%8C%20%D0%B4%D0%B2%D0%B0%20%D1%87%D0%B8%D1%81%D0%BB%D0%B0%20%D0%B2%20Lua%3F%22%7D" target="_blank" class="alice-q-btn">Как сравнить два числа в Lua?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D0%B4%D0%B5%D0%BB%D0%B0%D0%B5%D1%82%20%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%20and%20%D0%B2%20Lua%3F%22%7D" target="_blank" class="alice-q-btn">Что делает оператор and?</a>
+      </div>
+    </div>
+
+    <!-- РЕФЛЕКСИЯ -->
+    <div class="reflection-box" id="reflectionBlock">
+      <h2>💭 Твой опыт</h2>
+      <p>Оцени занятие:</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🐉 Всё получилось!</label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти всё понял.</label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Сложно.</label>
+      </div>
+      <textarea id="reflectionText" placeholder="Что ты сегодня заставил делать драконов?"></textarea>
+      <button class="action-btn" onclick="submitReflection()">Отправить</button>
+      <div id="reflectionResult"></div>
+    </div>
+
+    <div class="lesson-nav">
+      <a class="nav-btn prev" href="Занятие_2.4_Циклы.html">← 2.4 Циклы</a>
+      <a class="nav-btn next" href="Занятие_2.6_Функции.html">2.6 Функции →</a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt=""> Учебный центр «РОБОВИТА»</div>
+      <div>Занятие 2.5 · Операторы — Драконья математика</div>
+    </div>
+  </footer>
+
+  <script src="assets/js/lesson.js"></script>
+  <script>
+    function toggleHint(id){const b=document.getElementById(id);b.classList.toggle('show');const btn=b.previousElementSibling;btn.textContent=b.classList.contains('show')?'🙈 Скрыть':'📖 Подсказка';}
+    function updateTaskProgress(box){const cbs=box.querySelectorAll('.task-steps input[type=checkbox]');const done=Array.from(cbs).filter(c=>c.checked).length;const total=cbs.length;const pct=total?Math.round(done/total*100):0;box.querySelector('.progress-fill').style.width=pct+'%';box.querySelector('.progress-label').textContent=`Выполнено шагов: ${done} из ${total}`;}
+    function checkChoices(id){const c=document.getElementById(id);const cards=c.querySelectorAll('.choice-card');let any=false,allOk=true;cards.forEach(card=>{if(card.classList.contains('selected'))any=true;if(card.dataset.correctChoice==='true'&&card.classList.contains('selected'))card.classList.add('correct');else if(card.dataset.correctChoice==='false'&&card.classList.contains('selected')){card.classList.add('incorrect');allOk=false;}});const res=c.querySelector('.activity-result');if(!any){res.textContent='⚠️ Выбери ответы!';res.className='activity-result neutral';}else if(allOk){res.textContent='✅ Молодец!';res.className='activity-result done';}else{res.textContent='❌ Есть ошибки.';res.className='activity-result neutral';}}
+    document.addEventListener('click',e=>{const card=e.target.closest('.choice-card');if(!card)return;const grid=card.closest('.choice-grid');grid.querySelectorAll('.choice-card').forEach(c=>c.classList.remove('selected','correct','incorrect'));card.classList.add('selected');});
+    function checkQuiz(id){const qs=document.querySelectorAll(`#${id} .quiz-question`);let corr=0,answered=true;qs.forEach(q=>{const sel=q.querySelector('input:checked');const fb=q.querySelector('.q-feedback');if(sel){if(sel.value===q.dataset.correct){fb.textContent='✅ Верно!';fb.style.color='#2E7D32';corr++;}else{fb.textContent='❌ Неправильно.';fb.style.color='#C0392B';}}else{fb.textContent='⚠️ Выбери ответ.';fb.style.color='#B7950B';answered=false;}});const res=document.querySelector(`#${id} .quiz-result`);if(!answered)res.textContent='Ответь на все вопросы!';else res.textContent=`Результат: ${corr} из ${qs.length}`;}
+    function checkFillBlanks(){const inputs=document.querySelectorAll('#fillBlanks .fill-input');let corr=0;inputs.forEach(inp=>{const ans=inp.dataset.answer.trim().toLowerCase();const val=inp.value.trim().toLowerCase();inp.classList.remove('correct-fill','incorrect-fill');if(val===ans){inp.classList.add('correct-fill');corr++;}else inp.classList.add('incorrect-fill');});const res=document.getElementById('fillResult');res.textContent=corr===inputs.length?'🎉 Все верно!':`⚠️ Правильно: ${corr} из ${inputs.length}`;res.className=corr===inputs.length?'activity-result done':'activity-result neutral';}
+    function submitReflection(){const ta=document.getElementById('reflectionText');const res=document.getElementById('reflectionResult');if(!ta.value.trim()){res.textContent='Напиши пару слов.';return;}res.textContent='✅ Спасибо!';ta.disabled=true;}
+  const dragItems = document.querySelectorAll('.drag-item');
+    const slots = document.querySelectorAll('.code-slot');
+    dragItems.forEach(item => {
+      item.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', item.dataset.operator);
+        item.style.opacity = '0.5';
+      });
+      item.addEventListener('dragend', e => { item.style.opacity = '1'; });
+    });
+    slots.forEach(slot => {
+      slot.addEventListener('dragover', e => e.preventDefault());
+      slot.addEventListener('drop', e => {
+        e.preventDefault();
+        const op = e.dataTransfer.getData('text/plain');
+        slot.textContent = op;
+        slot.dataset.user = op;
+      });
+    });
+
+    function checkDragDrop() {
+      let correct = 0;
+      slots.forEach(slot => {
+        const ans = slot.dataset.answer;
+        const user = slot.dataset.user || '';
+        slot.style.borderColor = (ans === user) ? 'green' : 'red';
+        if (ans === user) correct++;
+      });
+      const res = document.getElementById('dragResult');
+      res.textContent = correct === slots.length ? '✅ Все операторы верны!' : `⚠️ Правильно: ${correct} из ${slots.length}`;
+      res.className = correct === slots.length ? 'activity-result done' : 'activity-result neutral';
+    }
+
+    // поиск ошибок
+    let foundErrors = 0;
+    function fixError(el) {
+      if (el.dataset.error === 'true' && !el.classList.contains('correct-fix')) {
+        el.classList.add('correct-fix');
+        foundErrors++;
+      }
+    }
+    function checkErrors() {
+      const total = document.querySelectorAll('.error-code[data-error="true"]').length;
+      const res = document.getElementById('errorResult');
+      res.textContent = foundErrors === total ? '🎉 Все ошибки найдены!' : `Найдено ${foundErrors} из ${total}. Ищи дальше.`;
+      res.className = foundErrors === total ? 'activity-result done' : 'activity-result neutral';
+    }
+
+    // сборка выражения
+    let selectedParts = [];
+    document.querySelectorAll('.expr-part').forEach(part => {
+      part.addEventListener('click', () => {
+        if (part.classList.contains('selected')) {
+          part.classList.remove('selected');
+          selectedParts = selectedParts.filter(p => p !== part.dataset.part);
+        } else {
+          part.classList.add('selected');
+          selectedParts.push(part.dataset.part);
+        }
+        document.getElementById('exprResult').textContent = 'Твой результат: ' + selectedParts.join(' ');
+      });
+    });
+    function checkExpression() {
+      const correct = ['total','=','coins','+','bonus'];
+      const res = document.getElementById('exprCheckResult');
+      if (JSON.stringify(selectedParts) === JSON.stringify(correct)) {
+        res.textContent = '✅ Выражение собрано верно!';
+        res.className = 'activity-result done';
+      } else {
+        res.textContent = '❌ Неправильный порядок. Попробуй ещё.';
+        res.className = 'activity-result neutral';
+      }
+    }
+ </script>
+</body>
+</html>
