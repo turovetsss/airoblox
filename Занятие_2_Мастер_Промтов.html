@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>Занятие 2. Как общаться с ИИ? — Лаборатория будущего | РОБОВИТА</title>
+    <style>
+    :root {
+        --primary: #61B01F;
+        --primary-light: #E8F5E0;
+        --primary-dark: #2E4A17;
+        --accent: #6C3F9B;
+        --accent-light: #F0E6F5;
+        --accent-ink: #4A1A5A;
+        --danger: #C0392B;
+        --danger-light: #FBEAEA;
+        --line: #D3E8C4;
+        --card-shadow: 0 6px 16px rgba(0,0,0,0.05);
+    }
+    body {
+        background: #F4F9F0;
+        font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        margin: 0; padding: 0; color: #2E2E2E; line-height: 1.8;
+        font-size: 1.2rem;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
+    .site-header { background: linear-gradient(135deg, #ffffff 0%, #E8F5E0 100%); border-bottom: 2px solid var(--primary); padding: 1.2rem 0 0.8rem; }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.2rem; }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+    .brand img { height: 44px; border-radius: 12px; }
+    .brand-name { font-weight: 700; font-size: 1.5rem; color: var(--primary-dark); }
+    .brand-tag { font-size: 0.9rem; color: #5B5B58; }
+    .crumbs { font-size: 1rem; color: #5B5B58; }
+    .hero { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+    .hex-badge { background: var(--primary); color: white; font-weight: 800; font-size: 2.2rem; width: 66px; height: 66px; display: flex; align-items: center; justify-content: center; border-radius: 16px; box-shadow: 0 8px 0 var(--primary-dark); }
+    .module-pill { background: var(--accent-light); color: var(--accent-ink); padding: 4px 14px; border-radius: 30px; font-weight: 600; font-size: 0.95rem; display: inline-block; margin-bottom: 4px; }
+    .hero h1 { font-size: 2.4rem; margin: 0.2rem 0; color: #1E1E1E; }
+    .subtitle { color: #4A4A4A; font-size: 1.1rem; }
+
+    .scenario-box { background: linear-gradient(135deg, #0A0E2A, #1A2A5A); border-radius: 24px; padding: 20px 24px; margin: 1.8rem 0; display: flex; gap: 18px; align-items: center; color: #e2e8f0; border: 1px solid #3B4A8A; box-shadow: 0 0 20px rgba(0,229,255,0.2); font-size: 1.1rem; }
+    .scenario-avatar { font-size: 3.8rem; background: rgba(255,255,255,0.1); border-radius: 20px; padding: 12px; }
+    .scenario-box strong { color: #00E5FF; }
+
+    .card, .task-box, .interactive-box, .quiz-wrap, .reflection-box, .objectives { background: white; border-radius: 20px; padding: 1.8rem 2rem; margin: 1.8rem 0; box-shadow: var(--card-shadow); border: 1px solid #E2E8F0; font-size: 1.1rem; }
+    .objectives { background: var(--primary-light); border-color: var(--primary); }
+    .card h2, .task-box h2, .interactive-box h2, .quiz-wrap h2 { margin-top: 0; color: var(--primary-dark); font-size: 1.6rem; }
+    .note { background: var(--primary-light); border-left: 4px solid var(--primary); padding: 0.8rem 1rem; border-radius: 6px; margin: 1rem 0; font-size: 1.05rem; }
+
+    .chip-progress { display: flex; align-items: center; gap: 10px; background: white; border-radius: 40px; padding: 8px 20px; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid var(--line); }
+    .chip-icon { font-size: 2rem; }
+    .chip-track { flex: 1; height: 14px; background: #E2EED6; border-radius: 10px; overflow: hidden; }
+    .chip-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #61B01F, #9CCC65); border-radius: 10px; transition: width 0.3s; }
+    .chip-count { font-weight: 700; color: var(--primary-dark); min-width: 70px; text-align: right; font-size: 1.1rem; }
+
+    .certificate { background: linear-gradient(135deg, #FFD54F, #FFB300); border-radius: 28px; padding: 2rem; text-align: center; color: #3E2C0B; border: 4px solid #FF8F00; box-shadow: 0 12px 24px rgba(255,179,0,0.3); margin: 2rem 0; display: none; font-size: 1.2rem; }
+    .certificate.show { display: block; }
+    .certificate h2 { font-size: 2.5rem; margin: 0.5rem 0; }
+
+    .action-btn, .quiz-btn { background: var(--primary); color: white; border: none; padding: 12px 28px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; font-size: 1.1rem; box-shadow: 0 4px 0 var(--primary-dark); text-decoration: none; display: inline-block; }
+    .action-btn:hover, .quiz-btn:hover { background: #4C8C18; transform: translateY(-1px); }
+    .action-btn.secondary { background: #9CC97A; box-shadow: 0 4px 0 #6f9752; }
+
+    table { width: 100%; border-collapse: collapse; }
+    table th, table td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; font-size: 1rem; }
+    table th { background: var(--primary-light); color: var(--primary-dark); font-size: 1.05rem; }
+
+    .sort-card { display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 2px solid #D3D1C7; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; background: #fff; }
+    .sort-card .sort-text { font-size: 1.05rem; }
+    .sort-card .sort-buttons { display: flex; gap: 6px; flex-shrink: 0; }
+    .sort-btn { cursor: pointer; border: 1.5px solid #9CC97A; border-radius: 8px; padding: 6px 10px; font-size: 0.95rem; background: #FFFFFF; }
+    .sort-btn:hover { background: #EAF3DE; }
+    .sort-card.done-right { border-color: #2E7D32; background: #EAF7DF; }
+    .sort-card.done-wrong { border-color: #C0392B; background: #FBEAEA; }
+    .sort-card.answered .sort-buttons { display: none; }
+    .sort-card .sort-explain { font-size: 0.9rem; color: #5B5B58; display: none; margin-top: 4px; }
+    .sort-card.answered .sort-explain { display: block; }
+
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .col { flex: 1; min-width: 160px; }
+    .battle-option { cursor: pointer; border: 2px solid #D3D1C7; border-radius: 10px; padding: 12px; transition: border-color .15s, background .15s; background: #fff; font-size: 1.02rem; }
+    .battle-option:hover { border-color: #61B01F; }
+    .battle-option.selected-right { border-color: #2E7D32; background: #EAF7DF; }
+    .battle-option.selected-wrong { border-color: #C0392B; background: #FBEAEA; }
+    .battle-topic { font-weight: 700; font-size: 1.1rem; margin: 0 0 0.5rem; color: #1E1E1E; }
+
+    .quiz-question { border: 1px solid #E2EED6; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; font-size: 1.05rem; }
+    .quiz-question label { display: inline-block; margin: 3px 0; cursor: pointer; }
+    .q-feedback { font-size: 0.95rem; font-weight: 700; margin-top: 4px; min-height: 1.1em; }
+
+    .word-chip { background: #EAF3DE; border: 1px solid #9CC97A; border-radius: 20px; padding: 6px 14px; cursor: pointer; user-select: none; display: inline-block; margin: 4px; font-size: 1rem; }
+    .word-chip.selected { background: #FFB800; color: white; border-color: #B8860B; }
+    .assembled-prompt { min-height: 40px; border: 2px dashed #9CC97A; border-radius: 10px; padding: 10px; margin: 10px 0; font-size: 1rem; }
+
+    .progress-track { width: 100%; height: 8px; background: #E2EED6; border-radius: 8px; margin: 10px 0 6px; overflow: hidden; }
+    .progress-fill { width: 0%; height: 100%; background: var(--primary); border-radius: 8px; transition: width 0.2s; }
+    .progress-label { font-size: 0.9rem; color: #4A4A4A; margin-bottom: 0.5rem; display: block; }
+    .task-steps { list-style: none; padding: 0; }
+    .task-steps li { margin-bottom: 10px; display: flex; align-items: center; gap: 8px; font-size: 1.05rem; }
+    .task-steps input[type="checkbox"] { width: 1.2em; height: 1.2em; }
+
+    .ai-helper { background: #F8FBF6; border: 1.5px solid #D3E8C4; border-radius: 14px; padding: 1.6rem; margin: 1.8rem 0; font-size: 1.05rem; }
+    .ai-head { display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem; }
+    .ai-head .t { font-weight: 700; font-size: 1.3rem; color: #2E4A17; }
+    .ai-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+    .alice-q-btn { display: inline-block; background: #EAF3DE; border: 1px solid #9CC97A; border-radius: 8px; padding: 0.5rem 1.2rem; text-decoration: none; color: #2E4A17; font-weight: 500; font-size: 1rem; }
+    .alice-q-btn:hover { background: #D4E8C0; }
+    .ai-answer { padding: 0.8rem 1rem; border-left: 4px solid #61B01F; border-radius: 6px; margin-bottom: 0.8rem; }
+    .ai-real-tip { font-size: 1rem; color: #4A4A4A; }
+    .prompt-example { display: block; margin-top: 4px; font-style: italic; color: #5B5B58; }
+
+    .reflection-box textarea { width: 100%; min-height: 100px; border: 1px solid #D3E8C4; border-radius: 8px; padding: 10px; font-family: inherit; font-size: 1rem; resize: vertical; }
+    .lesson-nav { display: flex; justify-content: space-between; gap: 1.5rem; margin: 2.5rem 0 1.5rem; }
+    .nav-btn { flex: 1; border: 1px solid #D3D1C7; border-radius: 16px; padding: 1.2rem 1.8rem; text-decoration: none; color: #2E2E2E; background: white; transition: 0.2s; }
+    .nav-btn:hover { border-color: var(--primary); background: #F8FBF6; }
+    .nav-btn .lbl { font-size: 0.9rem; color: #666; }
+    .nav-btn .ttl { font-weight: 700; font-size: 1.2rem; }
+    footer { background: white; padding: 1.5rem 0; border-top: 1px solid #E2E8F0; margin-top: 2rem; font-size: 1rem; }
+    .foot-brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .foot-brand img { height: 36px; }
+
+    .fact-check-item { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 14px 20px; margin: 10px 0; display: flex; align-items: center; gap: 12px; font-size: 1.05rem; flex-wrap: wrap; }
+    .fact-check-item.correct { border-color: #2E7D32; background: #E8F5E0; }
+    .fact-check-item.incorrect { border-color: #C0392B; background: #FBEAEA; }
+    .fact-buttons { display: flex; gap: 8px; margin-left: auto; }
+    .fact-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid #9CC97A; background: white; cursor: pointer; font-weight: 600; font-size: 1rem; }
+    .fact-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .img-placeholder { background: #E2EED6; border: 2px dashed var(--primary); border-radius: 20px; padding: 3rem; text-align: center; margin: 1.5rem 0; color: #4A4A4A; font-size: 1rem; }
+
+    #confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
+    .confetti-piece { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: confettiFall 3s ease-out forwards; }
+    @keyframes confettiFall { 0% { transform: translateY(-100px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <div class="top-bar">
+                <a class="brand" href="Карта_курса.html">
+                    <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" />
+                    <div>
+                        <div class="brand-name">РОБОВИТА</div>
+                        <div class="brand-tag">учимся программировать роботов и игры</div>
+                    </div>
+                </a>
+                <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 2</div>
+            </div>
+            <div class="hero">
+                <div class="hex-badge">💬</div>
+                <div>
+                    <div class="module-pill">Модуль 1 · Знакомство с ИИ и безопасность</div>
+                    <h1>Как общаться с ИИ?</h1>
+                    <p class="subtitle">Лаборатория будущего: 10 миссий про промпты, чипы ИИ и финальный сертификат</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <div class="scenario-box">
+            <div class="scenario-avatar">🧪</div>
+            <div>
+                <strong>Лаборатория будущего продолжает работу!</strong> Сегодня ты научишься говорить с нейросетью так, чтобы она понимала тебя с первого раза. Выполни <strong>10 миссий</strong> и собери <strong>чипы ИИ</strong>, чтобы стать «Мастером промптов».
+            </div>
+        </div>
+
+        <div class="chip-progress" id="chipProgressBar">
+            <span class="chip-icon">💬</span>
+            <div class="chip-track"><div class="chip-fill" id="chipFill"></div></div>
+            <span class="chip-count" id="chipCount">0 / 10 чипов</span>
+        </div>
+
+        <div class="certificate" id="certificateBlock">
+            <h2>🏆 Сертификат</h2>
+            <p style="font-size:1.4rem;"><strong>Мастер промптов</strong></p>
+            <p>Поздравляем! Ты выполнил все 10 миссий и научился составлять точные запросы к нейросети.</p>
+            <p style="font-size:0.9rem;">Дата: <span id="certDate"></span></p>
+        </div>
+
+        <div class="objectives">
+            <h2>🎯 Цели занятия</h2>
+            <ul>
+                <li>Узнать, что такое промпт и почему формулировка запроса влияет на ответ</li>
+                <li>Научиться отличать слабый запрос от подробного и точного</li>
+                <li>Освоить формулу запроса: Роль + Задача + Контекст + Формат</li>
+                <li>Улучшить свой собственный запрос к нейросети и сравнить результаты</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>⏱️ План (90 минут)</h2>
+            <table>
+                <tr><th>Этап</th><th>Время</th></tr>
+                <tr><td>Оргмомент, повторение ДЗ</td><td>3 мин</td></tr>
+                <tr><td>🖌️ Миссия 1: Испорченный телефон для ИИ</td><td>10 мин</td></tr>
+                <tr><td>🗂️ Миссия 2: Плохой или хороший промпт?</td><td>10 мин</td></tr>
+                <tr><td>🧩 Миссия 3: Собери формулу запроса</td><td>7 мин</td></tr>
+                <tr><td>📚 Теория: формула хорошего запроса</td><td>8 мин</td></tr>
+                <tr><td>⚡ Миссия 4: Что важнее в промпте?</td><td>7 мин</td></tr>
+                <tr><td>📝 Миссия 5: Исправь запрос</td><td>6 мин</td></tr>
+                <tr><td>⚔️ Миссия 6: Битва промптов</td><td>8 мин</td></tr>
+                <tr><td>🔍 Миссия 7: Найди слабое место</td><td>6 мин</td></tr>
+                <tr><td>💻 Миссия 8: Первый улучшенный диалог</td><td>15 мин</td></tr>
+                <tr><td>🎨 Миссия 9: Промпт по картинке</td><td>5 мин</td></tr>
+                <tr><td>🏆 Миссия 10: Финальный квиз</td><td>5 мин</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>🔥 Оргмомент</h2>
+            <p>Вспомните прошлое занятие: что такое ИИ и чем он отличается от обычной программы. Спросите, кто выполнил домашнее задание про три места с ИИ дома.</p>
+        </div>
+
+       <div class="task-box" id="mission1">
+    <h2>🖌️ Миссия 1: Испорченный телефон для ИИ (+1 чип)</h2>
+    <p>Сравни простой и подробный запрос в трёх раундах. Для каждого раунда введи (или оставь примеры) запросы, нажми «Отправить» и посмотри ответы нейросети. Потом запиши, какой ответ понравился больше и почему.</p>
+
+    <!-- Раунд 1 -->
+    <div style="background:#F8FBF6; border-radius:16px; padding:1.2rem; margin:1.5rem 0; border:1px solid #D3E8C4;">
+        <h3 style="margin-top:0;">🔹 Раунд 1</h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+                <label><strong>Простой запрос:</strong></label>
+                <input type="text" id="simple1" value="Напиши поздравление" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;">
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+                <label><strong>Подробный запрос:</strong></label>
+                <input type="text" id="detailed1" value="Напиши короткое весёлое поздравление с днём рождения другу 12 лет, который любит футбол, добавь шутку про мяч" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;">
+            </div>
+        </div>
+        <button class="action-btn" style="margin-top:0.8rem;" onclick="openTwoPrompts('simple1','detailed1')">🚀 Отправить оба запроса (раунд 1)</button>
+    </div>
+
+    <!-- Раунд 2 -->
+    <div style="background:#F8FBF6; border-radius:16px; padding:1.2rem; margin:1.5rem 0; border:1px solid #D3E8C4;">
+        <h3 style="margin-top:0;">🔹 Раунд 2</h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+                <label><strong>Простой запрос:</strong></label>
+                <input type="text" id="simple2" value="Расскажи про кошек" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;">
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+                <label><strong>Подробный запрос:</strong></label>
+                <input type="text" id="detailed2" value="Ты ветеринар. Расскажи в 3 предложениях, чем кормить кошку, чтобы она была здорова" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;">
+            </div>
+        </div>
+        <button class="action-btn" style="margin-top:0.8rem;" onclick="openTwoPrompts('simple2','detailed2')">🚀 Отправить оба запроса (раунд 2)</button>
+    </div>
+
+    <!-- Раунд 3 -->
+    <div style="background:#F8FBF6; border-radius:16px; padding:1.2rem; margin:1.5rem 0; border:1px solid #D3E8C4;">
+        <h3 style="margin-top:0;">🔹 Раунд 3</h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+                <label><strong>Простой запрос:</strong></label>
+                <input type="text" id="simple3" value="Придумай суперспособность" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;">
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+                <label><strong>Подробный запрос:</strong></label>
+                <input type="text" id="detailed3" value="Придумай самую необычную суперспособность для школьника и опиши её в 2 предложениях" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;">
+            </div>
+        </div>
+        <button class="action-btn" style="margin-top:0.8rem;" onclick="openTwoPrompts('simple3','detailed3')">🚀 Отправить оба запроса (раунд 3)</button>
+    </div>
+
+    <p style="font-weight:700; margin-top:1.5rem;">📝 Запиши свои наблюдения после всех трёх раундов:</p>
+    <textarea id="comparisonNotes" style="width:100%; height:100px; border:1px solid #9CC97A; border-radius:12px; padding:10px; font-size:1rem;" placeholder="Какой запрос сработал лучше? Почему? Что изменилось в ответе нейросети?"></textarea>
+    
+    <div style="display:flex; gap:10px; margin-top:1rem; flex-wrap:wrap;">
+        <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать в Classroom</a>
+        <button class="action-btn" onclick="completeMission(1)">✅ Я сравнил все 3 и записал результат</button>
+    </div>
+    <p class="note" style="margin-top:1rem;">💡 После отправки не забудь прикрепить скриншоты или свои заметки в Google Classroom.</p>
+</div>
+
+
+        <!-- МИССИЯ 2 -->
+        <div class="card" id="sortGame">
+            <h2>🗂️ Миссия 2: «Плохой или хороший промпт?» (+1 чип)</h2>
+            <p>Отправьте каждую карточку в нужную группу. Когда верных ответов будет <b>8 или больше</b>, миссия засчитается.</p>
+            <div id="sortCards"></div>
+            <p id="sortScore" style="font-weight:700; margin-top:10px;">Верно: 0 из 0 (всего карточек: 10)</p>
+        </div>
+
+        <!-- МИССИЯ 3 -->
+        <div class="card" id="buildFormula">
+            <h2>🧩 Миссия 3: Собери формулу запроса (+1 чип)</h2>
+            <p>Из четырёх карточек сложи правильный порядок формулы хорошего запроса.</p>
+            <div class="prompt-builder" id="formulaBank"></div>
+            <div class="assembled-prompt" id="assembledFormula"></div>
+            <button class="action-btn" onclick="checkFormula()">Проверить</button>
+            <button class="action-btn secondary" onclick="resetFormula()">Сбросить</button>
+            <p id="formulaResult" style="font-weight:700; margin-top:6px;"></p>
+        </div>
+
+        <!-- Теория с визуализацией -->
+        <div class="card">
+            <h2>📚 Теория: формула хорошего запроса</h2>
+            <p><strong>Промпт</strong> — это запрос, который вы пишете нейросети. Нейросеть не читает мысли — она отвечает строго на то, что написано, поэтому от формулировки зависит качество ответа.</p>
+            <div class="img-placeholder">📸 Картинка-схема: четыре блока — Роль, Задача, Контекст, Формат — стрелками соединяются в один идеальный промпт.</div>
+            <div class="row" style="text-align:center; margin:16px 0;">
+                <div class="col" style="background:var(--primary-light); border-radius:12px; padding:12px;"><b>Роль</b><br><span style="font-size:0.9rem;">кто отвечает?</span><br><i>«Ты гид»</i></div>
+                <div class="col" style="background:var(--primary-light); border-radius:12px; padding:12px;"><b>Задача</b><br><span style="font-size:0.9rem;">что сделать?</span><br><i>«расскажи легенду»</i></div>
+                <div class="col" style="background:var(--primary-light); border-radius:12px; padding:12px;"><b>Контекст</b><br><span style="font-size:0.9rem;">для кого?</span><br><i>«для детей 5 лет»</i></div>
+                <div class="col" style="background:var(--primary-light); border-radius:12px; padding:12px;"><b>Формат</b><br><span style="font-size:0.9rem;">в каком виде?</span><br><i>«в 3 предложениях»</i></div>
+            </div>
+            <p style="text-align:center;"><i>«Ты экскурсовод. Расскажи легенду замка для детей 5 лет в 3 предложениях»</i></p>
+            <p class="note">💡 Не всегда нужны все четыре части — иногда достаточно роли и задачи. Но чем конкретнее запрос, тем меньше нейросети приходится «додумывать».</p>
+            <div class="img-placeholder">📸 Пример диалога: простой запрос «Расскажи про замки» vs подробный — два скриншота с ответами разного качества.</div>
+        </div>
+
+        <!-- МИССИЯ 4 -->
+        <div class="card" id="quizFormula">
+            <h2>⚡ Миссия 4: «Что важнее в промпте?» (+1 чип)</h2>
+            <p>Для каждой фразы выбери, какую часть формулы она задаёт. Ответь верно на все 4 с первой попытки, чтобы выполнить миссию.</p>
+            <div class="battle-round" data-round="0" data-correct="a"><p class="battle-topic">«Ты гид»</p><div class="row"><div class="col battle-option" data-choice="a"><p>Роль</p></div><div class="col battle-option" data-choice="b"><p>Формат</p></div></div><div class="battle-feedback"></div></div>
+            <div class="battle-round" data-round="1" data-correct="b"><p class="battle-topic">«В 3 предложениях»</p><div class="row"><div class="col battle-option" data-choice="a"><p>Контекст</p></div><div class="col battle-option" data-choice="b"><p>Формат</p></div></div><div class="battle-feedback"></div></div>
+            <div class="battle-round" data-round="2" data-correct="a"><p class="battle-topic">«Для детей 5 лет»</p><div class="row"><div class="col battle-option" data-choice="a"><p>Контекст</p></div><div class="col battle-option" data-choice="b"><p>Задача</p></div></div><div class="battle-feedback"></div></div>
+            <div class="battle-round" data-round="3" data-correct="b"><p class="battle-topic">«Расскажи легенду»</p><div class="row"><div class="col battle-option" data-choice="a"><p>Роль</p></div><div class="col battle-option" data-choice="b"><p>Задача</p></div></div><div class="battle-feedback"></div></div>
+            <p id="quizFormulaScore" style="font-weight:700; margin-top:10px;">Верных с первой попытки: 0 из 4</p>
+        </div>
+
+        <!-- МИССИЯ 5 -->
+        <div class="card" id="fixPrompt">
+            <h2>📝 Миссия 5: Исправь запрос (+1 чип)</h2>
+            <p>Сделай из запроса <b>«Помоги с математикой»</b> хороший, уточнённый запрос — добавь тему, пример и для какого класса.</p>
+            <input type="text" id="fixPromptInput" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px; box-sizing:border-box;" placeholder="Твой улучшенный запрос...">
+            <button class="action-btn" style="margin-top:10px;" onclick="checkFixedPrompt()">Проверить</button>
+            <p id="fixPromptResult" style="font-weight:700; margin-top:6px;"></p>
+        </div>
+
+        <!-- МИССИЯ 6 -->
+        <div class="card" id="promptBattle">
+            <h2>⚔️ Миссия 6: Битва промптов (+1 чип)</h2>
+            <p>Для каждой пары выбери запрос, который даст более точный и полезный ответ. Угадай верно все 3 раунда.</p>
+            <div class="battle-round" data-round="0" data-correct="b"><p class="battle-topic">Тема: собаки</p><div class="row"><div class="col battle-option" data-choice="a"><p>«Расскажи про собак»</p></div><div class="col battle-option" data-choice="b"><p>«Ты ветеринар. Расскажи в 3 предложениях, как выбрать породу собаки для квартиры»</p></div></div><div class="battle-feedback"></div></div>
+            <div class="battle-round" data-round="1" data-correct="b"><p class="battle-topic">Тема: рассказ</p><div class="row"><div class="col battle-option" data-choice="a"><p>«Напиши историю»</p></div><div class="col battle-option" data-choice="b"><p>«Напиши короткую (5 предложений) историю про кота-путешественника в жанре доброй сказки»</p></div></div><div class="battle-feedback"></div></div>
+            <div class="battle-round" data-round="2" data-correct="b"><p class="battle-topic">Тема: суперспособность</p><div class="row"><div class="col battle-option" data-choice="a"><p>«Придумай суперспособность»</p></div><div class="col battle-option" data-choice="b"><p>«Придумай самую необычную суперспособность и опиши её в 2 предложениях»</p></div></div><div class="battle-feedback"></div></div>
+            <p id="promptBattleScore" style="font-weight:700; margin-top:10px;">Верных с первой попытки: 0 из 3</p>
+        </div>
+
+        <!-- МИССИЯ 7 -->
+        <div class="card" id="mission7">
+            <h2>🔍 Миссия 7: Найди слабое место (+1 чип)</h2>
+            <p>Перед тобой запросы, которые могли бы написать ученики. Отметь, хороший это промпт или плохой (и почему).</p>
+            <div id="weakFacts"></div>
+            <button class="action-btn" onclick="checkWeakMission()">Проверить</button>
+            <p id="weakMissionResult" style="font-weight:700; margin-top:8px;"></p>
+        </div>
+
+        <!-- МИССИЯ 8 -->
+        <div class="card">
+            <h2>💻 Миссия 8: Первый улучшенный диалог (+1 чип)</h2>
+            <p>Придумай свою тему и напиши два запроса — простой и подробный по формуле «Роль + Задача + Контекст + Формат». Проверь оба в нейросети. Отметь все шаги, чтобы получить чип.</p>
+            <div class="task-box" id="aiPracticeTask" style="margin:0; padding:0; border:none; background:none;">
+                <div class="progress-track"><div class="progress-fill" id="aiPracticeProgress"></div></div>
+                <span class="progress-label" id="aiPracticeLabel">Выполнено шагов: 0 из 4</span>
+                <ul class="task-steps">
+                    <li><input type="checkbox" id="taskSimple" onchange="updateAiPracticeProgress()"> <label for="taskSimple">Задал простой запрос на свою тему</label></li>
+                    <li><input type="checkbox" id="taskDetailed" onchange="updateAiPracticeProgress()"> <label for="taskDetailed">Задал подробный запрос по формуле на ту же тему</label></li>
+                    <li><input type="checkbox" id="taskCompare" onchange="updateAiPracticeProgress()"> <label for="taskCompare">Сравнил, чем отличаются ответы</label></li>
+                    <li><input type="checkbox" id="taskSave" onchange="updateAiPracticeProgress()"> <label for="taskSave">📸 Сохранил оба запроса и оба ответа</label></li>
+                </ul>
+            </div>
+            <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+                <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Перейти в Classroom</a>
+                <button class="action-btn" onclick="completeMission(8)">Я выполнил</button>
+            </div>
+        </div>
+
+        <!-- НОВАЯ МИССИЯ 9: Промпт по картинке -->
+        <div class="card" id="mission9">
+            <h2>🎨 Миссия 9: Промпт по картинке (+1 чип)</h2>
+            <p>Посмотри на изображение и придумай такой запрос, чтобы нейросеть нарисовала похожую картинку. Опиши все детали, стиль и настроение.</p>
+            <div class="img-placeholder">🖼️ Картинка-пример: сказочный дракон на фоне заката, цифровая живопись.</div>
+            <textarea id="imagePrompt" style="width:100%; height:80px; border:1px solid #9CC97A; border-radius:12px; padding:10px; font-size:1rem;" placeholder="Опиши, что должно быть на картинке..."></textarea>
+            <button class="action-btn" onclick="completeMission(9)">✅ Я написал промпт для картинки</button>
+            <p class="note">💡 Подсказка: укажи, что именно нарисовать, в каком стиле, какие цвета, какое освещение. Например: «Нарисуй маленького зелёного дракона, сидящего на скале на фоне оранжевого заката, стиль цифровой живописи».</p>
+        </div>
+
+        <div class="ai-helper">
+            <div class="ai-head"><span style="font-size:32px;">🤖</span><div class="t">Спроси нейросеть <span>(ChatGPT / DeepSeek)</span></div></div>
+            <p class="ai-sub">Нажми на вопрос — откроется готовая беседа с нейросетью!</p>
+            <div class="ai-buttons">
+                <a href="https://chat.openai.com/?q=Приведи+пример+хорошего+и+плохого+запроса+к+нейросети" target="_blank" class="alice-q-btn">Пример хорошего и плохого запроса?</a>
+                <a href="https://chat.openai.com/?q=Почему+нейросети+важна+формулировка+запроса%3F" target="_blank" class="alice-q-btn">Почему важна формулировка?</a>
+                <a href="https://chat.openai.com/?q=Помоги+мне+улучшить+мой+запрос+к+нейросети" target="_blank" class="alice-q-btn">Помоги улучшить мой запрос</a>
+            </div>
+            <div class="ai-answer">💬 Нажми на любой вопрос — нейросеть ответит тебе прямо сейчас.</div>
+            <div class="ai-real-tip"><b>💡 Хочешь спросить что-то своё?</b> Открой нейросеть и задай любой вопрос про промпты.<br><span class="prompt-example">Не отправляй личные данные (адрес, телефон, пароли).</span></div>
+        </div>
+
+        <div class="card">
+            <h2>🎤 Мини-выставка</h2>
+            <p>Каждая пара показывает свой лучший промпт и результат. Группа голосует за самый удачный запрос занятия.</p>
+        </div>
+
+        <!-- МИССИЯ 10 (бывшая 9) -->
+        <div class="quiz-wrap" id="mission10">
+            <h2>🏆 Миссия 10: Финальный квиз (+1 чип)</h2>
+            <div id="finalQuiz">
+                <div class="quiz-question" data-correct="1"><p><strong>1. Что такое промпт?</strong></p><label><input type="radio" name="final0" value="0"> Ответ нейросети</label><br><label><input type="radio" name="final0" value="1"> Запрос, который пишет человек</label><br><label><input type="radio" name="final0" value="2"> Название нейросети</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="1"><p><strong>2. Что НЕ входит в формулу хорошего запроса?</strong></p><label><input type="radio" name="final1" value="0"> Роль</label><br><label><input type="radio" name="final1" value="1"> Пароль</label><br><label><input type="radio" name="final1" value="2"> Формат ответа</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="0"><p><strong>3. Почему подробный запрос обычно точнее?</strong></p><label><input type="radio" name="final2" value="0"> Нейросети нужно меньше «додумывать» самой</label><br><label><input type="radio" name="final2" value="1"> Потому что он длиннее</label><br><label><input type="radio" name="final2" value="2"> Потому что нейросеть его запоминает</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="1"><p><strong>4. «Для детей 5 лет» — какая это часть формулы?</strong></p><label><input type="radio" name="final3" value="0"> Задача</label><br><label><input type="radio" name="final3" value="1"> Контекст</label><br><label><input type="radio" name="final3" value="2"> Роль</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="1"><p><strong>5. «Напиши» — это хороший промпт?</strong></p><label><input type="radio" name="final4" value="0"> Да</label><br><label><input type="radio" name="final4" value="1"> Нет</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="0"><p><strong>6. Можно ли улучшить запрос после первого ответа?</strong></p><label><input type="radio" name="final5" value="0"> Да, можно уточнить или попросить сократить</label><br><label><input type="radio" name="final5" value="1"> Нет, запрос пишется только один раз</label><div class="q-feedback"></div></div>
+            </div>
+            <button class="quiz-btn" onclick="checkFinalMission()">Проверить ответы</button>
+            <div id="finalQuizResult" style="margin-top:10px; font-weight:700;"></div>
+        </div>
+
+        <div class="reflection-box">
+            <h2>💭 Рефлексия</h2>
+            <textarea id="reflectionText" placeholder="Что оказалось сложнее — простой запрос придумать или подробный? Какая часть формулы меняла ответ сильнее всего?"></textarea>
+            <button class="action-btn" onclick="submitReflection()">Отправить</button>
+            <div id="reflectionResult" style="margin-top:10px; font-weight:700;"></div>
+        </div>
+
+        <!-- Домашнее задание с тремя уровнями -->
+        <div class="card">
+            <h2>🏁 Домашнее задание (Google Classroom)</h2>
+            <p>Выбери уровень сложности и выполни задание с нейросетью:</p>
+            <ul>
+                <li><strong>⭐ Лёгкий уровень:</strong> Повтори формулу «Роль + Задача + Контекст + Формат» на любую тему (например, спроси про любимое животное). Пришли скриншот своего запроса и ответа.</li>
+                <li><strong>⭐⭐ Средний уровень:</strong> Придумай запрос для друга, который никогда не пользовался нейросетью, чтобы он получил полезный ответ. Опиши, какую часть формулы ты использовал.</li>
+                <li><strong>⭐⭐⭐ Сложный уровень:</strong> Придумай роль (например, детектив, пират, учёный) и попроси нейросеть ответить в этой роли на два твоих вопроса. Сделай скриншоты и напиши, что получилось интереснее всего.</li>
+            </ul>
+            <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать в Classroom</a>
+        </div>
+
+        <div class="lesson-nav">
+            <a class="nav-btn prev" href="Занятие_1_Что_такое_ИИ.html"><div class="lbl">← Назад</div><div class="ttl">1. Что такое ИИ?</div></a>
+            <a class="nav-btn next" href="Занятие_3.html"><div class="lbl">Далее →</div><div class="ttl">3. Этика и безопасность</div></a>
+        </div>
+    </main>
+
+    <footer><div class="wrap"><div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" /> Учебный центр «РОБОВИТА»</div><div>Занятие 2 · офлайн-курс «ИИ-творец»</div></div></footer>
+    <div id="confetti-container"></div>
+
+    <script>
+        const totalChips = 10;
+        let chipsCollected = 0;
+        const missionStatus = Array(11).fill(false);
+
+        function updateChipProgress() {
+            document.getElementById('chipFill').style.width = (chipsCollected/totalChips*100)+'%';
+            document.getElementById('chipCount').textContent = chipsCollected+' / '+totalChips+' чипов';
+            if (chipsCollected === totalChips) {
+                document.getElementById('certificateBlock').classList.add('show');
+                document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+                launchConfetti();
+            }
+        }
+        function completeMission(num) {
+            if (missionStatus[num]) return;
+            missionStatus[num] = true;
+            chipsCollected++;
+            updateChipProgress();
+        }
+
+        // Миссия 2: сортировка
+        const sortItems = [
+            { text: "«Расскажи»", answer: "bad", explain: "Слишком общий запрос — непонятно, о чём и как подробно." },
+            { text: "«Ты гид. Расскажи легенду замка для детей 5 лет в 3 предложениях»", answer: "good", explain: "Есть роль, задача, контекст и формат." },
+            { text: "«Помоги»", answer: "bad", explain: "Непонятно, с чем именно помочь." },
+            { text: "«Объясни, как решать уравнение x+5=12, для ученика 6 класса»", answer: "good", explain: "Есть конкретная задача и контекст (для кого)." },
+            { text: "«Напиши»", answer: "bad", explain: "Не указано, что писать и в каком объёме." },
+            { text: "«Напиши короткую (5 предложений) историю про кота-путешественника в жанре доброй сказки»", answer: "good", explain: "Есть формат, тема и жанр." },
+            { text: "«Сделай лучше»", answer: "bad", explain: "Непонятно, что именно нужно улучшить." },
+            { text: "«Ты ветеринар. Расскажи, как выбрать породу собаки для квартиры, в 3 предложениях»", answer: "good", explain: "Есть роль, задача и формат." },
+            { text: "«Ответь»", answer: "bad", explain: "Нет ни темы, ни вопроса." },
+            { text: "«Придумай смешную суперспособность и опиши её в 2 предложениях»", answer: "good", explain: "Есть задача, стиль и формат." }
+        ];
+        let sortCorrect = 0, sortTotal = 0;
+        const sortContainer = document.getElementById('sortCards');
+        sortItems.forEach(function(item) {
+            const card = document.createElement('div');
+            card.className = 'sort-card';
+            card.innerHTML =
+                '<div style="flex:1;"><div class="sort-text">' + item.text + '</div><div class="sort-explain">' + item.explain + '</div></div>' +
+                '<div class="sort-buttons"><span class="sort-btn" data-choice="good">✅ Хороший</span><span class="sort-btn" data-choice="bad">❌ Плохой</span></div>';
+            sortContainer.appendChild(card);
+            card.querySelectorAll('.sort-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (card.classList.contains('answered')) return;
+                    card.classList.add('answered');
+                    sortTotal++;
+                    if (btn.dataset.choice === item.answer) { card.classList.add('done-right'); sortCorrect++; }
+                    else { card.classList.add('done-wrong'); }
+                    document.getElementById('sortScore').textContent = 'Верно: ' + sortCorrect + ' из ' + sortTotal + ' (всего карточек: ' + sortItems.length + ')';
+                    if (sortCorrect >= 8) completeMission(2);
+                });
+            });
+        });
+
+        // Миссия 3: собери формулу
+        const formulaWords = ['Роль', 'Задача', 'Контекст', 'Формат'];
+        let formulaBankOrder = [0, 1, 2, 3].sort(function() { return Math.random() - 0.5; });
+        let formulaSelected = [];
+        function renderFormulaBank() {
+            document.getElementById('formulaBank').innerHTML = formulaBankOrder
+                .filter(function(i) { return formulaSelected.indexOf(i) === -1; })
+                .map(function(i) { return '<span class="word-chip" onclick="addFormulaWord(' + i + ')">' + formulaWords[i] + '</span>'; })
+                .join('');
+        }
+        function addFormulaWord(i) { formulaSelected.push(i); renderFormulaBuilder(); }
+        function removeFormulaWord(i) { formulaSelected = formulaSelected.filter(function(x) { return x !== i; }); renderFormulaBuilder(); }
+        function renderFormulaBuilder() {
+            renderFormulaBank();
+            document.getElementById('assembledFormula').innerHTML = formulaSelected
+                .map(function(i) { return '<span class="word-chip selected" onclick="removeFormulaWord(' + i + ')">' + formulaWords[i] + '</span>'; })
+                .join(' ');
+        }
+        function resetFormula() { formulaSelected = []; renderFormulaBuilder(); document.getElementById('formulaResult').textContent = ''; }
+        renderFormulaBuilder();
+        function checkFormula() {
+            const res = document.getElementById('formulaResult');
+            if (JSON.stringify(formulaSelected) === JSON.stringify([0, 1, 2, 3])) {
+                res.textContent = '✅ Верно! Роль → Задача → Контекст → Формат.';
+                res.style.color = '#2E7D32';
+                completeMission(3);
+            } else {
+                res.textContent = '❌ Порядок пока не тот — попробуй ещё раз.';
+                res.style.color = '#C0392B';
+            }
+        }
+
+        // Миссия 4: квиз про части формулы
+        document.querySelectorAll('#quizFormula .battle-round').forEach(function(round) {
+            const correct = round.dataset.correct;
+            let answered = false;
+            round.querySelectorAll('.battle-option').forEach(function(opt) {
+                opt.addEventListener('click', function() {
+                    if (answered) return;
+                    answered = true;
+                    round.querySelectorAll('.battle-option').forEach(function(o) { o.classList.remove('selected-right', 'selected-wrong'); });
+                    if (opt.dataset.choice === correct) { opt.classList.add('selected-right'); }
+                    else {
+                        opt.classList.add('selected-wrong');
+                        round.querySelector('.battle-option[data-choice="' + correct + '"]').classList.add('selected-right');
+                    }
+                    round.querySelector('.battle-feedback').textContent = (opt.dataset.choice === correct) ? '✅ Верно' : '❌ Неверно';
+                    updateQuizFormulaScore();
+                });
+            });
+        });
+        function updateQuizFormulaScore() {
+            let c = 0;
+            document.querySelectorAll('#quizFormula .battle-round').forEach(function(r) {
+                if (r.querySelector('.battle-option.selected-right') && !r.querySelector('.battle-option.selected-wrong')) c++;
+            });
+            document.getElementById('quizFormulaScore').textContent = 'Верных с первой попытки: ' + c + ' из 4';
+            if (c === 4) completeMission(4);
+        }
+
+        // Миссия 5: исправь запрос
+        function checkFixedPrompt() {
+            const v = document.getElementById('fixPromptInput').value.trim().toLowerCase();
+            const res = document.getElementById('fixPromptResult');
+            const hasDetail = v.length > 25 && (v.includes('класс') || v.includes('уравн') || v.includes('пример') || v.includes('тема') || v.includes('объясн'));
+            if (v.includes('математ') && hasDetail) {
+                res.textContent = '✅ Отлично! Запрос стал подробнее.';
+                res.style.color = '#2E7D32';
+                completeMission(5);
+            } else {
+                res.textContent = '❌ Добавь тему, пример или класс (например: «Объясни, как решать уравнения с одной переменной, на примере x+5=12, для 6 класса»).';
+                res.style.color = '#C0392B';
+            }
+        }
+
+        // Миссия 6: битва промптов
+        document.querySelectorAll('#promptBattle .battle-round').forEach(function(round) {
+            const correct = round.dataset.correct;
+            let answered = false;
+            round.querySelectorAll('.battle-option').forEach(function(opt) {
+                opt.addEventListener('click', function() {
+                    if (answered) return;
+                    answered = true;
+                    round.querySelectorAll('.battle-option').forEach(function(o) { o.classList.remove('selected-right', 'selected-wrong'); });
+                    if (opt.dataset.choice === correct) { opt.classList.add('selected-right'); }
+                    else {
+                        opt.classList.add('selected-wrong');
+                        round.querySelector('.battle-option[data-choice="' + correct + '"]').classList.add('selected-right');
+                    }
+                    round.querySelector('.battle-feedback').textContent = (opt.dataset.choice === correct) ? '✅ Верно! Подробный запрос обычно точнее.' : '❌ Проверьте оба варианта в нейросети сами.';
+                    updatePromptBattleScore();
+                });
+            });
+        });
+        function updatePromptBattleScore() {
+            let c = 0;
+            document.querySelectorAll('#promptBattle .battle-round').forEach(function(r) {
+                if (r.querySelector('.battle-option.selected-right') && !r.querySelector('.battle-option.selected-wrong')) c++;
+            });
+            document.getElementById('promptBattleScore').textContent = 'Верных с первой попытки: ' + c + ' из 3';
+            if (c === 3) completeMission(6);
+        }
+
+        // Миссия 7: найди слабое место
+        const weakFacts = [
+            { text: "«Напиши»", isGood: false },
+            { text: "«Ты детский писатель. Напиши короткую добрую сказку про лису для ребёнка 8 лет»", isGood: true },
+            { text: "«Привет, меня зовут Настя, мой телефон +375291234567, помоги с домашкой»", isGood: false },
+            { text: "«Объясни, как работает фотосинтез, в 3 предложениях для ученика 6 класса»", isGood: true },
+            { text: "«Сделай красиво»", isGood: false }
+        ];
+        const weakAnswers = {};
+        function renderWeakGame() {
+            document.getElementById('weakFacts').innerHTML = weakFacts.map(function(f, i) {
+                return '<div class="fact-check-item" id="weak-' + i + '">' +
+                    '<span>🧑\u200d🎓 «' + f.text + '»</span>' +
+                    '<div class="fact-buttons">' +
+                        '<button class="fact-btn" onclick="setWeakAnswer(' + i + ',true,this)">✅ Хороший</button>' +
+                        '<button class="fact-btn" onclick="setWeakAnswer(' + i + ',false,this)">❌ Плохой</button>' +
+                    '</div></div>';
+            }).join('');
+        }
+        renderWeakGame();
+        function setWeakAnswer(i, answer, btn) {
+            weakAnswers[i] = answer;
+            const item = document.getElementById('weak-' + i);
+            item.querySelectorAll('.fact-btn').forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+        }
+        function checkWeakMission() {
+            let correct = 0;
+            weakFacts.forEach(function(f, i) {
+                const item = document.getElementById('weak-' + i);
+                item.classList.remove('correct', 'incorrect');
+                if (weakAnswers[i] === f.isGood) { item.classList.add('correct'); correct++; }
+                else { item.classList.add('incorrect'); }
+            });
+            const res = document.getElementById('weakMissionResult');
+            if (correct === weakFacts.length) { res.textContent = '🎉 Все слабые места найдены! +1 чип.'; res.style.color = '#2E7D32'; completeMission(7); }
+            else { res.textContent = 'Правильно: ' + correct + ' из ' + weakFacts.length; res.style.color = '#C0392B'; }
+        }
+
+        // Миссия 8: практика
+        function updateAiPracticeProgress() {
+            const cbs = document.querySelectorAll('#aiPracticeTask .task-steps input[type=checkbox]');
+            let done = 0;
+            cbs.forEach(function(cb) { if (cb.checked) done++; });
+            const total = cbs.length;
+            document.getElementById('aiPracticeProgress').style.width = (done / total * 100) + '%';
+            document.getElementById('aiPracticeLabel').textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+        }
+
+        // Миссия 9: промпт по картинке — чисто ручная, кнопка уже вызывает completeMission(9)
+
+        // Миссия 10: финальный квиз
+        function checkFinalMission() {
+            let correct = 0;
+            document.querySelectorAll('#finalQuiz .quiz-question').forEach(function(q) {
+                const sel = q.querySelector('input[type=radio]:checked');
+                const fb = q.querySelector('.q-feedback');
+                if (!sel) { fb.textContent = 'Выбери ответ'; fb.style.color = '#B8860B'; return; }
+                if (sel.value === q.dataset.correct) { fb.textContent = '✅ Верно'; fb.style.color = '#2E7D32'; correct++; }
+                else { fb.textContent = '❌ Неправильно'; fb.style.color = '#C0392B'; }
+            });
+            if (correct === 6) { document.getElementById('finalQuizResult').textContent = '🏆 Отлично!'; completeMission(10); }
+            else { document.getElementById('finalQuizResult').textContent = 'Результат: ' + correct + ' из 6'; }
+        }
+
+        function launchConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8'];
+            for (let i = 0; i < 100; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = Math.random() * 2 + 's';
+                piece.style.width = piece.style.height = Math.random() * 10 + 5 + 'px';
+                container.appendChild(piece);
+                setTimeout(function() { piece.remove(); }, 8000);
+            }
+        }
+
+        function submitReflection() {
+            const ta = document.getElementById('reflectionText');
+            const res = document.getElementById('reflectionResult');
+            if (ta.value.trim() === '') { res.textContent = 'Напиши хоть что-нибудь :)'; res.style.color = '#B8860B'; return; }
+            res.textContent = '✅ Спасибо! Твой ответ сохранён.';
+            res.style.color = '#2E7D32';
+            ta.disabled = true;
+        }
+  function openTwoPrompts(idSimple, idDetailed) {
+        const simple = encodeURIComponent(document.getElementById(idSimple).value.trim());
+        const detailed = encodeURIComponent(document.getElementById(idDetailed).value.trim());
+        window.open('https://chat.deepseek.com/?q=' + simple, '_blank');
+        window.open('https://chat.deepseek.com/?q=' + detailed, '_blank');
+    }
+        updateChipProgress();
+    </script>
+</body>
+</html>

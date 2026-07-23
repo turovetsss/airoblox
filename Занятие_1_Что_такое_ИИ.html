@@ -1,498 +1,660 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Занятие 1. Что такое ИИ? — РОБОВИТА</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>Занятие 1. Что такое ИИ? — Лаборатория будущего | РОБОВИТА</title>
+ <style>
+    :root {
+        --primary: #61B01F;
+        --primary-light: #E8F5E0;
+        --primary-dark: #2E4A17;
+        --accent: #6C3F9B;
+        --accent-light: #F0E6F5;
+        --accent-ink: #4A1A5A;
+        --danger: #C0392B;
+        --danger-light: #FBEAEA;
+        --line: #D3E8C4;
+        --card-shadow: 0 6px 16px rgba(0,0,0,0.05);
+    }
+    body {
+        background: #F4F9F0;
+        font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        margin: 2; padding: 2; color: #2E2E2E; line-height: 1.8;
+        font-size: 1.2rem; /* увеличен базовый размер текста */
+    }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
+    .site-header {
+        background: linear-gradient(135deg, #ffffff 0%, #E8F5E0 100%);
+        border-bottom: 2px solid var(--primary); padding: 1.2rem 0 0.8rem;
+    }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.2rem; }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+    .brand img { height: 44px; border-radius: 12px; }
+    .brand-name { font-weight: 700; font-size: 1.5rem; color: var(--primary-dark); }
+    .brand-tag { font-size: 0.9rem; color: #5B5B58; }
+    .crumbs { font-size: 1rem; color: #5B5B58; }
+    .hero { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+    .hex-badge {
+        background: var(--primary); color: white; font-weight: 800; font-size: 2.2rem;
+        width: 66px; height: 66px; display: flex; align-items: center; justify-content: center;
+        border-radius: 16px; box-shadow: 0 8px 0 var(--primary-dark);
+    }
+    .module-pill { background: var(--accent-light); color: var(--accent-ink); padding: 4px 14px; border-radius: 30px; font-weight: 600; font-size: 0.95rem; display: inline-block; margin-bottom: 4px; }
+    .hero h1 { font-size: 2.4rem; margin: 0.2rem 0; color: #1E1E1E; }
+    .subtitle { color: #4A4A4A; font-size: 1.1rem; }
+
+    .scenario-box {
+        background: linear-gradient(135deg, #0A0E2A, #1A2A5A); border-radius: 24px;
+        padding: 20px 24px; margin: 1.8rem 0; display: flex; gap: 18px; align-items: center;
+        color: #e2e8f0; border: 1px solid #3B4A8A; box-shadow: 0 0 20px rgba(0,229,255,0.2);
+        font-size: 1.1rem;
+    }
+    .scenario-avatar { font-size: 3.8rem; background: rgba(255,255,255,0.1); border-radius: 20px; padding: 12px; }
+    .scenario-box strong { color: #00E5FF; }
+
+    .card, .task-box, .interactive-box, .quiz-wrap, .reflection-box, .objectives {
+        background: white; border-radius: 20px; padding: 1.8rem 2rem;
+        margin: 1.8rem 0; box-shadow: var(--card-shadow); border: 1px solid #E2E8F0;
+        font-size: 1.1rem;
+    }
+    .objectives { background: var(--primary-light); border-color: var(--primary); }
+    .card h2, .task-box h2, .interactive-box h2, .quiz-wrap h2 { margin-top: 0; color: var(--primary-dark); font-size: 1.6rem; }
+    .note { background: var(--primary-light); border-left: 4px solid var(--primary); padding: 0.8rem 1rem; border-radius: 6px; margin: 1rem 0; font-size: 1.05rem; }
+
+    .chip-progress {
+        display: flex; align-items: center; gap: 10px; background: white;
+        border-radius: 40px; padding: 8px 20px; margin: 1rem 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid var(--line);
+    }
+    .chip-icon { font-size: 2rem; }
+    .chip-track { flex: 1; height: 14px; background: #E2EED6; border-radius: 10px; overflow: hidden; }
+    .chip-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #61B01F, #9CCC65); border-radius: 10px; transition: width 0.3s; }
+    .chip-count { font-weight: 700; color: var(--primary-dark); min-width: 60px; text-align: right; font-size: 1.1rem; }
+
+    .certificate {
+        background: linear-gradient(135deg, #FFD54F, #FFB300); border-radius: 28px; padding: 2rem;
+        text-align: center; color: #3E2C0B; border: 4px solid #FF8F00;
+        box-shadow: 0 12px 24px rgba(255,179,0,0.3); margin: 2rem 0; display: none;
+        font-size: 1.2rem;
+    }
+    .certificate.show { display: block; }
+    .certificate h2 { font-size: 2.5rem; margin: 0.5rem 0; }
+
+    .action-btn, .quiz-btn {
+        background: var(--primary); color: white; border: none; padding: 12px 28px;
+        border-radius: 30px; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s;
+        font-size: 1.1rem; box-shadow: 0 4px 0 var(--primary-dark); text-decoration: none; display: inline-block;
+    }
+    .action-btn:hover, .quiz-btn:hover { background: #4C8C18; transform: translateY(-1px); }
+
+    table { width: 100%; border-collapse: collapse; }
+    table th, table td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; font-size: 1rem; }
+    table th { background: var(--primary-light); color: var(--primary-dark); font-size: 1.05rem; }
+
+    .sort-card {
+        display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        border: 2px solid #D3D1C7; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; background: #fff;
+    }
+    .sort-card .sort-text { font-size: 1.05rem; }
+    .sort-card .sort-buttons { display: flex; gap: 6px; flex-shrink: 0; }
+    .sort-btn { cursor: pointer; border: 1.5px solid #9CC97A; border-radius: 8px; padding: 6px 10px; font-size: 0.95rem; background: #FFFFFF; }
+    .sort-btn:hover { background: #EAF3DE; }
+    .sort-card.done-right { border-color: #2E7D32; background: #EAF7DF; }
+    .sort-card.done-wrong { border-color: #C0392B; background: #FBEAEA; }
+    .sort-card.answered .sort-buttons { display: none; }
+    .sort-card .sort-explain { font-size: 0.9rem; color: #5B5B58; display: none; margin-top: 4px; }
+    .sort-card.answered .sort-explain { display: block; }
+
+    .room-scene {
+        position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 14px;
+        background: linear-gradient(180deg, #EAF3DE 0%, #DCEBC8 60%, #C9DFB0 100%);
+        border: 2px solid #9CC97A; overflow: hidden; margin: 12px 0;
+    }
+    .room-item {
+        position: absolute; font-size: 2.8rem; cursor: pointer; user-select: none;
+        transition: transform 0.15s; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+    }
+    .room-item:hover { transform: scale(1.15); }
+    .room-item.found { outline: 3px solid #2E7D32; border-radius: 12px; background: rgba(46,125,50,0.15); }
+    .room-item.wrong-flash { outline: 3px solid #C0392B; border-radius: 12px; background: rgba(192,57,43,0.15); }
+
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .col { flex: 1; min-width: 160px; }
+    .battle-option {
+        cursor: pointer; border: 2px solid #D3D1C7; border-radius: 10px; padding: 12px;
+        transition: border-color .15s, background .15s; background: #fff;
+        font-size: 1.05rem;
+    }
+    .battle-option:hover { border-color: #61B01F; }
+    .battle-option.selected-right { border-color: #2E7D32; background: #EAF7DF; }
+    .battle-option.selected-wrong { border-color: #C0392B; background: #FBEAEA; }
+    .battle-topic { font-weight: 700; font-size: 1.15rem; margin: 0 0 0.5rem; color: #1E1E1E; }
+
+    .quiz-question { border: 1px solid #E2EED6; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; font-size: 1.05rem; }
+    .quiz-question label { display: inline-block; margin: 3px 0; cursor: pointer; }
+    .q-feedback { font-size: 0.95rem; font-weight: 700; margin-top: 4px; min-height: 1.1em; }
+
+    .word-chip {
+        background: #EAF3DE; border: 1px solid #9CC97A; border-radius: 20px; padding: 6px 14px;
+        cursor: pointer; user-select: none; display: inline-block; margin: 4px;
+        font-size: 1rem;
+    }
+    .word-chip.selected { background: #FFB800; color: white; border-color: #B8860B; }
+    .assembled-prompt { min-height: 40px; border: 2px dashed #9CC97A; border-radius: 10px; padding: 10px; margin: 10px 0; font-size: 1rem; }
+
+    .progress-track { width: 100%; height: 8px; background: #E2EED6; border-radius: 8px; margin: 10px 0 6px; overflow: hidden; }
+    .progress-fill { width: 0%; height: 100%; background: var(--primary); border-radius: 8px; transition: width 0.2s; }
+    .progress-label { font-size: 0.9rem; color: #4A4A4A; margin-bottom: 0.5rem; display: block; }
+    .task-steps { list-style: none; padding: 0; }
+    .task-steps li { margin-bottom: 10px; display: flex; align-items: center; gap: 8px; font-size: 1.05rem; }
+    .task-steps input[type="checkbox"] { width: 1.2em; height: 1.2em; }
+
+    .ai-helper { background: #F8FBF6; border: 1.5px solid #D3E8C4; border-radius: 14px; padding: 1.6rem; margin: 1.8rem 0; font-size: 1.05rem; }
+    .ai-head { display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem; }
+    .ai-head .t { font-weight: 700; font-size: 1.3rem; color: #2E4A17; }
+    .ai-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+    .alice-q-btn { display: inline-block; background: #EAF3DE; border: 1px solid #9CC97A; border-radius: 8px; padding: 0.5rem 1.2rem; text-decoration: none; color: #2E4A17; font-weight: 500; font-size: 1rem; }
+    .alice-q-btn:hover { background: #D4E8C0; }
+    .ai-answer { padding: 0.8rem 1rem; border-left: 4px solid #61B01F; border-radius: 6px; margin-bottom: 0.8rem; }
+    .ai-real-tip { font-size: 1rem; color: #4A4A4A; }
+
+    .reflection-box textarea { width: 100%; min-height: 100px; border: 1px solid #D3E8C4; border-radius: 8px; padding: 10px; font-family: inherit; font-size: 1rem; resize: vertical; }
+    .lesson-nav { display: flex; justify-content: space-between; gap: 1.5rem; margin: 2.5rem 0 1.5rem; }
+    .nav-btn { flex: 1; border: 1px solid #D3D1C7; border-radius: 16px; padding: 1.2rem 1.8rem; text-decoration: none; color: #2E2E2E; background: white; transition: 0.2s; }
+    .nav-btn:hover { border-color: var(--primary); background: #F8FBF6; }
+    .nav-btn .lbl { font-size: 0.9rem; color: #666; }
+    .nav-btn .ttl { font-weight: 700; font-size: 1.2rem; }
+    footer { background: white; padding: 1.5rem 0; border-top: 1px solid #E2E8F0; margin-top: 2rem; font-size: 1rem; }
+    .foot-brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .foot-brand img { height: 36px; }
+
+    .fact-check-item {
+        background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px;
+        padding: 14px 20px; margin: 10px 0; display: flex; align-items: center; gap: 12px;
+        font-size: 1.05rem;
+    }
+    .fact-check-item.correct { border-color: #2E7D32; background: #E8F5E0; }
+    .fact-check-item.incorrect { border-color: #C0392B; background: #FBEAEA; }
+    .fact-buttons { display: flex; gap: 8px; margin-left: auto; }
+    .fact-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid #9CC97A; background: white; cursor: pointer; font-weight: 600; font-size: 1rem; }
+    .fact-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .guess-ai-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 16px 0; }
+    .guess-card { border: 2px solid #D3E8C4; border-radius: 20px; padding: 20px; text-align: center; background: #fff; font-size: 1.1rem; }
+    .guess-card img { font-size: 4.5rem; display: block; margin: 0 auto 10px; }
+    .guess-card .guess-buttons { display: flex; gap: 8px; justify-content: center; }
+    .guess-card button { padding: 8px 14px; border-radius: 20px; border: 1px solid #9CC97A; background: white; cursor: pointer; font-weight: 600; font-size: 1rem; }
+    .guess-card button.chosen { background: var(--accent); color: white; border-color: var(--accent); }
+    .guess-card.reveal-correct { border-color: #2E7D32; background: #E8F5E0; }
+    .guess-card.reveal-wrong { border-color: #C0392B; background: #FBEAEA; }
+
+    #confetti-container {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none; z-index: 9999; overflow: hidden;
+    }
+    .confetti-piece {
+        position: absolute; width: 10px; height: 10px; border-radius: 2px;
+        animation: confettiFall 3s ease-out forwards;
+    }
+    @keyframes confettiFall {
+        0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+</style>
 </head>
 <body>
-    <!-- ===== ШАПКА (светло-зелёная) ===== -->
     <header class="site-header">
         <div class="wrap">
             <div class="top-bar">
                 <a class="brand" href="Карта_курса.html">
-                    <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                    <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" />
                     <div>
                         <div class="brand-name">РОБОВИТА</div>
                         <div class="brand-tag">учимся программировать роботов и игры</div>
                     </div>
                 </a>
+                <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 1</div>
             </div>
             <div class="hero">
+                <div class="hex-badge">🤖</div>
                 <div>
                     <div class="module-pill">Модуль 1 · Знакомство с ИИ и безопасность</div>
-                    <h1>Занятие 1. Что такое ИИ?</h1>
-                    <p class="subtitle">Игра «Быстро, рисуй!» · «ИИ или не ИИ?» · Первый диалог с нейросетью · Финальный квиз</p>
+                    <h1>Что такое искусственный интеллект?</h1>
+                    <p class="subtitle">Лаборатория будущего: 8 миссий, чипы ИИ и финальный сертификат</p>
                 </div>
             </div>
         </div>
     </header>
 
     <main class="wrap">
-        <!-- Цели занятия -->
-        <div class="card">
+        <div class="scenario-box">
+            <div class="scenario-avatar">🧪</div>
+            <div>
+                <strong>Добро пожаловать в Лабораторию будущего!</strong> Ты — новый исследователь. Чтобы получить звание «Исследователь ИИ», тебе нужно выполнить <strong>8 миссий</strong> и собрать <strong>чипы ИИ</strong>. Готов доказать, что ты понимаешь искусственный интеллект?
+            </div>
+        </div>
+
+        <div class="chip-progress" id="chipProgressBar">
+            <span class="chip-icon">🧠</span>
+            <div class="chip-track"><div class="chip-fill" id="chipFill"></div></div>
+            <span class="chip-count" id="chipCount">0 / 8 чипов</span>
+        </div>
+
+        <div class="certificate" id="certificateBlock">
+            <h2>🏆 Сертификат</h2>
+            <p style="font-size:1.4rem;"><strong>Исследователь искусственного интеллекта</strong></p>
+            <p>Поздравляем! Ты выполнил все миссии Лаборатории будущего и собрал 8 чипов ИИ.</p>
+            <p style="font-size:0.9rem;">Дата: <span id="certDate"></span></p>
+        </div>
+
+        <div class="objectives">
             <h2>🎯 Цели занятия</h2>
             <ul>
-                <li>Понять, что такое искусственный интеллект и чем он отличается от обычной программы.</li>
-                <li>Научиться отличать ИИ-сервисы от обычных программ на конкретных примерах.</li>
-                <li>Увидеть, где ИИ встречается в жизни каждый день.</li>
-                <li>Завести аккаунт в нейросети и провести первый диалог.</li>
+                <li>Понять, что такое ИИ и чем он отличается от обычной программы</li>
+                <li>Научиться отличать ИИ-сервисы от простых программ</li>
+                <li>Узнать, где ИИ встречается каждый день</li>
+                <li>Провести первый диалог с нейросетью (ChatGPT/DeepSeek)</li>
             </ul>
         </div>
 
-        <!-- План занятия (тайминг) -->
         <div class="card">
-            <h2>⏱️ План занятия (90 минут)</h2>
-            <table>
-                <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
-                <tr><td>Оргмомент и разогрев</td><td>5 мин</td><td>Знакомство, вопрос-провокация</td></tr>
-                <tr><td>Крючок: «Быстро, рисуй!»</td><td>10 мин</td><td>Рисуем, нейросеть угадывает</td></tr>
-                <tr><td>Игра «ИИ или не ИИ?»</td><td>10 мин</td><td>Сортируем 10 карточек</td></tr>
-                <tr><td>Теория: что такое ИИ</td><td>13 мин</td><td>Алгоритм против нейросети</td></tr>
-                <tr><td>Квиз «Алгоритм или нейросеть?»</td><td>7 мин</td><td>Закрепляем теорию</td></tr>
-                <tr><td>Практика: регистрация</td><td>8 мин</td><td>Аккаунт в нейросети</td></tr>
-                <tr><td>Практика: первый диалог + бонус</td><td>17 мин</td><td>3 уровня + бонусный раунд</td></tr>
-                <tr><td>Мини-выставка</td><td>8 мин</td><td>Показываем диалоги</td></tr>
-                <tr><td>Финальный квиз-соревнование</td><td>7 мин</td><td>Командами, на скорость</td></tr>
-                <tr><td>Рефлексия и ДЗ</td><td>5 мин</td><td>Обсуждаем, задание на дом</td></tr>
+            <h2>⏱️ План (90 минут)</h2>
+            <table><tr><th>Миссия</th><th>Время</th></tr>
+                <tr><td>🖌️ Миссия 1: Быстро, рисуй!</td><td>10 мин</td></tr>
+                <tr><td>🗂️ Миссия 2: Это ИИ?</td><td>10 мин</td></tr>
+                <tr><td>🏠 Миссия 3: Найди ИИ дома</td><td>7 мин</td></tr>
+                <tr><td>⚡ Миссия 4: Алгоритм или нейросеть?</td><td>13 мин</td></tr>
+                <tr><td>✍️ Миссия 5: Исправь запрос</td><td>7 мин</td></tr>
+                <tr><td>🧩 Миссия 6: Собери запрос</td><td>7 мин</td></tr>
+                <tr><td>💻 Миссия 7: Первый диалог</td><td>17 мин</td></tr>
+                <tr><td>🏆 Миссия 8: Финальная битва</td><td>7 мин</td></tr>
             </table>
         </div>
 
-        <!-- Разогрев -->
-        <div class="card">
-            <h2>🔥 Оргмомент и разогрев</h2>
-            <p>Знакомство с группой (если нужно). Задайте вопрос для затравки, не давая ответа сразу — вернётесь к нему в теории:</p>
-            <p class="note">❓ <strong>«Как думаете, может ли искусственный интеллект ошибаться? А обычный калькулятор?»</strong> Соберите 2–3 версии от детей, не комментируя.</p>
+        <div class="task-box" id="mission1">
+            <h2>🖌️ Миссия 1: Быстро, рисуй! <span style="font-size:0.9rem; color:gray;">(+1 чип)</span></h2>
+            <p>Нейросеть пытается угадать твой рисунок за 20 секунд. Нажми кнопку, чтобы перейти к игре Quick, Draw!.</p>
+            <a href="https://quickdraw.withgoogle.com" target="_blank" class="action-btn" style="display:inline-block; margin-bottom:12px;">🎨 Играть в Quick, Draw!</a>
+            <div><button class="action-btn" onclick="completeMission(1)">✅ Я сыграл!</button></div>
+            <p class="note">💡 Нейросеть видела миллионы рисунков и предполагает, что ты рисуешь, сравнивая с примерами.</p>
         </div>
 
-        <!-- Крючок -->
-        <div class="card">
-            <h2>🖌️ Крючок: игра «Быстро, рисуй!»</h2>
-            <p>Перейдите на сайт <a href="https://quickdraw.withgoogle.com" target="_blank">quickdraw.withgoogle.com</a>. Нейросеть даёт объекты по 20 секунд на каждый и пытается угадать, что вы рисуете, <strong>ещё до того, как рисунок закончен</strong>.</p>
-
-            <div class="media-placeholder" style="border:2px dashed #9CC97A; border-radius:12px; padding:16px; text-align:center; margin:14px 0;">
-                <p style="margin:0; color:#5B5B58; font-size:0.9rem;">📸 <strong>Вставить сюда:</strong> свой скриншот процесса игры Quick, Draw! Путь: <code>assets/images/lesson-1/quickdraw-screenshot.png</code></p>
-            </div>
-
-            <p><strong>После игры обсудите:</strong> как нейросеть догадалась, что вы рисуете? Ошибалась ли она? Похоже ли это на то, как угадывает человек?</p>
-            <p class="note">💡 <em>Для педагога:</em> нейросеть «видела» миллионы чужих рисунков и запомнила, какие линии обычно рисуют для каждого предмета. Она не знает точный ответ, а <strong>предполагает</strong>.</p>
-        </div>
-
-        <!-- ИГРА 1: ИИ или не ИИ -->
         <div class="card" id="sortGame">
-            <h2>🗂️ Игра: «ИИ или не ИИ?»</h2>
-            <p>Отправьте каждую карточку в нужную группу: это работа искусственного интеллекта или обычной программы, действующей по жёстким правилам?</p>
-
-            <div style="display:flex; gap:12px; margin-bottom:14px;">
-                <div style="flex:1; text-align:center; font-weight:700; color:#0C447C;">🧠 Это ИИ</div>
-                <div style="flex:1; text-align:center; font-weight:700; color:#2E4A17;">⚙️ Обычная программа</div>
-            </div>
-
+            <h2>🗂️ Миссия 2: «ИИ или не ИИ?» <span style="font-size:0.9rem; color:gray;">(+1 чип)</span></h2>
+            <p>Отправьте каждую карточку в нужную группу. Когда верных ответов будет <b>8 или больше</b>, миссия засчитается.</p>
             <div id="sortCards"></div>
-            <p id="sortScore" style="font-weight:700; margin-top:10px;"></p>
+            <p id="sortScore" style="font-weight:700; margin-top:10px;">Верно: 0 из 0 (всего карточек: 10)</p>
         </div>
 
-        <!-- Теория -->
-        <div class="card">
-            <h2>📚 Теория: что такое ИИ?</h2>
-            <p><strong>Обычная программа</strong> действует по чётким правилам (калькулятор: 2+2 всегда 4). <strong>Искусственный интеллект</strong> — это программа, которая обучилась на примерах и сама <em>предполагает</em> ответ на новую задачу. Именно поэтому ИИ иногда ошибается, а обычная программа — почти никогда: вернитесь к вопросу из разогрева и обсудите этот вывод вместе с группой.</p>
-
-            <div style="text-align:center; margin:16px 0;">
-                <img src="assets/images/lesson-1/algoritm-vs-neuroset.svg" alt="Схема: обычная программа против искусственного интеллекта" style="max-width:100%; border-radius:8px;">
+        <div class="interactive-box" id="mission3">
+            <h2>🏠 Миссия 3: Найди ИИ в комнате <span style="font-size:0.9rem; color:gray;">(+1 чип)</span></h2>
+            <p>В комнате спрятано <b>4 устройства с искусственным интеллектом</b> и несколько обычных вещей без ИИ. Нажми только на те, что работают благодаря ИИ!</p>
+            <div class="room-scene" id="roomScene">
+                 <div><img src="assets/images/ai1/1.avif" alt="Клавиша Enter"></div>
+                <span class="room-item" data-device="true" style="top:60%; left:8%;" title="Смартфон">📱</span>
+                <span class="room-item" data-device="true" style="top:35%; left:60%;scale: 50%" title="Умная колонка">🔊</span>
+                <span class="room-item" data-device="true" style="top:75%; left:78%;" title="Робот-пылесос">🤖</span>
+                <span class="room-item" data-device="true" style="top:70%; left:42%;" title="Ноутбук с видеорекомендациями">💻</span>
+                <span class="room-item" data-device="false" style="top:35%; left:80%;" title="Настольная лампа">💡</span>
+                <span class="room-item" data-device="false" style="top:70%; left:20%;scale: 300%" title="Стул">🪑</span>
+                <span class="room-item" data-device="false" style="top:45%; left:90%;" title="Будильник">⏰</span>
+                <span class="room-item" data-device="false" style="top:65%; left:5%; ;" title="Книга">📖</span>
             </div>
-
-            <p><strong>Мини-опрос:</strong> назовите ещё один пример ИИ из своей жизни, которого не было среди карточек (умная колонка, фильтры камеры, автопилот в играх).</p>
-            <p class="note">⚠️ <strong>Правило безопасности:</strong> никогда не пишите нейросети личные данные: адрес, телефон, пароли, полное имя.</p>
+            <p id="roomProgress" style="font-weight:700; margin-top:8px;">Найдено устройств с ИИ: 0 из 4</p>
         </div>
 
-        <!-- ИГРА 2: Алгоритм или нейросеть -->
-        <div class="card" id="quizAlgNet">
-            <h2>⚡ Квиз: «Алгоритм или нейросеть?»</h2>
-            <p>Для каждого утверждения выберите, к чему оно относится.</p>
+        <div class="card">
+            <h2>📚 Теория: алгоритм против нейросети</h2>
+            <p><strong>Обычная программа</strong> действует по чётким правилам (калькулятор: 2+2 всегда 4). <strong>Искусственный интеллект</strong> — это программа, которая обучилась на примерах и сама <em>предполагает</em> ответ на новую задачу.</p>
+            <div class="note">⚠️ <strong>Безопасность:</strong> никогда не пиши нейросети пароли, адрес, полное имя.</div>
+        </div>
+
+          <div class="card" id="quizAlgNet">
+            <h2>⚡ Миссия 4: «Алгоритм или нейросеть?» (+1 чип)</h2>
+            <p>Для каждого утверждения выбери, к чему оно относится. Ответь верно на все 4 с первой попытки, чтобы выполнить миссию.</p>
 
             <div class="battle-round" data-round="0" data-correct="a">
-                <p class="battle-topic">«Даёт одинаковый результат на одинаковый вопрос»</p>
+                <p class="battle-topic"><strong>«Даёт одинаковый результат на одинаковый вопрос»</strong></p>
                 <div class="row">
                     <div class="col battle-option" data-choice="a"><p>Алгоритм</p></div>
                     <div class="col battle-option" data-choice="b"><p>Нейросеть</p></div>
                 </div>
                 <div class="battle-feedback"></div>
             </div>
-
             <div class="battle-round" data-round="1" data-correct="b">
-                <p class="battle-topic">«Учится на примерах, а не на жёстких правилах»</p>
+                <p class="battle-topic"><strong>«Учится на примерах, а не на жёстких правилах»</strong></p>
                 <div class="row">
                     <div class="col battle-option" data-choice="a"><p>Алгоритм</p></div>
                     <div class="col battle-option" data-choice="b"><p>Нейросеть</p></div>
                 </div>
                 <div class="battle-feedback"></div>
             </div>
-
             <div class="battle-round" data-round="2" data-correct="b">
-                <p class="battle-topic">«Может ошибиться и предположить неверно»</p>
+                <p class="battle-topic"><strong>«Может ошибиться и предположить неверно»</strong></p>
                 <div class="row">
                     <div class="col battle-option" data-choice="a"><p>Алгоритм</p></div>
                     <div class="col battle-option" data-choice="b"><p>Нейросеть</p></div>
                 </div>
                 <div class="battle-feedback"></div>
             </div>
-
             <div class="battle-round" data-round="3" data-correct="a">
-                <p class="battle-topic">«Работает по правилам, которые заранее написал человек»</p>
+                <p class="battle-topic"><strong>«Работает по правилам, которые заранее написал человек»</strong></p>
                 <div class="row">
                     <div class="col battle-option" data-choice="a"><p>Алгоритм</p></div>
                     <div class="col battle-option" data-choice="b"><p>Нейросеть</p></div>
                 </div>
                 <div class="battle-feedback"></div>
             </div>
-
-            <p id="algNetScore" style="font-weight:700; margin-top:10px;"></p>
+            <p id="algNetScore" style="font-weight:700; margin-top:10px;">Верных с первой попытки: 0 из 4</p>
         </div>
 
-        <!-- Практика: регистрация и первый диалог (объединённый блок с прогресс-баром) -->
+        <div class="card" id="fixPrompt">
+            <h2>📝 Миссия 5: Исправь запрос <span style="font-size:0.9rem; color:gray;">(+1 чип)</span></h2>
+            <p>Нейросеть лучше отвечает на подробные вопросы. Сделай из запроса <b>«Расскажи про собак»</b> хороший, уточнённый запрос — добавь, сколько фактов нужно и для какого возраста.</p>
+            <input type="text" id="fixPromptInput" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;" placeholder="Твой улучшенный запрос...">
+            <button class="action-btn" style="margin-top:10px;" onclick="checkFixedPrompt()">Проверить</button>
+            <p id="fixPromptResult" style="font-weight:700; margin-top:6px;"></p>
+        </div>
+
+        <div class="card" id="buildPrompt">
+            <h2>🧩 Миссия 6: Собери запрос <span style="font-size:0.9rem; color:gray;">(+1 чип)</span></h2>
+            <p>Сложи слова в правильном порядке, чтобы получился запрос: <b>«Напиши смешную историю про кота на 200 слов»</b>.</p>
+            <div class="prompt-builder" id="wordBank"></div>
+            <div class="assembled-prompt" id="assembledPrompt"></div>
+            <button class="action-btn" onclick="checkAssembledPrompt()">Проверить</button>
+            <button class="action-btn" style="background:#9CC97A;" onclick="resetAssembledPrompt()">Сбросить</button>
+            <p id="buildPromptResult" style="font-weight:700; margin-top:6px;"></p>
+        </div>
+
         <div class="card">
-            <h2>💻 Практика: регистрация и первый диалог</h2>
-            <p>Откройте сайт нейросети по ссылке педагога (ChatGPT или DeepSeek). Зарегистрируйтесь через учебный аккаунт.</p>
-
-            <div class="media-placeholder" style="border:2px dashed #9CC97A; border-radius:12px; padding:16px; text-align:center; margin:14px 0;">
-                <p style="margin:0; color:#5B5B58; font-size:0.9rem;">📸 <strong>Вставить сюда:</strong> скриншот страницы регистрации ChatGPT/DeepSeek с учебным (не личным) аккаунтом. Путь: <code>assets/images/lesson-1/registraciya.png</code></p>
-            </div>
-
-            <!-- Блок с прогресс-баром -->
-            <div class="task-box" id="aiPracticeTask">
+            <h2>💻 Миссия 7: Первый диалог с нейросетью <span style="font-size:0.9rem; color:gray;">(+1 чип)</span></h2>
+            <p>Зарегистрируйся в ChatGPT или DeepSeek и выполни задания. Отметь все шаги, чтобы получить чип.</p>
+            <div class="task-box" id="aiPracticeTask" style="margin:0; padding:0; border:none; background:none;">
                 <div class="progress-track"><div class="progress-fill" id="aiPracticeProgress"></div></div>
                 <span class="progress-label" id="aiPracticeLabel">Выполнено шагов: 0 из 5</span>
                 <ul class="task-steps">
-                    <li>
-                        <input type="checkbox" id="taskReg" onchange="updateAiPracticeProgress()">
-                        <label for="taskReg"><b>Регистрация:</b> зашёл в ChatGPT/DeepSeek и вошёл в аккаунт</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="taskBasic" onchange="updateAiPracticeProgress()">
-                        <label for="taskBasic">🌱 <b>Базовый уровень:</b> задал простой вопрос и получил ответ</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="taskStandard" onchange="updateAiPracticeProgress()">
-                        <label for="taskStandard">🌿 <b>Стандартный уровень:</b> сравнил два варианта запроса</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="taskAdvanced" onchange="updateAiPracticeProgress()">
-                        <label for="taskAdvanced">🌳 <b>Продвинутый уровень:</b> попробовал роль или бонусный вопрос</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="taskSave" onchange="updateAiPracticeProgress()">
-                        <label for="taskSave">📸 <b>Сохранил скриншот</b> диалога в свою папку</label>
-                    </li>
+                    <li><input type="checkbox" id="taskReg" onchange="updateAiPracticeProgress()"> <label for="taskReg">Зашёл в нейросеть и вошёл в аккаунт</label></li>
+                    <li><input type="checkbox" id="taskBasic" onchange="updateAiPracticeProgress()"> <label for="taskBasic">🌱 Задал простой вопрос</label></li>
+                    <li><input type="checkbox" id="taskStandard" onchange="updateAiPracticeProgress()"> <label for="taskStandard">🌿 Сравнил два варианта запроса</label></li>
+                    <li><input type="checkbox" id="taskAdvanced" onchange="updateAiPracticeProgress()"> <label for="taskAdvanced">🌳 Попробовал роль или бонусный вопрос</label></li>
+                    <li><input type="checkbox" id="taskSave" onchange="updateAiPracticeProgress()"> <label for="taskSave">📸 Сохранил скриншот диалога</label></li>
                 </ul>
             </div>
-
-            <h3>📤 Сдать работу</h3>
-            <iframe src="https://docs.google.com/forms/d/e/ВАШ_ID_ФОРМЫ/viewform?embedded=true" width="100%" height="400" frameborder="0">Загрузка формы…</iframe>
+            <div style="margin-top:16px; display:flex; gap:10px;">
+                <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Перейти в Classroom</a>
+                <button class="action-btn" onclick="completeMission(7)">Я выполнил</button>
+            </div>
         </div>
 
-        <!-- Блок «Спроси нейросеть» (стиль как в уроке Roblox) -->
         <div class="ai-helper">
-            <div class="ai-head">
-                <span style="font-size:32px; line-height:1;">🤖</span>
-                <div class="t">Спроси нейросеть <span>(ChatGPT / DeepSeek)</span></div>
-            </div>
+            <div class="ai-head"><span style="font-size:32px;">🤖</span><div class="t">Спроси нейросеть <span>(ChatGPT / DeepSeek)</span></div></div>
             <p class="ai-sub">Нажми на вопрос — откроется готовая беседа с нейросетью!</p>
             <div class="ai-buttons">
                 <a href="https://chat.openai.com/?q=Объясни%2C+что+такое+нейросеть+простыми+словами" target="_blank" class="alice-q-btn">Что такое нейросеть?</a>
-                <a href="https://chat.openai.com/?q=Приведи+пример%2C+где+искусственный+интеллект+помогает+людям" target="_blank" class="alice-q-btn">Где ИИ помогает людям?</a>
+                <a href="https://chat.openai.com/?q=Приведи+пример%2C+где+искусственный+интеллект+помогает+людям" target="_blank" class="alice-q-btn">Где ИИ помогает?</a>
                 <a href="https://chat.openai.com/?q=Как+искусственный+интеллект+учится+на+примерах%3F" target="_blank" class="alice-q-btn">Как ИИ учится?</a>
             </div>
-            <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
-                💬 Нажми на любой вопрос — нейросеть ответит тебе прямо сейчас.
-            </div>
-            <div class="ai-real-tip">
-                <b>💡 Хочешь спросить что-то своё?</b> Открой нейросеть и задай любой вопрос про технологии.<br>
-                <span class="prompt-example">Только не забудь: не отправляй личные данные (адрес, телефон, пароли).</span>
-            </div>
+            <div class="ai-answer">💬 Нажми на любой вопрос — нейросеть ответит тебе прямо сейчас.</div>
+            <div class="ai-real-tip"><b>💡 Хочешь спросить что-то своё?</b> Открой нейросеть и задай любой вопрос про технологии.<br><span class="prompt-example">Не отправляй личные данные (адрес, телефон, пароли).</span></div>
         </div>
 
-        <!-- Мини-выставка -->
         <div class="card">
             <h2>🎤 Мини-выставка</h2>
-            <p>2–3 добровольца показывают свой диалог на общем экране и рассказывают, что спросили и что ответила нейросеть, включая бонусный раунд, если успели.</p>
+            <p>2–3 добровольца показывают свой диалог на общем экране и рассказывают, что спросили и что ответила нейросеть.</p>
         </div>
 
-        <!-- ИГРА 3: Финальный квиз-соревнование -->
-        <div class="card" id="quiz1">
-            <h2>🏆 Финальный квиз-соревнование</h2>
-            <p>Разбейтесь на 2–3 команды. За каждый верный ответ команда получает балл — считайте вслух или ведите счёт на доске.</p>
-
-            <div class="quiz-question" data-name="q0" data-correct="b">
-                <p>1. Чем ИИ отличается от обычной программы?</p>
-                <label><input type="radio" name="q0" value="a"> Всегда даёт один и тот же ответ</label><br>
-                <label><input type="radio" name="q0" value="b"> Предполагает ответ на основе примеров</label><br>
-                <label><input type="radio" name="q0" value="c"> Не умеет ничего без интернета</label>
-                <div class="q-feedback"></div>
+        <div class="quiz-wrap" id="mission8">
+            <h2>🏆 Миссия 8: Финальная битва <span style="font-size:0.9rem; color:gray;">(+1 чип)</span></h2>
+            <div id="finalQuiz">
+                <div class="quiz-question" data-correct="1"><p><strong>1. Чем ИИ отличается от обычной программы?</strong></p><label><input type="radio" name="final0" value="0"> Всегда даёт один ответ</label><br><label><input type="radio" name="final0" value="1"> Предполагает на основе примеров</label><br><label><input type="radio" name="final0" value="2"> Не работает без интернета</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="1"><p><strong>2. Пример работы ИИ:</strong></p><label><input type="radio" name="final1" value="0"> Будильник</label><br><label><input type="radio" name="final1" value="1"> Рекомендации YouTube</label><br><label><input type="radio" name="final1" value="2"> Калькулятор</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="1"><p><strong>3. Что нельзя писать нейросети?</strong></p><label><input type="radio" name="final2" value="0"> Любимый цвет</label><br><label><input type="radio" name="final2" value="1"> Пароли и адрес</label><br><label><input type="radio" name="final2" value="2"> Вопрос про кота</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="0"><p><strong>4. Что делает ИИ если не знает ответа?</strong></p><label><input type="radio" name="final3" value="0"> Предполагает</label><br><label><input type="radio" name="final3" value="1"> Гадает случайно</label><br><label><input type="radio" name="final3" value="2"> Выключается</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="1"><p><strong>5. Лифт — это ИИ?</strong></p><label><input type="radio" name="final4" value="0"> Да</label><br><label><input type="radio" name="final4" value="1"> Нет</label><div class="q-feedback"></div></div>
             </div>
-            <div class="quiz-question" data-name="q1" data-correct="b">
-                <p>2. Какой из примеров — работа ИИ?</p>
-                <label><input type="radio" name="q1" value="a"> Будильник</label><br>
-                <label><input type="radio" name="q1" value="b"> Рекомендации YouTube</label><br>
-                <label><input type="radio" name="q1" value="c"> Калькулятор</label>
-                <div class="q-feedback"></div>
-            </div>
-            <div class="quiz-question" data-name="q2" data-correct="b">
-                <p>3. Что нельзя писать нейросети?</p>
-                <label><input type="radio" name="q2" value="a"> Любимый цвет</label><br>
-                <label><input type="radio" name="q2" value="b"> Пароли и домашний адрес</label><br>
-                <label><input type="radio" name="q2" value="c"> Вопрос про акул</label>
-                <div class="q-feedback"></div>
-            </div>
-            <div class="quiz-question" data-name="q3" data-correct="a">
-                <p>4. Что делает нейросеть, когда не знает точного ответа?</p>
-                <label><input type="radio" name="q3" value="a"> Предполагает на основе того, чему научилась</label><br>
-                <label><input type="radio" name="q3" value="b"> Гадает совершенно случайно</label><br>
-                <label><input type="radio" name="q3" value="c"> Отказывается отвечать</label>
-                <div class="q-feedback"></div>
-            </div>
-            <div class="quiz-question" data-name="q4" data-correct="a">
-                <p>5. Чем полезна игра Quick, Draw?</p>
-                <label><input type="radio" name="q4" value="a"> Показывает, как ИИ распознаёт образы по примерам</label><br>
-                <label><input type="radio" name="q4" value="b"> Учит рисовать красиво</label><br>
-                <label><input type="radio" name="q4" value="c"> Она просто развлечение без пользы</label>
-                <div class="q-feedback"></div>
-            </div>
-            <div class="quiz-question" data-name="q5" data-correct="a">
-                <p>6. Какой пример — НЕ работа искусственного интеллекта?</p>
-                <label><input type="radio" name="q5" value="a"> Лифт, едущий на нажатую кнопку</label><br>
-                <label><input type="radio" name="q5" value="b"> Голосовой помощник, отвечающий на вопросы</label><br>
-                <label><input type="radio" name="q5" value="c"> Рекомендации видео</label>
-                <div class="q-feedback"></div>
-            </div>
-            <button onclick="checkLessonQuiz()">Проверить ответы</button>
-            <div id="quiz1Result" style="margin-top:10px; font-weight:700;"></div>
+            <button class="quiz-btn" onclick="checkFinalMission()">Проверить ответы</button>
+            <div id="finalQuizResult" style="margin-top:10px; font-weight:700;"></div>
+        </div>
+   <!-- НОВАЯ МИССИЯ 9: ИИ ошибся -->
+        <div class="card" id="mission9">
+            <h2>🔍 Миссия 9: ИИ ошибся — найди ошибку (+1 чип)</h2>
+            <p>Нейросеть иногда ошибается. Прочитай утверждения, которые якобы выдал ИИ, и отметь, правда это или ложь.</p>
+            <div id="errorFacts"></div>
+            <button class="action-btn" onclick="checkErrorMission()">Проверить</button>
+            <p id="errorMissionResult" style="font-weight:700; margin-top:8px;"></p>
         </div>
 
-        <!-- Рефлексия (с кнопкой «Отправить») -->
-        <div class="reflection-box" id="reflectionBlock">
-            <h2>💭 Рефлексия</h2>
-            <p>Закончи фразы:</p>
-            <textarea id="reflectionText" placeholder="Сегодня я узнал...&#10;Больше всего меня удивило...&#10;Хочу попробовать..."></textarea>
-            <button class="action-btn" onclick="submitReflection()">Отправить</button>
-            <div id="reflectionResult" style="margin-top:10px; font-weight:700;"></div>
+        <!-- НОВАЯ МИССИЯ 10: Угадай, где ИИ -->
+        <div class="card" id="mission10">
+            <h2>🎨 Миссия 10: Угадай, где картинку нарисовал ИИ (+1 чип)</h2>
+            <p>Посмотри на изображения. Некоторые созданы нейросетью, а некоторые — людьми. Попробуй угадать, какие именно нарисовал ИИ.</p>
+            <div class="guess-ai-grid" id="guessGrid"></div>
+            <button class="action-btn" onclick="checkGuessMission()">Проверить</button>
+            <p id="guessMissionResult" style="font-weight:700; margin-top:8px;"></p>
         </div>
 
-        <!-- Домашнее задание -->
-        <div class="card">
-            <h2>🏁 Домашнее задание</h2>
-            <p><strong>Домашнее задание (необязательное):</strong> вместе с родителем найдите и запишите три места в доме или телефоне, где уже работает ИИ (кроме тех примеров, что мы разбирали).</p>
-        </div>
-
-        <!-- Навигация между занятиями -->
-        <div class="lesson-nav">
-            <a class="nav-btn prev" href="Карта_курса.html"><div class="lbl">← Назад</div><div class="ttl">К карте курса</div></a>
-            <a class="nav-btn next" href="Занятие_2_Как_общаться_с_ИИ.html"><div class="lbl">Далее →</div><div class="ttl">2. Как общаться с ИИ?</div></a>
-        </div>
+        <div class="reflection-box"><h2>💭 Рефлексия</h2><textarea id="reflectionText" placeholder="Что нового ты узнал?"></textarea><button class="action-btn" onclick="submitReflection()">Отправить</button></div>
+        <div class="card"><h2>🏁 Домашнее задание</h2><p>⭐ Лёгкое: Попроси ИИ рассказать 5 фактов. Скрин.</p><p>⭐⭐ Среднее: Попроси ИИ придумать сказку. Скрин.</p><p>⭐⭐⭐ Сложное: Попроси ИИ сыграть роль. Скрин + описание.</p><a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать в Classroom</a></div>
+        <div class="lesson-nav"><a class="nav-btn prev" href="Карта_курса.html">← Карта курса</a><a class="nav-btn next" href="Занятие_2_Как_общаться_с_ИИ.html">Далее →</a></div>
     </main>
 
-    <!-- ===== ФУТЕР (светло-зелёный) ===== -->
-    <footer class="site-footer">
-        <div class="wrap">
-            <div class="foot-brand">
-                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
-                Учебный центр «РОБОВИТА»
-            </div>
-            <div>Офлайн-курс «ИИ-творец» для детей 10–14 лет</div>
-        </div>
-    </footer>
+    <footer><div class="wrap"><div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" /> Учебный центр «РОБОВИТА»</div><div>Занятие 1 · офлайн-курс «ИИ-творец»</div></div></footer>
+    <div id="confetti-container"></div>
 
-    <script src="assets/js/lesson.js"></script>
-    <style>
-        .battle-option { cursor:pointer; border:2px solid #D3D1C7; border-radius:10px; padding:10px; transition: border-color .15s, background .15s; }
-        .battle-option:hover { border-color:#61B01F; }
-        .battle-option.selected-right { border-color:#2E7D32; background:#EAF7DF; }
-        .battle-option.selected-wrong { border-color:#C0392B; background:#FBEAEA; }
-        .sort-card { display:flex; align-items:center; justify-content:space-between; gap:10px; border:2px solid #D3D1C7; border-radius:10px; padding:10px 14px; margin-bottom:8px; }
-        .sort-card .sort-text { font-size:0.95rem; }
-        .sort-card .sort-buttons { display:flex; gap:6px; flex-shrink:0; }
-        .sort-btn { cursor:pointer; border:1.5px solid #9CC97A; border-radius:8px; padding:6px 10px; font-size:0.85rem; background:#FFFFFF; }
-        .sort-btn:hover { background:#EAF3DE; }
-        .sort-card.done-right { border-color:#2E7D32; background:#EAF7DF; }
-        .sort-card.done-wrong { border-color:#C0392B; background:#FBEAEA; }
-        .sort-card .sort-explain { font-size:0.8rem; color:#5B5B58; display:none; margin-top:4px; }
-        .sort-card.answered .sort-buttons { display:none; }
-        .sort-card.answered .sort-explain { display:block; }
-        /* Стили для блока "Спроси нейросеть" (полное совпадение с Roblox-уроком) */
-        /* .ai-helper { background: #F8FBF6; border: 1.5px solid #D3E8C4; border-radius: 14px; padding: 1.6rem; margin: 1.8rem 0; }
-        .ai-head { display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem; }
-        .ai-head .t { font-weight: 700; font-size: 1.2rem; color: #2E4A17; }
-        .ai-head .t span { font-weight: 400; font-size: 0.95rem; color: #5B5B58; }
-        .ai-sub { margin-bottom: 0.8rem; color: #3A3A3A; }
-        .ai-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
-        .alice-q-btn { display: inline-block; background: #EAF3DE; border: 1px solid #9CC97A; border-radius: 8px; padding: 0.45rem 1rem; text-decoration: none; color: #2E4A17; font-weight: 500; transition: background 0.2s; }
-        .alice-q-btn:hover { background: #D4E8C0; }
-        .ai-answer { padding: 0.8rem 1rem; border-left: 4px solid #61B01F; border-radius: 6px; margin-bottom: 0.8rem; }
-        .ai-real-tip { font-size: 0.9rem; color: #4A4A4A; } */
-        .prompt-example { display: block; margin-top: 4px; font-style: italic; color: #5B5B58; }
-        /* Прогресс-бар */
-        .task-box { background: #FAFCF9; border: 1px solid #D3E8C4; border-radius: 14px; padding: 1.2rem 1.5rem; margin: 1.5rem 0; }
-        .progress-track { width: 100%; height: 8px; background: #E2EED6; border-radius: 8px; margin-bottom: 6px; overflow: hidden; }
-        .progress-fill { width: 0%; height: 100%; background: #61B01F; border-radius: 8px; transition: width 0.2s; }
-        .progress-label { font-size: 0.85rem; color: #4A4A4A; margin-bottom: 0.8rem; display: block; }
-        .task-steps { list-style: none; padding: 0; margin: 0; }
-        .task-steps li { margin-bottom: 0.5rem; display: flex; align-items: center; gap: 6px; }
-        .task-steps input[type="checkbox"] { width: 1em; height: 1em; accent-color: #61B01F; }
-        .task-steps label { cursor: pointer; }
-        .bonus-step { background: #FFF9E6; border-left: 3px solid #FFB800; padding: 6px 10px; border-radius: 6px; }
-        /* Навигация */
-        .lesson-nav { display: flex; justify-content: space-between; align-items: stretch; gap: 1.5rem; margin: 2.5rem 0 1.5rem; }
-        .nav-btn { flex: 1; border: 1px solid #D3D1C7; border-radius: 12px; padding: 1.2rem 1.4rem; text-decoration: none; color: #2E2E2E; background: #FFFFFF; transition: all 0.2s; display: flex; flex-direction: column; align-items: flex-start; }
-        .nav-btn.prev { align-items: flex-start; }
-        .nav-btn.next { align-items: flex-end; text-align: right; }
-        .nav-btn:hover { border-color: #61B01F; background: #F8FBF6; }
-        .nav-btn .lbl { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: #666; margin-bottom: 4px; }
-        .nav-btn .ttl { font-weight: 700; font-size: 1.1rem; }
-        /* Рефлексия */
-        .reflection-box { background: #F8FBF6; border-radius: 12px; padding: 1.5rem; margin: 2rem 0; }
-        .reflection-box h2 { margin-top: 0; }
-        .reflection-box textarea { width: 100%; min-height: 100px; border: 1px solid #D3E8C4; border-radius: 8px; padding: 10px; font-family: inherit; font-size: 0.95rem; resize: vertical; }
-        .action-btn { background: #61B01F; color: #fff; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
-        .action-btn:hover { background: #4C8C18; }
-    </style>
     <script>
-        // ---- Игра "ИИ или не ИИ?" ----
-        const sortItems = [
-            { text: "Калькулятор", answer: "no", explain: "Обычная программа: всегда считает по одной и той же формуле." },
-            { text: "Будильник", answer: "no", explain: "Обычная программа: звонит строго в заданное время." },
-            { text: "Face ID (разблокировка по лицу)", answer: "yes", explain: "ИИ: сравнивает лицо с образцом и предполагает совпадение." },
-            { text: "T9 / автоподбор слов", answer: "yes", explain: "ИИ: предсказывает слово по вашим привычкам набора." },
-            { text: "Рекомендации ленты TikTok/YouTube", answer: "yes", explain: "ИИ: предполагает, что вам понравится смотреть." },
-            { text: "Светофор по таймеру", answer: "no", explain: "Обычная программа: переключается по жёстко заданному времени." },
-            { text: "Голосовой помощник (Алиса, Siri)", answer: "yes", explain: "ИИ: распознаёт речь и подбирает ответ по смыслу." },
-            { text: "Лифт", answer: "no", explain: "Обычная программа: едет строго на нажатую кнопку по правилам." },
-            { text: "Переводчик (Google Translate)", answer: "yes", explain: "ИИ: учился на миллионах переведённых текстов." },
-            { text: "Касса, считающая сумму чека", answer: "no", explain: "Обычная программа: просто складывает цены товаров." }
-        ];
-        const sortContainer = document.getElementById('sortCards');
-        let sortCorrectCount = 0, sortAnsweredCount = 0;
-        sortItems.forEach(function(item, idx) {
-            const card = document.createElement('div');
-            card.className = 'sort-card';
-            card.innerHTML =
-                '<div style="flex:1;">' +
-                    '<div class="sort-text">' + item.text + '</div>' +
-                    '<div class="sort-explain">' + item.explain + '</div>' +
-                '</div>' +
-                '<div class="sort-buttons">' +
-                    '<span class="sort-btn" data-choice="yes">🧠 Это ИИ</span>' +
-                    '<span class="sort-btn" data-choice="no">⚙️ Обычная программа</span>' +
-                '</div>';
-            sortContainer.appendChild(card);
-            card.querySelectorAll('.sort-btn').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    if (card.classList.contains('answered')) return;
-                    const choice = btn.dataset.choice;
-                    card.classList.add('answered');
-                    sortAnsweredCount++;
-                    if (choice === item.answer) {
-                        card.classList.add('done-right');
-                        sortCorrectCount++;
-                    } else {
-                        card.classList.add('done-wrong');
-                    }
-                    document.getElementById('sortScore').textContent =
-                        'Отсортировано: ' + sortAnsweredCount + ' из ' + sortItems.length + ', верно: ' + sortCorrectCount;
-                });
-            });
-        });
+        const totalChips = 10;
+        let chipsCollected = 0;
+        const missionStatus = Array(11).fill(false);
 
-        // ---- Битвы/квизы с выбором (используются и в блоке "Алгоритм или нейросеть") ----
-        document.querySelectorAll('#quizAlgNet .battle-round').forEach(function(round) {
-            const correct = round.dataset.correct;
-            const feedback = round.querySelector('.battle-feedback');
-            let answered = false;
-            round.querySelectorAll('.battle-option').forEach(function(opt) {
-                opt.addEventListener('click', function() {
-                    if (answered) return;
-                    answered = true;
-                    const choice = opt.dataset.choice;
-                    round.querySelectorAll('.battle-option').forEach(function(o) {
-                        if (o.dataset.choice === correct) {
-                            o.classList.add('selected-right');
-                        } else if (o === opt) {
-                            o.classList.add('selected-wrong');
-                        }
-                    });
-                    feedback.textContent = (choice === correct) ? '✅ Верно' : '❌ Не совсем — смотри верный вариант выше';
-                    feedback.style.color = (choice === correct) ? '#2E7D32' : '#C0392B';
-                    updateAlgNetScore();
-                });
-            });
-        });
-        function updateAlgNetScore() {
-            const rounds = document.querySelectorAll('#quizAlgNet .battle-round');
-            let done = 0, right = 0;
-            rounds.forEach(function(r) {
-                const opts = r.querySelectorAll('.battle-option');
-                let wasAnswered = false;
-                opts.forEach(function(o) { if (o.classList.contains('selected-right') || o.classList.contains('selected-wrong')) wasAnswered = true; });
-                if (wasAnswered) {
-                    done++;
-                    if (r.querySelector('.battle-option.selected-right') && !r.querySelector('.battle-option.selected-wrong')) right++;
-                }
-            });
-            document.getElementById('algNetScore').textContent = 'Отвечено: ' + done + ' из ' + rounds.length + (done ? (', верно с первого раза: ' + right) : '');
-        }
-
-        // ---- Прогресс-бар практического задания ----
-        function updateAiPracticeProgress() {
-            const checkboxes = document.querySelectorAll('#aiPracticeTask .task-steps input[type=checkbox]');
-            let done = 0;
-            checkboxes.forEach(cb => { if (cb.checked) done++; });
-            const total = checkboxes.length;
-            const percent = total ? Math.round((done / total) * 100) : 0;
-            const fill = document.getElementById('aiPracticeProgress');
-            const label = document.getElementById('aiPracticeLabel');
-            if (fill) fill.style.width = percent + '%';
-            if (label) label.textContent = 'Выполнено шагов: ' + done + ' из ' + total;
-        }
-
-        // ---- Рефлексия с имитацией отправки ----
-        function submitReflection() {
-            const textarea = document.getElementById('reflectionText');
-            const resultDiv = document.getElementById('reflectionResult');
-            if (textarea.value.trim() === '') {
-                resultDiv.textContent = 'Пожалуйста, напишите хотя бы несколько слов.';
-                resultDiv.style.color = '#C0392B';
-                return;
+        function updateChipProgress() {
+            document.getElementById('chipFill').style.width = (chipsCollected/totalChips*100)+'%';
+            document.getElementById('chipCount').textContent = chipsCollected+' / '+totalChips+' чипов';
+            if (chipsCollected === totalChips) {
+                document.getElementById('certificateBlock').classList.add('show');
+                document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+                launchConfetti();
             }
-            // Имитация сохранения
-            resultDiv.textContent = '✅ Спасибо! Твой ответ записан.';
-            resultDiv.style.color = '#2E7D32';
-            // Можно заблокировать повторную отправку
-            textarea.disabled = true;
-            document.querySelector('#reflectionBlock .action-btn').disabled = true;
         }
 
-        // ---- Финальный квиз-соревнование ----
-        function checkLessonQuiz() {
-            const questions = document.querySelectorAll('#quiz1 .quiz-question');
-            let correct = 0;
-            questions.forEach(function(q) {
-                const name = q.dataset.name;
-                const correctVal = q.dataset.correct;
-                const checked = q.querySelector('input[name="' + name + '"]:checked');
-                const feedback = q.querySelector('.q-feedback');
-                if (!checked) {
-                    feedback.textContent = 'Выберите ответ';
-                    feedback.style.color = '#B8860B';
-                } else if (checked.value === correctVal) {
-                    correct++;
-                    feedback.textContent = '✅ Верно';
-                    feedback.style.color = '#2E7D32';
-                } else {
-                    feedback.textContent = '❌ Попробуйте ещё раз';
-                    feedback.style.color = '#C0392B';
-                }
-            });
-            document.getElementById('quiz1Result').textContent = 'Правильных ответов: ' + correct + ' из ' + questions.length;
+        function completeMission(num) {
+            if (missionStatus[num]) return;
+            missionStatus[num] = true;
+            chipsCollected++;
+            updateChipProgress();
         }
+
+        // Миссия 2
+        const sortItems = [
+            { text:"Калькулятор", answer:"no" }, { text:"Будильник", answer:"no" }, { text:"Face ID", answer:"yes" },
+            { text:"T9 / автоподбор", answer:"yes" }, { text:"Рекомендации YouTube", answer:"yes" },
+            { text:"Светофор по таймеру", answer:"no" }, { text:"Голосовой помощник", answer:"yes" },
+            { text:"Лифт", answer:"no" }, { text:"Google Translate", answer:"yes" }, { text:"Касса магазина", answer:"no" }
+        ];
+        let sortCorrect=0, sortTotal=0;
+        sortItems.forEach(item => {
+            const card = document.createElement('div'); card.className='sort-card';
+            card.innerHTML = `<div class="sort-text">${item.text}</div><div class="sort-buttons"><span class="sort-btn" data-choice="yes">🧠 ИИ</span><span class="sort-btn" data-choice="no">⚙️ Программа</span></div>`;
+            document.getElementById('sortCards').appendChild(card);
+            card.querySelectorAll('.sort-btn').forEach(btn => btn.addEventListener('click', ()=>{
+                if(card.classList.contains('answered')) return;
+                card.classList.add('answered'); sortTotal++;
+                if(btn.dataset.choice === item.answer) { card.classList.add('done-right'); sortCorrect++; }
+                else card.classList.add('done-wrong');
+                document.getElementById('sortScore').textContent = `Верно: ${sortCorrect} из ${sortTotal} (всего 10)`;
+                if(sortCorrect>=8) completeMission(2);
+            }));
+        });
+
+        // Миссия 3
+        let foundDevices=0;
+        document.querySelectorAll('#roomScene .room-item').forEach(el => el.addEventListener('click', ()=>{
+            if(el.classList.contains('found')||el.classList.contains('wrong-flash')) return;
+            if(el.dataset.device==='true') { el.classList.add('found'); foundDevices++; document.getElementById('roomProgress').textContent=`Найдено: ${foundDevices} из 4`; if(foundDevices===4) completeMission(3); }
+            else { el.classList.add('wrong-flash'); setTimeout(()=>el.classList.remove('wrong-flash'),700); }
+        }));
+
+        // Миссия 4
+        document.querySelectorAll('#quizAlgNet .battle-round').forEach(round => {
+            const correct = round.dataset.correct; let answered=false;
+            round.querySelectorAll('.battle-option').forEach(opt => opt.addEventListener('click', ()=>{
+                if(answered) return; answered=true;
+                round.querySelectorAll('.battle-option').forEach(o=>o.classList.remove('selected-right','selected-wrong'));
+                if(opt.dataset.choice===correct) opt.classList.add('selected-right');
+                else { opt.classList.add('selected-wrong'); round.querySelector(`[data-choice="${correct}"]`).classList.add('selected-right'); }
+                round.querySelector('.battle-feedback').textContent = opt.dataset.choice===correct?'✅ Верно':'❌ Неверно';
+                updateAlgNetProgress();
+            }));
+        });
+        function updateAlgNetProgress() {
+            let c=0; document.querySelectorAll('#quizAlgNet .battle-round').forEach(r=>{ if(r.querySelector('.selected-right')&&!r.querySelector('.selected-wrong')) c++; });
+            document.getElementById('algNetScore').textContent=`Верных с первой попытки: ${c} из 4`;
+            if(c===4) completeMission(4);
+        }
+
+        // Миссия 5
+        function checkFixedPrompt() {
+            const v = document.getElementById('fixPromptInput').value.trim().toLowerCase();
+            const res = document.getElementById('fixPromptResult');
+            if(v.includes('собак') && v.length>25 && (v.includes('факт')||v.includes('лет'))) { res.textContent='✅ Отлично!'; res.style.color='#2E7D32'; completeMission(5); }
+            else { res.textContent='❌ Добавь детали'; res.style.color='#C0392B'; }
+        }
+
+        // Миссия 6
+        const words = ['Напиши','смешную','историю','про','кота','на','200','слов'];
+        let bankOrder = [...Array(8).keys()].sort(()=>Math.random()-0.5);
+        let selected = [];
+        function renderWordBank() { document.getElementById('wordBank').innerHTML = bankOrder.filter(i=>!selected.includes(i)).map(i=>`<span class="word-chip" onclick="addWord(${i})">${words[i]}</span>`).join(''); }
+        function addWord(i) { selected.push(i); renderPromptBuilder(); }
+        function removeWord(i) { selected = selected.filter(x=>x!==i); renderPromptBuilder(); }
+        function renderPromptBuilder() { renderWordBank(); document.getElementById('assembledPrompt').innerHTML = selected.map(i=>`<span class="word-chip selected" onclick="removeWord(${i})">${words[i]}</span>`).join(' '); }
+        function resetAssembledPrompt() { selected=[]; renderPromptBuilder(); }
+        renderPromptBuilder();
+        function checkAssembledPrompt() {
+            const res = document.getElementById('buildPromptResult');
+            if(JSON.stringify(selected)===JSON.stringify([0,1,2,3,4,5,6,7])) { res.textContent='✅ Идеально!'; res.style.color='#2E7D32'; completeMission(6); }
+            else { res.textContent='❌ Неправильный порядок'; res.style.color='#C0392B'; }
+        }
+
+        // Миссия 7
+        function updateAiPracticeProgress() {
+            const cbs = document.querySelectorAll('#aiPracticeTask .task-steps input[type=checkbox]');
+            let done=0; cbs.forEach(cb=>{ if(cb.checked) done++; });
+            document.getElementById('aiPracticeProgress').style.width=(done/5*100)+'%';
+            document.getElementById('aiPracticeLabel').textContent=`${done} из 5`;
+            if(done===5) completeMission(7);
+        }
+
+        // Миссия 8
+        function checkFinalMission() {
+            let correct=0;
+            document.querySelectorAll('#finalQuiz .quiz-question').forEach(q => {
+                const sel = q.querySelector('input[type=radio]:checked');
+                const fb = q.querySelector('.q-feedback');
+                if(!sel) { fb.textContent='Выбери ответ'; fb.style.color='#B8860B'; return; }
+                if(sel.value === q.dataset.correct) { fb.textContent='✅ Верно'; fb.style.color='#2E7D32'; correct++; }
+                else { fb.textContent='❌ Неправильно'; fb.style.color='#C0392B'; }
+            });
+            if(correct===5) { document.getElementById('finalQuizResult').textContent='🏆 Отлично!'; completeMission(8); }
+            else document.getElementById('finalQuizResult').textContent=`Результат: ${correct} из 5`;
+        }
+
+        // Миссия 9: ИИ ошибся
+        const errorFacts = [
+            { text:"У паука 12 ног.", isTrue:false },
+            { text:"Вода закипает при 100°C.", isTrue:true },
+            { text:"Солнце вращается вокруг Земли.", isTrue:false },
+            { text:"Кит — это рыба.", isTrue:false },
+            { text:"Луна светит отражённым светом.", isTrue:true }
+        ];
+        const factAnswers = {};
+        function renderErrorGame() {
+            document.getElementById('errorFacts').innerHTML = errorFacts.map((f,i)=>`
+                <div class="fact-check-item" id="fact-${i}">
+                    <span>🤖 «${f.text}»</span>
+                    <div class="fact-buttons">
+                        <button class="fact-btn" onclick="setFactAnswer(${i},true,this)">✅ Правда</button>
+                        <button class="fact-btn" onclick="setFactAnswer(${i},false,this)">❌ Ложь</button>
+                    </div>
+                </div>`).join('');
+        }
+        renderErrorGame();
+        function setFactAnswer(i, answer, btn) {
+            factAnswers[i] = answer;
+            const item = document.getElementById(`fact-${i}`);
+            item.querySelectorAll('.fact-btn').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+        function checkErrorMission() {
+            let correct=0;
+            errorFacts.forEach((f,i)=>{
+                const item = document.getElementById(`fact-${i}`);
+                item.classList.remove('correct','incorrect');
+                if(factAnswers[i] === f.isTrue) { item.classList.add('correct'); correct++; }
+                else item.classList.add('incorrect');
+            });
+            const res = document.getElementById('errorMissionResult');
+            if(correct === errorFacts.length) { res.textContent='🎉 Все ошибки найдены! +1 чип.'; completeMission(9); }
+            else res.textContent=`Правильно: ${correct} из ${errorFacts.length}`;
+        }
+
+        // Миссия 10: Угадай, где ИИ
+        const guessItems = [
+            { emoji:'🌃', label:'Ночной город', isAI:true },
+            { emoji:'🐱', label:'Кот на подоконнике', isAI:false },
+            { emoji:'🍕', label:'Пицца с ананасами', isAI:true },
+            { emoji:'🏔️', label:'Горный пейзаж', isAI:false }
+        ];
+        const guessAnswers = {};
+        function renderGuessGame() {
+            document.getElementById('guessGrid').innerHTML = guessItems.map((item,i)=>`
+                <div class="guess-card" id="guess-${i}">
+                    <div style="font-size:4rem;">${item.emoji}</div>
+                    <p>${item.label}</p>
+                    <div class="guess-buttons">
+                        <button onclick="setGuess(${i},true,this)">🤖 ИИ</button>
+                        <button onclick="setGuess(${i},false,this)">👤 Человек</button>
+                    </div>
+                </div>`).join('');
+        }
+        renderGuessGame();
+        function setGuess(i, isAI, btn) {
+            guessAnswers[i] = isAI;
+            const card = document.getElementById(`guess-${i}`);
+            card.querySelectorAll('button').forEach(b=>b.classList.remove('chosen'));
+            btn.classList.add('chosen');
+        }
+        function checkGuessMission() {
+            let correct=0;
+            guessItems.forEach((item,i)=>{
+                const card = document.getElementById(`guess-${i}`);
+                card.classList.remove('reveal-correct','reveal-wrong');
+                if(guessAnswers[i] === item.isAI) { card.classList.add('reveal-correct'); correct++; }
+                else card.classList.add('reveal-wrong');
+            });
+            const res = document.getElementById('guessMissionResult');
+            if(correct === guessItems.length) { res.textContent='🎉 Всё угадано! +1 чип.'; completeMission(10); }
+            else res.textContent=`Угадано: ${correct} из ${guessItems.length}`;
+        }
+
+        function launchConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#FFD700','#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98D8C8'];
+            for(let i=0;i<100;i++) {
+                const piece = document.createElement('div'); piece.className='confetti-piece';
+                piece.style.left=Math.random()*100+'%'; piece.style.background=colors[Math.floor(Math.random()*colors.length)];
+                piece.style.animationDelay=Math.random()*2+'s'; piece.style.width=piece.style.height=Math.random()*10+5+'px';
+                container.appendChild(piece);
+                setTimeout(()=>piece.remove(),8000);
+            }
+        }
+
+        function submitReflection() {
+            document.getElementById('reflectionResult').textContent='✅ Спасибо!';
+            document.getElementById('reflectionText').disabled=true;
+        }
+
+        updateChipProgress();
     </script>
 </body>
 </html>

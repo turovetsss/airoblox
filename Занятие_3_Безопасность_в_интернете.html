@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>Занятие 3. Безопасность в интернете — Лаборатория будущего | РОБОВИТА</title>
+    <style>
+        :root {
+            --primary: #61B01F;
+            --primary-light: #E8F5E0;
+            --primary-dark: #2E4A17;
+            --accent: #6C3F9B;
+            --accent-light: #F0E6F5;
+            --accent-ink: #4A1A5A;
+            --danger: #C0392B;
+            --danger-light: #FBEAEA;
+            --line: #D3E8C4;
+            --card-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+        }
+        body {
+            background: #F4F9F0;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            margin: 0; padding: 0; color: #2E2E2E; line-height: 1.8;
+            font-size: 1.2rem;
+        }
+        .wrap { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
+        .site-header { background: linear-gradient(135deg, #ffffff 0%, #E8F5E0 100%); border-bottom: 2px solid var(--primary); padding: 1.2rem 0 0.8rem; }
+        .top-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.2rem; }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+        .brand img { height: 44px; border-radius: 12px; }
+        .brand-name { font-weight: 700; font-size: 1.5rem; color: var(--primary-dark); }
+        .brand-tag { font-size: 0.9rem; color: #5B5B58; }
+        .crumbs { font-size: 1rem; color: #5B5B58; }
+        .hero { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+        .hex-badge { background: var(--primary); color: white; font-weight: 800; font-size: 2.2rem; width: 66px; height: 66px; display: flex; align-items: center; justify-content: center; border-radius: 16px; box-shadow: 0 8px 0 var(--primary-dark); }
+        .module-pill { background: var(--accent-light); color: var(--accent-ink); padding: 4px 14px; border-radius: 30px; font-weight: 600; font-size: 0.95rem; display: inline-block; margin-bottom: 4px; }
+        .hero h1 { font-size: 2.4rem; margin: 0.2rem 0; color: #1E1E1E; }
+        .subtitle { color: #4A4A4A; font-size: 1.1rem; }
+
+        .scenario-box { background: linear-gradient(135deg, #0A0E2A, #1A2A5A); border-radius: 24px; padding: 20px 24px; margin: 1.8rem 0; display: flex; gap: 18px; align-items: center; color: #e2e8f0; border: 1px solid #3B4A8A; box-shadow: 0 0 20px rgba(0,229,255,0.2); font-size: 1.1rem; }
+        .scenario-avatar { font-size: 3.8rem; background: rgba(255,255,255,0.1); border-radius: 20px; padding: 12px; }
+        .scenario-box strong { color: #00E5FF; }
+
+        .card, .task-box, .interactive-box, .quiz-wrap, .reflection-box, .objectives { background: white; border-radius: 20px; padding: 1.8rem 2rem; margin: 1.8rem 0; box-shadow: var(--card-shadow); border: 1px solid #E2E8F0; font-size: 1.1rem; }
+        .objectives { background: var(--primary-light); border-color: var(--primary); }
+        .card h2, .task-box h2, .interactive-box h2, .quiz-wrap h2 { margin-top: 0; color: var(--primary-dark); font-size: 1.6rem; }
+        .note { background: var(--primary-light); border-left: 4px solid var(--primary); padding: 0.8rem 1rem; border-radius: 6px; margin: 1rem 0; font-size: 1.05rem; }
+
+        .chip-progress { display: flex; align-items: center; gap: 10px; background: white; border-radius: 40px; padding: 8px 20px; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid var(--line); }
+        .chip-icon { font-size: 2rem; }
+        .chip-track { flex: 1; height: 14px; background: #E2EED6; border-radius: 10px; overflow: hidden; }
+        .chip-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #61B01F, #9CCC65); border-radius: 10px; transition: width 0.3s; }
+        .chip-count { font-weight: 700; color: var(--primary-dark); min-width: 70px; text-align: right; font-size: 1.1rem; }
+
+        .certificate { background: linear-gradient(135deg, #FFD54F, #FFB300); border-radius: 28px; padding: 2rem; text-align: center; color: #3E2C0B; border: 4px solid #FF8F00; box-shadow: 0 12px 24px rgba(255,179,0,0.3); margin: 2rem 0; display: none; font-size: 1.2rem; }
+        .certificate.show { display: block; }
+        .certificate h2 { font-size: 2.5rem; margin: 0.5rem 0; }
+
+        .action-btn, .quiz-btn { background: var(--primary); color: white; border: none; padding: 12px 28px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; font-size: 1.1rem; box-shadow: 0 4px 0 var(--primary-dark); text-decoration: none; display: inline-block; }
+        .action-btn:hover, .quiz-btn:hover { background: #4C8C18; transform: translateY(-1px); }
+        .action-btn.secondary { background: #9CC97A; box-shadow: 0 4px 0 #6f9752; }
+
+        table { width: 100%; border-collapse: collapse; }
+        table th, table td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; font-size: 1rem; }
+        table th { background: var(--primary-light); color: var(--primary-dark); font-size: 1.05rem; }
+
+        .sort-card { display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 2px solid #D3D1C7; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; background: #fff; }
+        .sort-card .sort-text { font-size: 1.05rem; }
+        .sort-card .sort-buttons { display: flex; gap: 6px; flex-shrink: 0; }
+        .sort-btn { cursor: pointer; border: 1.5px solid #9CC97A; border-radius: 8px; padding: 6px 10px; font-size: 0.95rem; background: #FFFFFF; }
+        .sort-btn:hover { background: #EAF3DE; }
+        .sort-card.done-right { border-color: #2E7D32; background: #EAF7DF; }
+        .sort-card.done-wrong { border-color: #C0392B; background: #FBEAEA; }
+        .sort-card.answered .sort-buttons { display: none; }
+        .sort-card .sort-explain { font-size: 0.9rem; color: #5B5B58; display: none; margin-top: 4px; }
+        .sort-card.answered .sort-explain { display: block; }
+
+        .row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .col { flex: 1; min-width: 160px; }
+        .battle-option { cursor: pointer; border: 2px solid #D3D1C7; border-radius: 10px; padding: 12px; transition: border-color .15s, background .15s; background: #fff; font-size: 1.02rem; }
+        .battle-option:hover { border-color: #61B01F; }
+        .battle-option.selected-right { border-color: #2E7D32; background: #EAF7DF; }
+        .battle-option.selected-wrong { border-color: #C0392B; background: #FBEAEA; }
+        .battle-topic { font-weight: 700; font-size: 1.1rem; margin: 0 0 0.5rem; color: #1E1E1E; }
+
+        .quiz-question { border: 1px solid #E2EED6; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; font-size: 1.05rem; }
+        .quiz-question label { display: inline-block; margin: 3px 0; cursor: pointer; }
+        .q-feedback { font-size: 0.95rem; font-weight: 700; margin-top: 4px; min-height: 1.1em; }
+
+        .word-chip { background: #EAF3DE; border: 1px solid #9CC97A; border-radius: 20px; padding: 6px 14px; cursor: pointer; user-select: none; display: inline-block; margin: 4px; font-size: 1rem; }
+        .word-chip.selected { background: #FFB800; color: white; border-color: #B8860B; }
+        .assembled-prompt { min-height: 40px; border: 2px dashed #9CC97A; border-radius: 10px; padding: 10px; margin: 10px 0; font-size: 1rem; }
+
+        .progress-track { width: 100%; height: 8px; background: #E2EED6; border-radius: 8px; margin: 10px 0 6px; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: var(--primary); border-radius: 8px; transition: width 0.2s; }
+        .progress-label { font-size: 0.9rem; color: #4A4A4A; margin-bottom: 0.5rem; display: block; }
+        .task-steps { list-style: none; padding: 0; }
+        .task-steps li { margin-bottom: 10px; display: flex; align-items: center; gap: 8px; font-size: 1.05rem; }
+        .task-steps input[type="checkbox"] { width: 1.2em; height: 1.2em; }
+
+        .fact-check-item { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 14px 20px; margin: 10px 0; display: flex; align-items: center; gap: 12px; font-size: 1.05rem; flex-wrap: wrap; }
+        .fact-check-item.correct { border-color: #2E7D32; background: #E8F5E0; }
+        .fact-check-item.incorrect { border-color: #C0392B; background: #FBEAEA; }
+        .fact-buttons { display: flex; gap: 8px; margin-left: auto; }
+        .fact-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid #9CC97A; background: white; cursor: pointer; font-weight: 600; font-size: 1rem; }
+        .fact-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .img-placeholder { background: #E2EED6; border: 2px dashed var(--primary); border-radius: 20px; padding: 3rem; text-align: center; margin: 1.5rem 0; color: #4A4A4A; font-size: 1rem; }
+
+        #confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
+        .confetti-piece { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: confettiFall 3s ease-out forwards; }
+        @keyframes confettiFall { 0% { transform: translateY(-100px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <div class="top-bar">
+                <a class="brand" href="Карта_курса.html">
+                    <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" />
+                    <div>
+                        <div class="brand-name">РОБОВИТА</div>
+                        <div class="brand-tag">учимся программировать роботов и игры</div>
+                    </div>
+                </a>
+                <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 3</div>
+            </div>
+            <div class="hero">
+                <div class="hex-badge">🔒</div>
+                <div>
+                    <div class="module-pill">Модуль 1 · Знакомство с ИИ и безопасность</div>
+                    <h1>Безопасность в интернете</h1>
+                    <p class="subtitle">Лаборатория будущего: 10 миссий, пароли, фишинг, кибербуллинг и чек-лист безопасности</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <div class="scenario-box">
+            <div class="scenario-avatar">🔐</div>
+            <div>
+                <strong>Лаборатория будущего получила сигнал тревоги!</strong> Твои данные в опасности, если не соблюдать правила безопасности. Выполни <strong>10 миссий</strong> и собери <strong>чипы безопасности</strong>, чтобы стать «Стражем интернета».
+            </div>
+        </div>
+
+        <div class="chip-progress" id="chipProgressBar">
+            <span class="chip-icon">🔒</span>
+            <div class="chip-track"><div class="chip-fill" id="chipFill"></div></div>
+            <span class="chip-count" id="chipCount">0 / 10 чипов</span>
+        </div>
+
+        <div class="certificate" id="certificateBlock">
+            <h2>🏆 Сертификат</h2>
+            <p style="font-size:1.4rem;"><strong>Страж интернета</strong></p>
+            <p>Поздравляем! Ты выполнил все 10 миссий и доказал, что умеешь защищать свои данные и общаться с ИИ безопасно.</p>
+            <p style="font-size:0.9rem;">Дата: <span id="certDate"></span></p>
+        </div>
+
+        <div class="objectives">
+            <h2>🎯 Цели занятия</h2>
+            <ul>
+                <li>Узнать, какие опасности есть в интернете: фишинг, кибербуллинг, утечка данных</li>
+                <li>Научиться создавать надёжные пароли и проверять их стойкость</li>
+                <li>Понять, как отличить фишинговое сообщение от настоящего</li>
+                <li>Составить чек-лист безопасного общения с нейросетями</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>⏱️ План (90 минут)</h2>
+            <table>
+                <tr><th>Этап</th><th>Время</th></tr>
+                <tr><td>Оргмомент</td><td>3 мин</td></tr>
+                <tr><td>🔐 Миссия 1: Создай надёжный пароль</td><td>8 мин</td></tr>
+                <tr><td>🎣 Миссия 2: Фишинг или нет?</td><td>10 мин</td></tr>
+                <tr><td>💬 Миссия 3: Кибербуллинг — как реагировать?</td><td>10 мин</td></tr>
+                <tr><td>📚 Теория: правила безопасности</td><td>8 мин</td></tr>
+                <tr><td>✅ Миссия 4: Чек-лист безопасности ИИ</td><td>7 мин</td></tr>
+                <tr><td>🔍 Миссия 5: Найди нарушение</td><td>8 мин</td></tr>
+                <tr><td>🛡️ Миссия 6: Испорченный телефон — безопасная версия</td><td>10 мин</td></tr>
+                <tr><td>⚔️ Миссия 7: Сравнение паролей</td><td>6 мин</td></tr>
+                <tr><td>💻 Миссия 8: Практическая работа — твой чек-лист</td><td>12 мин</td></tr>
+                <tr><td>🖌️ Миссия 9: Быстро, рисуй!</td><td>5 мин</td></tr>
+                <tr><td>🏆 Миссия 10: Финальный квиз</td><td>5 мин</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>🔥 Оргмомент</h2>
+            <p>Вспомните, что такое ИИ и как правильно составлять запросы. Сегодня поговорим о том, как не попасть в ловушку мошенников и защитить свои данные при работе с нейросетями.</p>
+        </div>
+
+        <!-- МИССИЯ 1: Создай надёжный пароль -->
+        <div class="task-box" id="mission1">
+            <h2>🔐 Миссия 1: Создай надёжный пароль (+1 чип)</h2>
+            <p>Придумай пароль, который устоит против взлома. Введи его в поле и нажми «Проверить». Чтобы получить чип, пароль должен быть <strong>сильным</strong> (длина от 8 символов, есть заглавные и строчные буквы, цифры и спецсимволы).</p>
+            <input type="text" id="passwordInput" placeholder="Введи пароль..." style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px; font-size:1rem; margin-top:8px;">
+            <button class="action-btn" style="margin-top:8px;" onclick="checkPasswordStrength()">Проверить надёжность</button>
+            <p id="passwordFeedback" style="font-weight:700; margin-top:6px;"></p>
+        </div>
+
+        <!-- МИССИЯ 2: Фишинг или нет? -->
+        <div class="card" id="sortGame">
+            <h2>🎣 Миссия 2: «Фишинг или нет?» (+1 чип)</h2>
+            <p>Отправь каждое сообщение в нужную группу: это попытка фишинга или безопасное письмо. Когда верных ответов будет <b>8 или больше</b>, миссия засчитается.</p>
+            <div id="sortCards"></div>
+            <p id="sortScore" style="font-weight:700; margin-top:10px;">Верно: 0 из 0 (всего карточек: 10)</p>
+        </div>
+
+        <!-- МИССИЯ 3: Кибербуллинг -->
+        <div class="card" id="cyberbullyingQuiz">
+            <h2>💬 Миссия 3: Кибербуллинг — как реагировать? (+1 чип)</h2>
+            <p>В каждой ситуации выбери <strong>правильное</strong> действие. Ответь верно на все 3 с первой попытки, чтобы выполнить миссию.</p>
+            <div class="battle-round" data-correct="a">
+                <p class="battle-topic">Тебе в чате написали обидное сообщение.</p>
+                <div class="row">
+                    <div class="col battle-option" data-choice="a"><p>Заблокировать отправителя и рассказать взрослым</p></div>
+                    <div class="col battle-option" data-choice="b"><p>Ответить такой же грубостью</p></div>
+                </div>
+                <div class="battle-feedback"></div>
+            </div>
+            <div class="battle-round" data-correct="b">
+                <p class="battle-topic">Одноклассники создали группу, где смеются над твоей фотографией.</p>
+                <div class="row">
+                    <div class="col battle-option" data-choice="a"><p>Ничего не делать, само пройдёт</p></div>
+                    <div class="col battle-option" data-choice="b"><p>Сделать скриншоты и обратиться к учителю или родителям</p></div>
+                </div>
+                <div class="battle-feedback"></div>
+            </div>
+            <div class="battle-round" data-correct="a">
+                <p class="battle-topic">Незнакомец предлагает тебе скинуть личные фото в обмен на игровую валюту.</p>
+                <div class="row">
+                    <div class="col battle-option" data-choice="a"><p>Немедленно прекратить общение и сообщить взрослым</p></div>
+                    <div class="col battle-option" data-choice="b"><p>Отправить фото, но попросить валюту вперёд</p></div>
+                </div>
+                <div class="battle-feedback"></div>
+            </div>
+            <p id="cyberScore" style="font-weight:700; margin-top:10px;">Верных с первой попытки: 0 из 3</p>
+        </div>
+
+        <!-- Теория -->
+        <div class="card">
+            <h2>📚 Теория: правила безопасности в интернете</h2>
+            <p><strong>Фишинг</strong> — это когда мошенники притворяются настоящими сайтами или людьми, чтобы украсть твои пароли или данные. Обычно они присылают подозрительные ссылки.</p>
+            <p><strong>Кибербуллинг</strong> — травля в интернете. Важно не отвечать агрессией, а сохранять доказательства и обращаться к взрослым.</p>
+            <p><strong>Надёжный пароль</strong> должен быть длинным (от 8 символов), содержать заглавные и строчные буквы, цифры и спецсимволы (!, @, #, $...).</p>
+            <div class="note">⚠️ <strong>Правило при общении с ИИ:</strong> никогда не отправляй нейросети пароли, адрес, номер телефона, паспортные данные. Всё, что ты пишешь, может быть использовано для обучения модели.</div>
+        </div>
+
+        <!-- МИССИЯ 4: Чек-лист безопасности ИИ -->
+        <div class="card" id="checklistGame">
+            <h2>✅ Миссия 4: Чек-лист безопасности ИИ (+1 чип)</h2>
+            <p>Отметь <strong>все</strong> правила, которые нужно соблюдать при общении с нейросетью. Если выберешь все верные и ни одного лишнего, получишь чип.</p>
+            <div id="checklistItems"></div>
+            <button class="action-btn" onclick="checkChecklist()">Проверить</button>
+            <p id="checklistResult" style="font-weight:700; margin-top:8px;"></p>
+        </div>
+
+        <!-- МИССИЯ 5: Найди нарушение -->
+        <div class="card" id="findViolation">
+            <h2>🔍 Миссия 5: Найди нарушение (+1 чип)</h2>
+            <p>Какое правило безопасности нарушено в каждом примере? Ответь верно на все 4.</p>
+            <div class="battle-round" data-correct="a">
+                <p class="battle-topic">«ИИ, запомни мой пароль: 12345»</p>
+                <div class="row">
+                    <div class="col battle-option" data-choice="a"><p>Не сообщать пароли</p></div>
+                    <div class="col battle-option" data-choice="b"><p>Не использовать простые пароли</p></div>
+                </div>
+                <div class="battle-feedback"></div>
+            </div>
+            <div class="battle-round" data-correct="b">
+                <p class="battle-topic">«Привет! Меня зовут Катя, я живу в Минске на улице Ленина, 5»</p>
+                <div class="row">
+                    <div class="col battle-option" data-choice="a"><p>Нарушения нет</p></div>
+                    <div class="col battle-option" data-choice="b"><p>Не сообщать личные данные (адрес)</p></div>
+                </div>
+                <div class="battle-feedback"></div>
+            </div>
+            <div class="battle-round" data-correct="a">
+                <p class="battle-topic">Переход по ссылке из письма «Вы выиграли приз!»</p>
+                <div class="row">
+                    <div class="col battle-option" data-choice="a"><p>Не переходить по подозрительным ссылкам</p></div>
+                    <div class="col battle-option" data-choice="b"><p>Это безопасно, можно перейти</p></div>
+                </div>
+                <div class="battle-feedback"></div>
+            </div>
+            <div class="battle-round" data-correct="b">
+                <p class="battle-topic">Использовать один и тот же пароль везде</p>
+                <div class="row">
+                    <div class="col battle-option" data-choice="a"><p>Это удобно и безопасно</p></div>
+                    <div class="col battle-option" data-choice="b"><p>Пароли должны быть разными для разных сервисов</p></div>
+                </div>
+                <div class="battle-feedback"></div>
+            </div>
+            <p id="violationScore" style="font-weight:700; margin-top:10px;">Верных с первой попытки: 0 из 4</p>
+        </div>
+
+        <!-- МИССИЯ 6: Испорченный телефон — безопасная версия -->
+        <div class="task-box" id="mission6">
+            <h2>🛡️ Миссия 6: Испорченный телефон — безопасная версия (+1 чип)</h2>
+            <p>Сравни два запроса в каждом раунде. Один из них раскрывает личные данные, а второй — нет. Отправь оба в нейросеть и запиши, почему опасно писать так, как в плохом примере.</p>
+            <!-- Раунды аналогичны уроку 2, но с другими запросами -->
+            <div style="background:#F8FBF6; border-radius:16px; padding:1.2rem; margin:1.5rem 0; border:1px solid #D3E8C4;">
+                <h3 style="margin-top:0;">🔹 Раунд 1</h3>
+                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:200px;"><label><strong>Опасный запрос:</strong></label><input type="text" id="bad1" value="Меня зовут Ваня, мой телефон +375291234567, расскажи анекдот" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;"></div>
+                    <div style="flex:1; min-width:200px;"><label><strong>Безопасный запрос:</strong></label><input type="text" id="safe1" value="Расскажи анекдот" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;"></div>
+                </div>
+                <button class="action-btn" style="margin-top:0.8rem;" onclick="openTwoPrompts('bad1','safe1')">🚀 Отправить оба запроса</button>
+            </div>
+            <div style="background:#F8FBF6; border-radius:16px; padding:1.2rem; margin:1.5rem 0; border:1px solid #D3E8C4;">
+                <h3 style="margin-top:0;">🔹 Раунд 2</h3>
+                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:200px;"><label><strong>Опасный запрос:</strong></label><input type="text" id="bad2" value="Я живу в Минске, улица Пушкина, 10, какой фильм посмотреть?" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;"></div>
+                    <div style="flex:1; min-width:200px;"><label><strong>Безопасный запрос:</strong></label><input type="text" id="safe2" value="Посоветуй интересный фильм для подростка" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;"></div>
+                </div>
+                <button class="action-btn" style="margin-top:0.8rem;" onclick="openTwoPrompts('bad2','safe2')">🚀 Отправить оба запроса</button>
+            </div>
+            <div style="background:#F8FBF6; border-radius:16px; padding:1.2rem; margin:1.5rem 0; border:1px solid #D3E8C4;">
+                <h3 style="margin-top:0;">🔹 Раунд 3</h3>
+                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:200px;"><label><strong>Опасный запрос:</strong></label><input type="text" id="bad3" value="Мой пароль от почты qwerty, помоги написать письмо" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;"></div>
+                    <div style="flex:1; min-width:200px;"><label><strong>Безопасный запрос:</strong></label><input type="text" id="safe3" value="Помоги написать письмо учителю" style="width:100%; padding:10px; border:1px solid #9CC97A; border-radius:8px;"></div>
+                </div>
+                <button class="action-btn" style="margin-top:0.8rem;" onclick="openTwoPrompts('bad3','safe3')">🚀 Отправить оба запроса</button>
+            </div>
+            <textarea id="safeNotes" style="width:100%; height:80px; border:1px solid #9CC97A; border-radius:12px; padding:10px; font-size:1rem; margin-top:1rem;" placeholder="Запиши, какие данные были раскрыты в опасных запросах и почему так делать нельзя..."></textarea>
+            <button class="action-btn" onclick="completeMission(6)">✅ Я сравнил и записал выводы</button>
+        </div>
+
+        <!-- МИССИЯ 7: Сравнение паролей -->
+        <div class="card" id="comparePasswords">
+            <h2>⚔️ Миссия 7: Сравнение паролей (+1 чип)</h2>
+            <p>Выбери в каждой паре <strong>более надёжный</strong> пароль. Верно ответь на все 3 раунда.</p>
+            <div class="battle-round" data-correct="b">
+                <p class="battle-topic">Пароль 1: 12345678<br>Пароль 2: Tr0ub4dor&3</p>
+                <div class="row">
+                    <div class="col battle-option" data-choice="a"><p>Первый</p></div>
+                    <div class="col battle-option" data-choice="b"><p>Второй</p></div>
+                </div>
+                <div class="battle-feedback"></div>
+            </div>
+            <div class="battle-round" data-correct="b">
+                <p class="battle-topic">Пароль 1: qwerty<br>Пароль 2: Qw3rty!2024</p>
+                <div class="row">
+                    <div class="col battle-option" data-choice="a"><p>Первый</p></div>
+                    <div class="col battle-option" data-choice="b"><p>Второй</p></div>
+                </div>
+                <div class="battle-feedback"></div>
+            </div>
+            <div class="battle-round" data-correct="b">
+                <p class="battle-topic">Пароль 1: password<br>Пароль 2: p@$$w0rd!X</p>
+                <div class="row">
+                    <div class="col battle-option" data-choice="a"><p>Первый</p></div>
+                    <div class="col battle-option" data-choice="b"><p>Второй</p></div>
+                </div>
+                <div class="battle-feedback"></div>
+            </div>
+            <p id="compareScore" style="font-weight:700; margin-top:10px;">Верных с первой попытки: 0 из 3</p>
+        </div>
+
+        <!-- МИССИЯ 8: Практическая работа — твой чек-лист -->
+        <div class="card" id="mission8">
+            <h2>💻 Миссия 8: Практическая работа — твой чек-лист безопасности ИИ (+1 чип)</h2>
+            <p>Составь свой собственный чек-лист из 5 правил, которые ты будешь соблюдать при общении с нейросетями. Напиши его в поле ниже. Затем прикрепи скриншот в Google Classroom.</p>
+            <textarea id="ownChecklist" style="width:100%; height:100px; border:1px solid #9CC97A; border-radius:12px; padding:10px; font-size:1rem;" placeholder="1. Не сообщать пароли...&#10;2. ..."></textarea>
+            <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать в Classroom</a>
+                <button class="action-btn" onclick="completeMission(8)">✅ Я составил чек-лист</button>
+            </div>
+        </div>
+
+        <!-- МИССИЯ 9: Быстро, рисуй! -->
+        <div class="task-box" id="mission9">
+            <h2>🖌️ Миссия 9: Быстро, рисуй! (+1 чип)</h2>
+            <p>Нейросеть угадывает твой рисунок за 20 секунд. Нажми кнопку, чтобы перейти к игре Quick, Draw!, и подтверди, что сыграл.</p>
+            <a href="https://quickdraw.withgoogle.com" target="_blank" class="action-btn" style="display:inline-block; margin-bottom:12px;">🎨 Играть в Quick, Draw!</a>
+            <div><button class="action-btn" onclick="completeMission(9)">✅ Я сыграл!</button></div>
+        </div>
+
+        <!-- МИССИЯ 10: Финальный квиз -->
+        <div class="quiz-wrap" id="mission10">
+            <h2>🏆 Миссия 10: Финальный квиз (+1 чип)</h2>
+            <div id="finalQuiz">
+                <div class="quiz-question" data-correct="1"><p><strong>1. Что такое фишинг?</strong></p><label><input type="radio" name="final0" value="0"> Безопасная игра</label><br><label><input type="radio" name="final0" value="1"> Попытка украсть данные через поддельные письма/сайты</label><br><label><input type="radio" name="final0" value="2"> Способ шифрования</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="1"><p><strong>2. Как поступить, если тебя травят в интернете?</strong></p><label><input type="radio" name="final1" value="0"> Ответить обидчику тем же</label><br><label><input type="radio" name="final1" value="1"> Сохранить доказательства и рассказать взрослым</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="1"><p><strong>3. Какой пароль самый надёжный?</strong></p><label><input type="radio" name="final2" value="0"> 123456789</label><br><label><input type="radio" name="final2" value="1"> Tr0ub4dor&3</label><br><label><input type="radio" name="final2" value="2"> qwerty</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="0"><p><strong>4. Можно ли отправлять нейросети свой домашний адрес?</strong></p><label><input type="radio" name="final3" value="0"> Нет, это опасно</label><br><label><input type="radio" name="final3" value="1"> Да, если это для доставки</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="0"><p><strong>5. Что делать, если получил письмо с просьбой перейти по ссылке для получения приза?</strong></p><label><input type="radio" name="final4" value="0"> Не переходить, удалить письмо</label><br><label><input type="radio" name="final4" value="1"> Перейти, ведь приз — это здорово</label><div class="q-feedback"></div></div>
+                <div class="quiz-question" data-correct="1"><p><strong>6. Почему нельзя использовать один пароль для всех аккаунтов?</strong></p><label><input type="radio" name="final5" value="0"> Это просто неудобно</label><br><label><input type="radio" name="final5" value="1"> Если один сервис взломают, мошенники получат доступ ко всем остальным</label><div class="q-feedback"></div></div>
+            </div>
+            <button class="quiz-btn" onclick="checkFinalMission()">Проверить ответы</button>
+            <div id="finalQuizResult" style="margin-top:10px; font-weight:700;"></div>
+        </div>
+
+        <div class="reflection-box">
+            <h2>💭 Рефлексия</h2>
+            <textarea id="reflectionText" placeholder="Что нового ты узнал о безопасности? Какое правило показалось самым важным?"></textarea>
+            <button class="action-btn" onclick="submitReflection()">Отправить</button>
+            <div id="reflectionResult" style="margin-top:10px; font-weight:700;"></div>
+        </div>
+
+        <div class="card">
+            <h2>🏁 Домашнее задание (Google Classroom)</h2>
+            <p>Выбери уровень сложности:</p>
+            <ul>
+                <li><strong>⭐ Лёгкий:</strong> Придумай надёжный пароль и проверь его на специальном сайте (например, <a href="https://www.security.org/how-secure-is-my-password/" target="_blank">security.org</a>). Сделай скриншот результата.</li>
+                <li><strong>⭐⭐ Средний:</strong> Найди в почте или придумай пример фишингового сообщения. Объясни, почему это фишинг, и как нужно было поступить.</li>
+                <li><strong>⭐⭐⭐ Сложный:</strong> Составь памятку для родителей «5 правил безопасности в интернете для всей семьи».</li>
+            </ul>
+            <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать в Classroom</a>
+        </div>
+
+        <div class="lesson-nav">
+            <a class="nav-btn prev" href="Занятие_2_Как_общаться_с_ИИ.html"><div class="lbl">← Назад</div><div class="ttl">2. Как общаться с ИИ?</div></a>
+            <a class="nav-btn next" href="Занятие_4.html"><div class="lbl">Далее →</div><div class="ttl">4. Креатив и ИИ</div></a>
+        </div>
+    </main>
+
+    <footer><div class="wrap"><div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" /> Учебный центр «РОБОВИТА»</div><div>Занятие 3 · офлайн-курс «ИИ-творец»</div></div></footer>
+    <div id="confetti-container"></div>
+
+    <script>
+        const totalChips = 10;
+        let chipsCollected = 0;
+        const missionStatus = Array(11).fill(false);
+
+        function updateChipProgress() {
+            document.getElementById('chipFill').style.width = (chipsCollected/totalChips*100)+'%';
+            document.getElementById('chipCount').textContent = chipsCollected+' / '+totalChips+' чипов';
+            if (chipsCollected === totalChips) {
+                document.getElementById('certificateBlock').classList.add('show');
+                document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+                launchConfetti();
+            }
+        }
+        function completeMission(num) {
+            if (missionStatus[num]) return;
+            missionStatus[num] = true;
+            chipsCollected++;
+            updateChipProgress();
+        }
+
+        // Миссия 1: проверка пароля
+        function checkPasswordStrength() {
+            const pwd = document.getElementById('passwordInput').value;
+            const fb = document.getElementById('passwordFeedback');
+            let score = 0;
+            if (pwd.length >= 8) score++;
+            if (/[A-Z]/.test(pwd)) score++;
+            if (/[a-z]/.test(pwd)) score++;
+            if (/[0-9]/.test(pwd)) score++;
+            if (/[^A-Za-z0-9]/.test(pwd)) score++;
+            if (score >= 4 && pwd.length >= 8) {
+                fb.textContent = '✅ Сильный пароль! +1 чип.';
+                fb.style.color = '#2E7D32';
+                completeMission(1);
+            } else if (score >= 3 && pwd.length >= 8) {
+                fb.textContent = '⚠️ Средний пароль. Добавьте спецсимволы или заглавные буквы.';
+                fb.style.color = '#B8860B';
+            } else {
+                fb.textContent = '❌ Слабый пароль. Используйте минимум 8 символов, цифры, заглавные и строчные буквы, спецсимволы.';
+                fb.style.color = '#C0392B';
+            }
+        }
+
+        // Миссия 2: сортировка фишинга
+        const sortItems = [
+            { text: "«Вы выиграли миллион! Перейдите по ссылке»", answer: "phishing", explain: "Фишинг: обещание приза и подозрительная ссылка." },
+            { text: "«Ваш аккаунт заблокирован, введите пароль для восстановления»", answer: "phishing", explain: "Фишинг: мошенники хотят украсть пароль." },
+            { text: "«Привет! Как прошёл твой день?» от друга", answer: "safe", explain: "Безопасное сообщение от знакомого человека." },
+            { text: "«Поздравляем! Ваш email выиграл приз, отправьте код из СМС»", answer: "phishing", explain: "Фишинг: выманивают код подтверждения." },
+            { text: "«Расписание уроков на завтра» от классного руководителя", answer: "safe", explain: "Безопасное сообщение от учителя." },
+            { text: "«Срочно! Ваш платёж не прошёл, обновите данные карты»", answer: "phishing", explain: "Фишинг: кража банковских данных." },
+            { text: "«Котёнок потерялся, помогите найти хозяина!» с фото", answer: "safe", explain: "Безопасное сообщение, если нет просьб перейти по ссылке." },
+            { text: "«Ваша посылка задержана, оплатите пошлину по ссылке»", answer: "phishing", explain: "Фишинг: поддельная служба доставки." },
+            { text: "«Примите участие в опросе от школы» с ссылкой на внутренний сайт", answer: "safe", explain: "Безопасно, если вы знаете этот опрос." },
+            { text: "«Бесплатные робуксы! Просто введи логин и пароль»", answer: "phishing", explain: "Фишинг: кража игрового аккаунта." }
+        ];
+        let sortCorrect = 0, sortTotal = 0;
+        const sortContainer = document.getElementById('sortCards');
+        sortItems.forEach(function(item) {
+            const card = document.createElement('div');
+            card.className = 'sort-card';
+            card.innerHTML =
+                '<div style="flex:1;"><div class="sort-text">' + item.text + '</div><div class="sort-explain">' + item.explain + '</div></div>' +
+                '<div class="sort-buttons"><span class="sort-btn" data-choice="phishing">🎣 Фишинг</span><span class="sort-btn" data-choice="safe">✅ Безопасно</span></div>';
+            sortContainer.appendChild(card);
+            card.querySelectorAll('.sort-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (card.classList.contains('answered')) return;
+                    card.classList.add('answered');
+                    sortTotal++;
+                    if (btn.dataset.choice === item.answer) { card.classList.add('done-right'); sortCorrect++; }
+                    else { card.classList.add('done-wrong'); }
+                    document.getElementById('sortScore').textContent = 'Верно: ' + sortCorrect + ' из ' + sortTotal + ' (всего карточек: 10)';
+                    if (sortCorrect >= 8) completeMission(2);
+                });
+            });
+        });
+
+        // Миссия 3: кибербуллинг
+        document.querySelectorAll('#cyberbullyingQuiz .battle-round').forEach(function(round) {
+            const correct = round.dataset.correct;
+            let answered = false;
+            round.querySelectorAll('.battle-option').forEach(function(opt) {
+                opt.addEventListener('click', function() {
+                    if (answered) return;
+                    answered = true;
+                    round.querySelectorAll('.battle-option').forEach(function(o) { o.classList.remove('selected-right', 'selected-wrong'); });
+                    if (opt.dataset.choice === correct) { opt.classList.add('selected-right'); }
+                    else {
+                        opt.classList.add('selected-wrong');
+                        round.querySelector('.battle-option[data-choice="' + correct + '"]').classList.add('selected-right');
+                    }
+                    round.querySelector('.battle-feedback').textContent = (opt.dataset.choice === correct) ? '✅ Верно' : '❌ Неправильно';
+                    updateCyberScore();
+                });
+            });
+        });
+        function updateCyberScore() {
+            let c = 0;
+            document.querySelectorAll('#cyberbullyingQuiz .battle-round').forEach(function(r) {
+                if (r.querySelector('.battle-option.selected-right') && !r.querySelector('.battle-option.selected-wrong')) c++;
+            });
+            document.getElementById('cyberScore').textContent = 'Верных с первой попытки: ' + c + ' из 3';
+            if (c === 3) completeMission(3);
+        }
+
+        // Миссия 4: чеклист безопасности ИИ
+        const checklistItems = [
+            { text: "Не сообщать нейросети свои пароли", correct: true },
+            { text: "Отправлять нейросети свой домашний адрес", correct: false },
+            { text: "Не писать нейросети полные фамилию и имя", correct: true },
+            { text: "Делиться с нейросетью номерами банковских карт", correct: false },
+            { text: "Использовать нейросеть только с разрешения родителей", correct: true },
+            { text: "Сообщать нейросети, в какой школе ты учишься", correct: false },
+            { text: "Проверять информацию, которую даёт нейросеть", correct: true }
+        ];
+        function renderChecklist() {
+            document.getElementById('checklistItems').innerHTML = checklistItems.map(function(item, i) {
+                return '<div class="fact-check-item" id="check-' + i + '">' +
+                    '<span>' + item.text + '</span>' +
+                    '<div class="fact-buttons">' +
+                        '<button class="fact-btn" onclick="toggleCheckItem(' + i + ', true, this)">✅ Нужно</button>' +
+                        '<button class="fact-btn" onclick="toggleCheckItem(' + i + ', false, this)">❌ Не нужно</button>' +
+                    '</div></div>';
+            }).join('');
+        }
+        renderChecklist();
+        const checklistAnswers = {};
+        function toggleCheckItem(i, value, btn) {
+            checklistAnswers[i] = value;
+            const item = document.getElementById('check-' + i);
+            item.querySelectorAll('.fact-btn').forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+        }
+        function checkChecklist() {
+            let correct = 0;
+            let allAnswered = true;
+            checklistItems.forEach(function(item, i) {
+                if (checklistAnswers[i] === undefined) { allAnswered = false; return; }
+                if (checklistAnswers[i] === item.correct) correct++;
+            });
+            const res = document.getElementById('checklistResult');
+            if (!allAnswered) {
+                res.textContent = '❌ Отметь все пункты!'; res.style.color = '#C0392B'; return;
+            }
+            if (correct === checklistItems.length) {
+                res.textContent = '✅ Отлично! Ты выбрал все верные правила. +1 чип.';
+                res.style.color = '#2E7D32';
+                completeMission(4);
+            } else {
+                res.textContent = '❌ Есть ошибки. Верно выбрано ' + correct + ' из ' + checklistItems.length;
+                res.style.color = '#C0392B';
+            }
+        }
+
+        // Миссия 5: найди нарушение
+        document.querySelectorAll('#findViolation .battle-round').forEach(function(round) {
+            const correct = round.dataset.correct;
+            let answered = false;
+            round.querySelectorAll('.battle-option').forEach(function(opt) {
+                opt.addEventListener('click', function() {
+                    if (answered) return;
+                    answered = true;
+                    round.querySelectorAll('.battle-option').forEach(function(o) { o.classList.remove('selected-right', 'selected-wrong'); });
+                    if (opt.dataset.choice === correct) { opt.classList.add('selected-right'); }
+                    else {
+                        opt.classList.add('selected-wrong');
+                        round.querySelector('.battle-option[data-choice="' + correct + '"]').classList.add('selected-right');
+                    }
+                    round.querySelector('.battle-feedback').textContent = (opt.dataset.choice === correct) ? '✅ Верно' : '❌ Неправильно';
+                    updateViolationScore();
+                });
+            });
+        });
+        function updateViolationScore() {
+            let c = 0;
+            document.querySelectorAll('#findViolation .battle-round').forEach(function(r) {
+                if (r.querySelector('.battle-option.selected-right') && !r.querySelector('.battle-option.selected-wrong')) c++;
+            });
+            document.getElementById('violationScore').textContent = 'Верных с первой попытки: ' + c + ' из 4';
+            if (c === 4) completeMission(5);
+        }
+
+        // Миссия 6: функция открытия двух запросов (DeepSeek)
+        function openTwoPrompts(id1, id2) {
+            const query1 = encodeURIComponent(document.getElementById(id1).value.trim());
+            const query2 = encodeURIComponent(document.getElementById(id2).value.trim());
+            window.open('https://chat.deepseek.com/?q=' + query1, '_blank');
+            window.open('https://chat.deepseek.com/?q=' + query2, '_blank');
+        }
+
+        // Миссия 7: сравнение паролей
+        document.querySelectorAll('#comparePasswords .battle-round').forEach(function(round) {
+            const correct = round.dataset.correct;
+            let answered = false;
+            round.querySelectorAll('.battle-option').forEach(function(opt) {
+                opt.addEventListener('click', function() {
+                    if (answered) return;
+                    answered = true;
+                    round.querySelectorAll('.battle-option').forEach(function(o) { o.classList.remove('selected-right', 'selected-wrong'); });
+                    if (opt.dataset.choice === correct) { opt.classList.add('selected-right'); }
+                    else {
+                        opt.classList.add('selected-wrong');
+                        round.querySelector('.battle-option[data-choice="' + correct + '"]').classList.add('selected-right');
+                    }
+                    round.querySelector('.battle-feedback').textContent = (opt.dataset.choice === correct) ? '✅ Верно' : '❌ Неправильно';
+                    updateCompareScore();
+                });
+            });
+        });
+        function updateCompareScore() {
+            let c = 0;
+            document.querySelectorAll('#comparePasswords .battle-round').forEach(function(r) {
+                if (r.querySelector('.battle-option.selected-right') && !r.querySelector('.battle-option.selected-wrong')) c++;
+            });
+            document.getElementById('compareScore').textContent = 'Верных с первой попытки: ' + c + ' из 3';
+            if (c === 3) completeMission(7);
+        }
+
+        // Миссия 10: финальный квиз
+        function checkFinalMission() {
+            let correct = 0;
+            document.querySelectorAll('#finalQuiz .quiz-question').forEach(function(q) {
+                const sel = q.querySelector('input[type=radio]:checked');
+                const fb = q.querySelector('.q-feedback');
+                if (!sel) { fb.textContent = 'Выбери ответ'; fb.style.color = '#B8860B'; return; }
+                if (sel.value === q.dataset.correct) { fb.textContent = '✅ Верно'; fb.style.color = '#2E7D32'; correct++; }
+                else { fb.textContent = '❌ Неправильно'; fb.style.color = '#C0392B'; }
+            });
+            if (correct === 6) { document.getElementById('finalQuizResult').textContent = '🏆 Отлично!'; completeMission(10); }
+            else { document.getElementById('finalQuizResult').textContent = 'Результат: ' + correct + ' из 6'; }
+        }
+
+        function launchConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8'];
+            for (let i = 0; i < 100; i++) {
+                const piece = document.createElement('div'); piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = Math.random() * 2 + 's';
+                piece.style.width = piece.style.height = Math.random() * 10 + 5 + 'px';
+                container.appendChild(piece);
+                setTimeout(function() { piece.remove(); }, 8000);
+            }
+        }
+
+        function submitReflection() {
+            const ta = document.getElementById('reflectionText');
+            const res = document.getElementById('reflectionResult');
+            if (ta.value.trim() === '') { res.textContent = 'Напиши хоть что-нибудь :)'; res.style.color = '#B8860B'; return; }
+            res.textContent = '✅ Спасибо! Твой ответ сохранён.'; res.style.color = '#2E7D32';
+            ta.disabled = true;
+        }
+
+        updateChipProgress();
+    </script>
+</body>
+</html>
