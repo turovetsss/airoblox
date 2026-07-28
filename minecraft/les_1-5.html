@@ -6,7 +6,7 @@
   <title>1.5. Вложенные циклы — Учебный центр «РОБОВИТА»</title>
   <link rel="stylesheet" href="../assets/css/styles.css">
   <style>
-        .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
     .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
     .brand-name { color: #2b5e0e; }
     .module-pill { background: #61b01f; color: #fff; }
@@ -24,15 +24,39 @@
     .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
     .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
     .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
-    .figure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 16px 0; }
+
+    .figure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 16px 0; }
     .figure-card { background: #fafff7; border: 2px solid #d0e8c0; border-radius: 16px; padding: 16px; text-align: center; transition: 0.2s; }
     .figure-card:hover { border-color: #61b01f; transform: translateY(-3px); }
     .figure-card .preview { font-size: 2.5rem; line-height: 1.4; font-family: 'Courier New', monospace; background: #f0f9eb; padding: 12px; border-radius: 8px; margin: 8px 0; }
     .figure-card .label { font-weight: 600; color: #2b5e0e; margin-top: 8px; }
     .figure-card .hint { font-size: 0.85rem; color: #666; }
-    /* .choice-grid { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; } */
-
-    .building-img{ width: 300px;height: 200px; }
+    .building-img{ width: 100%; max-width: 280px; height: auto; border-radius: 8px; }
+    .hint-btn {
+      background: #ffbd2e;
+      color: #2b5e0e;
+      border: none;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 8px;
+    }
+    .hint-btn:hover { background: #f0a800; transform: scale(1.05); }
+    .hint-content {
+      display: none;
+      background: #fff8e1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-top: 8px;
+      border-left: 3px solid #ffbd2e;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+    .hint-content.show { display: block; }
+    .hint-content code { background: #e8ece6; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
   </style>
 </head>
 <body class="lesson-page">
@@ -97,29 +121,22 @@
     <div class="code-block">
       <div class="code-head">
         <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
-        <span class="fname">повторение_циклов.txt</span>
+        <span class="fname">повторение_циклов.doc</span>
       </div>
       <pre class="code"><code><span class="tok-c">-- Простой цикл: повторяем 5 раз</span>
-<span class="tok-k">повторить</span> 5 раз [
-    <span class="tok-n">двигаться</span> вперёд
-]
+        <img src="files/les_1-4_12.png"/>
 
 <span class="tok-c">-- Цикл с командой внутри</span>
-<span class="tok-k">повторить</span> 4 раз [
-    <span class="tok-n">поставить</span> блок
-    <span class="tok-n">двигаться</span> вперёд
-]</code></pre>
+        <img src="files/les_1-5_4.png"/></code></pre>
     </div>
 
     <div class="interactive-box" id="repeatCycle">
       <h3>🧠 Проверь себя</h3>
       <p>Сколько раз выполнится команда <code>поставить блок</code> в этом коде?</p>
       <div class="code-block" style="margin: 8px 0;">
-        <pre class="code"><code>повторить 3 раз [
-    поставить блок
-    двигаться вперёд
-    поставить блок
-]</code></pre>
+        <pre class="code"><code>
+          <img src="files/les_1-5_5.png" style="width: 100%;"/>
+        </code></pre>
       </div>
       <div class="choice-grid">
         <div class="choice-card" data-correct-choice="false">3 раза</div>
@@ -131,37 +148,69 @@
     </div>
   </div>
 
-  <!-- Часть 2: Вложенные циклы -->
+  <!-- Часть 2: Вложенные циклы — ТЕОРИЯ -->
   <div class="card">
     <h2><span class="num">2</span> Вложенные циклы</h2>
+    
+    <h3>Что это такое?</h3>
     <p>Иногда одного цикла недостаточно. Например, чтобы построить квадрат 5×5, нужно:</p>
     <ul>
-      <li>Повторить 5 раз (для каждой строки)</li>
-      <li>Внутри каждой строки поставить 5 блоков</li>
+      <li><b>Повторить 5 раз</b> (для каждой строки)</li>
+      <li><b>Внутри каждой строки</b> поставить 5 блоков</li>
     </ul>
     <p>Для этого используется <b>вложенный цикл</b> — цикл внутри другого цикла.</p>
+
+    <div class="note">
+      <b>📖 Аналогия:</b> представь, что ты рисуешь таблицу. Ты двигаешься по строкам (внешний цикл) и в каждой строке рисуешь ячейки (внутренний цикл).
+    </div>
+
+    <h3>Как это работает?</h3>
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Шаг</th><th>Внешний цикл</th><th>Внутренний цикл</th><th>Результат</th></tr>
+        <tr><td>1</td><td>Строка 1</td><td>Ставит 5 блоков</td><td>■■■■■</td></tr>
+        <tr><td>2</td><td>Строка 2</td><td>Ставит 5 блоков</td><td>■■■■■</td></tr>
+        <tr><td>3</td><td>Строка 3</td><td>Ставит 5 блоков</td><td>■■■■■</td></tr>
+        <tr><td>4</td><td>Строка 4</td><td>Ставит 5 блоков</td><td>■■■■■</td></tr>
+        <tr><td>5</td><td>Строка 5</td><td>Ставит 5 блоков</td><td>■■■■■</td></tr>
+      </table>
+    </div>
 
     <div class="code-block">
       <div class="code-head">
         <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
-        <span class="fname">квадрат_5x5.txt</span>
+        <span class="fname">квадрат_5x5.makecode</span>
       </div>
-      <pre class="code"><code><span class="tok-c">-- Внешний цикл: повторяем 5 раз (строки)</span>
-<span class="tok-k">повторить</span> 5 раз [
-    <span class="tok-c">-- Внутренний цикл: ставим 5 блоков в ряд</span>
-    <span class="tok-k">повторить</span> 5 раз [
-        <span class="tok-n">поставить</span> блок
-        <span class="tok-n">двигаться</span> вперёд
-    ]
-    <span class="tok-c">-- Переходим на следующую строку</span>
-    <span class="tok-n">повернуть</span> налево
-    <span class="tok-n">двигаться</span> вперёд
-    <span class="tok-n">повернуть</span> налево
-]</code></pre>
+      <pre class="code"><code><span class="tok-c">-- Строим квадрат 5 на 5 блоков</span>
+        <img src="files/les_1-5_6.png" width="100%"/></code></pre>
+        
     </div>
+    
 
     <div class="note">
-      <b>💡 Важно:</b> внутренний цикл выполняется полностью при каждом проходе внешнего цикла. Если внешний цикл повторяется 5 раз, а внутренний — 5 раз, то команды внутри внутреннего цикла выполнятся 25 раз!
+      <b>💡 Важно:</b> внутренний цикл выполняется <b>полностью</b> при каждом проходе внешнего цикла. Если внешний цикл повторяется 5 раз, а внутренний — 5 раз, то команды внутри внутреннего цикла выполнятся <b>25 раз</b>!
+    </div>
+
+    <h3>Ещё один пример: прямоугольник 3×4</h3>
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">прямоугольник_3x4.makecode</span>
+      </div>
+      <pre class="code"><code><img src="files/les_1-5_7.png" width="100%"/></code></pre></code></pre>
+    </div>
+
+    <h3>Как менять количество блоков в строке?</h3>
+    <p>Чтобы построить пирамиду или ступеньки, нужно, чтобы в каждой строке было разное количество блоков. Для этого можно использовать <b>переменную</b> или просто менять число в цикле.</p>
+    
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">пирамида.makecode</span>
+      </div>
+      <pre class="code"><code>
+        <img src="files/les_1-5_8.png" width="100%"/>
+      </code></pre>
     </div>
 
     <!-- Интерактив: собери вложенный цикл -->
@@ -169,10 +218,10 @@
       <h3>🧩 Собери вложенный цикл</h3>
       <p>Перетащи шаги в правильном порядке, чтобы построить прямоугольник 3×4 (3 строки, 4 блока в каждой):</p>
       <div class="sequence-list" id="sequenceNested">
-        <div class="sort-item" draggable="true" data-correct-step="1">повторить 4 раз [поставить блок двигаться вперёд]</div>
-        <div class="sort-item" draggable="true" data-correct-step="0">повторить 3 раз [</div>
-        <div class="sort-item" draggable="true" data-correct-step="3">]</div>
-        <div class="sort-item" draggable="true" data-correct-step="2">перейти на следующую строку</div>
+        <div class="sort-item" draggable="true" data-correct-step="1"><img src="files/les_1-5_10.png"/></div>
+        <div class="sort-item" draggable="true" data-correct-step="0"><img src="files/les_1-5_9.png"/></div>
+        <div class="sort-item" draggable="true" data-correct-step="3"><img src="files/les_1-5_12.png"/></div>
+        <div class="sort-item" draggable="true" data-correct-step="2"><img src="files/les_1-5_11.png"/></div>
       </div>
       <button class="action-btn" onclick="checkSequence('nestedCycle')">✅ Проверить порядок</button>
       <div class="activity-result"></div>
@@ -183,12 +232,9 @@
       <h3>🔢 Сколько раз выполнится команда?</h3>
       <p>Сколько раз агент поставит блок в этом коде?</p>
       <div class="code-block" style="margin: 8px 0;">
-        <pre class="code"><code>повторить 4 раз [
-    повторить 3 раз [
-        поставить блок
-        двигаться вперёд
-    ]
-]</code></pre>
+        <pre class="code"><code>
+          <img src="files/les_1-5_13.png" style="width: 100%;"/>
+</code></pre>
       </div>
       <div class="choice-grid">
         <div class="choice-card" data-correct-choice="false">7 раз</div>
@@ -198,7 +244,7 @@
       <button class="action-btn" onclick="checkChoices('countNested')">✅ Проверить</button>
       <div class="activity-result"></div>
     </div>
-  </div>
+  </div>  
 
   <!-- Часть 3: Смена слота инвентаря -->
   <div class="card">
@@ -207,32 +253,23 @@
 
     <div class="data-table-wrap">
       <table class="data-table">
-        <tr><th>Блок</th><th>Что делает</th><th>Пример</th></tr>
-        <tr><td><code>выбрать слот 1</code></td><td>Активирует первый слот инвентаря</td><td>выбрать слот 1 (например, земля)</td></tr>
-        <tr><td><code>выбрать слот 2</code></td><td>Активирует второй слот</td><td>выбрать слот 2 (например, камень)</td></tr>
-        <tr><td><code>выбрать слот 3</code></td><td>Активирует третий слот</td><td>выбрать слот 3 (например, дерево)</td></tr>
+        <tr><th>Команда</th><th>Что делает</th><th>Пример</th></tr>
+        <tr><td><img src="files/les_1-5_14.png"></td><td>Активирует первый слот инвентаря</td><td>выбрать слот 1 (земля)</td></tr>
+        <tr><td><img src="files/les_1-5_15.png"></td><td>Активирует второй слот</td><td>выбрать слот 2 (камень)</td></tr>
+        <tr><td><img src="files/les_1-5_16.png"></td><td>Активирует третий слот</td><td>выбрать слот 3 (дерево)</td></tr>
       </table>
     </div>
 
-    <p>И так можно делать с 27 ячейками, так как инвентарь Агента представляет собой маленький сундук.</p>
+    <p>И так можно делать с 27 ячейками, так как инвентарь Агента — это маленький сундук.</p>
     
     <div class="code-block">
       <div class="code-head">
         <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
-        <span class="fname">разные_блоки.txt</span>
+        <span class="fname">разные_блоки.doc</span>
       </div>
       <pre class="code"><code><span class="tok-c">-- Строим стену из разных блоков</span>
-<span class="tok-n">выбрать</span> слот 1  <span class="tok-c">-- земля</span>
-<span class="tok-k">повторить</span> 3 раз [
-    <span class="tok-n">поставить</span> блок
-    <span class="tok-n">двигаться</span> вперёд
-]
-
-<span class="tok-n">выбрать</span> слот 2  <span class="tok-c">-- камень</span>
-<span class="tok-k">повторить</span> 3 раз [
-    <span class="tok-n">поставить</span> блок
-    <span class="tok-n">двигаться</span> вперёд
-]</code></pre>
+<img src="files/les_1-5_17.png">
+</code></pre>
     </div>
 
     <div class="note">
@@ -242,7 +279,8 @@
     <!-- Интерактив: выбери слот -->
     <div class="interactive-box" id="slotQuiz">
       <h3>🎒 Какой слот нужно выбрать?</h3>
-      <p><i>Чуть раньше в качестве примера писалось какие предметы на каких слотах находятся.</i> Агент должен построить башню: 3 блока земли, потом 3 блока камня. Какой код правильный?</p>
+      <p>Агент должен построить башню: 3 блока земли, потом 3 блока камня. Какой код правильный?</p>
+      <img src="" alt="Инвентарь Агента" style="width: 100%;">
       <div class="choice-grid">
         <div class="choice-card" data-correct-choice="true">выбрать слот 1 → поставить 3 блока → выбрать слот 2 → поставить 3 блока</div>
         <div class="choice-card" data-correct-choice="false">выбрать слот 1 → поставить 6 блоков</div>
@@ -251,102 +289,6 @@
       <button class="action-btn" onclick="checkChoices('slotQuiz')">✅ Проверить</button>
       <div class="activity-result"></div>
     </div>
-  </div>
-
-  <!-- Часть 4: Практика — строим фигуры -->
-  <div class="card">
-    <h2><span class="num">4</span> Практика: строим фигуры по образцам</h2>
-    <p>Теперь применим знания на практике! В Minecraft Education создай плоский мир и построй эти фигуры с помощью кода.</p>
-
-    <div class="figure-grid">
-      <div class="figure-card">
-        <div class="preview"><img class="building-img" src="files/les_1-5_1.png"/></div>
-        <div class="label">Цилиндр</div>
-        <div class="hint">Длина стороны 4 блока, общая высота постройки - 3 блока</div>
-      </div>
-      <div class="figure-card">
-        <div class="preview"><img class="building-img" src="files/les_1-5_2.png"/></div>
-        <div class="label">Маленькая пирамида</div>
-        <div class="hint">Длина нижней платформы 4 блока, верхняя платформа 2x2</div>
-      </div>
-      <div class="figure-card">
-        <div class="preview"><img class="building-img" src="files/les_1-5_3.png"/></div>
-        <div class="label">Полная пирамида</div>
-        <div class="hint">Длина нижней платформы 5 блоков, с каждым уровнем уменьшается на 3</div>
-      </div>
-    </div>
-
-    <!-- Практическое задание -->
-    <div class="task-box" id="practiceFigures">
-      <h2>🛠️ Практическое задание: построй фигуры</h2>
-      <div class="progress-track"><div class="progress-fill" id="figureProgressFill"></div></div>
-      <span class="progress-label" id="figureProgressLabel">Выполнено шагов: 0 из 4</span>
-      <p>Запусти Minecraft Education, создай плоский мир и выполни задания:</p>
-      <ul class="task-steps">
-        <li><input type="checkbox" id="fg0" onchange="updateFigureProgress()"><label for="fg0">Построй квадрат 3×3 из земли (используй вложенный цикл)</label></li>
-        <li><input type="checkbox" id="fg1" onchange="updateFigureProgress()"><label for="fg1">Построй прямоугольник 4×3 из камня</label></li>
-        <li><input type="checkbox" id="fg2" onchange="updateFigureProgress()"><label for="fg2">Построй треугольник-ступеньки (1, 2, 3, 4 блока)</label></li>
-        <li class="bonus-step"><input type="checkbox" id="fg3" onchange="updateFigureProgress()"><label for="fg3">⭐ Бонус: построй квадрат 5×5 с пустотой внутри (рамку)</label></li>
-      </ul>
-      <div class="note">
-        <b>💡 Подсказка:</b> для ступенек используй цикл, где число повторений увеличивается: <code>повторить N раз</code>, где N — номер шага.
-      </div>
-    </div>
-  </div>
-
-  <!-- Опрос -->
-  <div class="quiz-wrap" id="quizNested">
-    <h2>📝 Проверь себя</h2>
-
-    <div class="quiz-question" data-name="nq0" data-correct="b">
-      <p class="quiz-q-text">1. Что такое вложенный цикл?</p>
-      <label><input type="radio" name="nq0" value="a"> Цикл, который работает бесконечно</label>
-      <label><input type="radio" name="nq0" value="b"> Цикл внутри другого цикла</label>
-      <label><input type="radio" name="nq0" value="c"> Цикл, который повторяется 1 раз</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="nq1" data-correct="c">
-      <p class="quiz-q-text">2. Сколько раз выполнится внутренний цикл, если внешний повторяется 3 раза, а внутренний — 4 раза?</p>
-      <label><input type="radio" name="nq1" value="a"> 4 раза</label>
-      <label><input type="radio" name="nq1" value="b"> 3 раза</label>
-      <label><input type="radio" name="nq1" value="c"> 12 раз</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="nq2" data-correct="a">
-      <p class="quiz-q-text">3. Какой блок меняет слот инвентаря агента?</p>
-      <label><input type="radio" name="nq2" value="a"> выбрать слот 1</label>
-      <label><input type="radio" name="nq2" value="b"> поставить блок</label>
-      <label><input type="radio" name="nq2" value="c"> двигаться вперёд</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="nq3" data-correct="b">
-      <p class="quiz-q-text">4. Для чего нужны вложенные циклы?</p>
-      <label><input type="radio" name="nq3" value="a"> Чтобы усложнить код</label>
-      <label><input type="radio" name="nq3" value="b"> Чтобы строить фигуры из строк и столбцов</label>
-      <label><input type="radio" name="nq3" value="c"> Чтобы замедлить агента</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="nq4" data-correct="b">
-      <p class="quiz-q-text">5. Что нужно сделать, чтобы агент поставил разные блоки?</p>
-      <label><input type="radio" name="nq4" value="a"> Использовать цикл</label>
-      <label><input type="radio" name="nq4" value="b"> Менять слот перед постановкой блока</label>
-      <label><input type="radio" name="nq4" value="c"> Повернуть агента</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <button class="quiz-btn" onclick="checkQuiz('quizNested')">Проверить ответы</button>
-    <div class="quiz-result"></div>
-  </div>
-
-  <!-- Рефлексия -->
-  <div class="reflection-box">
-    <h2>💭 Рефлексия</h2>
-    <p>Напиши, что тебе понравилось, а что было сложно:</p>
-    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
   </div>
 
   <!-- AI-помощник -->
@@ -373,6 +315,128 @@
     </div>
   </div>
 
+  <!-- Часть 4: Практика — строим фигуры -->
+  <div class="card">
+    <h2><span class="num">4</span> Практика: строим фигуры по образцам</h2>
+    <p>Теперь применим знания на практике! В Minecraft Education создай плоский мир и построй эти фигуры с помощью кода.</p>
+
+    <div class="figure-grid">
+      <!-- Фигура 1: Цилиндр -->
+      <div class="figure-card">
+        <div class="preview"><img class="building-img" src="files/les_1-5_1.png" alt="Цилиндр"/></div>
+        <div class="label">Цилиндр</div>
+        <div class="hint">Длина стороны 4 блока, общая высота постройки — 3 блока</div>
+        <button class="hint-btn" onclick="toggleHint('hintCylinder')">💡 Подсказка</button>
+        <div class="hint-content" id="hintCylinder">
+          <b>Алгоритм:</b><br>
+          1. Поставь 4 блока в ряд (цикл 4 раза) → это нижний слой<br>
+          2. Поверни, перейди на новую строку, поверни — так 4 раза, получится квадрат 4×4<br>
+          3. <b>Всё это повтори 3 раза</b> (поднимись вверх после каждого слоя)<br>
+        </div>
+      </div>
+
+      <!-- Фигура 2: Маленькая пирамида -->
+      <div class="figure-card">
+        <div class="preview"><img class="building-img" src="files/les_1-5_2.png" alt="Маленькая пирамида"/></div>
+        <div class="label">Маленькая пирамида</div>
+        <div class="hint">Нижняя платформа 4 блока, верхняя — 2×2</div>
+        <button class="hint-btn" onclick="toggleHint('hintPyramidSmall')">💡 Подсказка</button>
+        <div class="hint-content" id="hintPyramidSmall">
+          <b>Алгоритм:</b><br>
+          1. Построй квадрат 4×4 (вложенный цикл 4×4)<br>
+          2. Поднимись вверх<br>
+          3. Построй квадрат 2×2 (вложенный цикл 2×2)<br>
+        </div>
+      </div>
+
+      <!-- Фигура 3: Полная пирамида -->
+      <div class="figure-card">
+        <div class="preview"><img class="building-img" src="files/les_1-5_3.png" alt="Полная пирамида"/></div>
+        <div class="label">Полная пирамида</div>
+        <div class="hint">Нижняя платформа 5 блоков, каждый слой уменьшается на 2 блока</div>
+        <button class="hint-btn" onclick="toggleHint('hintPyramidFull')">💡 Подсказка</button>
+        <div class="hint-content" id="hintPyramidFull">
+          <b>Алгоритм:</b><br>
+          1. Слой 1: квадрат 5×5<br>
+          2. Слой 2: квадрат 3×3 (подняться вверх)<br>
+          3. Слой 3: квадрат 1×1 (подняться вверх)<br>
+        </div>
+      </div>
+    </div>
+
+    <!-- Практическое задание -->
+    <div class="task-box" id="practiceFigures">
+      <h2>🛠️ Практическое задание: построй фигуры</h2>
+      <div class="progress-track"><div class="progress-fill-minecraft" id="figureProgressFill"></div></div>
+      <span class="progress-label" id="figureProgressLabel">Выполнено шагов: 0 из 4</span>
+      <p>Запусти Minecraft Education, создай плоский мир и выполни задания:</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="fg0" onchange="updateFigureProgress()"><label for="fg0">Построй квадрат 3×3 из земли (используй вложенный цикл)</label></li>
+        <li><input type="checkbox" id="fg1" onchange="updateFigureProgress()"><label for="fg1">Построй прямоугольник 4×3 из камня</label></li>
+        <li><input type="checkbox" id="fg2" onchange="updateFigureProgress()"><label for="fg2">Построй треугольник-ступеньки (1, 2, 3, 4 блока)</label></li>
+        <li class="bonus-step"><input type="checkbox" id="fg3" onchange="updateFigureProgress()"><label for="fg3">⭐ Бонус: построй одну из фигур с картинок (цилиндр, пирамиду)</label></li>
+      </ul>
+      <div class="note">
+        <b>💡 Подсказка:</b> для ступенек используй цикл, где число повторений увеличивается: <code>повторить N раз</code>, где N — номер шага.
+      </div>
+    </div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizNested">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="nq0" data-correct="b">
+      <p class="quiz-q-text">1. Что такое вложенный цикл?</p>
+      <label><input type="radio" name="nq0" value="a"> Цикл, который работает бесконечно</label>
+      <label><input type="radio" name="nq0" value="b"> Цикл внутри другого цикла</label>
+      <label><input type="radio" name="nq0" value="c"> Цикл, который повторяется 1 раз</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="nq1" data-correct="c">
+      <p class="quiz-q-text">2. Сколько раз выполнится внутренний цикл, если внешний повторяется 3 раза, а внутренний — 4 раза?</p>
+      <label><input type="radio" name="nq1" value="a"> 4 раза</label>
+      <label><input type="radio" name="nq1" value="b"> 3 раза</label>
+      <label><input type="radio" name="nq1" value="c"> 12 раз</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="nq2" data-correct="c">
+      <p class="quiz-q-text">3. Какой блок меняет слот инвентаря агента?</p>
+      <label><input type="radio" name="nq2" value="a"> <img src="files/les_1-4_1.png"/></label>
+      <label><input type="radio" name="nq2" value="b"> <img src="files/les_1-2_2.png"/></label>
+      <label><input type="radio" name="nq2" value="c"> <img src="files/les_1-5_14.png"/></label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="nq3" data-correct="b">
+      <p class="quiz-q-text">4. Для чего нужны вложенные циклы?</p>
+      <label><input type="radio" name="nq3" value="a"> Чтобы усложнить код</label>
+      <label><input type="radio" name="nq3" value="b"> Чтобы строить фигуры из строк и столбцов</label>
+      <label><input type="radio" name="nq3" value="c"> Чтобы замедлить агента</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="nq4" data-correct="b">
+      <p class="quiz-q-text">5. Что нужно сделать, чтобы агент поставил разные блоки?</p>
+      <label><input type="radio" name="nq4" value="a"> Использовать цикл</label>
+      <label><input type="radio" name="nq4" value="b"> Менять слот перед постановкой блока</label>
+      <label><input type="radio" name="nq4" value="c"> Повернуть агента</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizNested')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
   <!-- Навигация -->
   <div class="lesson-nav">
     <a class="nav-btn prev" href="les_1-4.html"><div class="lbl">← Назад</div><div class="ttl">1.4 Циклы</div></a>
@@ -393,12 +457,40 @@
 
 <script src="../assets/js/lesson.js"></script>
 <script>
+  // === Функция для показа/скрытия подсказки ===
+  function toggleHint(hintId) {
+    const hint = document.getElementById(hintId);
+    if (hint) {
+      hint.classList.toggle('show');
+    }
+  }
+
   // === Интерактивные функции ===
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    let correct = 0;
+    cards.forEach(card => {
+      const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      if (isCorrect) {
+        card.classList.add('selected-correct');
+        correct++;
+      } else {
+        card.classList.add('selected-wrong');
+      }
+    });
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct === 1 ? '✅ Всё верно!' : '❌ Попробуй ещё раз. Подумай, какой ответ правильный.';
+      result.style.display = 'block';
+    }
+  }
+
   function checkSequence(containerId) {
     const container = document.getElementById(containerId);
     const items = container.querySelectorAll('.sort-item');
     let correct = true;
-    let prevStep = -1;
     let sorted = Array.from(items).map(el => parseInt(el.getAttribute('data-correct-step'), 10));
     for (let i = 0; i < sorted.length; i++) {
       if (sorted[i] !== i) {

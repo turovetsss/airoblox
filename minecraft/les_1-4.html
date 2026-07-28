@@ -6,7 +6,6 @@
   <title>1.4. Циклы — Учебный центр «РОБОВИТА»</title>
   <link rel="stylesheet" href="../assets/css/styles.css">
   <style>
-    /* Сохраняем визуальную идентичность */
     .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
     .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
     .brand-name { color: #2b5e0e; }
@@ -25,40 +24,68 @@
     .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
     .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
     .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
-
-    /* Заменяем существующий .openai-btn на этот */
-.openai-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: linear-gradient(135deg, var(--accent));
-  color: #fff;
-  text-decoration: none;
-  border: none;
-  padding: 4px 14px;
-  border-radius: 99px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: 'Nunito', sans-serif;
-  box-shadow: 0 4px 12px rgba(118, 31, 176, 0.25);
-  transition: 0.2s;
-  white-space: nowrap;
-  flex-shrink: 0;
-  line-height: 1.6;
-  min-height: 32px;
-  margin-left: 10px;
-}
-
-.openai-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(118, 31, 176, 0.35);
-  background: linear-gradient(135deg, var(--accent), #421375);
-}
-
-.openai-btn:active {
-  transform: scale(0.96);
-}
+    
+    /* Стили для кнопки подсказки */
+    .hint-btn {
+      background: #ffbd2e;
+      color: #2b5e0e;
+      border: none;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-left: 10px;
+      flex-shrink: 0;
+    }
+    .hint-btn:hover { background: #f0a800; transform: scale(1.05); }
+    .hint-content {
+      display: none;
+      background: #fff8e1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-top: 6px;
+      border-left: 3px solid #ffbd2e;
+      font-size: 0.95rem;
+    }
+    .hint-content.show { display: block; }
+    .task-step-with-hint {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .task-step-with-hint label { flex: 1; min-width: 150px; }
+    .openai-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #761fb0, #4a0f75);
+      color: #fff;
+      text-decoration: none;
+      border: none;
+      padding: 4px 14px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      box-shadow: 0 4px 12px rgba(118, 31, 176, 0.25);
+      transition: 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1.6;
+      min-height: 32px;
+      margin-left: 10px;
+    }
+    .openai-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(118, 31, 176, 0.35);
+      background: linear-gradient(135deg, #8a2be0, #4a0f75);
+    }
+    .openai-btn:active { transform: scale(0.96); }
   </style>
 </head>
 <body class="lesson-page">
@@ -116,8 +143,17 @@
   <!-- Часть 1: Теория -->
   <div class="card">
     <h2><span class="num">1</span> Что такое цикл?</h2>
+    
+    <h3>Циклы в реальной жизни</h3>
     <p>Представь, что тебе нужно сказать «Привет!» 100 раз. Писать одну и ту же команду 100 раз — долго и скучно. В программировании для этого есть <b>циклы</b>.</p>
     
+    <p>В жизни мы тоже постоянно используем циклы:</p>
+    <ul>
+      <li><b>Каждый день</b> мы чистим зубы — это повторяющееся действие</li>
+      <li><b>На уроке физкультуры</b> мы делаем 10 приседаний — это цикл с заданным количеством повторений</li>
+      <li><b>Пока идёт дождь</b>, мы сидим дома — это цикл, который выполняется, пока условие истинно</li>
+    </ul>
+
     <div class="code-block">
       <div class="code-head">
         <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
@@ -139,6 +175,22 @@
 Повторить 10 раз [
     Сказать "Привет!"
 ]</code></pre>
+    </div>
+
+    <h3>Виды циклов</h3>
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Вид цикла</th><th>Когда используется</th><th>Пример</th></tr>
+        <tr><td><b>Цикл с параметром</b><br>(<code>повторить N раз</code>)</td>
+            <td>Когда точно знаем, сколько раз нужно повторить</td>
+            <td>«Сделай 10 приседаний»</td></tr>
+        <tr><td><b>Цикл с условием</b><br>(<code>повторить пока</code>)</td>
+            <td>Когда повторяем, пока верно условие</td>
+            <td>«Пока идёт дождь, сиди дома»</td></tr>
+        <tr><td><b>Бесконечный цикл</b><br>(<code>повторить навсегда</code>)</td>
+            <td>Когда действие должно выполняться постоянно</td>
+            <td>«Игровой сервер всегда работает»</td></tr>
+      </table>
     </div>
 
     <div class="note">
@@ -166,37 +218,23 @@
     <div class="data-table-wrap">
       <table class="data-table">
         <tr><th>Блок</th><th>Что делает</th><th>Пример</th></tr>
-        <tr><td><code>повторить 10 раз</code></td><td>Повторяет команды внутри 10 раз</td><td>повторить 4 раз [двигаться вперёд]</td></tr>
-        <tr><td><code>повторить пока</code></td><td>Повторяет, пока условие верно</td><td>повторить пока [есть блок впереди] ...</td></tr>
-        <tr><td><code>повторить навсегда</code></td><td>Бесконечный цикл (для игр)</td><td>повторить навсегда [двигаться вперёд]</td></tr>
+        <tr><td><img src="files/les_1-4_1.png"/></td><td>Повторяет команды внутри 10 раз</td><td>повторить 4 раз [двигаться вперёд]</td></tr>
+        <tr><td><img src="files/les_1-4_2.png"/></td><td>Повторяет, пока условие верно</td><td>повторить пока [есть блок впереди] ...</td></tr>
+        <tr><td><img src="files/les_1-4_3.png"/></td><td>Бесконечный цикл (для игр)</td><td>повторить навсегда [двигаться вперёд]</td></tr>
       </table>
     </div>
 
     <div class="code-block">
       <div class="code-head">
         <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
-        <span class="fname">постройка_стены.txt</span>
+        <span class="fname">постройка_стены.makecode</span>
       </div>
       <pre class="code"><code><span class="tok-c">-- Без цикла (строим стену из 6 блоков)</span>
-1. Поставить блок
-2. Двигаться вперёд
-3. Поставить блок
-4. Двигаться вперёд
-5. Поставить блок
-6. Двигаться вперёд
-7. Поставить блок
-8. Двигаться вперёд
-9. Поставить блок
-10. Двигаться вперёд
-11. Поставить блок
-
-<span class="tok-c">-- С циклом (всего 4 строки!)</span>
-Повторить 6 раз [
-    Поставить блок
-    Двигаться вперёд
-]</code></pre>
+        <img src="files/les_1-4_4.png"/>
+<span class="tok-c">-- С циклом (всего 3 строки!)</span>
+                <img src="files/les_1-4_5.png"/>
+      </code></pre>
     </div>
-
     <div class="note">
       <b>⚡ Важно:</b> цикл сокращает код, делает его понятнее и легче для изменения. Хочешь построить стену из 100 блоков? Просто поменяй число в цикле!
     </div>
@@ -225,10 +263,10 @@
       <h3>🧩 Собери алгоритм с циклом</h3>
       <p>Перетащи шаги в правильном порядке, чтобы агент поставил 5 блоков по прямой:</p>
       <div class="sequence-list" id="sequenceCycle">
-        <div class="sort-item" draggable="true" data-correct-step="1">Поставить блок</div>
-        <div class="sort-item" draggable="true" data-correct-step="0">Повторить 5 раз [</div>
-        <div class="sort-item" draggable="true" data-correct-step="3">]</div>
-        <div class="sort-item" draggable="true" data-correct-step="2">Двигаться вперёд</div>
+        <div class="sort-item" draggable="true" data-correct-step="1"><img src="files/les_1-4_7.png"/></div>
+        <div class="sort-item" draggable="true" data-correct-step="0"><img src="files/les_1-4_6.png"/></div>
+        <div class="sort-item" draggable="true" data-correct-step="3"><img src="files/les_1-4_9.png"/></div>
+        <div class="sort-item" draggable="true" data-correct-step="2"><img src="files/les_1-4_8.png"/></div>
       </div>
       <button class="action-btn" onclick="checkSequence('algoCycle')">✅ Проверить порядок</button>
       <div class="activity-result"></div>
@@ -238,15 +276,14 @@
     <div class="interactive-box" id="findError">
       <h3>🕵️ Найди ошибку в алгоритме</h3>
       <p>Агент должен построить башню из 4 блоков, но алгоритм не работает. Какая ошибка?</p>
-      <div class="code-block" style="margin: 8px 0;">
-        <pre class="code"><code>Повторить 4 раз [
-    Двигаться вверх
-    Поставить блок
-]</code></pre>
+      <div class="code-block">
+        <pre class="code">
+          <img src="files/les_1-4_10.png" style="width: 100%;"/>
+        </pre>
       </div>
       <div class="choice-grid">
-        <div class="choice-card" data-correct-choice="false">Нужно поставить блок, а потом двигаться вверх</div>
-        <div class="choice-card" data-correct-choice="true">Сначала нужно поставить блок, а потом двигаться вверх</div>
+        <div class="choice-card" data-correct-choice="false">Выбран неправильный программный блок</div>
+        <div class="choice-card" data-correct-choice="true">Сначала нужно переместиться вверх, а потом ставить блок</div>
         <div class="choice-card" data-correct-choice="false">Цикл нужно повторять 3 раза</div>
       </div>
       <button class="action-btn" onclick="checkChoices('findError')">✅ Проверить</button>
@@ -257,13 +294,10 @@
     <div class="interactive-box" id="countCycles">
       <h3>🔢 Сколько раз выполнится цикл?</h3>
       <p>Посчитай, сколько блоков поставит агент, если выполнить этот код:</p>
-      <div class="code-block" style="margin: 8px 0;">
-        <pre class="code"><code>Повторить 3 раз [
-    Поставить блок
-    Двигаться вперёд
-    Поставить блок
-    Двигаться вперёд
-]</code></pre>
+      <div class="code-block">
+        <pre class="code">
+          <img src="files/les_1-4_11.png" style="width: 100%;"/>
+        </pre>
       </div>
       <div class="choice-grid">
         <div class="choice-card" data-correct-choice="false">3 блока</div>
@@ -273,78 +307,6 @@
       <button class="action-btn" onclick="checkChoices('countCycles')">✅ Проверить</button>
       <div class="activity-result"></div>
     </div>
-  </div>
-
-  <!-- Практическое задание -->
-  <div class="task-box" id="practiceCycle">
-    <h2>🛠️ Практическое задание: строим с циклом</h2>
-    <div class="progress-track"><div class="progress-fill" id="cycleProgressFill"></div></div>
-    <span class="progress-label" id="cycleProgressLabel">Выполнено шагов: 0 из 4</span>
-    <p>Перейдём к практике. Запусти Minecraft Education, создай плоский мир и выполни следующие задания, используя циклы.</p>
-    <ul class="task-steps">
-      <li><input type="checkbox" id="pc0" onchange="updateCycleProgress()"><label for="pc0">Напиши цикл для 10 шагов вперёд (без остановок)</label></li>
-      <li><input type="checkbox" id="pc1" onchange="updateCycleProgress()"><label for="pc1">Напиши цикл для постройки стены из 8 блоков (шаг + блок)</label></li>
-      <li><input type="checkbox" id="pc2" onchange="updateCycleProgress()"><label for="pc2">Напиши цикл для постройки квадрата 3×3</label></li>
-      <li class="bonus-step"><input type="checkbox" id="pc3" onchange="updateCycleProgress()"><label for="pc3">⭐ Бонус: попроси Алису сгенерировать идею, что можно еще построить с помощью циклов и построй это в Minecraft <a class="openai-btn" href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%94%D0%B0%D0%B9%20%D0%BC%D0%BD%D0%B5%20%D0%B8%D0%B4%D0%B5%D0%B9%2C%20%D1%87%D1%82%D0%BE%20%D0%BC%D0%BE%D0%B6%D0%BD%D0%BE%20%D0%BF%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B8%D1%82%D1%8C%20%D1%81%20%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E%20%D1%86%D0%B8%D0%BA%D0%BB%D0%BE%D0%B2%20%D0%B8%20%D0%90%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%20%D0%B2%20Minecraft%20Education%20%D1%81%20%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E%20%D0%B1%D0%BB%D0%BE%D0%BA%D0%BE%D0%B2.%22%7D" target="_blank">Открыть Алису</a></label> </li>
-    </ul>
-    <div class="note">
-      <b>💡 Подсказка:</b> в Codebuilder есть блок, который говорит Агенту ставить блоки по ходу его движения. Он называется: "строить на ходу [вкл/выкл]". Попробуй!
-    </div>
-  </div>
-
-  <!-- Опрос -->
-  <div class="quiz-wrap" id="quizCycles">
-    <h2>📝 Проверь себя</h2>
-
-    <div class="quiz-question" data-name="cq0" data-correct="b">
-      <p class="quiz-q-text">1. Что такое цикл в программировании?</p>
-      <label><input type="radio" name="cq0" value="a"> Это блок для поворота агента</label>
-      <label><input type="radio" name="cq0" value="b"> Это способ повторять команды несколько раз</label>
-      <label><input type="radio" name="cq0" value="c"> Это название файла в Minecraft</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="cq1" data-correct="a">
-      <p class="quiz-q-text">2. Какой блок используется для циклов в Minecraft Education?</p>
-      <label><input type="radio" name="cq1" value="a"> повторить N раз</label>
-      <label><input type="radio" name="cq1" value="b"> двигаться вперёд</label>
-      <label><input type="radio" name="cq1" value="c"> поставить блок</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="cq2" data-correct="c">
-      <p class="quiz-q-text">3. Что произойдёт, если в цикле написать <code>повторить 0 раз</code>?</p>
-      <label><input type="radio" name="cq2" value="a"> Цикл будет бесконечным</label>
-      <label><input type="radio" name="cq2" value="b"> Компьютер зависнет</label>
-      <label><input type="radio" name="cq2" value="c"> Ничего не выполнится</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="cq3" data-correct="b">
-      <p class="quiz-q-text">4. Зачем использовать циклы вместо повторяющихся команд?</p>
-      <label><input type="radio" name="cq3" value="a"> Чтобы усложнить код</label>
-      <label><input type="radio" name="cq3" value="b"> Чтобы сократить и упростить код</label>
-      <label><input type="radio" name="cq3" value="c"> Чтобы замедлить работу агента</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="cq4" data-correct="a">
-      <p class="quiz-q-text">5. Сколько раз выполнится код: <code>повторить 5 раз [двигаться вперёд]</code>?</p>
-      <label><input type="radio" name="cq4" value="a"> 5 раз</label>
-      <label><input type="radio" name="cq4" value="b"> 1 раз</label>
-      <label><input type="radio" name="cq4" value="c"> Бесконечно</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <button class="quiz-btn" onclick="checkQuiz('quizCycles')">Проверить ответы</button>
-    <div class="quiz-result"></div>
-  </div>
-
-  <!-- Рефлексия -->
-  <div class="reflection-box">
-    <h2>💭 Рефлексия</h2>
-    <p>Напиши, что тебе понравилось, а что было сложно:</p>
-    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
   </div>
 
   <!-- AI-помощник -->
@@ -371,6 +333,130 @@
     </div>
   </div>
 
+  <!-- Практическое задание -->
+  <div class="task-box" id="practiceCycle">
+    <h2>🛠️ Практическое задание: строим с циклом</h2>
+    <div class="progress-track"><div class="progress-fill-minecraft" id="cycleProgressFill"></div></div>
+    <span class="progress-label" id="cycleProgressLabel">Выполнено шагов: 0 из 5</span>
+    <p>Перейдём к практике. Запусти Minecraft Education, создай плоский мир и выполни следующие задания, используя циклы.</p>
+
+    <!-- Задание 1 -->
+    <div style="margin-top: 16px; padding: 12px 16px; background: #f0f9eb; border-radius: 12px;">
+      <h3 style="margin: 0 0 6px 0; color: #2b5e0e;">📌 Задание 1: Движение вперёд</h3>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="pc0" onchange="updateCycleProgress()">
+          <label for="pc0">Напиши цикл для 10 шагов вперёд (без остановок)</label>
+        </li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hint1')">💡 Подсказка</button>
+      <div class="hint-content" id="hint1">
+        Используй блок <code>повторить 10 раз</code> и внутри него команду <code>двигаться вперёд</code>.
+      </div>
+    </div>
+
+    <!-- Задание 2 -->
+    <div style="margin-top: 16px; padding: 12px 16px; background: #f7fcf2; border-radius: 12px;">
+      <h3 style="margin: 0 0 6px 0; color: #2b5e0e;">📌 Задание 2: Стена из блоков</h3>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="pc1" onchange="updateCycleProgress()">
+          <label for="pc1">Напиши цикл для постройки стены из 8 блоков (шаг + блок)</label>
+        </li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hint2')">💡 Подсказка</button>
+      <div class="hint-content" id="hint2">
+        Используй <code>повторить 8 раз</code>. Внутри цикла: сначала <code>поставить блок</code>, затем <code>двигаться вперёд</code>.
+      </div>
+    </div>
+
+    <!-- Задание 3 -->
+    <div style="margin-top: 16px; padding: 12px 16px; background: #f0f9eb; border-radius: 12px;">
+      <h3 style="margin: 0 0 6px 0; color: #2b5e0e;">📌 Задание 3: Квадрат 3×3</h3>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="pc2" onchange="updateCycleProgress()">
+          <label for="pc2">Напиши цикл для постройки квадрата 3×3</label>
+        </li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hint3')">💡 Подсказка</button>
+      <div class="hint-content" id="hint3">
+        Используй цикл <code>повторить 3 раз</code> для постановки 3 блоков в строку. Затем поверни налево, сделай шаг вперёд и ещё раз поверни налево. <b>Повтори всё это 3 раза</b> — так получится квадрат 3×3.
+      </div>
+    </div>
+
+    <!-- Бонус -->
+    <div style="margin-top: 16px; padding: 12px 16px; background: #fff8e1; border-radius: 12px; border: 1px dashed #ffbd2e;">
+      <h3 style="margin: 0 0 6px 0; color: #b8860b;">⭐ Бонусное задание</h3>
+      <ul class="task-steps">
+        <li class="bonus-step">
+          <input type="checkbox" id="pc4" onchange="updateCycleProgress()">
+          <label for="pc4">Попроси Алису сгенерировать идею, что можно ещё построить с помощью циклов, и построй это в Minecraft</label>
+        </li>
+          <a class="openai-btn" href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%94%D0%B0%D0%B9%20%D0%BC%D0%BD%D0%B5%20%D0%B8%D0%B4%D0%B5%D0%B9%2C%20%D1%87%D1%82%D0%BE%20%D0%BC%D0%BE%D0%B6%D0%BD%D0%BE%20%D0%BF%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B8%D1%82%D1%8C%20%D1%81%20%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E%20%D1%86%D0%B8%D0%BA%D0%BB%D0%BE%D0%B2%20%D0%B8%20%D0%90%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%20%D0%B2%20Minecraft%20Education%20%D1%81%20%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E%20%D0%B1%D0%BB%D0%BE%D0%BA%D0%BE%D0%B2.%22%7D" target="_blank">🤖 Спросить Алису</a>
+      </ul>
+    </div>
+
+    <div class="note" style="margin-top: 16px;">
+      <b>💡 Подсказка:</b> в Codebuilder есть блок, который говорит Агенту ставить блоки по ходу его движения. Он называется: "строить на ходу [вкл/выкл]". Попробуй!
+    </div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizCycles">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="cq0" data-correct="b">
+      <p class="quiz-q-text">1. Что такое цикл в программировании?</p>
+      <label><input type="radio" name="cq0" value="a"> Это блок для поворота агента</label>
+      <label><input type="radio" name="cq0" value="b"> Это способ повторять команды несколько раз</label>
+      <label><input type="radio" name="cq0" value="c"> Это название файла в Minecraft</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq1" data-correct="a">
+      <p class="quiz-q-text">2. Какой блок используется для циклов в Minecraft Education?</p>
+      <label><input type="radio" name="cq1" value="a"> <img src="files/les_1-4_1.png"/></label>
+      <label><input type="radio" name="cq1" value="b"> <img src="files/les_1-2_2.png"/></label>
+      <label><input type="radio" name="cq1" value="c"> <img src="files/les_1-2_6.png"/></label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq2" data-correct="c">
+      <p class="quiz-q-text">3. Что произойдёт, если в цикле написать <code>повторить 0 раз</code>?</p>
+      <label><input type="radio" name="cq2" value="a"> Цикл будет бесконечным</label>
+      <label><input type="radio" name="cq2" value="b"> Компьютер зависнет</label>
+      <label><input type="radio" name="cq2" value="c"> Ничего не выполнится</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq3" data-correct="b">
+      <p class="quiz-q-text">4. Зачем использовать циклы вместо повторяющихся команд?</p>
+      <label><input type="radio" name="cq3" value="a"> Чтобы усложнить код</label>
+      <label><input type="radio" name="cq3" value="b"> Чтобы сократить и упростить код</label>
+      <label><input type="radio" name="cq3" value="c"> Чтобы замедлить работу агента</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq4" data-correct="a">
+      <p class="quiz-q-text">5. Сколько раз выполнится код: <code><img src="files/les_1-4_12.png"/></code></p>
+      <label><input type="radio" name="cq4" value="a"> 5 раз</label>
+      <label><input type="radio" name="cq4" value="b"> 1 раз</label>
+      <label><input type="radio" name="cq4" value="c"> Бесконечно</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizCycles')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
   <!-- Навигация -->
   <div class="lesson-nav">
     <a class="nav-btn prev" href="les_1-3.html"><div class="lbl">← Назад</div><div class="ttl">1.3 Проходим лабиринт</div></a>
@@ -391,8 +477,37 @@
 
 <script src="../assets/js/lesson.js"></script>
 <script>
+  // === Функция для показа/скрытия подсказки ===
+  function toggleHint(hintId) {
+    const hint = document.getElementById(hintId);
+    if (hint) {
+      hint.classList.toggle('show');
+    }
+  }
+
   // === Интерактивные функции ===
-function checkSequence(containerId) {
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    let correct = 0;
+    cards.forEach(card => {
+      const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      if (isCorrect) {
+        card.classList.add('selected-correct');
+        correct++;
+      } else {
+        card.classList.add('selected-wrong');
+      }
+    });
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct === 1 ? '✅ Всё верно!' : '❌ Попробуй ещё раз. Подумай, какой ответ правильный.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkSequence(containerId) {
     const container = document.getElementById(containerId);
     const items = container.querySelectorAll('.sort-item');
     let correct = true;

@@ -6,7 +6,7 @@
   <title>1.6. Условные операторы — Учебный центр «РОБОВИТА»</title>
   <link rel="stylesheet" href="../assets/css/styles.css">
   <style>
-        .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
     .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
     .brand-name { color: #2b5e0e; }
     .module-pill { background: #61b01f; color: #fff; }
@@ -155,7 +155,8 @@
       <li>Понять, что такое условие и зачем оно нужно в программировании</li>
       <li>Научиться определять ID блоков в Minecraft</li>
       <li>Использовать условный оператор <code>если ... то</code> в коде агента</li>
-      <li>Создать программу «Агент-продавец» с командами «цены» и «купить»</li>
+      <li>Понять, что такое аргументы команд чата и как их использовать</li>
+      <li>Создать программу «Агент-продавец» с командами «цены» и «купить [номер]»</li>
     </ul>
   </div>
 
@@ -167,9 +168,10 @@
       <tr><td>Орг. момент</td><td>5 мин</td><td>Приветствие, настрой на занятие</td></tr>
       <tr><td>Что такое условие?</td><td>15 мин</td><td>Теория: условия в жизни и программировании</td></tr>
       <tr><td>ID блоков в Minecraft</td><td>15 мин</td><td>Как узнать ID блока и использовать его</td></tr>
-      <tr><td>Условный оператор</td><td>20 мин</td><td>Изучаем блок «если ... то» в Minecraft Education</td></tr>
-      <tr><td>Интерактивные задания</td><td>15 мин</td><td>Собираем алгоритмы с условиями</td></tr>
-      <tr><td>Практика: Агент-продавец</td><td>20 мин</td><td>Программа, которая реагирует на команды</td></tr>
+      <tr><td>Условный оператор</td><td>15 мин</td><td>Изучаем блок «если ... то» в Minecraft Education</td></tr>
+      <tr><td>Аргументы команд чата</td><td>10 мин</td><td>Что такое аргументы и как их использовать</td></tr>
+      <tr><td>Интерактивные задания</td><td>10 мин</td><td>Собираем алгоритмы с условиями</td></tr>
+      <tr><td>Практика: Агент-продавец</td><td>15 мин</td><td>Программа, которая реагирует на команды</td></tr>
       <tr><td>Итоги</td><td>5 мин</td><td>Проверяем знания</td></tr>
       <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
     </table>
@@ -254,24 +256,20 @@
     <div class="data-table-wrap">
       <table class="data-table">
         <tr><th>Блок</th><th>Что проверяет</th><th>Пример</th></tr>
-        <tr><td><code>если [ID блока] == [значение]</code></td><td>Равны ли ID блока и число</td><td>если ID блока == 3 → это земля</td></tr>
-        <tr><td><code>если перед агентом блок</code></td><td>Есть ли блок перед агентом</td><td>если перед_агентом_блок → повернуть</td></tr>
-        <tr><td><code>если [условие] то [команды] иначе [команды]</code></td><td>Выполняет разные команды</td><td>если ID == 1 то поставить камень иначе поставить землю</td></tr>
+        <tr><td><img src="files/les_1-6_2.png" style="max-width:100%;"/></td><td>Равны ли ID блока и число</td><td>если ID блока == 3 → это земля</td></tr>
+        <tr><td><img src="files/les_1-6_3.png" style="max-width:100%;"/></td><td>Есть ли блок перед агентом</td><td>если перед_агентом_блок → повернуть</td></tr>
+        <tr><td><img src="files/les_1-6_4.png" style="max-width:100%;"/></td><td>Выполняет разные команды</td><td>если ID == 1 то поставить камень иначе поставить землю</td></tr>
       </table>
     </div>
 
     <div class="code-block">
       <div class="code-head">
         <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
-        <span class="fname">условие_агент.txt</span>
+        <span class="fname">условие_агент.makecode</span>
       </div>
-      <pre class="code"><code><span class="tok-c">-- Агент проверяет, какой блок перед ним</span>
-<span class="tok-k">если</span> ID_блока_перед_агентом == 3 <span class="tok-k">то</span>
-    <span class="tok-n">сказать</span> "Это земля!"
-    <span class="tok-n">поставить</span> блок_изумруда
-<span class="tok-k">иначе</span>
-    <span class="tok-n">сказать</span> "Это не земля"
-    <span class="tok-n">двигаться</span> вперёд</code></pre>
+      <pre class="code"><code>
+        <img src="files/les_1-6_5.png" style="width: 100%;"/>
+      </code></pre>
     </div>
 
     <div class="note">
@@ -279,19 +277,107 @@
     </div>
   </div>
 
+  <!-- НОВАЯ ЧАСТЬ: Аргументы команд чата -->
+  <div class="card">
+    <h2><span class="num">4</span> Аргументы команд чата</h2>
+    
+    <p>Когда игрок пишет команду в чат, он может добавить к ней <b>аргументы</b> — дополнительные данные, которые помогут агенту понять, что именно нужно сделать.</p>
+
+    <h3>Что такое аргумент?</h3>
+    <p><b>Аргумент</b> — это дополнительная информация, которую игрок передаёт вместе с командой. Например:</p>
+    <ul>
+      <li><b>«купить 1»</b> — аргумент <b>1</b> означает, что игрок хочет купить первый товар</li>
+      <li><b>«купить 3»</b> — аргумент <b>3</b> означает, что игрок хочет купить третий товар</li>
+      <li><b>«телепорт 100 64 200»</b> — аргументы <b>100, 64, 200</b> — это координаты для телепортации</li>
+    </ul>
+
+    <div class="note">
+      <b>📖 Аналогия:</b> представь, что ты в ресторане. Ты говоришь официанту: <b>«Принеси блюдо №3»</b>. Здесь «блюдо» — это команда, а «№3» — аргумент, который указывает, какое именно блюдо принести.
+    </div>
+
+    <h3>Как использовать аргументы в Minecraft Education?</h3>
+    <p>В блоке <code>при команде "[текст]"</code> можно указать переменную, которая будет хранить аргумент:</p>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">аргументы_команд.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Команда с одним аргументом</span>
+<img src="files/les_1-6_12.png"/>
+
+<span class="tok-c">-- Команда с несколькими аргументами</span>
+<img src="files/les_1-6_13.png"/></code></pre>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Команда игрока</th><th>Аргумент(ы)</th><th>Что получает агент</th></tr>
+        <tr><td><code>купить 1</code></td><td>1</td><td>номер товара = 1</td></tr>
+        <tr><td><code>купить 3</code></td><td>3</td><td>номер товара = 3</td></tr>
+        <tr><td><code>построить 5 10</code></td><td>5, 10</td><td>ширина = 5, высота = 10</td></tr>
+        <tr><td><code>телепорт 100 64 200</code></td><td>100, 64, 200</td><td>координаты X, Y, Z</td></tr>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>💡 Важно:</b> чтобы использовать аргументы, мы перетаскиваем кружочек с названием из вкладки "Переменные".
+      <br>
+      <br>
+      <img src="files/les_1-6_14.png" style="width: 30%;"/>
+    </div>
+
+    <!-- Интерактив: проверка аргументов -->
+    <div class="interactive-box" id="argsQuiz">
+      <h3>🧠 Проверь понимание аргументов</h3>
+      <p>Игрок написал в чате <b>«купить 4»</b>. Какое значение получит аргумент <code><b>номер</b></code>?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">"купить"</div>
+        <div class="choice-card" data-correct-choice="true">4</div>
+        <div class="choice-card" data-correct-choice="false">"номер"</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('argsQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+    <!-- AI-помощник -->
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%BD%D1%8B%D0%B9%20%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое условный оператор?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%83%D0%B7%D0%BD%D0%B0%D1%82%D1%8C%20ID%20%D0%B1%D0%BB%D0%BE%D0%BA%D0%B0%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="alice-q-btn">Как узнать ID блока в Minecraft?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D0%B0%D1%80%D0%B3%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B%20%D0%B2%20%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D0%B0%D1%85%20%D1%87%D0%B0%D1%82%D0%B0%3F%22%7D" target="_blank" class="alice-q-btn">Что такое аргументы в командах?</a>
+    </div>
+    <div class="ai-answer">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про условия или аргументы.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, объясни аргументы команд чата в Minecraft Education»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+  
   <!-- Интерактивные задания -->
   <div class="card">
-    <h2><span class="num">4</span> Интерактивные задания</h2>
+    <h2><span class="num">5</span> Интерактивные задания</h2>
 
     <div class="interactive-box" id="conditionSort">
       <h3>🧩 Собери алгоритм с условием</h3>
       <p>Перетащи шаги в правильном порядке, чтобы агент проверял блок перед собой (если перед ним <i>Земля</i>, то Агент говорит "Это земля!" и поворачивается налево):</p>
       <div class="sequence-list" id="sequenceCondition">
-        <div class="sort-item" draggable="true" data-correct-step="2">повернуться налево</div>
-        <div class="sort-item" draggable="true" data-correct-step="0">если ID_блока == 3 то</div>
-        <div class="sort-item" draggable="true" data-correct-step="4">двигаться вперёд</div>
-        <div class="sort-item" draggable="true" data-correct-step="3">иначе</div>
-        <div class="sort-item" draggable="true" data-correct-step="1">сказать "Это земля!"</div>
+        <div class="sort-item" draggable="true" data-correct-step="2"><img src="files/les_1-6_8.png" style="max-width:100%;"/></div>
+        <div class="sort-item" draggable="true" data-correct-step="0"><img src="files/les_1-6_6.png" style="max-width:100%;"/></div>
+        <div class="sort-item" draggable="true" data-correct-step="4"><img src="files/les_1-6_10.png" style="max-width:100%;"/></div>
+        <div class="sort-item" draggable="true" data-correct-step="3"><img src="files/les_1-6_9.png" style="max-width:100%;"/></div>
+        <div class="sort-item" draggable="true" data-correct-step="1"><img src="files/les_1-6_7.png" style="max-width:100%;"/></div>
       </div>
       <button class="action-btn" onclick="checkSequence('conditionSort')">✅ Проверить порядок</button>
       <div class="activity-result"></div>
@@ -301,10 +387,9 @@
       <h3>🔍 Что сделает агент?</h3>
       <p>Какой блок поставит агент, если ID блока перед ним равен 1 (камень)?</p>
       <div class="code-block" style="margin: 8px 0;">
-        <pre class="code"><code>если ID_блока == 1 то
-    поставить блок_земли
-иначе
-    поставить блок_изумруда</code></pre>
+        <pre class="code"><code>
+          <img src="files/les_1-6_11.png" style="max-width:100%;"/>
+        </code></pre>
       </div>
       <div class="choice-grid">
         <div class="choice-card" data-correct-choice="true">Землю (ID 3)</div>
@@ -318,74 +403,91 @@
 
   <!-- Практика: Агент-продавец -->
   <div class="card">
-    <h2><span class="num">5</span> Практика: Агент-продавец</h2>
+    <h2><span class="num">6</span> Практика: Агент-продавец</h2>
     <p>Теперь создадим настоящую программу! Агент будет работать продавцом в магазине.</p>
 
     <h3>Как это работает:</h3>
     <ul>
       <li>Игрок пишет в чате <b>«цены»</b> — агент показывает стоимость товаров</li>
-      <li>Игрок кидает изумруды на землю и пишет <b>«купить [1-5]»</b> — агент собирает их</li>
-      <li>Агент проверяет, какой предмет запросил игрок (число после «купить») и сколько изумрудов дал игрок</li>
-      <li>В зависимости от количества изумрудов агент выдаёт нужный предмет или говорит, что изумрудов не хватает</li>
+      <li>Игрок кидает изумруды на землю и пишет <b>«купить [номер]»</b> — например, <b>«купить 2»</b></li>
+      <li>Агент собирает изумруды и проверяет, сколько их</li>
+      <li>Агент смотрит на аргумент <b>номер</b> — какой товар хочет игрок</li>
+      <li>Если изумрудов достаточно, агент выдаёт товар. Если нет — говорит, что не хватает</li>
     </ul>
 
     <div class="data-table-wrap">
       <table class="data-table">
-        <tr><th>Предмет</th><th>ID</th><th>Цена (изумруды)</th></tr>
-        <tr><td>Земля (Dirt)</td><td>3</td><td>1</td></tr>
-        <tr><td>Камень (Stone)</td><td>1</td><td>2</td></tr>
-        <tr><td>Дерево (Oak Wood)</td><td>17</td><td>3</td></tr>
-        <tr><td>Золото (Gold)</td><td>14</td><td>5</td></tr>
-        <tr><td>Алмаз (Diamond)</td><td>56</td><td>10</td></tr>
+        <tr><th>Номер</th><th>Предмет</th><th>Цена (изумруды)</th></tr>
+        <tr><td>1</td><td>Земля (Dirt)</td><td>1</td></tr>
+        <tr><td>2</td><td>Камень (Stone)</td><td>2</td></tr>
+        <tr><td>3</td><td>Дерево (Oak Wood)</td><td>3</td></tr>
+        <tr><td>4</td><td>Золото (Gold)</td><td>5</td></tr>
+        <tr><td>5</td><td>Алмаз (Diamond)</td><td>10</td></tr>
       </table>
     </div>
 
     <div class="code-block">
       <div class="code-head">
         <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
-        <span class="fname">агент_продавец.txt</span>
+        <span class="fname">алгоритм_агент_продавец.txt</span>
       </div>
-      <pre class="code"><code><span class="tok-c">-- Агент-продавец: проверяет команды игрока</span>
-<span class="tok-k">если</span> команда == "цены" <span class="tok-k">то</span>
-    <span class="tok-n">сказать</span> "Земля - 1 изумруд, Камень - 2, Дерево - 3, Золото - 5, Алмаз - 10"
+      <pre class="code"><code><span class="tok-c">-- Агент-продавец с аргументами</span>
 
-<span class="tok-k">если</span> команда == "купить [1-5]" <span class="tok-k">то</span>
-    <span class="tok-c">-- Агент подбирает изумруды</span>
-    <span class="tok-n">подобрать</span> изумруд
+<span class="tok-k">при</span> команде "цены" [
+    <span class="tok-n">сказать</span> "1-Земля(1), 2-Камень(2), 3-Дерево(3), 4-Золото(5), 5-Алмаз(10)"
+]
+
+<span class="tok-k">при</span> команде "купить $номер" [
+    <span class="tok-c">-- Агент подбирает изумруды с земли</span>
+    <span class="tok-n">подобрать</span> предмет
     <span class="tok-k">если</span> ID_предмета != 133 <span class="tok-k">то</span>
-        <span class="tok-n">сказать</span> "Неизвестная валюта"
+        <span class="tok-n">сказать</span> "Кидай на землю изумруды!"
     <span class="tok-k">иначе</span>
-        <span class="tok-k">если</span> НУЖНЫЙ_ПРЕДМЕТ == 1 <span class="tok-k">и</span> КОЛ-ВО_изумрудов == 1 <span class="tok-k">то</span>
+        <span class="tok-c">-- Проверяем, сколько изумрудов подобрал агент</span>
+        <span class="tok-n">количество</span> = количество_предметов_в_руке
+        <span class="tok-k">если</span> $номер == 1 <span class="tok-k">и</span> количество >= 1 <span class="tok-k">то</span>
             <span class="tok-n">выдать</span> Землю
-        <span class="tok-k">иначе</span> <span class="tok-k">если</span> НУЖНЫЙ_ПРЕДМЕТ == 2 <span class="tok-k">и</span> КОЛ-ВО_изумрудов == 2 <span class="tok-k">то</span>
+        <span class="tok-k">иначе</span> <span class="tok-k">если</span> $номер == 2 <span class="tok-k">и</span> количество >= 2 <span class="tok-k">то</span>
             <span class="tok-n">выдать</span> Камень
-        <span class="tok-k">иначе</span> <span class="tok-k">если</span> НУЖНЫЙ_ПРЕДМЕТ == 3 <span class="tok-k">и</span> КОЛ-ВО_изумрудов == 3 <span class="tok-k">то</span>
-            <span class="tok-n">выдать</span> Дерево 
-        <span class="tok-k">иначе</span> <span class="tok-k">если</span> НУЖНЫЙ_ПРЕДМЕТ == 4 <span class="tok-k">и</span> КОЛ-ВО_изумрудов == 5 <span class="tok-k">то</span>
+        <span class="tok-k">иначе</span> <span class="tok-k">если</span> $номер == 3 <span class="tok-k">и</span> количество >= 3 <span class="tok-k">то</span>
+            <span class="tok-n">выдать</span> Дерево
+        <span class="tok-k">иначе</span> <span class="tok-k">если</span> $номер == 4 <span class="tok-k">и</span> количество >= 5 <span class="tok-k">то</span>
             <span class="tok-n">выдать</span> Золото
-        <span class="tok-k">иначе</span> <span class="tok-k">если</span> НУЖНЫЙ_ПРЕДМЕТ == 5 <span class="tok-k">и</span> КОЛ-ВО_изумрудов == 10 <span class="tok-k">то</span>
+        <span class="tok-k">иначе</span> <span class="tok-k">если</span> $номер == 5 <span class="tok-k">и</span> количество >= 10 <span class="tok-k">то</span>
             <span class="tok-n">выдать</span> Алмаз
         <span class="tok-k">иначе</span>
-            <span class="tok-n">сказать</span> "Я не понимаю, что ты хочешь приобрести!"</code></pre>
+            <span class="tok-n">сказать</span> "Не хватает изумрудов!"</code></pre>
+    </div>
+
+    <div class="note">
+      <b>⚡ Важно:</b> аргумент <code>$номер</code> позволяет одной командой обрабатывать все 5 товаров! Это делает программу гибкой и удобной.
     </div>
   </div>
 
   <!-- Практическое задание с кнопкой -->
   <div class="task-box" id="practiceSeller">
     <h2>🛠️ Практическое задание: Агент-продавец</h2>
-    <div class="progress-track"><div class="progress-fill" id="sellerProgressFill"></div></div>
-    <span class="progress-label" id="sellerProgressLabel">Выполнено шагов: 0 из 3</span>
-    <p>Запусти Minecraft Education и создай программу «Агент-продавец»:</p>
+    <div class="progress-track"><div class="progress-fill-minecraft" id="sellerProgressFill"></div></div>
+    <span class="progress-label" id="sellerProgressLabel">Выполнено шагов: 0 из 4</span>
+    <p>Запусти Minecraft Education и создай программу «Агент-продавец» с аргументами:</p>
     <ul class="task-steps">
-      <li><input type="checkbox" id="sl0" onchange="updateSellerProgress()"><label for="sl0">Напиши код, который отвечает на команду «цены» — показывает список товаров</label></li>
-      <li><input type="checkbox" id="sl1" onchange="updateSellerProgress()"><label for="sl1">Напиши код, который подбирает предмет и определяет его тип</label></li>
-      <li><input type="checkbox" id="sl2" onchange="updateSellerProgress()"><label for="sl2">Добавь условия для выдачи предмета в зависимости от сообщения в чате</label></li>
+      <li><input type="checkbox" id="sl0" onchange="updateSellerProgress()"><label for="sl0">Напиши код для команды «цены» — показывает список товаров</label></li>
+      <li><input type="checkbox" id="sl1" onchange="updateSellerProgress()"><label for="sl1">Напиши код для команды «купить $номер» с аргументом</label></li>
+      <li><input type="checkbox" id="sl2" onchange="updateSellerProgress()"><label for="sl2">Добавь проверку: если поднятый предмет не изумруд — сказать "Кидай изумруды!"</label></li>
+      <li><input type="checkbox" id="sl3" onchange="updateSellerProgress()"><label for="sl3">Добавь условия для выдачи предмета в зависимости от $номер и количества изумрудов</label></li>
     </ul>
 
     <button class="view-code-btn" onclick="openCodeModal()">🔍 Посмотреть код</button>
     <div class="note" style="margin-top: 12px;">
-      <b>💡 Подсказка:</b> для подбора предмета с земли используй блок <code>подобрать предмет</code>. Для определения ID используй <code>ID предмета</code>.
+      <b>💡 Подсказка:</b> для подсчёта изумрудов используй блок <code>количество предметов в ячейке</code>. Аргумент <code>$номер</code> получает число, которое игрок написал после команды.
     </div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
   </div>
 
   <!-- Опрос -->
@@ -410,61 +512,30 @@
 
     <div class="quiz-question" data-name="cq2" data-correct="a">
       <p class="quiz-q-text">3. Какой блок в Minecraft Education используется для условий?</p>
-      <label><input type="radio" name="cq2" value="a"> если ... то</label>
-      <label><input type="radio" name="cq2" value="b"> повторить N раз</label>
-      <label><input type="radio" name="cq2" value="c"> двигаться вперёд</label>
+      <label><input type="radio" name="cq2" value="a"> <img src="files/les_1-6_15.png"/></label>
+      <label><input type="radio" name="cq2" value="b"> <img src="files/les_1-4_1.png"/></label>
+      <label><input type="radio" name="cq2" value="c"> <img src="files/les_1-2_2.png"/></label>
       <div class="q-feedback"></div>
     </div>
 
     <div class="quiz-question" data-name="cq3" data-correct="b">
-      <p class="quiz-q-text">4. Зачем знать ID блоков?</p>
-      <label><input type="radio" name="cq3" value="a"> Чтобы красиво строить</label>
-      <label><input type="radio" name="cq3" value="b"> Чтобы проверять, какой блок перед агентом</label>
-      <label><input type="radio" name="cq3" value="c"> Чтобы телепортироваться</label>
+      <p class="quiz-q-text">4. Что такое аргумент в команде чата?</p>
+      <label><input type="radio" name="cq3" value="a"> Это название команды</label>
+      <label><input type="radio" name="cq3" value="b"> Это дополнительное число или слово, которое передаётся вместе с командой</label>
+      <label><input type="radio" name="cq3" value="c"> Это блок для повторения</label>
       <div class="q-feedback"></div>
     </div>
 
-    <div class="quiz-question" data-name="cq4" data-correct="b">
-      <p class="quiz-q-text">5. Что делает агент при команде «цены» в проекте «Агент-продавец»?</p>
-      <label><input type="radio" name="cq4" value="a"> Строит дом</label>
-      <label><input type="radio" name="cq4" value="b"> Показывает список товаров и их цену</label>
-      <label><input type="radio" name="cq4" value="c"> Покупает предметы</label>
+    <div class="quiz-question" data-name="cq4" data-correct="a">
+      <p class="quiz-q-text">5. Если игрок написал <b>«купить 3»</b>, какое значение получит аргумент <code>$номер</code>?</p>
+      <label><input type="radio" name="cq4" value="a"> 3</label>
+      <label><input type="radio" name="cq4" value="b"> "купить"</label>
+      <label><input type="radio" name="cq4" value="c"> "номер"</label>
       <div class="q-feedback"></div>
     </div>
 
     <button class="quiz-btn" onclick="checkQuiz('quizConditions')">Проверить ответы</button>
     <div class="quiz-result"></div>
-  </div>
-
-  <!-- Рефлексия -->
-  <div class="reflection-box">
-    <h2>💭 Рефлексия</h2>
-    <p>Напиши, что тебе понравилось, а что было сложно:</p>
-    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
-  </div>
-
-  <!-- AI-помощник -->
-  <div class="ai-helper">
-    <div class="ai-head">
-      <span style="font-size:32px; line-height:1;">🤖</span>
-      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
-    </div>
-    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
-    <div class="ai-buttons">
-      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%BD%D1%8B%D0%B9%20%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое условный оператор?</a>
-      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%83%D0%B7%D0%BD%D0%B0%D1%82%D1%8C%20ID%20%D0%B1%D0%BB%D0%BE%D0%BA%D0%B0%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="alice-q-btn">Как узнать ID блока в Minecraft?</a>
-      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BD%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D1%83%20%D0%B4%D0%BB%D1%8F%20%D0%B0%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как программировать агента?</a>
-    </div>
-    <div class="ai-answer">
-      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
-    </div>
-    <div class="ai-real-tip">
-      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про условия или Minecraft.<br>
-      <span class="prompt-example">Просто скажи: «Алиса, объясни условные операторы для детей»</span>
-      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
-        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
-      </div>
-    </div>
   </div>
 
   <!-- Навигация -->
@@ -503,30 +574,33 @@
       <p>На фотографии показан не полный код программы. Посмотри внимательно, доделай программу самостоятельно по такому же принципу.</p>
       <img src="files/les_1-6_1.png" alt="Код программы Агент-продавец" class="code-image" id="codeImage" style="max-width:100%; border-radius:12px; border:1px solid #d0e8c0; display:block;" onerror="this.style.display='none'; document.getElementById('codeFallback').style.display='block';">
       <div id="codeFallback" style="display:none; background: #f6fcf2; padding: 16px; border-radius: 12px; border: 1px solid #b8d9a8; font-family: 'Courier New', monospace; white-space: pre-wrap; font-size: 0.9rem; line-height: 1.6;">
-        <span style="color:#6a9955;">-- Агент-продавец: полная программа</span>
-        <span style="color:#c678dd;">повторить</span> навсегда [
-            <span style="color:#c678dd;">если</span> команда_игрока == "цены" <span style="color:#c678dd;">то</span>
-                <span style="color:#e06c75;">сказать</span> "Земля - 1 изумруд, Камень - 2, Дерево - 3, Золото - 5, Алмаз - 10"
-            
-            <span style="color:#c678dd;">если</span> команда_игрока == "купить" <span style="color:#c678dd;">то</span>
-                <span style="color:#e06c75;">подобрать</span> предмет_с_земли
-                <span style="color:#c678dd;">если</span> ID_предмета == 3 <span style="color:#c678dd;">то</span>
-                    <span style="color:#e06c75;">выдать</span> 1 изумруд
-                <span style="color:#c678dd;">иначе</span> <span style="color:#c678dd;">если</span> ID_предмета == 1 <span style="color:#c678dd;">то</span>
-                    <span style="color:#e06c75;">выдать</span> 2 изумруда
-                <span style="color:#c678dd;">иначе</span> <span style="color:#c678dd;">если</span> ID_предмета == 17 <span style="color:#c678dd;">то</span>
-                    <span style="color:#e06c75;">выдать</span> 3 изумруда
-                <span style="color:#c678dd;">иначе</span> <span style="color:#c678dd;">если</span> ID_предмета == 14 <span style="color:#c678dd;">то</span>
-                    <span style="color:#e06c75;">выдать</span> 5 изумрудов
-                <span style="color:#c678dd;">иначе</span> <span style="color:#c678dd;">если</span> ID_предмета == 56 <span style="color:#c678dd;">то</span>
-                    <span style="color:#e06c75;">выдать</span> 10 изумрудов
+        <span style="color:#6a9955;">-- Агент-продавец с аргументами</span>
+        <span style="color:#c678dd;">при</span> команде "цены" [
+            <span style="color:#e06c75;">сказать</span> "1-Земля(1), 2-Камень(2), 3-Дерево(3), 4-Золото(5), 5-Алмаз(10)"
+        ]
+        
+        <span style="color:#c678dd;">при</span> команде "купить $номер" [
+            <span style="color:#e06c75;">подобрать</span> предмет
+            <span style="color:#c678dd;">если</span> ID_предмета != 133 <span style="color:#c678dd;">то</span>
+                <span style="color:#e06c75;">сказать</span> "Кидай изумруды!"
+            <span style="color:#c678dd;">иначе</span>
+                количество = <span style="color:#e06c75;">количество_предметов_в_руке</span>
+                <span style="color:#c678dd;">если</span> $номер == 1 <span style="color:#c678dd;">и</span> количество >= 1 <span style="color:#c678dd;">то</span>
+                    <span style="color:#e06c75;">выдать</span> Землю
+                <span style="color:#c678dd;">иначе</span> <span style="color:#c678dd;">если</span> $номер == 2 <span style="color:#c678dd;">и</span> количество >= 2 <span style="color:#c678dd;">то</span>
+                    <span style="color:#e06c75;">выдать</span> Камень
+                <span style="color:#c678dd;">иначе</span> <span style="color:#c678dd;">если</span> $номер == 3 <span style="color:#c678dd;">и</span> количество >= 3 <span style="color:#c678dd;">то</span>
+                    <span style="color:#e06c75;">выдать</span> Дерево
+                <span style="color:#c678dd;">иначе</span> <span style="color:#c678dd;">если</span> $номер == 4 <span style="color:#c678dd;">и</span> количество >= 5 <span style="color:#c678dd;">то</span>
+                    <span style="color:#e06c75;">выдать</span> Золото
+                <span style="color:#c678dd;">иначе</span> <span style="color:#c678dd;">если</span> $номер == 5 <span style="color:#c678dd;">и</span> количество >= 10 <span style="color:#c678dd;">то</span>
+                    <span style="color:#e06c75;">выдать</span> Алмаз
                 <span style="color:#c678dd;">иначе</span>
-                    <span style="color:#e06c75;">сказать</span> "Этот предмет не продаётся!"
+                    <span style="color:#e06c75;">сказать</span> "Не хватает изумрудов!"
         ]
       </div>
     </div>
   </div>
-</div>
 </div>
 
 <script src="../assets/js/lesson.js"></script>
@@ -536,7 +610,7 @@
     const now = new Date();
     const day = String(now.getDate()).padStart(2, '0');
     const month = String(now.getMonth() + 1).padStart(2, '0');
-    return day + month; // например, 1407 для 14 июля
+    return day + month;
   }
   const CORRECT_PASSWORD = generatePassword();
 
@@ -544,7 +618,6 @@
   function openCodeModal() {
     document.getElementById('codeModal').classList.add('active');
     document.getElementById('wrongPasswordMsg').classList.remove('show');
-    // Скрываем код при открытии (если он был показан)
     document.getElementById('codeContainer').style.display = 'none';
     document.getElementById('codePasswordInput').value = '';
     document.getElementById('codePasswordInput').focus();
@@ -552,7 +625,6 @@
 
   function closeCodeModal() {
     document.getElementById('codeModal').classList.remove('active');
-    // Скрываем код при закрытии
     document.getElementById('codeContainer').style.display = 'none';
   }
 
@@ -565,11 +637,9 @@
     if (password === CORRECT_PASSWORD) {
       wrongMsg.classList.remove('show');
       codeContainer.style.display = 'block';
-      // Пытаемся показать картинку
       const img = document.getElementById('codeImage');
       if (img) {
         img.style.display = 'block';
-        // Если картинка не загрузилась, показываем текстовую версию
         if (!img.complete || img.naturalHeight === 0) {
           document.getElementById('codeFallback').style.display = 'block';
           img.style.display = 'none';
@@ -583,32 +653,31 @@
     }
   }
 
-  // Закрытие по клику на фон
   document.getElementById('codeModal').addEventListener('click', function(e) {
     if (e.target === this) closeCodeModal();
   });
 
   // === Интерактивные функции ===
-  // function checkChoices(containerId) {
-  //   const container = document.getElementById(containerId);
-  //   const cards = container.querySelectorAll('.choice-card');
-  //   let correct = 0;
-  //   cards.forEach(card => {
-  //     const isCorrect = card.getAttribute('data-correct-choice') === 'true';
-  //     card.classList.remove('selected-correct', 'selected-wrong');
-  //     if (isCorrect) {
-  //       card.classList.add('selected-correct');
-  //       correct++;
-  //     } else {
-  //       card.classList.add('selected-wrong');
-  //     }
-  //   });
-  //   const result = container.querySelector('.activity-result');
-  //   if (result) {
-  //     result.innerHTML = correct === 1 ? '✅ Всё верно!' : '❌ Попробуй ещё раз. Подумай, какой ответ правильный.';
-  //     result.style.display = 'block';
-  //   }
-  // }
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    let correct = 0;
+    cards.forEach(card => {
+      const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      if (isCorrect) {
+        card.classList.add('selected-correct');
+        correct++;
+      } else {
+        card.classList.add('selected-wrong');
+      }
+    });
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct === 1 ? '✅ Всё верно!' : '❌ Попробуй ещё раз. Подумай, какой ответ правильный.';
+      result.style.display = 'block';
+    }
+  }
 
   function checkSequence(containerId) {
     const container = document.getElementById(containerId);

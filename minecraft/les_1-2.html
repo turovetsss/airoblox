@@ -24,6 +24,227 @@
     .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
     .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
     .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+
+    /* ===== Minecraft Match Block in Page Colors ===== */
+.minecraft-match {
+  background: #fafff7;
+  border: 2px solid #b8d9a8;
+  border-radius: 24px;
+  padding: 34px 38px;
+  box-shadow: 0 16px 40px rgba(97, 176, 31, 0.12);
+}
+
+.minecraft-match h3 {
+  color: #2b5e0e;
+  font-family: 'Fredoka', sans-serif;
+  margin-bottom: 0.3em;
+}
+
+.minecraft-match p {
+  color: #4a6a3a;
+  margin-bottom: 1.5em;
+}
+
+.minecraft-match .minecraft-match-row {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+  margin: 16px 0;
+  padding: 12px;
+  background: #f6fcf2;
+  border-radius: 16px;
+  border: 1px solid #b8d9a8;
+  min-height: 100px;
+}
+
+.minecraft-match .minecraft-match-key {
+  background: #f0f9eb;
+  border-radius: 12px;
+  padding: 8px;
+  text-align: center;
+  border: 2px solid #b8d9a8;
+  box-shadow: inset 0 -3px 0 #d0ebc0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 90px;
+  flex: 7;
+}
+
+.minecraft-match .minecraft-code-screenshot {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.minecraft-match .code-screenshot {
+  width: 100%;
+  height: auto;
+  max-height: 160px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 2px solid #b8d9a8;
+  box-shadow: 0 4px 12px rgba(97, 176, 31, 0.15);
+  background: #fafff7;
+  padding: 6px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.minecraft-match .code-screenshot:hover {
+  transform: scale(1.03);
+  border-color: #61b01f;
+}
+
+.minecraft-match .minecraft-select {
+  width: 100%;
+  height: 100%;
+  min-height: 90px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 2px solid #b8d9a8;
+  font-size: 1rem;
+  font-family: 'Nunito', sans-serif;
+  background: #fafff7;
+  color: #1f2a1a;
+  box-shadow: inset 0 2px 4px rgba(97, 176, 31, 0.08);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.minecraft-match .minecraft-select:focus {
+  outline: none;
+  border-color: #61b01f;
+  box-shadow: 0 0 0 3px rgba(97, 176, 31, 0.15);
+}
+
+.minecraft-match .minecraft-select option {
+  background: #fafff7;
+  color: #1f2a1a;
+  padding: 10px 14px;
+}
+
+.minecraft-match .minecraft-select.correct {
+  border-color: #61b01f;
+  background: #e8f5e0;
+  box-shadow: 0 0 0 3px rgba(97, 176, 31, 0.15);
+}
+
+.minecraft-match .minecraft-select.incorrect {
+  border-color: #c62828;
+  background: #ffebee;
+  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.15);
+}
+
+.minecraft-match .minecraft-select.neutral {
+  border-color: #ffb238;
+  background: #fff3dc;
+}
+
+.minecraft-match .minecraft-match-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #61b01f;
+  color: #fff;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 99px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  box-shadow: 0 8px 24px rgba(97, 176, 31, 0.25);
+  transition: all 0.15s ease;
+  margin-top: 16px;
+  border: 2px solid #61b01f;
+}
+
+.minecraft-match .minecraft-match-btn:hover {
+  background: #4d8c18;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(97, 176, 31, 0.35);
+}
+
+.minecraft-match .minecraft-match-btn:active {
+  transform: translateY(0px);
+}
+
+.minecraft-match .minecraft-match-result {
+  margin-top: 20px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  padding: 16px 24px;
+  border-radius: 14px;
+  background: #f0f9eb;
+  border: 2px solid #b8d9a8;
+  color: #4a6a3a;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.minecraft-match .minecraft-match-result.done {
+  background: #e8f5e0;
+  border-color: #61b01f;
+  color: #2b5e0e;
+  box-shadow: 0 0 20px rgba(97, 176, 31, 0.1);
+}
+
+.minecraft-match .minecraft-match-result.fail {
+  background: #ffebee;
+  border-color: #c62828;
+  color: #c62828;
+  box-shadow: 0 0 20px rgba(198, 40, 40, 0.1);
+}
+
+/* Стили для контейнера выпадающего списка */
+.minecraft-match .minecraft-match-row > div:last-child {
+  flex: 3;
+  display: flex;
+  align-items: stretch;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .minecraft-match {
+    padding: 20px 16px;
+  }
+  
+  .minecraft-match .minecraft-match-row {
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px;
+    min-height: auto;
+  }
+  
+  .minecraft-match .minecraft-match-key {
+    min-height: 70px;
+    flex: none !important;
+    width: 100%;
+  }
+  
+  .minecraft-match .minecraft-match-row > div:last-child {
+    flex: none !important;
+    width: 100%;
+  }
+  
+  .minecraft-match .code-screenshot {
+    max-height: 100px;
+  }
+  
+  .minecraft-match .minecraft-select {
+    min-height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .minecraft-match .code-screenshot {
+    max-height: 80px;
+  }
+}
   </style>
 </head>
 <body class="lesson-page">
@@ -104,10 +325,9 @@
         <caption>Основные элементы Minecraft Education</caption>
         <tr><th>Элемент</th><th>Для чего нужен</th></tr>
         <tr><td>Агент</td><td>Робот, который выполняет наш код</td></tr>
-        <tr><td>Кнопка «Агент»</td><td>Вызов агента и панели управления</td></tr>
         <tr><td>Редактор кода</td><td>Здесь мы собираем программу из блоков</td></tr>
         <tr><td>Инвентарь</td><td>Ресурсы, которые агент может использовать</td></tr>
-        <tr><td>Чат-команды</td><td>Специальные команды для программирования</td></tr>
+        <tr><td>Чат-команды</td><td>Специальные команды для программирования и управления миром</td></tr>
       </table>
     </div>
 
@@ -138,67 +358,90 @@
     <div class="data-table-wrap">
       <table class="data-table">
         <tr><th>Блок</th><th>Действие</th></tr>
-        <tr><td><code>двигаться вперёд</code></td><td>Агент делает шаг в направлении взгляда</td></tr>
-        <tr><td><code>повернуть налево</code></td><td>Поворот агента на 90° влево</td></tr>
-        <tr><td><code>повернуть направо</code></td><td>Поворот агента на 90° вправо</td></tr>
-        <tr><td><code>поставить блок</code></td><td>Ставит блок перед собой (из инвентаря)</td></tr>
-        <tr><td><code>разрушить блок</code></td><td>Разрушает блок перед агентом</td></tr>
+        <tr><td><img src="files/les_1-2_2.png"/></td><td>Агент делает шаг в направлении взгляда</td></tr>
+        <tr><td><img src="files/les_1-2_3.png"/></td><td>Поворот агента на 90° влево</td></tr>
+        <tr><td><img src="files/les_1-2_4.png"/></td><td>Поворот агента на 90° вправо</td></tr>
+        <tr><td><img src="files/les_1-2_5.png"/></td><td>Ставит блок перед собой (из инвентаря)</td></tr>
+        <tr><td><img src="files/les_1-2_6.png"/></td><td>Разрушает блок перед агентом</td></tr>
       </table>
     </div>
 
     <div class="code-block">
       <div class="code-head"><div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div><span class="fname">алгоритм_агент.txt</span></div>
       <pre class="code"><code><span class="tok-c">-- Алгоритм: агент строит башню</span>
-1. Двигаться впёред (повторить 5 раз)
-2. Поставить блок (изумруд)
-3. Повернуть направо
-4. Двигаться впёред (повторить 3 раза)
-5. Поставить блок (золотой)</code></pre>
+1. Переместиться на 1 блок вперёд (повторить 5 раз)
+2. Разместить впёред (изумруд)
+3. Повернуться вправо
+4. Переместиться на 1 блок вперёд (повторить 3 раза)
+5. Разместить впёред (золотой)</code></pre>
     </div>
 
     <p>В Minecraft Education это выглядит как последовательность блоков-пазлов. Скоро мы изучим циклы, чтобы не писать одну и ту же команду много раз.</p>
 
     <div class="media-block">
-      <img src="../assets/images/lesson-1.2/agent_code.png" alt="Визуальный код агента" style="max-width:100%; border-radius:12px; border:1px solid #d0e8c0;">
+      <h2 style="text-align: center;">Визуальный код Агента</h2>      
+      <div class="imggg" style="display: flex; justify-content: center;"  >
+      <img src="files/les_1-2_1.png" alt="Визуальный код агента" style="max-width:100%; border-radius:12px; border:1px solid #d0e8c0;">
+      </div>
+    </div>
     </div>
 
-    <!-- Интерактив: соответствие команд -->
-    <div class="match-block" id="matchMinecraft">
-      <h3>🔑 Сопоставь команду и действие агента</h3>
-      <p>Выбери правильное действие для каждой команды:</p>
+<!-- Интерактив: соответствие команд -->
+<div class="match-block minecraft-match" id="matchMinecraft">
+  <h3>🔑 Сопоставь команду и действие агента</h3>
+  <p>Выбери правильное действие для каждой команды:</p>
 
-      <div class="match-row">
-        <div class="match-key">двигаться вперёд</div>
-        <select class="match-select" data-key="move" data-correct="шаг вперёд">
-          <option value="">— выбери —</option>
-          <option value="шаг вперёд">Шаг вперёд</option>
-          <option value="поворот">Поворот</option>
-          <option value="поставить блок">Поставить блок</option>
-        </select>
+  <div class="match-row minecraft-match-row">
+    <div class="match-key minecraft-match-key" style="flex: 7;">
+      <div class="minecraft-code-screenshot">
+        <img src="files/les_1-2_2.png" alt="Код: двигаться вперёд" class="code-screenshot">
       </div>
-      <div class="match-row">
-        <div class="match-key">повернуть налево</div>
-        <select class="match-select" data-key="turn" data-correct="поворот на 90° влево">
-          <option value="">— выбери —</option>
-          <option value="шаг вперёд">Шаг вперёд</option>
-          <option value="поворот на 90° влево">Поворот на 90° влево</option>
-          <option value="поставить блок">Поставить блок</option>
-        </select>
-      </div>
-      <div class="match-row">
-        <div class="match-key">поставить блок</div>
-        <select class="match-select" data-key="place" data-correct="установить блок">
-          <option value="">— выбери —</option>
-          <option value="убрать блок">Убрать блок</option>
-          <option value="установить блок">Установить блок</option>
-          <option value="передвинуть">Передвинуть</option>
-        </select>
-      </div>
-
-      <button class="match-btn" onclick="checkMatchBlock('matchMinecraft')">✅ Проверить</button>
-      <div class="match-result" id="matchResult"></div>
+    </div>
+    <div style="flex: 3;">
+      <select class="match-select minecraft-select" data-key="move" data-correct="шаг вперёд">
+        <option value="">— выбери —</option>
+        <option value="шаг вперёд">Шаг вперёд</option>
+        <option value="поворот">Поворот</option>
+        <option value="поставить блок">Поставить блок</option>
+      </select>
     </div>
   </div>
+
+  <div class="match-row minecraft-match-row">
+    <div class="match-key minecraft-match-key" style="flex: 7;">
+      <div class="minecraft-code-screenshot">
+        <img src="files/les_1-2_3.png" alt="Код: повернуть налево" class="code-screenshot">
+      </div>
+    </div>
+    <div style="flex: 3;">
+      <select class="match-select minecraft-select" data-key="turn" data-correct="поворот на 90° влево">
+        <option value="">— выбери —</option>
+        <option value="шаг вперёд">Шаг вперёд</option>
+        <option value="поворот на 90° влево">Поворот на 90° влево</option>
+        <option value="поставить блок">Поставить блок</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="match-row minecraft-match-row">
+    <div class="match-key minecraft-match-key" style="flex: 7;">
+      <div class="minecraft-code-screenshot">
+        <img src="files/les_1-2_5.png" alt="Код: поставить блок" class="code-screenshot">
+      </div>
+    </div>
+    <div style="flex: 3;">
+      <select class="match-select minecraft-select" data-key="place" data-correct="установить блок">
+        <option value="">— выбери —</option>
+        <option value="убрать блок">Убрать блок</option>
+        <option value="установить блок">Установить блок</option>
+        <option value="передвинуть">Передвинуть</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="match-btn minecraft-match-btn" onclick="checkMatchBlock('matchMinecraft')">✅ Проверить</button>
+  <div class="match-result minecraft-match-result" id="matchResult"></div>
+</div>
 
   <!-- Интерактивные блоки -->
   <div class="interactive-box" id="agentQuiz">
@@ -227,10 +470,37 @@
     <div class="activity-result"></div>
   </div>
 
+  <!-- AI-помощник -->
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Что такое Minecraft Education?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BD%D0%B0%D1%83%D1%87%D0%B8%D1%82%D1%8C%D1%81%D1%8F%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как программировать в Minecraft?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое алгоритм?</a>
+    </div>
+
+    <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про Minecraft или программирование.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, как заставить агента построить дом?»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
   <!-- Практическое задание -->
   <div class="task-box" id="practiceMinecraft">
     <h2>🛠️ Практическое задание: постройка моста</h2>
-    <div class="progress-track"><div class="progress-fill" id="practiceProgressFill"></div></div>
+    <div class="progress-track"><div class="progress-fill-minecraft" id="practiceProgressFill"></div></div>
     <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 5</span>
     <div class="note">Открой Minecraft Education, выполни шаги и отмечай галочками.</div>
     <ul class="task-steps">
@@ -240,6 +510,13 @@
       <li><input type="checkbox" id="pm3" onchange="updatePracticeProgress()"><label for="pm3">Собери алгоритм: повтори 4 раза [двигаться вперёд, поставить блок]</label></li>
       <li class="bonus-step"><input type="checkbox" id="pm4" onchange="updatePracticeProgress()"><label for="pm4">⭐ Бонус: добавь поворот и построй квадрат из блоков</label></li>
     </ul>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
   </div>
 
   <!-- Опрос (проверка знаний) -->
@@ -288,40 +565,6 @@
 
     <button class="quiz-btn" onclick="checkQuiz('quizMinecraft')">Проверить ответы</button>
     <div class="quiz-result"></div>
-  </div>
-
-  <!-- Рефлексия -->
-  <div class="reflection-box">
-    <h2>💭 Рефлексия</h2>
-    <p>Напиши, что тебе понравилось, а что было сложно:</p>
-    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
-  </div>
-
-  <!-- AI-помощник -->
-  <div class="ai-helper">
-    <div class="ai-head">
-      <span style="font-size:32px; line-height:1;">🤖</span>
-      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
-    </div>
-    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
-
-    <div class="ai-buttons">
-      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Что такое Minecraft Education?</a>
-      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BD%D0%B0%D1%83%D1%87%D0%B8%D1%82%D1%8C%D1%81%D1%8F%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как программировать в Minecraft?</a>
-      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое алгоритм?</a>
-    </div>
-
-    <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
-      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
-    </div>
-
-    <div class="ai-real-tip">
-      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про Minecraft или программирование.<br>
-      <span class="prompt-example">Просто скажи: «Алиса, как заставить агента построить дом?»</span>
-      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
-        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
-      </div>
-    </div>
   </div>
 
   <!-- Навигация -->

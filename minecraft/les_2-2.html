@@ -92,10 +92,9 @@
     <div class="data-table-wrap">
       <table class="data-table">
         <tr><th>Команда</th><th>Действие</th><th>Описание</th></tr>
-        <tr><td><code>вспахать</code></td><td>Превращает землю в грядку</td><td>Используется перед посадкой</td></tr>
-        <tr><td><code>посадить</code></td><td>Сажает семена в грядку</td><td>Нужно выбрать слот с семенами</td></tr>
-        <tr><td><code>собрать урожай</code></td><td>Собирает выросшие растения</td><td>Собирает урожай с грядки</td></tr>
-        <tr><td><code>полить</code></td><td>Поливает грядку водой</td><td>Ускоряет рост растений</td></tr>
+        <tr><td><img src="files/les_2-2_1.png"/></td><td>Превращает землю в грядку</td><td>Используется перед посадкой</td></tr>
+        <tr><td><img src="files/les_2-2_2.png"/></td><td>Сажает семена в грядку</td><td>Нужно выбрать слот с семенами</td></tr>
+        <tr><td><img src="files/les_2-2_3.png"/></td><td>Собирает выросшие растения</td><td>Собирает урожай с грядки</td></tr>
       </table>
     </div>
 
@@ -105,21 +104,10 @@
         <span class="fname">обработка_земли.txt</span>
       </div>
       <pre class="code"><code><span class="tok-c">-- Как агент сажает одну грядку</span>
-1. <span class="tok-n">вспахать</span>      <span class="tok-c">-- делаем грядку</span>
-2. <span class="tok-n">посадить</span>      <span class="tok-c">-- сажаем семена (из активного слота)</span>
+<img src="files/les_2-2_4.png"/>
 
 <span class="tok-c">-- Чтобы посадить целую ферму 5x5:</span>
-<span class="tok-k">повторить</span> 5 раз [
-    <span class="tok-k">повторить</span> 5 раз [
-        <span class="tok-n">вспахать</span>
-        <span class="tok-n">посадить</span>
-        <span class="tok-n">двигаться</span> вперёд
-    ]
-    <span class="tok-c">-- Переход на следующую строку</span>
-    <span class="tok-n">повернуть</span> налево
-    <span class="tok-n">двигаться</span> вперёд
-    <span class="tok-n">повернуть</span> налево
-]</code></pre>
+<img src="files/les_2-2_5.png"/></code></pre>
     </div>
 
     <div class="note">
@@ -173,86 +161,6 @@
     </div>
   </div>
 
-  <!-- Часть 3: Практика -->
-  <div class="task-box" id="practiceFarm">
-    <h2>🛠️ Практическое задание: построй ферму</h2>
-    <div class="progress-track"><div class="progress-fill" id="farmProgressFill"></div></div>
-    <span class="progress-label" id="farmProgressLabel">Выполнено шагов: 0 из 4</span>
-    <p>Создай в Minecraft Education программу для автоматической посадки фермы с разными культурами.</p>
-
-    <h3>Основное задание:</h3>
-    <ul class="task-steps">
-      <li><input type="checkbox" id="f0" onchange="updateFarmProgress()"><label for="f0">Создай ровную площадку для фермы (минимум 5×5 блоков)</label></li>
-      <li><input type="checkbox" id="f1" onchange="updateFarmProgress()"><label for="f1">Напиши программу для вспахивания всей фермы</label></li>
-      <li><input type="checkbox" id="f2" onchange="updateFarmProgress()"><label for="f2">Посади разные культуры: пшеницу, морковь и картофель</label></li>
-      <li><input type="checkbox" id="f3" onchange="updateFarmProgress()"><label for="f3">Добавь полив (поставь воду рядом с грядками)</label></li>
-      <li class="bonus-step"><input type="checkbox" id="f4" onchange="updateFarmProgress()"><label for="f4"><b>⭐ Бонус:</b> построй амбар, мельницу или дом рядом с фермой <b>(+15 робокоинов)</b></label></li>
-    </ul>
-
-    <div class="note" style="margin-top: 12px;">
-      <b>💡 Подсказка:</b> для вспахивания используй команду <code>вспахать</code>. Для смены семян — <code>выбрать слот 1</code> (пшеница), <code>выбрать слот 2</code> (морковь), <code>выбрать слот 3</code> (картофель).
-    </div>
-
-    <div class="note" style="background: #fff8e1; border-left-color: #ffbd2e;">
-      <b>🌟 Идея:</b> сделай разные грядки для разных культур. Например, первый ряд — пшеница, второй — морковь, третий — картофель. Так ферма будет выглядеть красиво и разнообразно!
-    </div>
-  </div>
-
-  <!-- Опрос -->
-  <div class="quiz-wrap" id="quizFarm">
-    <h2>📝 Проверь себя</h2>
-
-    <div class="quiz-question" data-name="fq0" data-correct="a">
-      <p class="quiz-q-text">1. Какая команда превращает землю в грядку?</p>
-      <label><input type="radio" name="fq0" value="a"> вспахать</label>
-      <label><input type="radio" name="fq0" value="b"> посадить</label>
-      <label><input type="radio" name="fq0" value="c"> собрать урожай</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="fq1" data-correct="b">
-      <p class="quiz-q-text">2. Что нужно сделать перед посадкой семян?</p>
-      <label><input type="radio" name="fq1" value="a"> Полить грядку</label>
-      <label><input type="radio" name="fq1" value="b"> Вспахать землю</label>
-      <label><input type="radio" name="fq1" value="c"> Собрать урожай</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="fq2" data-correct="a">
-      <p class="quiz-q-text">3. Какой культура быстрее растёт?</p>
-      <label><input type="radio" name="fq2" value="a"> Пшеница</label>
-      <label><input type="radio" name="fq2" value="b"> Тыква</label>
-      <label><input type="radio" name="fq2" value="c"> Картофель</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="fq3" data-correct="b">
-      <p class="quiz-q-text">4. Какую команду использовать для смены семян у агента?</p>
-      <label><input type="radio" name="fq3" value="a"> поставить блок</label>
-      <label><input type="radio" name="fq3" value="b"> выбрать слот N</label>
-      <label><input type="radio" name="fq3" value="c"> двигаться вперёд</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="fq4" data-correct="a">
-      <p class="quiz-q-text">5. Что ускоряет рост растений в Minecraft?</p>
-      <label><input type="radio" name="fq4" value="a"> Вода рядом с грядкой</label>
-      <label><input type="radio" name="fq4" value="b"> Камень вокруг грядки</label>
-      <label><input type="radio" name="fq4" value="c"> Дерево рядом</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <button class="quiz-btn" onclick="checkQuiz('quizFarm')">Проверить ответы</button>
-    <div class="quiz-result"></div>
-  </div>
-
-  <!-- Рефлексия -->
-  <div class="reflection-box">
-    <h2>💭 Рефлексия</h2>
-    <p>Напиши, что тебе понравилось, а что было сложно:</p>
-    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
-  </div>
-
   <!-- AI-помощник -->
   <div class="ai-helper">
     <div class="ai-head">
@@ -275,7 +183,88 @@
         ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
       </div>
     </div>
+  </div>  
+
+  <!-- Часть 3: Практика -->
+  <div class="task-box" id="practiceFarm">
+    <h2>🛠️ Практическое задание: построй ферму</h2>
+    <div class="progress-track"><div class="progress-fill-minecraft" id="farmProgressFill"></div></div>
+    <span class="progress-label" id="farmProgressLabel">Выполнено шагов: 0 из 4</span>
+    <p>Создай в Minecraft Education программу для автоматической посадки фермы с разными культурами.</p>
+
+    <h3>Основное задание:</h3>
+    <ul class="task-steps">
+      <li><input type="checkbox" id="f0" onchange="updateFarmProgress()"><label for="f0">Создай ровную площадку для фермы (минимум 5×5 блоков)</label></li>
+      <li><input type="checkbox" id="f1" onchange="updateFarmProgress()"><label for="f1">Напиши программу для вспахивания всей фермы</label></li>
+      <li><input type="checkbox" id="f2" onchange="updateFarmProgress()"><label for="f2">Посади разные культуры: пшеницу, морковь и картофель</label></li>
+      <li><input type="checkbox" id="f3" onchange="updateFarmProgress()"><label for="f3">Добавь полив (поставь воду рядом с грядками)</label></li>
+      <li class="bonus-step"><input type="checkbox" id="f4" onchange="updateFarmProgress()"><label for="f4"><b>⭐ Бонус:</b> построй амбар, мельницу или дом рядом с фермой <b>(+15 робокоинов)</b></label></li>
+    </ul>
+
+    <div class="note" style="margin-top: 12px;">
+      <b>💡 Подсказка:</b> для вспахивания используй команду <code>вспахать</code>. Для смены семян — <code>выбрать слот 1</code> (пшеница), <code>выбрать слот 2</code> (морковь), <code>выбрать слот 3</code> (картофель).
+    </div>
+
+    <div class="note" style="background: #fff8e1; border-left-color: #ffbd2e;">
+      <b>🌟 Идея:</b> сделай разные грядки для разных культур. Например, первый ряд — пшеница, второй — морковь, третий — картофель. Так ферма будет выглядеть красиво и разнообразно!
+    </div>
   </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizFarm">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="fq0" data-correct="a">
+      <p class="quiz-q-text">1. Какая команда превращает землю в грядку?</p>
+      <label><input type="radio" name="fq0" value="a"> <img src="files/les_2-2_1.png"/></label>
+      <label><input type="radio" name="fq0" value="b"> <img src="files/les_2-2_2.png"/></label>
+      <label><input type="radio" name="fq0" value="c"> <img src="files/les_2-2_3.png"/></label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq1" data-correct="b">
+      <p class="quiz-q-text">2. Что нужно сделать перед посадкой семян?</p>
+      <label><input type="radio" name="fq1" value="a"> Добавить яму с водой</label>
+      <label><input type="radio" name="fq1" value="b"> Вспахать землю</label>
+      <label><input type="radio" name="fq1" value="c"> Собрать урожай</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq2" data-correct="a">
+      <p class="quiz-q-text">3. Какой культура быстрее растёт?</p>
+      <label><input type="radio" name="fq2" value="a"> Пшеница</label>
+      <label><input type="radio" name="fq2" value="b"> Тыква</label>
+      <label><input type="radio" name="fq2" value="c"> Картофель</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq3" data-correct="b">
+      <p class="quiz-q-text">4. Какую команду использовать для смены семян у агента?</p>
+      <label><input type="radio" name="fq3" value="a"> <img src="files/les_1-2_5.png"/></label>
+      <label><input type="radio" name="fq3" value="b"> <img src="files/les_1-5_14.png"/></label>
+      <label><input type="radio" name="fq3" value="c"> <img src="files/les_1-2_2.png"/></label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq4" data-correct="a">
+      <p class="quiz-q-text">5. Что ускоряет рост растений в Minecraft?</p>
+      <label><input type="radio" name="fq4" value="a"> Вода рядом с грядкой</label>
+      <label><input type="radio" name="fq4" value="b"> Камень вокруг грядки</label>
+      <label><input type="radio" name="fq4" value="c"> Дерево рядом</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizFarm')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
 
   <!-- Навигация -->
   <div class="lesson-nav">
