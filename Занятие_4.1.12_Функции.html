@@ -1,0 +1,762 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.1.12. Функции — Зомби апокалипсис — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .choice-card {
+      cursor: pointer; transition: all 0.15s; user-select: none;
+      padding: 10px 14px; background: #fff; border: 2px solid #e2e8f0;
+      border-radius: 14px; display: block; margin: 8px 0; font-family: 'Courier New', monospace; font-size: 0.95rem;
+    }
+    .choice-card:hover { border-color: var(--primary); transform: translateY(-1px); }
+    .choice-card.selected { border-color: var(--accent) !important; background: var(--accent-light) !important; box-shadow: 0 0 0 3px rgba(110,0,145,.18); }
+    .choice-card.correct { border-color: var(--primary) !important; background: var(--primary-light) !important; }
+    .choice-card.incorrect { border-color: var(--danger) !important; background: var(--danger-light) !important; }
+    .choice-card.text-opt { font-family: inherit; font-weight: 700; }
+    .choice-card .kw { color: #1d4ed8; font-weight: 700; }
+    .choice-card .obj { color: #b91c1c; }
+    .choice-card .fn { color: #0284c7; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 16px 20px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: 1.05rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .code-light {
+      background: #fff; color: #1e293b; border: 1px solid #e2e8f0; border-radius: 12px;
+      padding: 14px 16px; font-family: 'Courier New', monospace; font-size: 0.98rem; margin: 10px 0; line-height: 1.5;
+    }
+    .code-light .kw { color: #1d4ed8; font-weight: 700; }
+    .code-light .obj { color: #b91c1c; }
+    .code-light .fn { color: #0284c7; }
+    .hint-btn {
+      background: var(--accent-light,#f0e6f5); border: none; padding: 6px 16px; border-radius: 30px;
+      font-weight: 600; color: var(--accent-ink,#4a1a5a); cursor: pointer; margin-top: 6px;
+    }
+    .hint-btn:hover { background: var(--accent,#b47cdb); color: #fff; }
+    .hint-box { display: none; background: #f1f5f9; border-radius: 12px; padding: 12px; margin-top: 8px; border-left: 4px solid var(--accent,#6e0091); }
+    .hint-box.show { display: block; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-child { border-bottom: none; }
+    .theory-section h3 { margin-top: 10px; color: var(--primary-dark,#1a4a0a); }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .scenario-box {
+      background: linear-gradient(135deg,#1a1030,#2d1b4e); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #6C3F9B;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout ul { margin: 6px 0 0; padding-left: 18px; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка по функциям"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 14px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 14px 16px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 700; color: var(--primary-dark,#1a4a0a); border-bottom: 2px solid var(--primary-light,#e8f5e0); padding-bottom: 4px; margin-bottom: 6px; }
+    .cheat-item .rule { font-size: .92rem; margin: 4px 0; }
+    .cheat-item .rule code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .85rem; }
+    .screenshot-placeholder { background: #0f172a; border: 2px solid #334155; border-radius: 14px; padding: 10px; text-align: center; margin: 12px 0; color: #94a3b8; }
+    .screenshot-placeholder img { max-width: 100%; border-radius: 10px; display: block; margin: 0 auto; }
+    .map-card {
+      background: linear-gradient(135deg,#E8F5E0,#F4EAFA); border: 2px solid var(--primary,#61b01f);
+      border-radius: 20px; padding: 20px 24px; margin: 20px 0;
+    }
+    .map-card .dl {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; background: var(--primary,#61b01f);
+      color: #fff; padding: 12px 22px; border-radius: 30px; font-weight: 800; text-decoration: none;
+      box-shadow: 0 4px 0 #2E4A17;
+    }
+    .map-card .dl:hover { background: #4C8C18; }
+    .num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.6em; height: 1.6em; border-radius: 50%; margin-right: 6px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); font-weight: 800;
+    }
+    .topic-block { margin: 28px 0; }
+    .topic-block > h2 { color: var(--primary-dark,#1a4a0a); }
+    .example-box {
+      background: #3b1f4a; color: #f8fafc; border-radius: 18px; padding: 18px 20px; margin: 16px 0;
+    }
+    .example-box .code-light { margin-top: 10px; }
+    .fav-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 12px; margin-top: 12px; }
+    .fav-card {
+      border: 2px solid #e2e8f0; border-radius: 16px; overflow: hidden; cursor: pointer; background: #fff; transition: .2s;
+    }
+    .fav-card:hover, .fav-card.selected { border-color: var(--accent,#6e0091); box-shadow: 0 0 0 3px rgba(110,0,145,.2); }
+    .fav-card img { width: 100%; height: 110px; object-fit: cover; display: block; background: #1e293b; }
+    .fav-card .cap { padding: 8px 10px; font-weight: 800; font-size: .9rem; text-align: center; }
+    .space-note { background: #1a1a4a; color: #fbbf24; border-left: 4px solid #fbbf24; padding: 12px 16px; border-radius: 12px; margin: 12px 0; font-weight: 500; }
+    .pseudo { color: #64748b; font-style: italic; }
+    .task-box { background: #f8fafc; border-radius: 20px; padding: 20px 24px; margin: 24px 0; border: 1px solid var(--line,#e2e8f0); }
+    .task-box h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .progress-track { background: #e2e8f0; height: 8px; border-radius: 10px; margin: 12px 0; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: var(--primary,#61b01f); transition: width .3s; }
+    .progress-label { font-size: .9rem; color: #334155; }
+    .task-steps { list-style: none; padding: 0; }
+    .task-steps li { display: flex; align-items: baseline; gap: 8px; margin: 6px 0; }
+    .task-steps li input[type="checkbox"] { transform: scale(1.2); }
+    .reflection-box textarea { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--line,#e2e8f0); font-family: inherit; min-height: 80px; }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 4.1.12</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">4.1.12</div>
+      <div>
+        <div class="module-pill">Раздел 4 · Функции</div>
+        <h1>🧟 Зомби апокалипсис — Функции</h1>
+        <p class="subtitle">Создаём ловушки, цветы-защитники и переключатель день‑ночь</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ===== СЦЕНАРИЙ ===== -->
+  <div class="scenario-box">
+    <div class="scenario-avatar">🧟</div>
+    <div>
+      <strong>Операция «Лес Лиама»</strong><br>
+      Город пал под зомби-вирусом. Юный учёный <strong>Лиам</strong> укрылся в лесу и строит защиту из <b>функций</b>:
+      один раз написал код — вызываешь снова и снова. Твоя задача — оживить ловушки, цветы, щиток и переключатель дня и ночи.
+    </div>
+  </div>
+
+  <div class="card" id="story">
+    <h2>📖 История миссии</h2>
+    <div class="theory-section">
+      <h3>Глава 1. Ловушки в чаще</h3>
+      <p>Лиам расставил платформы <b>MovingBlock</b>. Они должны подниматься и опускаться без конца.
+        Если копировать один и тот же цикл дважды — код раздуется. Решение: функция <code>move()</code> и цикл <code>while true</code>.</p>
+    </div>
+    <div class="theory-section">
+      <h3>Глава 2. Цветы-защитники</h3>
+      <p>В лесу растут светящиеся цветы. При касании цветок растёт и отгоняет зомби.
+        Нужна функция <code>growth(flower)</code> с <b>аргументом</b> — одна логика для любого цветка.</p>
+    </div>
+    <div class="theory-section">
+      <h3>Глава 3. Электрический щиток</h3>
+      <p>В доме щиток <b>wiresGui</b>: кнопки соединяют провода. Функции <code>setPoint</code> и <code>click</code>
+        держат порядок — иначе кнопки начнут путаться.</p>
+    </div>
+    <div class="theory-section">
+      <h3>Глава 4. День и ночь</h3>
+      <p>Ночью зомби смелее. Кнопки в <b>DayNight</b> вызывают <code>Day()</code> и <code>Night()</code>
+        и меняют освещение. Одна кнопка — один вызов функции.</p>
+    </div>
+  </div>
+
+
+  <div class="objectives">
+    <h2>💡 На этом уроке ты создашь:</h2>
+    <ul>
+      <li>ловушки в лесу 🐱‍♀️</li>
+      <li>цветы-защитники 🎨</li>
+      <li>переключатель день‑ночь 🎨</li>
+      <li>электрический щиток 🎨</li>
+    </ul>
+    <h3 style="margin-top:1rem;">Ты узнаешь:</h3>
+    <ul>
+      <li>что такое функция,</li>
+      <li>для чего используются функции.</li>
+    </ul>
+    <h3 style="margin-top:1rem;">Ты научишься:</h3>
+    <ul>
+      <li>создавать функции,</li>
+      <li>добавлять аргументы в функции,</li>
+      <li>вызывать функции,</li>
+      <li>создавать кнопки в графическом интерфейсе,</li>
+      <li>менять день и ночь по нажатию на кнопку, используя цикл,</li>
+      <li>увеличивать объект в цикле.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Теория функции + квиз</td><td>10 мин</td><td>Изучаем функции и аргументы</td></tr>
+      <tr><td>Теория return + квиз</td><td>6 мин</td><td>Команда return</td></tr>
+      <tr><td>Задание 1 – Движущиеся блоки</td><td>12 мин</td><td>Функция move</td></tr>
+      <tr><td>Задание 2 – Цветы-защитники</td><td>12 мин</td><td>Функция growth с аргументом</td></tr>
+      <tr><td>Задание 3–5 – Провода</td><td>20 мин</td><td>setPoint, click, линии</td></tr>
+      <tr><td>Задание 6–7 – День/Ночь</td><td>14 мин</td><td>Функции Day и Night</td></tr>
+      <tr><td>Итоги</td><td>6 мин</td><td>Рефлексия</td></tr>
+      <tr><td>Итого</td><td>~80 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- ===== КАРТА ===== -->
+  <div class="card map-card" id="mapDownload">
+    <h2 style="margin:0 0 .4rem;color:var(--primary-dark);">🗺️ Карта урока «Зомби апокалипсис»</h2>
+    <p style="margin:0 0 .6rem;">Для этого урока приготовлена готовая карта. Скачай её и открой в <strong>Roblox Studio</strong> (File → Open from File).</p>
+    <div class="note" style="background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:12px;">
+      <b>Файл карты:</b>
+      <a href="assets/downloads/функции.rbxl" download="функции.rbxl" style="font-weight:800;color:var(--primary-dark);">⬇️ Скачать функции.rbxl</a>
+      (правый клик → «Сохранить ссылку как…»)
+    </div>
+    <div class="note" style="background:#fff;border-radius:12px;padding:12px 14px;">
+      <b>На карте уже есть:</b> <code>MovingBlock</code> / MovingBlock1…, папка <code>Flowers</code>, <code>wiresGui</code>, заготовки под <code>DayNight</code> и другие объекты для заданий.
+    </div>
+    <a class="dl" href="assets/downloads/функции.rbxl" download="функции.rbxl">⬇️ Скачать карту функции.rbxl</a>
+  </div>
+
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px;line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D1%82%D1%8C%20%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D1%8E%20%D0%B2%20Lua%3F%22%7D" target="_blank" class="alice-q-btn">Как создать функцию в Lua?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D0%B0%D1%80%D0%B3%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B%20%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое аргументы?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%97%D0%B0%D1%87%D0%B5%D0%BC%20return%20%D0%B2%20%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Зачем return?</a>
+    </div>
+  </div>
+
+    <!-- ===== ТЕОРИЯ: ФУНКЦИИ ===== -->
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: функции в Lua</h2>
+
+    <div class="theory-section">
+      <h3>📦 Что такое функция?</h3>
+      <p>Функция — это <b>именованный кусок кода</b>, который можно вызвать сколько угодно раз.
+        Без функций одно и то же приходится копировать. С функцией — написал один раз, вызываешь по имени.</p>
+      <div class="code-block">
+        <span class="keyword">local function</span> <span class="func">sayHi</span>()<br>
+        &nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Привет, Лиам!"</span>)<br>
+        <span class="keyword">end</span><br><br>
+        <span class="func">sayHi</span>() <span class="comment">-- вызов</span><br>
+        <span class="func">sayHi</span>() <span class="comment">-- ещё раз</span>
+      </div>
+      <table class="prop-table">
+        <tr><th>Часть</th><th>Зачем</th></tr>
+        <tr><td><code>function</code> … <code>end</code></td><td>Объявление функции</td></tr>
+        <tr><td><code>sayHi()</code></td><td>Вызов — запуск тела функции</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h3>📥 Аргументы — данные «внутрь»</h3>
+      <p>Аргумент — значение, которое ты передаёшь функции. Внутри функции это обычная переменная.</p>
+      <div class="code-block">
+        <span class="keyword">local function</span> <span class="func">growth</span>(flower)<br>
+        &nbsp;&nbsp;flower.Size = flower.Size + Vector3.new(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)<br>
+        <span class="keyword">end</span><br><br>
+        <span class="func">growth</span>(flower1)<br>
+        <span class="func">growth</span>(flower2)
+      </div>
+      <div class="space-note">
+        💡 Одна функция — много цветов. Меняется только аргумент.
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>↩️ return — результат «наружу»</h3>
+      <p><code>return</code> отдаёт значение туда, откуда функцию вызвали, и завершает функцию.</p>
+      <div class="code-block">
+        <span class="keyword">local function</span> <span class="func">sum</span>(a, b)<br>
+        &nbsp;&nbsp;<span class="keyword">return</span> a + b<br>
+        <span class="keyword">end</span><br><br>
+        <span class="keyword">local</span> s = <span class="func">sum</span>(<span class="number">3</span>, <span class="number">4</span>) <span class="comment">-- s = 7</span>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🔄 Функция + цикл</h3>
+      <p>Ловушки Лиама работают вечно: внутри <code>while true</code> вызываем <code>move()</code>.</p>
+      <div class="code-block">
+        <span class="keyword">while</span> <span class="keyword">true</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;<span class="func">move</span>()<br>
+        &nbsp;&nbsp;<span class="func">wait</span>()<br>
+        <span class="keyword">end</span>
+      </div>
+    </div>
+
+    <div class="interactive-box" id="quizFuncSyntax">
+      <h3>⚡ Где правильно написана функция?</h3>
+      <div class="choice-card" data-correct-choice="true"><span class="kw">function</span> func()<br>&nbsp;&nbsp;<span class="kw">end</span></div>
+      <div class="choice-card" data-correct-choice="false"><span class="kw">func</span> func()<br>&nbsp;&nbsp;<span class="kw">end</span></div>
+      <div class="choice-card" data-correct-choice="false"><span class="kw">function</span> func<br>&nbsp;&nbsp;<span class="kw">end</span></div>
+      <button class="action-btn" onclick="checkChoices('quizFuncSyntax')">Проверить</button>
+      <button class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetQuiz('quizFuncSyntax')">Ещё раз</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="quizReturn" style="margin-top:1.2rem;">
+      <h3>⚡ Что делает команда <code>return</code>?</h3>
+      <div class="choice-card text-opt" data-correct-choice="true">Возвращает результат функции</div>
+      <div class="choice-card text-opt" data-correct-choice="false">Показывает, как функция работает</div>
+      <div class="choice-card text-opt" data-correct-choice="false">Даёт функции работать</div>
+      <div class="choice-card text-opt" data-correct-choice="false">Ерунда какая-то</div>
+      <button class="action-btn" onclick="checkChoices('quizReturn')">Проверить</button>
+      <button class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetQuiz('quizReturn')">Ещё раз</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="quizArg" style="margin-top:1.2rem;">
+      <h3>⚡ Зачем аргумент в <code>growth(flower)</code>?</h3>
+      <div class="choice-card text-opt" data-correct-choice="true">Чтобы одна функция работала с разными цветами</div>
+      <div class="choice-card text-opt" data-correct-choice="false">Чтобы удалить функцию</div>
+      <div class="choice-card text-opt" data-correct-choice="false">Чтобы остановить цикл</div>
+      <div class="choice-card text-opt" data-correct-choice="false">Аргумент не нужен никогда</div>
+      <button class="action-btn" onclick="checkChoices('quizArg')">Проверить</button>
+      <button class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetQuiz('quizArg')">Ещё раз</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="cheat-sheet">
+  <div class="cheat-grid">
+    <div class="cheat-item">
+      <div class="title">Функция</div>
+      <div class="rule"><code>function name() … end</code></div>
+      <div class="rule">Потом вызов: <code>name()</code></div>
+    </div>
+    <div class="cheat-item">
+      <div class="title">Аргументы</div>
+      <div class="rule"><code>function growth(flower)</code></div>
+      <div class="rule">Передаёшь значение внутрь</div>
+    </div>
+    <div class="cheat-item">
+      <div class="title">return</div>
+      <div class="rule">Возвращает результат наружу</div>
+    </div>
+    <div class="cheat-item">
+      <div class="title">while true + function</div>
+      <div class="rule">Вечный вызов <code>move()</code></div>
+    </div>
+  </div>
+</div>
+<div class="card" style="background:#3b1f4a;color:#f8fafc;border-radius:18px;padding:18px 20px;">
+  <h2 style="color:#fbbf24;margin-top:0;">✅ Правила</h2>
+  <p><b>Без аргументов:</b></p>
+  <div class="code-light">
+    <span class="kw">function</span> <span class="fn">func</span>()<br><br>
+    <span class="kw">end</span><br><br>
+    <span class="fn">func</span>()
+  </div>
+  <p><b>С аргументами:</b></p>
+  <div class="code-light">
+    <span class="kw">function</span> <span class="fn">func</span>(a, b)<br><br>
+    <span class="kw">end</span><br><br>
+    <span class="fn">func</span>(3, 4)
+  </div>
+</div>
+<!-- ===== ПРОЕКТ ===== -->
+<div class="card project-box" id="mainProject" style="border:2px solid var(--primary);border-radius:20px;padding:20px 24px;margin:24px 0;">
+  <h2>🧟 Проект «Зомби-апокалипсис» — функции</h2>
+  <p>Скачай карту, открой в Studio. Пиши скрипты по фазам — как на занятии «События».</p>
+  <div class="progress-track" style="background:#e2e8f0;height:8px;border-radius:10px;margin:12px 0;overflow:hidden;">
+    <div class="progress-fill" id="projectProgress" style="height:100%;width:0%;background:var(--primary);"></div>
+  </div>
+  <span class="progress-label" id="projectLabel">Выполнено шагов: 0</span>
+  <!-- ФАЗА 1 -->
+  <div class="phase" id="phase1" style="margin:18px 0;padding:16px;background:#f8fafc;border-radius:16px;border:1px solid var(--line);">
+    <h3>🧱 Фаза 1 — MovingBlock · функция move <span class="phase-time" style="font-size:.85rem;background:var(--accent-light);padding:3px 12px;border-radius:20px;">12 мин</span></h3>
+    <div class="info-callout" style="background:#1e3a5f;color:#f1f5f9;border-radius:16px;padding:14px 18px;margin:14px 0;">
+      <span class="bulb">💡</span>
+      <div>Создай <b>Script</b> в каждый <code>MovingBlock</code> (внутри папки MovingBlocks). Рядом уже может быть Kill — не трогай его.</div>
+    </div>
+    <div class="screenshot-placeholder" style="background:#0f172a;border:2px solid #334155;border-radius:14px;padding:10px;text-align:center;">
+      <img src="assets/images/lesson-4.1.12/movingblock_explorer.png" alt="Explorer: MovingBlock1 → Script" style="max-width:100%;border-radius:10px;" onerror="this.parentElement.innerHTML='🖼 Explorer: MovingBlocks → MovingBlock1 → Script'" />
+    </div>
+    <ol>
+      <li>Создай функцию <code>move</code>:</li>
+      <ul>
+        <li>цикл <code>for</code> 25 раз: поднимать блок по Y, <code>wait()</code></li>
+        <li>цикл <code>for</code> 25 раз: опускать блок по Y, <code>wait()</code></li>
+      </ul>
+      <li>Напиши бесконечный цикл: вызвать <code>move()</code>, затем <code>wait()</code>.</li>
+    </ol>
+    <div class="code-block">
+      <span class="keyword">local function</span> <span class="func">move</span>()<br>
+      &nbsp;&nbsp;<span class="keyword">for</span> i = <span class="number">1</span>, <span class="number">25</span> <span class="keyword">do</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.CFrame = script.Parent.CFrame * CFrame.new(<span class="number">0</span>, <span class="number">0.3</span>, <span class="number">0</span>)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+      &nbsp;&nbsp;<span class="keyword">end</span><br>
+      &nbsp;&nbsp;<span class="keyword">for</span> i = <span class="number">1</span>, <span class="number">25</span> <span class="keyword">do</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.CFrame = script.Parent.CFrame * CFrame.new(<span class="number">0</span>, -<span class="number">0.3</span>, <span class="number">0</span>)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+      &nbsp;&nbsp;<span class="keyword">end</span><br>
+      <span class="keyword">end</span><br><br>
+      <span class="keyword">while</span> <span class="keyword">true</span> <span class="keyword">do</span><br>
+      &nbsp;&nbsp;<span class="func">move</span>()<br>
+      &nbsp;&nbsp;<span class="func">wait</span>()<br>
+      <span class="keyword">end</span>
+    </div>
+    <p class="note">Если блок едет «не туда» — поменяй знаки у <code>0.3</code> / <code>-0.3</code>.</p>
+    <ul class="task-steps" style="list-style:none;padding:0;">
+      <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label> Script в каждом MovingBlock</label></li>
+      <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label> Функция move есть, в Play блок ездит вверх-вниз</label></li>
+    </ul>
+  </div>
+  <!-- ФАЗА 2 -->
+  <div class="phase" id="phase2" style="margin:18px 0;padding:16px;background:#f8fafc;border-radius:16px;border:1px solid var(--line);">
+    <h3>🌸 Фаза 2 — Flowers · growth(flower) <span class="phase-time" style="font-size:.85rem;background:var(--accent-light);padding:3px 12px;border-radius:20px;">12 мин</span></h3>
+    <p>Открой Script в модели <code>Flowers</code> (рядом ClickDetector).</p>
+    <div class="screenshot-placeholder" style="background:#0f172a;border:2px solid #334155;border-radius:14px;padding:10px;text-align:center;">
+      <img src="assets/images/lesson-4.1.12/flowers_explorer.png" alt="Flowers → ClickDetector, Script" style="max-width:100%;border-radius:10px;" onerror="this.parentElement.innerHTML='🖼 Explorer: Flowers → ClickDetector + Script'" />
+    </div>
+    <ol>
+      <li>Создай 6 переменных: <code>flower1</code> … <code>flower6</code> = <code>script.Parent.flower1</code> и т.д.</li>
+      <li>Функция <code>growth(flower)</code>:
+        <ul>
+          <li><code>while flower.Size.Y &lt; 4.5 do</code></li>
+          <li>увеличить Size по Y на 0.05, <code>wait(0.01)</code></li>
+          <li>после цикла: <code>flower.CanTouch = true</code></li>
+        </ul>
+      </li>
+      <li>В <code>ClickDetector.MouseClick</code> вызови <code>growth</code> для каждого цветка.</li>
+    </ol>
+    <div class="code-block">
+      <span class="keyword">local</span> flower1 = script.Parent.flower1<br>
+      <span class="keyword">local</span> flower2 = script.Parent.flower2<br>
+      <span class="keyword">local</span> flower3 = script.Parent.flower3<br>
+      <span class="keyword">local</span> flower4 = script.Parent.flower4<br>
+      <span class="keyword">local</span> flower5 = script.Parent.flower5<br>
+      <span class="keyword">local</span> flower6 = script.Parent.flower6<br><br>
+      <span class="keyword">local function</span> <span class="func">growth</span>(flower)<br>
+      &nbsp;&nbsp;<span class="keyword">while</span> flower.Size.Y &lt; <span class="number">4.5</span> <span class="keyword">do</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;flower.Size = flower.Size + Vector3.new(<span class="number">0</span>, <span class="number">0.05</span>, <span class="number">0</span>)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.01</span>)<br>
+      &nbsp;&nbsp;<span class="keyword">end</span><br>
+      &nbsp;&nbsp;flower.CanTouch = <span class="keyword">true</span><br>
+      <span class="keyword">end</span><br><br>
+      script.Parent.ClickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+      &nbsp;&nbsp;<span class="func">growth</span>(flower1)<br>
+      &nbsp;&nbsp;<span class="func">growth</span>(flower2)<br>
+      &nbsp;&nbsp;<span class="func">growth</span>(flower3)<br>
+      &nbsp;&nbsp;<span class="func">growth</span>(flower4)<br>
+      &nbsp;&nbsp;<span class="func">growth</span>(flower5)<br>
+      &nbsp;&nbsp;<span class="func">growth</span>(flower6)<br>
+      <span class="keyword">end</span>)
+    </div>
+    <ul class="task-steps" style="list-style:none;padding:0;">
+      <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label> 6 переменных + growth с аргументом</label></li>
+      <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label> По клику цветы растут</label></li>
+    </ul>
+  </div>
+  <!-- ФАЗА 3 -->
+  <div class="phase" id="phase3" style="margin:18px 0;padding:16px;background:#f8fafc;border-radius:16px;border:1px solid var(--line);">
+    <h3>🔌 Фаза 3 — wiresGui · setPoint <span class="phase-time" style="font-size:.85rem;background:var(--accent-light);padding:3px 12px;border-radius:20px;">10 мин</span></h3>
+    <p>Открой <b>LocalScript</b> в <code>StarterGui → wiresGui → Frame</code>.</p>
+    <div class="screenshot-placeholder" style="background:#0f172a;border:2px solid #334155;border-radius:14px;padding:10px;text-align:center;">
+      <img src="assets/images/lesson-4.1.12/wiresgui_explorer.png" alt="wiresGui Frame LocalScript b1…b6" style="max-width:100%;border-radius:10px;" onerror="this.parentElement.innerHTML='🖼 StarterGui → wiresGui → Frame → LocalScript, b1…b6'" />
+    </div>
+    <p>В начале скрипта (если ещё нет):</p>
+    <div class="code-block">
+      <span class="keyword">local</span> GuiObjectA = <span class="keyword">nil</span><br>
+      <span class="keyword">local</span> GuiObjectB = <span class="keyword">nil</span>
+    </div>
+    <ol>
+      <li>Функция <code>setPoint(btn)</code>:
+        <ul>
+          <li>если <code>GuiObjectA == nil</code> → <code>GuiObjectA = btn</code></li>
+          <li>иначе → <code>GuiObjectB = btn</code></li>
+        </ul>
+      </li>
+    </ol>
+    <div class="code-block">
+      <span class="comment">-- Функция для установки точек</span><br>
+      <span class="keyword">local function</span> <span class="func">setPoint</span>(btn)<br>
+      &nbsp;&nbsp;<span class="keyword">if</span> GuiObjectA == <span class="keyword">nil</span> <span class="keyword">then</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;GuiObjectA = btn<br>
+      &nbsp;&nbsp;<span class="keyword">else</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;GuiObjectB = btn<br>
+      &nbsp;&nbsp;<span class="keyword">end</span><br>
+      <span class="keyword">end</span>
+    </div>
+    <ul class="task-steps" style="list-style:none;padding:0;">
+      <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label> setPoint написана</label></li>
+    </ul>
+  </div>
+  <!-- ФАЗА 4 -->
+  <div class="phase" id="phase4" style="margin:18px 0;padding:16px;background:#f8fafc;border-radius:16px;border:1px solid var(--line);">
+    <h3>🔌 Фаза 4 — функция click <span class="phase-time" style="font-size:.85rem;background:var(--accent-light);padding:3px 12px;border-radius:20px;">10 мин</span></h3>
+    <p>Продолжай тот же LocalScript.</p>
+    <ol>
+      <li>Создай функцию <code>click</code>.</li>
+      <li>Если <code>GuiObjectA ~= nil</code> <b>и</b> <code>GuiObjectB ~= nil</code> — создай два вектора (откуда и куда рисовать линию) — как в заготовке карты / подсказке тренера.</li>
+    </ol>
+    <div class="code-block">
+      <span class="keyword">local function</span> <span class="func">click</span>()<br>
+      &nbsp;&nbsp;<span class="keyword">if</span> GuiObjectA ~= <span class="keyword">nil</span> <span class="keyword">and</span> GuiObjectB ~= <span class="keyword">nil</span> <span class="keyword">then</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">-- векторы и отрисовка линии (по шаблону на карте)</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> posA = GuiObjectA.AbsolutePosition + GuiObjectA.AbsoluteSize / <span class="number">2</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> posB = GuiObjectB.AbsolutePosition + GuiObjectB.AbsoluteSize / <span class="number">2</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">-- дальше: создать/обновить линию между posA и posB</span><br>
+      &nbsp;&nbsp;<span class="keyword">end</span><br>
+      <span class="keyword">end</span>
+    </div>
+    <ul class="task-steps" style="list-style:none;padding:0;">
+      <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label> click проверяет обе точки</label></li>
+    </ul>
+  </div>
+  <!-- ФАЗА 5 -->
+  <div class="phase" id="phase5" style="margin:18px 0;padding:16px;background:#f8fafc;border-radius:16px;border:1px solid var(--line);">
+    <h3>🔌 Фаза 5 — клики по b1…b6 <span class="phase-time" style="font-size:.85rem;background:var(--accent-light);padding:3px 12px;border-radius:20px;">10 мин</span></h3>
+    <ol>
+      <li>В событии нажатия на точку вызови <code>setPoint</code> и <code>click</code>.</li>
+      <li>Повтори для каждой кнопки <code>b1</code>…<code>b6</code> (меняй только номер).</li>
+    </ol>
+    <div class="code-block">
+      <span class="comment">-- Нажатие на точки</span><br>
+      script.Parent.b1.MouseButton1Click:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+      &nbsp;&nbsp;<span class="func">setPoint</span>(script.Parent.b1)<br>
+      &nbsp;&nbsp;<span class="func">click</span>()<br>
+      <span class="keyword">end</span>)<br><br>
+      <span class="comment">-- то же для b2, b3, b4, b5, b6</span>
+    </div>
+    <ul class="task-steps" style="list-style:none;padding:0;">
+      <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label> Все 6 кнопок вызывают setPoint + click</label></li>
+      <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label> В Play провода соединяются</label></li>
+    </ul>
+  </div>
+  <!-- ФАЗА 6 -->
+  <div class="phase" id="phase6" style="margin:18px 0;padding:16px;background:#f8fafc;border-radius:16px;border:1px solid var(--line);">
+    <h3>🌞 Фаза 6 — кнопки День / Ночь <span class="phase-time" style="font-size:.85rem;background:var(--accent-light);padding:3px 12px;border-radius:20px;">8 мин</span></h3>
+    <p>В <code>StarterGui → DayNight</code> создай кнопки (ImageButton), если их ещё нет.</p>
+    <p><b>ID картинок:</b></p>
+    <ul>
+      <li>День: <code>17357410292</code></li>
+      <li>Ночь: <code>17357409552</code></li>
+    </ul>
+    <div class="screenshot-placeholder" style="background:#0f172a;border:2px solid #334155;border-radius:14px;padding:10px;text-align:center;">
+      <img src="assets/images/lesson-4.1.12/daynight_gui.png" alt="DayNight в StarterGui" style="max-width:100%;border-radius:10px;" onerror="this.parentElement.innerHTML='🖼 StarterGui → DayNight (+ кнопки Day/Night)'" />
+    </div>
+    <ul class="task-steps" style="list-style:none;padding:0;">
+      <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label> Кнопки Day и Night с картинками</label></li>
+    </ul>
+  </div>
+  <!-- ФАЗА 7 -->
+  <div class="phase" id="phase7" style="margin:18px 0;padding:16px;background:#f8fafc;border-radius:16px;border:1px solid var(--line);">
+    <h3>🌙 Фаза 7 — функции Day и Night <span class="phase-time" style="font-size:.85rem;background:var(--accent-light);padding:3px 12px;border-radius:20px;">12 мин</span></h3>
+    <p>Script / LocalScript в <code>DayNight</code>:</p>
+    <ol>
+      <li><b>Day</b>: <code>script.Parent.Enabled = false</code> → пока <code>ClockTime &lt; 14.5</code> увеличивай время на 0.05, wait → снова Enabled = true</li>
+      <li><b>Night</b>: то же до 23.9, затем <code>ClockTime = 0</code>, Enabled = true</li>
+      <li>Привяжи к кнопкам: <code>MouseButton1Click:Connect(Day)</code> / <code>Connect(Night)</code></li>
+    </ol>
+    <div class="code-block">
+      <span class="keyword">local function</span> <span class="func">Day</span>()<br>
+      &nbsp;&nbsp;script.Parent.Enabled = <span class="keyword">false</span><br>
+      &nbsp;&nbsp;<span class="keyword">while</span> game.Lighting.ClockTime &lt; <span class="number">14.5</span> <span class="keyword">do</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;game.Lighting.ClockTime += <span class="number">0.05</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+      &nbsp;&nbsp;<span class="keyword">end</span><br>
+      &nbsp;&nbsp;script.Parent.Enabled = <span class="keyword">true</span><br>
+      <span class="keyword">end</span><br><br>
+      <span class="keyword">local function</span> <span class="func">Night</span>()<br>
+      &nbsp;&nbsp;script.Parent.Enabled = <span class="keyword">false</span><br>
+      &nbsp;&nbsp;<span class="keyword">while</span> game.Lighting.ClockTime &lt; <span class="number">23.9</span> <span class="keyword">do</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;game.Lighting.ClockTime += <span class="number">0.05</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+      &nbsp;&nbsp;<span class="keyword">end</span><br>
+      &nbsp;&nbsp;game.Lighting.ClockTime = <span class="number">0</span><br>
+      &nbsp;&nbsp;script.Parent.Enabled = <span class="keyword">true</span><br>
+      <span class="keyword">end</span><br><br>
+      script.Parent.Day.MouseButton1Click:<span class="func">Connect</span>(Day)<br>
+      script.Parent.Night.MouseButton1Click:<span class="func">Connect</span>(Night)
+    </div>
+    <ul class="task-steps" style="list-style:none;padding:0;">
+      <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label> Day / Night работают в Play</label></li>
+    </ul>
+  </div>
+</div>
+<!-- ИТОГИ -->
+<div class="card">
+  <h2>📝 Подведём итоги</h2>
+  <div class="info-callout" style="background:#1e3a5f;color:#f1f5f9;border-radius:16px;padding:14px 18px;">
+    <span class="bulb">💡</span>
+    <div>
+      <strong>Сегодня ты создал:</strong>
+      <ul>
+        <li>движущиеся ловушки-платформы 🧱</li>
+        <li>цветы-защитники 🌸</li>
+        <li>электрический щиток (провода) 🔌</li>
+        <li>переключатель день–ночь 🌙</li>
+        <li>свои функции с аргументами ⚡</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="card reflection-box">
+  <h2>💬 Какое задание тебе понравилось больше всего?</h2>
+  <div class="fav-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;">
+    <div class="fav-card" onclick="pickFav(this)" style="border:2px solid #e2e8f0;border-radius:16px;padding:12px;text-align:center;cursor:pointer;font-weight:800;">
+      <div>🧱</div><div class="cap">MovingBlock</div>
+    </div>
+    <div class="fav-card" onclick="pickFav(this)" style="border:2px solid #e2e8f0;border-radius:16px;padding:12px;text-align:center;cursor:pointer;font-weight:800;">
+      <div>🌸</div><div class="cap">Цветы</div>
+    </div>
+    <div class="fav-card" onclick="pickFav(this)" style="border:2px solid #e2e8f0;border-radius:16px;padding:12px;text-align:center;cursor:pointer;font-weight:800;">
+      <div>🔌</div><div class="cap">Провода</div>
+    </div>
+    <div class="fav-card" onclick="pickFav(this)" style="border:2px solid #e2e8f0;border-radius:16px;padding:12px;text-align:center;cursor:pointer;font-weight:800;">
+      <div>🌙</div><div class="cap">День–Ночь</div>
+    </div>
+  </div>
+  <textarea id="reflectionText" style="width:100%;margin-top:12px;padding:12px;border-radius:12px;border:2px solid var(--line);min-height:80px;font-family:inherit;" placeholder="Что нового узнал про функции?"></textarea>
+  <button class="action-btn" onclick="submitReflection()">Отправить</button>
+  <div id="reflectionResult" style="margin-top:8px;font-weight:700;"></div>
+</div>
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="Занятие_4.1.11_Циклы.html">
+      <div class="lbl">← Назад</div>
+      <div class="ttl">4.1.11 Циклы</div>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 4.1.12 · Функции · Зомби апокалипсис</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function toggleHint(id) {
+    const box = document.getElementById(id);
+    box.classList.toggle('show');
+    const btn = box.previousElementSibling;
+    if (btn && btn.classList.contains('hint-btn')) {
+      btn.textContent = box.classList.contains('show') ? '🙈 Скрыть подсказку' : '📖 Показать подсказку';
+    }
+  }
+
+  function updateTaskProgress(taskBox) {
+    const checkboxes = taskBox.querySelectorAll('.task-steps input[type=checkbox]');
+    let done = 0;
+    checkboxes.forEach(cb => { if (cb.checked) done++; });
+    const total = checkboxes.length;
+    const percent = total ? Math.round((done / total) * 100) : 0;
+    const fill = taskBox.querySelector('.progress-fill');
+    const label = taskBox.querySelector('.progress-label');
+    if (fill) fill.style.width = percent + '%';
+    if (label) label.textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+  }
+function updateProjectProgress() {
+  const all = document.querySelectorAll('.pstep');
+  let done = 0;
+  all.forEach(cb => { if (cb.checked) done++; });
+  const fill = document.getElementById('projectProgress');
+  const label = document.getElementById('projectLabel');
+  if (fill) fill.style.width = (all.length ? Math.round(done / all.length * 100) : 0) + '%';
+  if (label) label.textContent = 'Выполнено шагов: ' + done + ' из ' + all.length;
+}
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const cards = container.querySelectorAll('.choice-card');
+    let allCorrect = true;
+    let anySelected = false;
+    let selectedWrong = false;
+    let missedCorrect = false;
+    cards.forEach(card => {
+      card.classList.remove('correct', 'incorrect');
+      const isCorrect = card.dataset.correctChoice === 'true';
+      const selected = card.classList.contains('selected');
+      if (selected) anySelected = true;
+      if (selected && isCorrect) card.classList.add('correct');
+      if (selected && !isCorrect) { card.classList.add('incorrect'); selectedWrong = true; }
+      if (!selected && isCorrect) missedCorrect = true;
+    });
+    const selected = container.querySelectorAll('.choice-card.selected');
+    if (selected.length === 1 && selected[0].dataset.correctChoice === 'true') allCorrect = true;
+
+    const resultDiv = container.querySelector('.activity-result');
+    if (!anySelected) {
+      resultDiv.textContent = '⚠️ Выбери один вариант ответа!';
+      resultDiv.className = 'activity-result neutral';
+      return;
+    }
+    if (allCorrect || (selected.length === 1 && selected[0].dataset.correctChoice === 'true')) {
+      resultDiv.textContent = '✅ Верно!';
+      resultDiv.className = 'activity-result done';
+    } else {
+      resultDiv.textContent = '❌ Неправильно. Попробуй ещё раз.';
+      resultDiv.className = 'activity-result neutral';
+    }
+  }
+
+  function resetQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    container.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected', 'correct', 'incorrect'));
+    const resultDiv = container.querySelector('.activity-result');
+    resultDiv.textContent = '';
+    resultDiv.className = 'activity-result';
+  }
+
+  function pickFav(el) {
+    document.querySelectorAll('.fav-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function submitReflection() {
+    const textarea = document.getElementById('reflectionText');
+    const resultDiv = document.getElementById('reflectionResult');
+    const fav = document.querySelector('.fav-card.selected');
+    if (!fav && textarea.value.trim() === '') {
+      resultDiv.textContent = 'Выбери любимое задание или напиши отзыв.';
+      resultDiv.style.color = '#C0392B';
+      return;
+    }
+    resultDiv.textContent = '✅ Спасибо! Твой ответ записан.' + (fav ? ' Любимое: ' + fav.querySelector('.cap').textContent : '');
+    resultDiv.style.color = '#2E7D32';
+    textarea.disabled = true;
+  }
+
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.choice-card');
+    if (!card) return;
+    const parent = card.closest('.interactive-box') || card.parentElement;
+    parent.querySelectorAll('.choice-card').forEach(c => {
+      c.classList.remove('selected', 'correct', 'incorrect');
+    });
+    card.classList.add('selected');
+  });
+</script>
+</body>
+</html>

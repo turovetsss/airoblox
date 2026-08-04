@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>П1. Кликер — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: .92rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#0c4a6e,#164e63); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #38bdf8;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .info-callout.warn { background: #78350f; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка кликера"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .82rem; }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .95rem; line-height: 1.7; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .b { color: #f472b6; }
+    .tree-box .t { color: #a3e635; }
+    .tree-box .r { color: #fbbf24; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.selected { border-color: var(--accent)!important; background: var(--accent-light)!important; }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .layer-flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; font-weight: 800; }
+    .layer-flow span { background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+    .shot {
+      display: block; max-width: 100%; margin: 12px 0; border-radius: 14px;
+      border: 2px solid var(--line,#e2e8f0); background: #0f172a; box-shadow: 0 8px 24px rgba(15,23,42,.12);
+    }
+    .shot-cap {
+      font-size: .9rem; color: #475569; margin: -4px 0 14px; padding: 0 4px;
+    }
+    .mini-game {
+      background: linear-gradient(180deg,#0c4a6e,#164e63); border-radius: 24px; padding: 20px;
+      border: 3px solid #38bdf8; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #7dd3fc; }
+    .clicker-stage {
+      display: grid; grid-template-columns: 1fr 1.1fr; gap: 16px; margin-top: 14px;
+    }
+    @media (max-width:900px) { .clicker-stage { grid-template-columns: 1fr; } }
+    .energy-panel {
+      background: #0f172a; border-radius: 16px; padding: 16px; border: 2px solid #38bdf8; text-align: center;
+    }
+    .energy-panel .energy-num { font-size: 2.6rem; font-weight: 900; color: #fbbf24; margin: 8px 0; }
+    .energy-panel .power-line { opacity: .85; font-size: .9rem; margin-bottom: 12px; }
+    .crystal-btn {
+      width: 120px; height: 120px; margin: 8px auto; border-radius: 24px; border: 4px solid #f0f9ff;
+      background: linear-gradient(145deg,#22d3ee,#2563eb); cursor: pointer; font-size: 2.5rem;
+      box-shadow: 0 8px 0 #1e3a8a; transition: transform .08s, box-shadow .08s;
+      display: flex; align-items: center; justify-content: center; user-select: none;
+    }
+    .crystal-btn:active, .crystal-btn.pulse {
+      transform: scale(.92); box-shadow: 0 2px 0 #1e3a8a;
+    }
+    .shop-panel {
+      background: #1e293b; border-radius: 16px; padding: 14px; border: 2px solid #64748b;
+    }
+    .shop-panel h3 { margin: 0 0 10px; color: #7dd3fc; }
+    .shop-btn {
+      display: block; width: 100%; margin: 8px 0; padding: 12px 14px; border-radius: 12px;
+      border: 2px solid #38bdf8; background: #0f172a; color: #f8fafc; font-weight: 800;
+      cursor: pointer; text-align: left;
+    }
+    .shop-btn:hover { background: #164e63; }
+    .shop-btn:disabled { opacity: .45; cursor: not-allowed; }
+    .shop-btn .price { float: right; color: #fbbf24; }
+    .mission-box {
+      background: #082f49; border-radius: 12px; padding: 12px; border: 1px solid #38bdf8; margin-bottom: 10px;
+    }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .phase-time {
+      font-size: .75rem; background: var(--primary-light,#e8f5e0); color: var(--primary-dark);
+      padding: 2px 10px; border-radius: 99px; font-weight: 700;
+    }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+    .task-steps label { cursor: pointer; }
+    .progress-wrap { margin: 12px 0 4px; }
+    .progress-bar { height: 12px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg,var(--primary,#61b01f),#84cc16); transition: width .25s; }
+    .progress-label { font-size: .9rem; font-weight: 700; color: var(--primary-dark); margin-top: 6px; }
+    .space-note {
+      background: linear-gradient(135deg,#fefce8,#ecfdf5); border: 2px dashed #65a30d;
+      border-radius: 18px; padding: 16px 18px; margin: 14px 0; font-weight: 700;
+    }
+    .arch-grid {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 12px; margin: 12px 0;
+    }
+    .arch-card {
+      background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 14px;
+    }
+    .arch-card h4 { margin: 0 0 6px; color: var(--primary-dark); }
+    .arch-card.client { border-color: #38bdf8; background: #f0f9ff; }
+    .arch-card.server { border-color: #86efac; background: #f0fdf4; }
+    .arch-card.bridge { border-color: #fbbf24; background: #fffbeb; }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Проект П1</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">П1</div>
+      <div>
+        <div class="module-pill">Проектная деятельность · лёгкий</div>
+        <h1>⚡ Кликер</h1>
+        <p class="subtitle">Энергия, апгрейды, RemoteEvent, ClickDetector — первая полноценная мини-игра</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">💎</div>
+    <div>
+      <strong>Миссия проекта:</strong> сделать игру-кликер, как в популярных симуляторах.
+      Игрок кликает по кнопке и по кристаллу в мире, копит <b>энергию</b>, покупает
+      <b>удвоитель</b> и <b>автокликер</b>. Сервер считает очки — клиент только шлёт запросы и рисует GUI.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом проекте ты:</h2>
+    <ul>
+      <li>соберёшь мир: <code>ClickPart</code> + <code>ClickDetector</code> 🧱</li>
+      <li>сделаешь GUI: энергия, клик, два апгрейда 🖥️</li>
+      <li>свяжешь клиент и сервер через <code>RemoteEvent</code> ⚡</li>
+      <li>напишешь <code>leaderstats</code>, магазин и эффект частиц ✨</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Теория «как устроен кликер»</td><td>15 мин</td><td>Клиент / сервер / RemoteEvent</td></tr>
+      <tr><td>Мини-игра на сайте</td><td>10 мин</td><td>Пробный кликер без Studio</td></tr>
+      <tr><td>Сборка объектов</td><td>20 мин</td><td>Part, GUI, RemoteEvent</td></tr>
+      <tr><td>Сервер + клиент</td><td>35 мин</td><td>MainScript + LocalScript</td></tr>
+      <tr><td>Эффекты + тест</td><td>15 мин</td><td>Частицы, цвета, Play</td></tr>
+      <tr><td>Доп. задания</td><td>по желанию</td><td>Цены в UI, звук, скины</td></tr>
+      <tr><td>Итого</td><td>~95 мин + доп.</td><td>—</td></tr>
+    </table>
+    <p style="margin:10px 0 0;font-size:.95rem;color:#475569;">
+      <b>Нужно заранее:</b> GUI (TextButton / TextLabel), события, основы скриптов. Идеально после раздела 6 карты курса.
+    </p>
+  </div>
+
+  <!-- ===== ТЕОРИЯ ===== -->
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: из чего состоит кликер</h2>
+
+    <div class="theory-section">
+      <h3>🎮 Жанр за 30 секунд</h3>
+      <p>Кликер — игра, где главное действие: <b>нажал → получил очки</b>. Потом очки тратишь на апгрейды, которые дают ещё больше очков. Цепочка бесконечная — поэтому важно, чтобы <b>сервер</b> хранил энергию (иначе читеры легко «накрутят» себе миллион).</p>
+    </div>
+
+    <div class="theory-section">
+      <h3>🏗️ Три слоя нашей игры</h3>
+      <div class="arch-grid">
+        <div class="arch-card client">
+          <h4>Клиент (LocalScript)</h4>
+          <p>Кнопки, текст энергии, анимация GUI. Шлёт: «я кликнул / хочу купить».</p>
+        </div>
+        <div class="arch-card bridge">
+          <h4>Мост (RemoteEvent)</h4>
+          <p><code>ClickEvent</code>, <code>BuyDoubleClick</code>, <code>BuyAutoClicker</code> в ReplicatedStorage.</p>
+        </div>
+        <div class="arch-card server">
+          <h4>Сервер (Script)</h4>
+          <p>leaderstats, сила клика, цены, автокликер, цвет Part.</p>
+        </div>
+      </div>
+      <div class="layer-flow">
+        <span>Кнопка GUI</span> →
+        <span>FireServer</span> →
+        <span>OnServerEvent</span> →
+        <span>Energy += power</span>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🖱️ ClickDetector — клик по Part в мире</h3>
+      <p>Кнопка на экране — это GUI. А клик по кубу в Workspace — это <b>ClickDetector</b> внутри Part.</p>
+      <table class="prop-table">
+        <tr><th>Объект</th><th>Зачем</th></tr>
+        <tr><td><code>ClickPart</code></td><td>Кристалл / кнопка в 3D-мире</td></tr>
+        <tr><td><code>ClickDetector</code></td><td>Ловит клик мышью по Part</td></tr>
+        <tr><td><code>MouseClick</code></td><td>Событие: «игрок кликнул»</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h3>📊 leaderstats — таблица очков</h3>
+      <p>Папка <code>leaderstats</code> у игрока + <code>IntValue</code> с именем <b>Energy</b>. Roblox сам покажет счёт в таблице лидеров справа сверху.</p>
+      <div class="code-block">
+        <span class="keyword">local</span> leaderstats = Instance.new(<span class="string">"Folder"</span>)<br>
+        leaderstats.Name = <span class="string">"leaderstats"</span><br>
+        leaderstats.Parent = player<br>
+        <span class="keyword">local</span> energy = Instance.new(<span class="string">"IntValue"</span>)<br>
+        energy.Name = <span class="string">"Energy"</span><br>
+        energy.Parent = leaderstats
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>📦 Что должно лежать в Explorer</h3>
+      <div class="tree-box">
+        <span class="g">Workspace</span><br>
+        &nbsp;&nbsp;<span class="b">ClickPart</span> (Part)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">ClickDetector</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">Script</span> ← частицы<br><br>
+        <span class="g">StarterGui</span><br>
+        &nbsp;&nbsp;<span class="b">MainGUI</span> (ScreenGui)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">EnergyText</span> (TextLabel)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">ClickButton</span> (TextButton)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">DoubleUpgrade</span> (TextButton)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">AutoClicker</span> (TextButton)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">LocalScript</span><br><br>
+        <span class="g">ReplicatedStorage</span><br>
+        &nbsp;&nbsp;<span class="r">ClickEvent</span> · <span class="r">BuyDoubleClick</span> · <span class="r">BuyAutoClicker</span><br><br>
+        <span class="g">ServerScriptService</span><br>
+        &nbsp;&nbsp;<span class="t">MainScript</span>
+      </div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz1">
+      <h3>🧠 Квиз: где хранить энергию игрока?</h3>
+      <div class="choice-card" data-correct-choice="false">Только в LocalScript (на клиенте)</div>
+      <div class="choice-card" data-correct-choice="true">На сервере (leaderstats / playerData)</div>
+      <div class="choice-card" data-correct-choice="false">В Lighting</div>
+      <button class="action-btn" onclick="checkChoices('quiz1')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz2">
+      <h3>🧠 Квиз: зачем RemoteEvent?</h3>
+      <div class="choice-card" data-correct-choice="true">Чтобы клиент попросил сервер добавить энергию / купить апгрейд</div>
+      <div class="choice-card" data-correct-choice="false">Чтобы нарисовать Part красивее</div>
+      <div class="choice-card" data-correct-choice="false">Вместо ClickDetector</div>
+      <button class="action-btn" onclick="checkChoices('quiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz3">
+      <h3>🧠 Квиз: куда кладём ClickDetector?</h3>
+      <div class="choice-card" data-correct-choice="true">Внутрь ClickPart</div>
+      <div class="choice-card" data-correct-choice="false">В StarterGui</div>
+      <div class="choice-card" data-correct-choice="false">В ServerScriptService</div>
+      <button class="action-btn" onclick="checkChoices('quiz3')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="cheat-sheet">
+    <div class="cheat-grid">
+      <div class="cheat-item">
+        <div class="title">Клик GUI</div>
+        <div class="rule"><code>FireServer()</code> → сервер</div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">Клик Part</div>
+        <div class="rule"><code>ClickDetector.MouseClick</code></div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">Очки</div>
+        <div class="rule"><code>leaderstats.Energy</code></div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">Удвоитель</div>
+        <div class="rule"><code>clickPower * 2</code></div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">Автокликер</div>
+        <div class="rule">цикл <code>wait(1)</code> + энергия</div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">Имена</div>
+        <div class="rule">Точные! Иначе скрипт не найдёт</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== МИНИ-ИГРА ===== -->
+  <div class="mini-game" id="miniGame">
+    <h2>🕹️ Мини-игра «Энергокликер»</h2>
+    <p style="opacity:.9;margin:0 0 8px;">Потренируй логику до Studio: кликай по кристаллу, копи энергию, покупай апгрейды.</p>
+    <div class="mission-box">
+      <b>Миссия:</b> набери <b>200</b> энергии и купи оба апгрейда. Кристалл меняет цвет при клике!
+    </div>
+    <div class="clicker-stage">
+      <div class="energy-panel">
+        <div>Энергия</div>
+        <div class="energy-num" id="mgEnergy">0</div>
+        <div class="power-line">Сила клика: <span id="mgPower">2</span> · Авто: <span id="mgAuto">выкл</span></div>
+        <div class="crystal-btn" id="mgCrystal" title="Кликни!">💎</div>
+        <div style="font-size:.85rem;opacity:.75;">Кликни по кристаллу</div>
+      </div>
+      <div class="shop-panel">
+        <h3>Магазин</h3>
+        <button class="shop-btn" id="mgClickBtn">⚡ Кликнуть <span class="price">+сила</span></button>
+        <button class="shop-btn" id="mgDouble">Удвоитель кликов <span class="price" id="mgDoublePrice">100</span></button>
+        <button class="shop-btn" id="mgAutoBtn">Автокликер <span class="price" id="mgAutoPrice">200</span></button>
+        <p id="mgMsg" style="margin:12px 0 0;font-size:.9rem;min-height:1.4em;"></p>
+        <button class="action-btn" type="button" onclick="resetMiniClicker()" style="margin-top:10px;">Сброс</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ПРОЕКТ ===== -->
+  <div class="project-box" id="keyTaskBox">
+    <h2>🛠️ Проект в Studio: «Энергокликер»</h2>
+    <p>Собираем игру по фазам. Отмечай шаги галочками — прогресс сохранится внизу блока.</p>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="projectFill"></div></div>
+      <div class="progress-label" id="projectLabel">Выполнено шагов: 0</div>
+    </div>
+
+    <!-- ФАЗА 1 -->
+    <div class="phase" id="phase1">
+      <h3>🧱 Фаза 1 — ClickPart + ClickDetector <span class="phase-time">8 мин</span></h3>
+      <ol>
+        <li>В Workspace создай <b>Part</b>, назови <code>ClickPart</code>.</li>
+        <li>Свойства:
+          <ul>
+            <li>Size = <code>(5, 5, 5)</code></li>
+            <li>Material = Plastic или Neon</li>
+            <li>Anchored = <b>true</b></li>
+          </ul>
+        </li>
+        <li>Внутрь ClickPart добавь <b>ClickDetector</b> (ПКМ → Insert Object → ClickDetector).</li>
+      </ol>
+      <img class="shot" src="assets/img/clicker/01-clickpart.png" alt="Explorer: ClickPart и ClickDetector" />
+      <p class="shot-cap">Так должно выглядеть в Explorer: ClickPart → ClickDetector.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">ClickPart создан, размер 5×5×5, Anchored.</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">Внутри есть ClickDetector.</label></li>
+        <li><input type="checkbox" id="p1s2" onchange="updateProjectProgress()"><label for="p1s2">Имя парта точно ClickPart (без пробелов).</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 2 -->
+    <div class="phase" id="phase2">
+      <h3>🖥️ Фаза 2 — GUI в StarterGui <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>StarterGui → ScreenGui с именем <code>MainGUI</code>.</li>
+        <li>Внутри MainGUI создай 4 объекта с <b>точными</b> именами:
+          <ul>
+            <li>TextLabel → <code>EnergyText</code></li>
+            <li>TextButton → <code>ClickButton</code></li>
+            <li>TextButton → <code>DoubleUpgrade</code></li>
+            <li>TextButton → <code>AutoClicker</code></li>
+          </ul>
+        </li>
+        <li>Расположи удобно: энергия сверху, кнопки столбиком справа (или как нравится).</li>
+        <li>Поменяй цвета кнопок и текста — чтобы было видно и красиво.</li>
+      </ol>
+      <img class="shot" src="assets/img/clicker/02-maingui.png" alt="Explorer: MainGUI с кнопками" />
+      <p class="shot-cap">Иерархия MainGUI: три TextButton + EnergyText.</p>
+      <img class="shot" src="assets/img/clicker/04-ui-layout.png" alt="Раскладка UI в viewport" />
+      <p class="shot-cap">Черновой вид: слева Part на Spawn, справа кнопки, сверху EnergyText. Цвета настроишь сам.</p>
+      <div class="info-callout">
+        <span class="bulb">💡</span>
+        <div>Пока кнопки белые с текстом «Button» — нормально. Главное — <b>имена</b> в Explorer. Текст кнопок потом поменяет LocalScript.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">MainGUI лежит в StarterGui.</label></li>
+        <li><input type="checkbox" id="p2s1" onchange="updateProjectProgress()"><label for="p2s1">Есть EnergyText, ClickButton, DoubleUpgrade, AutoClicker.</label></li>
+        <li><input type="checkbox" id="p2s2" onchange="updateProjectProgress()"><label for="p2s2">Элементы видны на экране и покрашены.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 3 -->
+    <div class="phase" id="phase3">
+      <h3>⚡ Фаза 3 — RemoteEvent в ReplicatedStorage <span class="phase-time">6 мин</span></h3>
+      <ol>
+        <li>Открой <b>ReplicatedStorage</b>.</li>
+        <li>Создай три объекта типа <b>RemoteEvent</b>:
+          <ul>
+            <li><code>ClickEvent</code></li>
+            <li><code>BuyDoubleClick</code></li>
+            <li><code>BuyAutoClicker</code></li>
+          </ul>
+        </li>
+      </ol>
+      <img class="shot" src="assets/img/clicker/03-remoteevents.png" alt="Три RemoteEvent в ReplicatedStorage" />
+      <p class="shot-cap">Три «молнии» в ReplicatedStorage — мост между кнопками и сервером.</p>
+      <div class="info-callout warn">
+        <span class="bulb">⚠️</span>
+        <div>Имена пиши <b>буква в букву</b>. <code>ClickEvents</code> или <code>clickEvent</code> — скрипт сломается.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">Созданы все три RemoteEvent.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">Они лежат именно в ReplicatedStorage.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 4 -->
+    <div class="phase" id="phase4">
+      <h3>🖥️ Фаза 4 — MainScript на сервере <span class="phase-time">18 мин</span></h3>
+      <ol>
+        <li>ServerScriptService → Script → имя <code>MainScript</code>.</li>
+        <li>Сотри шаблон и вставь код ниже целиком.</li>
+      </ol>
+      <img class="shot" src="assets/img/clicker/05-mainscript.png" alt="MainScript в ServerScriptService" />
+      <p class="shot-cap">MainScript живёт только в ServerScriptService (обычный Script, не LocalScript).</p>
+
+      <div class="code-block">
+<span class="keyword">local</span> Players = game:<span class="func">GetService</span>(<span class="string">"Players"</span>)<br>
+<span class="keyword">local</span> ReplicatedStorage = game:<span class="func">GetService</span>(<span class="string">"ReplicatedStorage"</span>)<br><br>
+<span class="comment">-- Храним данные игроков</span><br>
+<span class="keyword">local</span> playerData = {}<br><br>
+<span class="comment">-- Цвета для парта</span><br>
+<span class="keyword">local</span> colors = {<br>
+&nbsp;&nbsp;Color3.new(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>), <span class="comment">-- Красный</span><br>
+&nbsp;&nbsp;Color3.new(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>), <span class="comment">-- Зеленый</span><br>
+&nbsp;&nbsp;Color3.new(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>), <span class="comment">-- Синий</span><br>
+&nbsp;&nbsp;Color3.new(<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>), <span class="comment">-- Желтый</span><br>
+&nbsp;&nbsp;Color3.new(<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>), <span class="comment">-- Фиолетовый</span><br>
+&nbsp;&nbsp;Color3.new(<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>)  <span class="comment">-- Голубой</span><br>
+}<br><br>
+<span class="keyword">local function</span> <span class="func">setupPlayer</span>(player)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> leaderstats = Instance.new(<span class="string">"Folder"</span>)<br>
+&nbsp;&nbsp;leaderstats.Name = <span class="string">"leaderstats"</span><br>
+&nbsp;&nbsp;leaderstats.Parent = player<br><br>
+&nbsp;&nbsp;<span class="keyword">local</span> energy = Instance.new(<span class="string">"IntValue"</span>)<br>
+&nbsp;&nbsp;energy.Name = <span class="string">"Energy"</span><br>
+&nbsp;&nbsp;energy.Value = <span class="number">0</span><br>
+&nbsp;&nbsp;energy.Parent = leaderstats<br><br>
+&nbsp;&nbsp;playerData[player] = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;clickPower = <span class="number">2</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hasDouble = <span class="keyword">false</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hasAutoClicker = <span class="keyword">false</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;doublePrice = <span class="number">100</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;autoClickerPrice = <span class="number">200</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;colorIndex = <span class="number">1</span><br>
+&nbsp;&nbsp;}<br>
+<span class="keyword">end</span><br><br>
+<span class="comment">-- Клики по кнопке GUI</span><br>
+ReplicatedStorage.ClickEvent.OnServerEvent:<span class="func">Connect</span>(<span class="keyword">function</span>(player)<br>
+&nbsp;&nbsp;<span class="keyword">if</span> playerData[player] <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> data = playerData[player]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> energy = player.leaderstats.Energy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;energy.Value = energy.Value + data.clickPower<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span>)<br><br>
+<span class="comment">-- Клики по парту</span><br>
+<span class="keyword">local</span> clickPart = workspace:<span class="func">FindFirstChild</span>(<span class="string">"ClickPart"</span>)<br>
+<span class="keyword">if</span> clickPart <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="keyword">local</span> clickDetector = clickPart:<span class="func">FindFirstChildOfClass</span>(<span class="string">"ClickDetector"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">if</span> clickDetector <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;clickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>(player)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> playerData[player] <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> data = playerData[player]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> energy = player.leaderstats.Energy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;energy.Value = energy.Value + data.clickPower<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.colorIndex = (data.colorIndex % #colors) + <span class="number">1</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clickPart.BrickColor = BrickColor.new(colors[data.colorIndex])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clickPart.Size = Vector3.new(<span class="number">5.2</span>, <span class="number">5.2</span>, <span class="number">5.2</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.1</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clickPart.Size = Vector3.new(<span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span><br><br>
+<span class="comment">-- Покупка удвоителя</span><br>
+ReplicatedStorage.BuyDoubleClick.OnServerEvent:<span class="func">Connect</span>(<span class="keyword">function</span>(player)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> data = playerData[player]<br>
+&nbsp;&nbsp;<span class="keyword">local</span> energy = player.leaderstats.Energy<br>
+&nbsp;&nbsp;<span class="keyword">if</span> data <span class="keyword">and</span> energy.Value &gt;= data.doublePrice <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;energy.Value = energy.Value - data.doublePrice<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data.clickPower = data.clickPower * <span class="number">2</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;data.hasDouble = <span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;data.doublePrice = data.doublePrice * <span class="number">2</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(player.Name .. <span class="string">" купил удвоитель! Теперь клик: "</span> .. data.clickPower)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span>)<br><br>
+<span class="comment">-- Покупка автокликера</span><br>
+ReplicatedStorage.BuyAutoClicker.OnServerEvent:<span class="func">Connect</span>(<span class="keyword">function</span>(player)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> data = playerData[player]<br>
+&nbsp;&nbsp;<span class="keyword">local</span> energy = player.leaderstats.Energy<br>
+&nbsp;&nbsp;<span class="keyword">if</span> data <span class="keyword">and</span> energy.Value &gt;= data.autoClickerPrice <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;energy.Value = energy.Value - data.autoClickerPrice<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data.hasAutoClicker = <span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;data.autoClickerPrice = data.autoClickerPrice * <span class="number">2</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">spawn</span>(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">while</span> data.hasAutoClicker <span class="keyword">and</span> player.Parent <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">1</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;energy.Value = energy.Value + data.clickPower<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(player.Name .. <span class="string">" купил автокликер!"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span>)<br><br>
+Players.PlayerAdded:<span class="func">Connect</span>(setupPlayer)<br>
+Players.PlayerRemoving:<span class="func">Connect</span>(<span class="keyword">function</span>(player)<br>
+&nbsp;&nbsp;playerData[player] = <span class="keyword">nil</span><br>
+<span class="keyword">end</span>)
+      </div>
+
+      <div class="info-callout green">
+        <span class="bulb">🔑</span>
+        <div>
+          <b>Что делает сервер:</b> создаёт Energy, слушает три RemoteEvent, считает клики по Part,
+          удваивает силу, запускает автокликер раз в секунду.
+        </div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">MainScript создан в ServerScriptService.</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">Код вставлен без красных ошибок в скрипте.</label></li>
+        <li><input type="checkbox" id="p4s2" onchange="updateProjectProgress()"><label for="p4s2">Понимаю: энергия меняется только на сервере.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 5 -->
+    <div class="phase" id="phase5">
+      <h3>📱 Фаза 5 — LocalScript в MainGUI <span class="phase-time">14 мин</span></h3>
+      <ol>
+        <li>Внутри <b>MainGUI</b> создай <b>LocalScript</b> (не обычный Script!).</li>
+        <li>Вставь клиентский код.</li>
+      </ol>
+      <img class="shot" src="assets/img/clicker/06-localscript.png" alt="LocalScript внутри MainGUI" />
+      <p class="shot-cap">LocalScript должен лежать внутри MainGUI (выделен синим).</p>
+
+      <div class="code-block">
+<span class="keyword">local</span> Players = game:<span class="func">GetService</span>(<span class="string">"Players"</span>)<br>
+<span class="keyword">local</span> player = Players.LocalPlayer<br>
+<span class="keyword">local</span> screenGui = script.Parent<br>
+<span class="keyword">local</span> energyText = screenGui.EnergyText<br>
+<span class="keyword">local</span> clickButton = screenGui.ClickButton<br>
+<span class="keyword">local</span> doubleUpgrade = screenGui.DoubleUpgrade<br>
+<span class="keyword">local</span> autoClicker = screenGui.AutoClicker<br><br>
+<span class="keyword">local function</span> <span class="func">updateUI</span>()<br>
+&nbsp;&nbsp;<span class="keyword">if</span> player:<span class="func">FindFirstChild</span>(<span class="string">"leaderstats"</span>) <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> energy = player.leaderstats.Energy.Value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;energyText.Text = <span class="string">" Энергия: "</span> .. energy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;doubleUpgrade.Text = <span class="string">"Удвоитель кликов"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;autoClicker.Text = <span class="string">"Автокликер"</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span><br><br>
+clickButton.MouseButton1Click:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;game.ReplicatedStorage.ClickEvent:<span class="func">FireServer</span>()<br>
+&nbsp;&nbsp;clickButton.Size = UDim2.new(<span class="number">0</span>, <span class="number">140</span>, <span class="number">0</span>, <span class="number">55</span>)<br>
+&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.1</span>)<br>
+&nbsp;&nbsp;clickButton.Size = UDim2.new(<span class="number">0</span>, <span class="number">150</span>, <span class="number">0</span>, <span class="number">60</span>)<br>
+<span class="keyword">end</span>)<br><br>
+doubleUpgrade.MouseButton1Click:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;game.ReplicatedStorage.BuyDoubleClick:<span class="func">FireServer</span>()<br>
+<span class="keyword">end</span>)<br><br>
+autoClicker.MouseButton1Click:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;game.ReplicatedStorage.BuyAutoClicker:<span class="func">FireServer</span>()<br>
+<span class="keyword">end</span>)<br><br>
+doubleUpgrade.MouseEnter:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;doubleUpgrade.Text = <span class="string">"Удвоитель кликов\n(Удваивает силу клика)"</span><br>
+<span class="keyword">end</span>)<br>
+doubleUpgrade.MouseLeave:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;doubleUpgrade.Text = <span class="string">"Удвоитель кликов"</span><br>
+<span class="keyword">end</span>)<br><br>
+autoClicker.MouseEnter:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;autoClicker.Text = <span class="string">"Автокликер\n(Автоматические клики)"</span><br>
+<span class="keyword">end</span>)<br>
+autoClicker.MouseLeave:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;autoClicker.Text = <span class="string">"Автокликер"</span><br>
+<span class="keyword">end</span>)<br><br>
+<span class="keyword">while true do</span><br>
+&nbsp;&nbsp;<span class="func">updateUI</span>()<br>
+&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.1</span>)<br>
+<span class="keyword">end</span>
+      </div>
+
+      <div class="info-callout purple">
+        <span class="bulb">👆</span>
+        <div>
+          Клиент <b>не</b> пишет <code>energy.Value = …</code>. Он только делает <code>FireServer()</code>
+          и читает уже готовое значение для надписи.
+        </div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">LocalScript лежит в MainGUI.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">Кнопки вызывают FireServer.</label></li>
+        <li><input type="checkbox" id="p5s2" onchange="updateProjectProgress()"><label for="p5s2">EnergyText обновляется в цикле.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 6 -->
+    <div class="phase" id="phase6">
+      <h3>✨ Фаза 6 — Частицы на ClickPart <span class="phase-time">8 мин</span></h3>
+      <ol>
+        <li>Внутри <b>ClickPart</b> создай обычный <b>Script</b>.</li>
+        <li>Вставь код мини-анимации частиц.</li>
+      </ol>
+      <img class="shot" src="assets/img/clicker/07-clickpart-script.png" alt="Script внутри ClickPart" />
+      <p class="shot-cap">Иерархия ClickPart: ClickDetector + Script с частицами.</p>
+
+      <div class="code-block">
+<span class="keyword">local</span> part = script.Parent<br>
+<span class="keyword">local</span> clickDetector = part:<span class="func">FindFirstChildOfClass</span>(<span class="string">"ClickDetector"</span>)<br><br>
+<span class="keyword">local</span> particles = Instance.new(<span class="string">"ParticleEmitter"</span>)<br>
+particles.Texture = <span class="string">"rbxasset://textures/particles/sparkles_main.dds"</span><br>
+particles.Lifetime = NumberRange.new(<span class="number">0.5</span>, <span class="number">1</span>)<br>
+particles.Rate = <span class="number">50</span><br>
+particles.SpreadAngle = Vector2.new(<span class="number">45</span>, <span class="number">45</span>)<br>
+particles.Parent = part<br>
+particles.Enabled = <span class="keyword">false</span><br><br>
+clickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;particles.Enabled = <span class="keyword">true</span><br>
+&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.5</span>)<br>
+&nbsp;&nbsp;particles.Enabled = <span class="keyword">false</span><br>
+<span class="keyword">end</span>)
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6s0" onchange="updateProjectProgress()"><label for="p6s0">Script добавлен в ClickPart.</label></li>
+        <li><input type="checkbox" id="p6s1" onchange="updateProjectProgress()"><label for="p6s1">При клике по парту вспыхивают частицы.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 7 -->
+    <div class="phase" id="phase7">
+      <h3>🧪 Фаза 7 — Проверка в Play <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>Нажми <b>Play</b>.</li>
+        <li>Проверь чеклист ниже — всё должно работать без красных ошибок в Output.</li>
+      </ol>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p7s0" onchange="updateProjectProgress()"><label for="p7s0">В таблице лидеров появилась Energy.</label></li>
+        <li><input type="checkbox" id="p7s1" onchange="updateProjectProgress()"><label for="p7s1">ClickButton и клик по Part добавляют энергию.</label></li>
+        <li><input type="checkbox" id="p7s2" onchange="updateProjectProgress()"><label for="p7s2">Part меняет цвет и «пульсирует».</label></li>
+        <li><input type="checkbox" id="p7s3" onchange="updateProjectProgress()"><label for="p7s3">Удвоитель покупается при ≥ 100 энергии.</label></li>
+        <li><input type="checkbox" id="p7s4" onchange="updateProjectProgress()"><label for="p7s4">Автокликер капает энергию каждую секунду.</label></li>
+      </ul>
+      <div class="space-note">🎉 Базовый кликер готов! Можно идти в доп. фазы или украшать карту.</div>
+    </div>
+
+    <!-- ДОП -->
+    <div class="phase" id="phase8" style="border-color:#38bdf8;">
+      <h3>💰 Фаза 8 (доп) — Цены на кнопках <span class="phase-time">10 мин</span></h3>
+      <p>Сейчас цены живут только на сервере. Добавь ещё два RemoteEvent или IntValue в playerData-отображение:
+        в LocalScript пиши цену в тексте, например <code>"Удвоитель (100)"</code>.
+        Простой вариант: сервер шлёт цену через <code>RemoteEvent:FireClient</code> — или временно покажи стартовые 100 / 200 и обновляй вручную после покупки.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p8s0" onchange="updateProjectProgress()"><label for="p8s0">На кнопках видны актуальные цены.</label></li>
+        <li><input type="checkbox" id="p8s1" onchange="updateProjectProgress()"><label for="p8s1">После покупки цена на кнопке удваивается.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase9" style="border-color:#fbbf24;">
+      <h3>🔊 Фаза 9 (доп) — Звук клика <span class="phase-time">8 мин</span></h3>
+      <p>В ClickPart добавь <b>Sound</b>, вставь любой короткий звук из Toolbox.
+        В скрипте частиц после клика вызови <code>sound:Play()</code>.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p9s0" onchange="updateProjectProgress()"><label for="p9s0">Звук играет при клике по Part.</label></li>
+        <li><input type="checkbox" id="p9s1" onchange="updateProjectProgress()"><label for="p9s1">Громкость комфортная (не орёт).</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase10" style="border-color:#a78bfa;">
+      <h3>🏝️ Фаза 10 (доп) — Оформить площадку <span class="phase-time">12 мин</span></h3>
+      <ul>
+        <li>Поставь ClickPart на платформу / пьедестал.</li>
+        <li>Добавь стены магазина, табличку «ЭНЕРГИЯ», свет PointLight.</li>
+        <li>Всё декор сложи в папку <code>ClickerWorld</code>.</li>
+      </ul>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p10s0" onchange="updateProjectProgress()"><label for="p10s0">Есть оформленная зона вокруг ClickPart.</label></li>
+        <li><input type="checkbox" id="p10s1" onchange="updateProjectProgress()"><label for="p10s1">Объекты в папке, Anchored = true.</label></li>
+        <li><input type="checkbox" id="p10s2" onchange="updateProjectProgress()"><label for="p10s2">Игра по-прежнему работает после декора.</label></li>
+      </ul>
+      <div class="space-note">🏆 Кликер с магазином, эффектами и миром — готовый портфолио-проект!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧯 Если не работает</h2>
+    <table class="prop-table">
+      <tr><th>Симптом</th><th>Что проверить</th></tr>
+      <tr><td>Энергия не растёт</td><td>Имена RemoteEvent; MainScript запущен; Play, не Run</td></tr>
+      <tr><td>Кнопка молчит</td><td>Это LocalScript? Лежит в MainGUI? Имена кнопок точные?</td></tr>
+      <tr><td>Part не кликается</td><td>Есть ClickDetector? Part не слишком далеко? Anchored?</td></tr>
+      <tr><td>Нет Energy в лидерборде</td><td>Папка должна называться именно <code>leaderstats</code></td></tr>
+      <tr><td>Красный Output</td><td>Опечатка в имени объекта — читай строку ошибки</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>собрал кликер «клиент ↔ RemoteEvent ↔ сервер»;</li>
+      <li>сделал два способа клика: GUI и ClickDetector;</li>
+      <li>добавил магазин апгрейдов и автокликер;</li>
+      <li>украсил клик цветом, пульсом и частицами.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Кликер живой!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти, чиним баги</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь педагога</label>
+    </div>
+    <textarea placeholder="Зачем энергию считает сервер, а не LocalScript? Чем клик по кнопке отличается от клика по Part?"></textarea>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Проект П1 · Кликер</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function updateProjectProgress() {
+    const box = document.getElementById('keyTaskBox');
+    if (!box) return;
+    const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+    const checked = box.querySelectorAll('input[type="checkbox"]:checked').length;
+    const total = checkboxes.length;
+    const pct = total ? Math.round((checked / total) * 100) : 0;
+    const fill = document.getElementById('projectFill');
+    const label = document.getElementById('projectLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) {
+      label.textContent =
+        'Выполнено шагов: ' + checked + ' из ' + total +
+        (checked === total && total > 0 ? ' 🎉 Проект выполнен!' : '');
+    }
+  }
+
+  /* ===== Мини-игра ===== */
+  const mg = {
+    energy: 0,
+    power: 2,
+    doublePrice: 100,
+    autoPrice: 200,
+    hasAuto: false,
+    autoTimer: null,
+    colors: ['#22d3ee', '#22c55e', '#eab308', '#ef4444', '#a855f7', '#3b82f6'],
+    colorIndex: 0
+  };
+
+  function renderMini() {
+    document.getElementById('mgEnergy').textContent = mg.energy;
+    document.getElementById('mgPower').textContent = mg.power;
+    document.getElementById('mgAuto').textContent = mg.hasAuto ? 'вкл' : 'выкл';
+    document.getElementById('mgDoublePrice').textContent = mg.doublePrice;
+    document.getElementById('mgAutoPrice').textContent = mg.autoPrice;
+    const crystal = document.getElementById('mgCrystal');
+    crystal.style.background = 'linear-gradient(145deg,' + mg.colors[mg.colorIndex] + ',#1e3a8a)';
+    const msg = document.getElementById('mgMsg');
+    if (mg.energy >= 200 && mg.power >= 4 && mg.hasAuto) {
+      msg.textContent = '🏆 Миссия выполнена! Теперь собирай то же в Studio.';
+    }
+  }
+
+  function addEnergy() {
+    mg.energy += mg.power;
+    mg.colorIndex = (mg.colorIndex + 1) % mg.colors.length;
+    const crystal = document.getElementById('mgCrystal');
+    crystal.classList.add('pulse');
+    setTimeout(function () { crystal.classList.remove('pulse'); }, 100);
+    renderMini();
+  }
+
+  document.getElementById('mgCrystal').addEventListener('click', addEnergy);
+  document.getElementById('mgClickBtn').addEventListener('click', addEnergy);
+
+  document.getElementById('mgDouble').addEventListener('click', function () {
+    if (mg.energy < mg.doublePrice) {
+      document.getElementById('mgMsg').textContent = 'Мало энергии для удвоителя 😅';
+      return;
+    }
+    mg.energy -= mg.doublePrice;
+    mg.power *= 2;
+    mg.doublePrice *= 2;
+    document.getElementById('mgMsg').textContent = 'Сила клика теперь ' + mg.power + '!';
+    renderMini();
+  });
+
+  document.getElementById('mgAutoBtn').addEventListener('click', function () {
+    if (mg.hasAuto) {
+      document.getElementById('mgMsg').textContent = 'Автокликер уже куплен.';
+      return;
+    }
+    if (mg.energy < mg.autoPrice) {
+      document.getElementById('mgMsg').textContent = 'Мало энергии для автокликера 😅';
+      return;
+    }
+    mg.energy -= mg.autoPrice;
+    mg.hasAuto = true;
+    mg.autoPrice *= 2;
+    document.getElementById('mgMsg').textContent = 'Автокликер включён!';
+    mg.autoTimer = setInterval(function () {
+      mg.energy += mg.power;
+      renderMini();
+    }, 1000);
+    renderMini();
+  });
+
+  function resetMiniClicker() {
+    if (mg.autoTimer) clearInterval(mg.autoTimer);
+    mg.energy = 0;
+    mg.power = 2;
+    mg.doublePrice = 100;
+    mg.autoPrice = 200;
+    mg.hasAuto = false;
+    mg.autoTimer = null;
+    mg.colorIndex = 0;
+    document.getElementById('mgMsg').textContent = '';
+    renderMini();
+  }
+
+  renderMini();
+  updateProjectProgress();
+</script>
+</body>
+</html>

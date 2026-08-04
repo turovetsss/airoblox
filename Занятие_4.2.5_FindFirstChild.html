@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.2.5. FindFirstChild — Дорога домой — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: 1rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#0c1a12,#1a3a2a); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #4ade80;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .info-callout.danger { background: #7f1d1d; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка FindFirstChild"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .9rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .85rem; }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin: 0 0 8px; color: var(--primary-dark,#1a4a0a); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .phase-time { font-size: .85rem; background: var(--accent-light,#f0e6f5); color: var(--accent-ink,#4a1a5a); padding: 3px 12px; border-radius: 20px; font-weight: 700; }
+    .progress-track { background: #e2e8f0; height: 10px; border-radius: 10px; margin: 16px 0 8px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg,var(--primary,#61b01f),#a3e635); transition: width .3s; }
+    .progress-label { font-size: .92rem; color: #334155; font-weight: 600; }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; align-items: baseline; gap: 8px; margin: 8px 0; line-height: 1.5; }
+    .task-steps li input[type="checkbox"] { transform: scale(1.2); flex-shrink: 0; margin-top: 3px; }
+    details.hint { background: #f1f5f9; border-radius: 12px; padding: 10px 14px; margin: 10px 0; border-left: 4px solid var(--accent,#6e0091); }
+    details.hint summary { cursor: pointer; font-weight: 700; color: var(--accent-ink,#4a1a5a); }
+    .space-note { background: #1a1a4a; color: #fbbf24; border-left: 4px solid #fbbf24; padding: 12px 16px; border-radius: 12px; margin: 12px 0; }
+    .build-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap: 12px; margin: 14px 0; }
+    .build-card {
+      background: linear-gradient(160deg,#0f172a,#1e3a2f); color: #f8fafc; border-radius: 16px;
+      padding: 14px; text-align: center; border: 2px solid #4ade80;
+    }
+    .build-card .ico { font-size: 2.2rem; }
+    .build-card .nm { font-weight: 800; margin: 6px 0 4px; }
+    .build-card .props { font-size: .8rem; opacity: .9; line-height: 1.4; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.selected { border-color: var(--accent)!important; background: var(--accent-light)!important; }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .mini-game {
+      background: linear-gradient(180deg,#0f172a,#1e293b); border-radius: 24px; padding: 20px;
+      border: 3px solid #38bdf8; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #7dd3fc; }
+    .tree-board {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;
+    }
+    @media (max-width:800px) { .tree-board { grid-template-columns: 1fr; } }
+    .explorer {
+      background: #020617; border-radius: 14px; padding: 14px; font-family: 'Courier New', monospace;
+      border: 1px solid #334155; line-height: 1.85;
+    }
+    .tree-node {
+      display: block; width: 100%; text-align: left; background: transparent; border: 2px solid transparent;
+      color: #e2e8f0; padding: 4px 8px; border-radius: 8px; cursor: pointer; font: inherit;
+    }
+    .tree-node:hover { border-color: #38bdf8; background: #0c4a6e; }
+    .tree-node.found { border-color: #4ade80; background: #14532d; }
+    .tree-node.miss { border-color: #f87171; background: #7f1d1d; }
+    .tree-indent { padding-left: 18px; }
+    .tree-indent2 { padding-left: 36px; }
+    .mission-panel { background: rgba(0,0,0,.35); border-radius: 14px; padding: 14px 16px; }
+    .mission-panel .cmd {
+      background: #0f172a; border-radius: 10px; padding: 10px 12px; margin: 10px 0;
+      font-family: 'Courier New', monospace; color: #a3e635; font-size: 1.05rem;
+    }
+    .mission-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .mission-btns button {
+      background: #0ea5e9; color: #fff; border: none; padding: 8px 14px; border-radius: 20px;
+      font-weight: 800; cursor: pointer;
+    }
+    .mission-btns button.secondary { background: #64748b; }
+    .final-project {
+      background: linear-gradient(135deg,#e8f5e0,#f4e6ff); border: 2px dashed var(--accent,#6e0091);
+      border-radius: 20px; padding: 20px 24px; margin: 24px 0;
+    }
+    .reflection-box textarea { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--line); font-family: inherit; min-height: 80px; }
+    .vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+    @media (max-width:700px) { .vs-grid { grid-template-columns: 1fr; } }
+    .vs-ok { background: #ecfdf5; border: 2px solid #34d399; border-radius: 14px; padding: 12px; }
+    .vs-no { background: #fef2f2; border: 2px solid #f87171; border-radius: 14px; padding: 12px; }
+    .map-card {
+      background: linear-gradient(135deg,#E8F5E0,#F4EAFA); border: 2px solid var(--primary,#61b01f);
+      border-radius: 20px; padding: 20px 24px; margin: 20px 0;
+    }
+    .path-flow {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; font-weight: 800;
+    }
+    .path-flow span {
+      background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 4.2.5</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">4.2.5</div>
+      <div>
+        <div class="module-pill">Раздел 4.2 · Поиск объектов</div>
+        <h1>🏠 FindFirstChild — Дорога домой</h1>
+        <p class="subtitle">Строим паркур с нуля и безопасно ищем объекты в коде</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🌋</div>
+    <div>
+      <strong>Путь домой разрушен!</strong> Нужно построить свой паркур: лаву, аптечку, облака-ловушки и кактусы.
+      Главный инструмент урока — <code>FindFirstChild</code>: он ищет дочерний объект по имени и не ломает игру, если объекта нет.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>🎯 На этом уроке ты:</h2>
+    <ul>
+      <li>поймёшь, зачем нужен <code>FindFirstChild</code> и чем он лучше точечной точки <code>.</code> 🔍</li>
+      <li>сам построишь модели: лаву, аптечку, облака, кактус 🏗️</li>
+      <li>запрограммируешь урон и лечение через поиск <code>Humanoid</code> ❤️</li>
+      <li>соберёшь целую «дорогу домой» и пройдёшь её 🏠</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Теория FindFirstChild</td><td>12 мин</td><td>Поиск, nil, IsA, квиз</td></tr>
+      <tr><td>Мини-игра «Найди ребёнка»</td><td>8 мин</td><td>Кликами ищем объекты в дереве</td></tr>
+      <tr><td>Строим трассу</td><td>12 мин</td><td>Путь, дом, Spawn</td></tr>
+      <tr><td>Модель Lava + скрипт</td><td>14 мин</td><td>Урон через FindFirstChild</td></tr>
+      <tr><td>Модель HealPad</td><td>12 мин</td><td>Лечение</td></tr>
+      <tr><td>Облака-ловушки</td><td>14 мин</td><td>Исчезающие платформы</td></tr>
+      <tr><td>Кактус + финал</td><td>10 мин</td><td>Модель из частей, пройти трассу</td></tr>
+      <tr><td>Доп. задания (фазы 5–7)</td><td>по желанию</td><td>Лёд, финиш, декор</td></tr>
+      <tr><td>Итого</td><td>90 мин + доп.</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- ===== ТЕОРИЯ ===== -->
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: FindFirstChild</h2>
+ <img src="assets/images/lesson-4.2.5/1.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+     
+    <div class="theory-section">
+      <h3>🔍 Что делает FindFirstChild?</h3>
+      <p>Это метод «найди первого ребёнка с таким именем». Если нашёл — вернёт объект. Если нет — вернёт <code>nil</code> (пусто), и скрипт <b>не упадёт</b>.</p>
+      <div class="code-block">
+        <span class="keyword">local</span> humanoid = hit.Parent:<span class="func">FindFirstChild</span>(<span class="string">"Humanoid"</span>)<br>
+        <span class="keyword">if</span> humanoid <span class="keyword">then</span><br>
+        &nbsp;&nbsp;humanoid.Health = humanoid.Health - <span class="number">20</span><br>
+        <span class="keyword">end</span>
+      </div>
+      <div class="vs-grid">
+        <div class="vs-ok">
+          <b>✅ Безопасно</b><br>
+          <code>FindFirstChild("Humanoid")</code><br>
+          Нет объекта → <code>nil</code> → просто пропускаем
+        </div>
+        <div class="vs-no">
+          <b>❌ Опасно</b><br>
+          <code>hit.Parent.Humanoid</code><br>
+          Нет объекта → ошибка, скрипт ломается
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>📦 Где искать? hit.Parent</h3>
+      <p>При касании <code>Touched</code> в <code>hit</code> приходит часть тела (нога, рука). Сам персонаж — это <code>hit.Parent</code>. Внутри персонажа лежит <code>Humanoid</code> (жизнь).</p>
+      <div class="code-block">
+        <span class="comment">-- hit = нога игрока</span><br>
+        <span class="comment">-- hit.Parent = модель персонажа</span><br>
+        <span class="comment">-- Humanoid сидит внутри персонажа</span><br>
+        <span class="keyword">local</span> humanoid = hit.Parent:FindFirstChild(<span class="string">"Humanoid"</span>)
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🧬 IsA — проверка типа</h3>
+      <p>Иногда нужно убедиться, что объект — именно Part (а не Script). Тогда:</p>
+      <div class="code-block">
+        <span class="keyword">if</span> obj:IsA(<span class="string">"Part"</span>) <span class="keyword">then</span><br>
+        &nbsp;&nbsp;<span class="comment">-- это блок, можно трогать Transparency</span><br>
+        <span class="keyword">end</span>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>⏳ WaitForChild — если объект может появиться позже</h3>
+      <p><code>FindFirstChild</code> ищет сразу. <code>WaitForChild("Name")</code> ждёт, пока объект появится. Для лавы и касаний обычно хватает FindFirstChild.</p>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz1">
+      <h3>⚡ Проверка</h3>
+      <p>Что вернёт <code>model:FindFirstChild("Humanoid")</code>, если Humanoid нет?</p>
+      <div class="choice-card" data-correct-choice="false">Ошибку и вылет скрипта</div>
+      <div class="choice-card" data-correct-choice="true">nil</div>
+      <div class="choice-card" data-correct-choice="false">Пустую строку ""</div>
+      <button class="action-btn" onclick="checkChoices('quiz1')">Проверить</button>
+      <button class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetQuiz('quiz1')">Ещё раз</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz2">
+      <h3>⚡ Проверка</h3>
+      <p>Игрок наступил на лаву. Где искать Humanoid?</p>
+      <div class="choice-card" data-correct-choice="true">hit.Parent:FindFirstChild("Humanoid")</div>
+      <div class="choice-card" data-correct-choice="false">hit:FindFirstChild("Humanoid")</div>
+      <div class="choice-card" data-correct-choice="false">workspace:FindFirstChild("Humanoid")</div>
+      <button class="action-btn" onclick="checkChoices('quiz2')">Проверить</button>
+      <button class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetQuiz('quiz2')">Ещё раз</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="cheat-sheet">
+    <div class="cheat-grid">
+      <div class="cheat-item"><div class="title">🔍 Найти</div><div class="rule"><code>parent:FindFirstChild("Name")</code></div></div>
+      <div class="cheat-item"><div class="title">❓ Проверка</div><div class="rule"><code>if humanoid then ... end</code></div></div>
+      <div class="cheat-item"><div class="title">🧬 Тип</div><div class="rule"><code>obj:IsA("Part")</code></div></div>
+      <div class="cheat-item"><div class="title">❤️ Урон</div><div class="rule"><code>humanoid.Health = humanoid.Health - 20</code></div></div>
+      <div class="cheat-item"><div class="title">💚 Лечение</div><div class="rule"><code>humanoid.Health = 100</code></div></div>
+      <div class="cheat-item"><div class="title">🦶 Касание</div><div class="rule"><code>part.Touched:Connect(function(hit)</code></div></div>
+    </div>
+  </div>
+
+  <!-- ===== МИНИ-ИГРА ===== -->
+  <div class="mini-game" id="miniGame">
+    <h2>🎮 Мини-игра: Найди ребёнка</h2>
+    <p style="opacity:.9;margin:0;">Кликай по объекту в дереве — так работает <code>FindFirstChild</code>. Найди то, что просит задание.</p>
+
+    <div class="tree-board">
+      <div class="explorer" id="explorerTree">
+        <div style="color:#94a3b8;margin-bottom:6px;">📁 Character (персонаж)</div>
+        <button type="button" class="tree-node tree-indent" data-name="Head" onclick="pickNode(this)">🧱 Head</button>
+        <button type="button" class="tree-node tree-indent" data-name="Torso" onclick="pickNode(this)">🧱 Torso</button>
+        <button type="button" class="tree-node tree-indent" data-name="Humanoid" onclick="pickNode(this)">❤️ Humanoid</button>
+        <button type="button" class="tree-node tree-indent" data-name="Backpack" onclick="pickNode(this)">🎒 Backpack</button>
+        <button type="button" class="tree-node tree-indent2" data-name="Key" onclick="pickNode(this)">🔑 Key</button>
+        <button type="button" class="tree-node tree-indent2" data-name="Apple" onclick="pickNode(this)">🍎 Apple</button>
+        <button type="button" class="tree-node tree-indent" data-name="Hat" onclick="pickNode(this)">🎩 Hat</button>
+      </div>
+
+      <div class="mission-panel">
+        <div id="missionLabel" style="font-weight:800;font-size:1.1rem;">Задание 1 из 3</div>
+        <div class="cmd" id="missionCmd">character:FindFirstChild("Humanoid")</div>
+        <p id="missionHint" style="opacity:.9;">Кликни объект, который вернёт эта команда.</p>
+        <p id="missionResult" style="font-weight:800;min-height:1.4em;color:#fde047;"></p>
+        <div class="mission-btns">
+          <button type="button" class="secondary" onclick="missionNil()">Вернёт nil</button>
+          <button type="button" class="secondary" onclick="resetMissions()">🔄 Сначала</button>
+        </div>
+        <p id="missionScore" style="margin-top:12px;">Очки: 0 / 3</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card map-card">
+    <h2 style="margin:0 0 .4rem;color:var(--primary-dark);">🗺️ С чего начать</h2>
+    <p>Открой пустую Baseplate в Roblox Studio. Всё строишь <b>сам с нуля</b> — это и есть проект урока.</p>
+  </div>
+
+  <!-- ===== ПРОЕКТ ===== -->
+  <div class="project-box" id="mainProject">
+    <h2>🏠 Проект «Дорога домой»</h2>
+    <p>Собери трассу из своих моделей. Игрок идёт от старта к дому через ловушки.</p>
+
+    <div class="path-flow">
+      <span>🏁 Старт</span> →
+      <span>🌋 Lava</span> →
+      <span>💚 HealPad</span> →
+      <span>☁️ Clouds</span> →
+      <span>🌵 Cactus</span> →
+      <span>🧊 Ice</span> →
+      <span>🏁 Finish</span> →
+      <span>🏠 Home</span>
+    </div>
+
+    <div class="build-grid">
+      <div class="build-card"><div class="ico">🌋</div><div class="nm">Lava</div><div class="props">оранжевый Part<br>урон −25</div></div>
+      <div class="build-card"><div class="ico">💚</div><div class="nm">HealPad</div><div class="props">зелёный Part<br>HP = 100</div></div>
+      <div class="build-card"><div class="ico">☁️</div><div class="nm">Clouds</div><div class="props">3 белых Part<br>исчезают</div></div>
+      <div class="build-card"><div class="ico">🌵</div><div class="nm">Cactus</div><div class="props">Model из 3 Part<br>урон −15</div></div>
+      <div class="build-card"><div class="ico">🧊</div><div class="nm">Ice</div><div class="props">голубой Part<br>скользит</div></div>
+      <div class="build-card"><div class="ico">🏁</div><div class="nm">Finish</div><div class="props">жёлтый Part<br>«ты дома!»</div></div>
+      <div class="build-card"><div class="ico">🏠</div><div class="nm">Home</div><div class="props">домик + вывеска<br>финиш</div></div>
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="projectProgress"></div></div>
+    <span class="progress-label" id="projectLabel">Выполнено шагов: 0 из 23</span>
+
+    <!-- ФАЗА 0 -->
+    <div class="phase" id="phase0">
+      <h3>🛤️ Фаза 0 — Трасса и дом <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>Создай папку <b>Parkour</b> в Workspace.</li>
+        <li>Построй дорожку из Part (серые плиты) длиной 40–60.</li>
+        <li>В начале поставь <b>SpawnLocation</b>.</li>
+        <li>В конце собери простой <b>Home</b>: пол + 4 стены + крыша (5–7 Part). Сложи в Model, назови Home.</li>
+      </ol>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p0s0" onchange="updateProjectProgress()"><label for="p0s0">Папка Parkour, дорожка и SpawnLocation.</label></li>
+        <li><input type="checkbox" id="p0s1" onchange="updateProjectProgress()"><label for="p0s1">Модель Home на финише собрана из Parts.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 1 -->
+    <div class="phase" id="phase1">
+      <h3>🌋 Фаза 1 — Модель Lava (урон) <span class="phase-time">14 мин</span></h3>
+      <p><b>Собери сам:</b> широкий оранжевый/красный Part под разрывом дорожки. Имя <b>Lava</b>, Material = Neon, Anchored = true. Положи в Parkour.</p>
+      <p>Внутрь Lava — Script <code>DamageScript</code>:</p>
+      <div class="code-block">
+        <span class="keyword">local</span> lava = script.Parent<br><br>
+        lava.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+        &nbsp;&nbsp;<span class="keyword">local</span> humanoid = hit.Parent:<span class="func">FindFirstChild</span>(<span class="string">"Humanoid"</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> humanoid <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;humanoid.Health = humanoid.Health - <span class="number">25</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Ой, лава! HP: "</span> .. humanoid.Health)<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <div class="info-callout danger">
+        <span class="bulb">🔥</span>
+        <div>Без <code>if humanoid then</code> касание обычного блока тоже вызвало бы ошибку. FindFirstChild + проверка — защита.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">Модель/Part Lava построен и лежит в Parkour.</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">DamageScript с FindFirstChild("Humanoid").</label></li>
+        <li><input type="checkbox" id="p1s2" onchange="updateProjectProgress()"><label for="p1s2">Play → наступил на лаву → HP падает в Output.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 2 -->
+    <div class="phase" id="phase2">
+      <h3>💚 Фаза 2 — Модель HealPad (лечение) <span class="phase-time">12 мин</span></h3>
+      <p><b>Собери сам:</b> зелёный Part на дорожке после лавы. Имя <b>HealPad</b>. Можно сверху положить белую «подушку» (ещё один Part) — тогда сделай Model HealPad и скрипт повесь на нижний Part или на модель через GetChildren.</p>
+      <p>Простой вариант — один Part + Script:</p>
+      <div class="code-block">
+        <span class="keyword">local</span> pad = script.Parent<br><br>
+        pad.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+        &nbsp;&nbsp;<span class="keyword">local</span> humanoid = hit.Parent:<span class="func">FindFirstChild</span>(<span class="string">"Humanoid"</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> humanoid <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;humanoid.Health = <span class="number">100</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Отдохнул! HP = 100"</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">HealPad построен (можно Model из 2 Parts).</label></li>
+        <li><input type="checkbox" id="p2s1" onchange="updateProjectProgress()"><label for="p2s1">Скрипт лечит через FindFirstChild.</label></li>
+        <li><input type="checkbox" id="p2s2" onchange="updateProjectProgress()"><label for="p2s2">После лавы наступил на пад — здоровье 100.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 3 -->
+    <div class="phase" id="phase3">
+      <h3>☁️ Фаза 3 — Облака-ловушки <span class="phase-time">14 мин</span></h3>
+      <p><b>Собери сам:</b> папка <b>Clouds</b> в Parkour. Внутри 3 белых Part (Cloud1, Cloud2, Cloud3) — платформы над пропастью. Anchored = true.</p>
+      <p>В папку Clouds положи Script (один на все облака):</p>
+      <div class="code-block">
+        <span class="keyword">local</span> folder = script.Parent<br><br>
+        <span class="keyword">for</span> _, cloud <span class="keyword">in</span> <span class="func">pairs</span>(folder:<span class="func">GetChildren</span>()) <span class="keyword">do</span><br>
+        &nbsp;&nbsp;<span class="keyword">if</span> cloud:IsA(<span class="string">"Part"</span>) <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;cloud.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> hit.Parent:<span class="func">FindFirstChild</span>(<span class="string">"Humanoid"</span>) <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cloud.BrickColor = BrickColor.new(<span class="string">"Bright red"</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cloud.CanCollide = <span class="keyword">false</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> i = <span class="number">1</span>, <span class="number">10</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cloud.Transparency = i / <span class="number">10</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.08</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">1</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cloud.Transparency = <span class="number">0</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cloud.CanCollide = <span class="keyword">true</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cloud.BrickColor = BrickColor.new(<span class="string">"White"</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>
+      </div>
+      <div class="info-callout green">
+        <span class="bulb">💡</span>
+        <div>Здесь сразу три инструмента: <code>GetChildren</code>, <code>IsA("Part")</code> и <code>FindFirstChild("Humanoid")</code>.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">3 облака в папке Clouds построены.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">Скрипт исчезания работает.</label></li>
+        <li><input type="checkbox" id="p3s2" onchange="updateProjectProgress()"><label for="p3s2">Наступил — облако краснеет и пропадает, потом возвращается.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 4 -->
+    <div class="phase" id="phase4">
+      <h3>🌵 Фаза 4 — Модель Cactus с нуля <span class="phase-time">10 мин</span></h3>
+      <p><b>Собери сам интересную модель:</b></p>
+      <ol>
+        <li>Создай Model с именем <b>Cactus</b>.</li>
+        <li>Столбик (Part зелёный) + 2 «руки» сбоку (поменьше).</li>
+        <li>Все Parts Anchored, сложи внутрь Model.</li>
+        <li>PrimaryPart можно не ставить — скрипт повесим на каждую часть через цикл.</li>
+      </ol>
+      <p>Script внутри Model Cactus:</p>
+      <div class="code-block">
+        <span class="keyword">local</span> cactus = script.Parent<br><br>
+        <span class="keyword">for</span> _, part <span class="keyword">in</span> <span class="func">pairs</span>(cactus:<span class="func">GetChildren</span>()) <span class="keyword">do</span><br>
+        &nbsp;&nbsp;<span class="keyword">if</span> part:IsA(<span class="string">"BasePart"</span>) <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;part.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> humanoid = hit.Parent:<span class="func">FindFirstChild</span>(<span class="string">"Humanoid"</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> humanoid <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;humanoid.Health = humanoid.Health - <span class="number">15</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">Модель Cactus из 3+ частей собрана своими руками.</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">Скрипт колет через FindFirstChild.</label></li>
+        <li><input type="checkbox" id="p4s2" onchange="updateProjectProgress()"><label for="p4s2">Прошёл всю дорогу: лава → хил → облака → кактус → дом!</label></li>
+      </ul>
+      <div class="space-note">🎉 Базовая трасса готова! Если осталось время — делай доп. фазы 5–7.</div>
+    </div>
+
+    <!-- ФАЗА 5 (доп) -->
+    <div class="phase" id="phase5" style="border-color:#38bdf8;">
+      <h3>🧊 Фаза 5 (доп) — Модель Ice (скольжение) <span class="phase-time">10 мин</span></h3>
+      <p>Поставь на дорожке перед домом голубой Part <b>Ice</b> (Material = Ice или Neon). При касании игрок «улетает» вперёд.</p>
+      <p>Script внутри Ice:</p>
+      <div class="code-block">
+        <span class="keyword">local</span> ice = script.Parent<br><br>
+        ice.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+        &nbsp;&nbsp;<span class="keyword">local</span> character = hit.Parent<br>
+        &nbsp;&nbsp;<span class="keyword">local</span> humanoid = character:<span class="func">FindFirstChild</span>(<span class="string">"Humanoid"</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">local</span> root = character:<span class="func">FindFirstChild</span>(<span class="string">"HumanoidRootPart"</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> humanoid <span class="keyword">and</span> root <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;root.AssemblyLinearVelocity = root.CFrame.LookVector * <span class="number">60</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Скольжение!"</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <div class="info-callout">
+        <span class="bulb">🔍</span>
+        <div>Два поиска подряд: <code>Humanoid</code> и <code>HumanoidRootPart</code>. Оба через FindFirstChild — и оба проверяем через <code>and</code>.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">Part Ice построен и лежит в Parkour.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">Скрипт ищет Humanoid и HumanoidRootPart.</label></li>
+        <li><input type="checkbox" id="p5s2" onchange="updateProjectProgress()"><label for="p5s2">Play → наступил на лёд → персонаж скользит вперёд.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 6 (доп) -->
+    <div class="phase" id="phase6" style="border-color:#fbbf24;">
+      <h3>🏁 Фаза 6 (доп) — Финишная плита Finish <span class="phase-time">10 мин</span></h3>
+      <p>Перед дверью дома поставь жёлтый Part <b>Finish</b>. Когда игрок дошёл — пишем победу в Output и чуть подкрашиваем дом.</p>
+      <div class="code-block">
+        <span class="keyword">local</span> finish = script.Parent<br>
+        <span class="keyword">local</span> home = workspace.Parkour:<span class="func">FindFirstChild</span>(<span class="string">"Home"</span>)<br><br>
+        finish.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+        &nbsp;&nbsp;<span class="keyword">local</span> humanoid = hit.Parent:<span class="func">FindFirstChild</span>(<span class="string">"Humanoid"</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> humanoid <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"🎉 Ты дома! HP: "</span> .. humanoid.Health)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> home <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> _, part <span class="keyword">in</span> <span class="func">pairs</span>(home:<span class="func">GetChildren</span>()) <span class="keyword">do</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> part:IsA(<span class="string">"BasePart"</span>) <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;part.BrickColor = BrickColor.new(<span class="string">"Bright yellow"</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <div class="info-callout green">
+        <span class="bulb">🏠</span>
+        <div>Сначала ищем дом: <code>workspace.Parkour:FindFirstChild("Home")</code>. Если Home нет — скрипт не упадёт, просто не перекрасит.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6s0" onchange="updateProjectProgress()"><label for="p6s0">Part Finish стоит у входа в Home.</label></li>
+        <li><input type="checkbox" id="p6s1" onchange="updateProjectProgress()"><label for="p6s1">Скрипт ищет Home через FindFirstChild.</label></li>
+        <li><input type="checkbox" id="p6s2" onchange="updateProjectProgress()"><label for="p6s2">Дошёл до Finish → в Output «Ты дома!», дом желтеет.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 7 (доп) -->
+    <div class="phase" id="phase7" style="border-color:#a78bfa;">
+      <h3>🌟 Фаза 7 (доп) — Укрась дорогу домой <span class="phase-time">12 мин</span></h3>
+      <p>Сделай трассу красивее — всё своими руками или чуть из Toolbox (только декор).</p>
+      <ol>
+        <li><b>Ряд кактусов:</b> скопируй Model Cactus (Ctrl+D) 2–3 раза вдоль дорожки.</li>
+        <li><b>Вывеска у дома:</b> Part «Sign» на крыше/стене → Insert Object → <b>SurfaceGui</b> → внутри <b>TextLabel</b> с текстом «ДОМ» или своим именем.</li>
+        <li><b>Второй HealPad</b> после кактусов (скопируй и переименуй) — на длинной трассе пригодится.</li>
+        <li><b>Декор (по желанию):</b> дерево/сундук/фонарь из Toolbox рядом с Home — без скриптов.</li>
+      </ol>
+      <div class="info-callout">
+        <span class="bulb">🎨</span>
+        <div>SurfaceGui крепится к грани Part. В TextLabel поставь TextScaled = true, чтобы надпись была крупной.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p7s0" onchange="updateProjectProgress()"><label for="p7s0">Скопировал кактус минимум 2 раза.</label></li>
+        <li><input type="checkbox" id="p7s1" onchange="updateProjectProgress()"><label for="p7s1">Вывеска SurfaceGui + TextLabel на доме.</label></li>
+        <li><input type="checkbox" id="p7s2" onchange="updateProjectProgress()"><label for="p7s2">Добавил второй HealPad или декор у дома.</label></li>
+      </ul>
+      <div class="space-note">🏆 Доп. задания закрыты — трасса выглядит как настоящий паркур!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты создал:</h2>
+    <ul>
+      <li>свои модели Lava, HealPad, Clouds, Cactus, Ice, Finish, Home 🏗️</li>
+      <li>скрипты с безопасным поиском <code>FindFirstChild</code> (и даже два поиска подряд) 🔍</li>
+      <li>рабочий паркур «Дорога домой» + доп. уровни 🏠</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Дошёл до дома!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти собрал трассу</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь</label>
+    </div>
+    <textarea placeholder="Какая модель получилась круче всего? Зачем нужен FindFirstChild?"></textarea>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="Занятие_4.2.3_GetChildren.html">
+      <div class="lbl">← Назад</div>
+      <div class="ttl">4.2.3 GetChildren</div>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 4.2.5 · FindFirstChild · Дорога домой</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  const missions = [
+    { cmd: 'character:FindFirstChild("Humanoid")', target: 'Humanoid', hint: 'Кликни объект, который вернёт команда.' },
+    { cmd: 'character:FindFirstChild("Key")', target: 'nil', hint: 'Key лежит глубже — в Backpack. Обычный FindFirstChild смотрит только прямых детей!' },
+    { cmd: 'character:FindFirstChild("Sword")', target: 'nil', hint: 'Меча нет в дереве. Что вернёт поиск?' }
+  ];
+  let missionIndex = 0;
+  let missionPoints = 0;
+  let locked = false;
+
+  function showMission() {
+    locked = false;
+    const m = missions[missionIndex];
+    document.getElementById('missionLabel').textContent = 'Задание ' + (missionIndex + 1) + ' из ' + missions.length;
+    document.getElementById('missionCmd').textContent = m.cmd;
+    document.getElementById('missionHint').textContent = m.hint;
+    document.getElementById('missionResult').textContent = '';
+    document.querySelectorAll('.tree-node').forEach(n => n.classList.remove('found', 'miss'));
+    document.getElementById('missionScore').textContent = 'Очки: ' + missionPoints + ' / ' + missions.length;
+  }
+
+  function resolvePick(name) {
+    if (locked) return;
+    const m = missions[missionIndex];
+    const ok = name === m.target;
+    locked = true;
+    document.getElementById('missionResult').textContent = ok
+      ? ('✅ Верно! Получили: ' + name)
+      : ('❌ Неверно. Правильный ответ: ' + m.target);
+    if (ok) missionPoints++;
+    document.getElementById('missionScore').textContent = 'Очки: ' + missionPoints + ' / ' + missions.length;
+    setTimeout(() => {
+      missionIndex++;
+      if (missionIndex >= missions.length) {
+        document.getElementById('missionLabel').textContent = 'Готово!';
+        document.getElementById('missionCmd').textContent = 'FindFirstChild понят ✓';
+        document.getElementById('missionHint').textContent = 'Помни: ищет только среди прямых детей. Нет объекта → nil.';
+        document.getElementById('missionResult').textContent = '🎉 ' + missionPoints + ' из ' + missions.length;
+        locked = true;
+      } else {
+        showMission();
+      }
+    }, 1100);
+  }
+
+  function pickNode(btn) {
+    if (locked) return;
+    const m = missions[missionIndex];
+    const name = btn.dataset.name;
+    document.querySelectorAll('.tree-node').forEach(n => n.classList.remove('found', 'miss'));
+    if (name === m.target) btn.classList.add('found');
+    else btn.classList.add('miss');
+    resolvePick(name);
+  }
+
+  function missionNil() {
+    if (locked) return;
+    resolvePick('nil');
+  }
+
+  function resetMissions() {
+    missionIndex = 0;
+    missionPoints = 0;
+    showMission();
+  }
+
+  showMission();
+
+  function updateProjectProgress() {
+    const cbs = document.querySelectorAll('#mainProject .task-steps input[type=checkbox]');
+    const done = Array.from(cbs).filter(c => c.checked).length;
+    const total = cbs.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('projectProgress').style.width = pct + '%';
+    document.getElementById('projectLabel').textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+  }
+
+  function checkChoices(id) {
+    const box = document.getElementById(id);
+    const selected = box.querySelectorAll('.choice-card.selected');
+    const result = box.querySelector('.activity-result');
+    box.querySelectorAll('.choice-card').forEach(c => c.classList.remove('correct', 'incorrect'));
+    if (!selected.length) {
+      result.textContent = '⚠️ Выбери ответ!';
+      result.className = 'activity-result neutral';
+      return;
+    }
+    const ok = selected.length === 1 && selected[0].dataset.correctChoice === 'true';
+    selected.forEach(c => c.classList.add(c.dataset.correctChoice === 'true' ? 'correct' : 'incorrect'));
+    result.textContent = ok ? '✅ Верно!' : '❌ Попробуй ещё раз.';
+    result.className = 'activity-result ' + (ok ? 'done' : 'neutral');
+  }
+
+  function resetQuiz(id) {
+    const box = document.getElementById(id);
+    box.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected', 'correct', 'incorrect'));
+    const r = box.querySelector('.activity-result');
+    r.textContent = '';
+    r.className = 'activity-result';
+  }
+
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.choice-card');
+    if (!card) return;
+    const box = card.closest('.interactive-box');
+    if (!box) return;
+    box.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected', 'correct', 'incorrect'));
+    card.classList.add('selected');
+  });
+</script>
+</body>
+</html>

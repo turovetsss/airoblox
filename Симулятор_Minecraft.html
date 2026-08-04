@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>П11. Симулятор Minecraft — РОБОВИТА</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: .86rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#14532d,#166534); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #4ade80;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .info-callout.warn { background: #78350f; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка симулятора"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(170px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .82rem; }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .92rem; line-height: 1.7; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .b { color: #f472b6; }
+    .tree-box .t { color: #a3e635; }
+    .tree-box .r { color: #fbbf24; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.selected { border-color: var(--accent)!important; background: var(--accent-light)!important; }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .shot {
+      display: block; max-width: 100%; margin: 12px 0; border-radius: 14px;
+      border: 2px solid var(--line,#e2e8f0); background: #0f172a; box-shadow: 0 8px 24px rgba(15,23,42,.12);
+    }
+    .shot-cap { font-size: .9rem; color: #475569; margin: -4px 0 14px; padding: 0 4px; }
+    .mini-game {
+      background: linear-gradient(180deg,#14532d,#166534); border-radius: 24px; padding: 20px;
+      border: 3px solid #4ade80; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #bbf7d0; }
+    .mission-box {
+      background: #052e16; border-radius: 12px; padding: 12px; border: 1px solid #4ade80; margin-bottom: 10px;
+    }
+    .mc-stage { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 14px; }
+    @media (max-width:900px) { .mc-stage { grid-template-columns: 1fr; } }
+    .mc-world {
+      background: linear-gradient(180deg,#7dd3fc 0%,#7dd3fc 45%,#4ade80 45%,#22c55e 100%);
+      border-radius: 16px; padding: 16px; border: 2px solid #86efac;
+      min-height: 280px; position: relative; overflow: hidden;
+    }
+    .mc-tree, .mc-ore {
+      position: absolute; cursor: pointer; user-select: none;
+      transition: transform .1s, opacity .3s;
+    }
+    .mc-tree { left: 18%; bottom: 18%; text-align: center; }
+    .mc-tree .trunk {
+      width: 28px; height: 70px; background: #92400e; margin: 0 auto;
+      border-radius: 4px; border: 2px solid #78350f;
+    }
+    .mc-tree .leaves {
+      width: 90px; height: 90px; background: #16a34a; border-radius: 50%;
+      margin: 0 auto -20px; border: 3px solid #fff; box-shadow: 0 4px 0 #14532d;
+    }
+    .mc-ore {
+      right: 18%; bottom: 22%; width: 64px; height: 64px;
+      background: #eab308; border: 3px solid #fff; border-radius: 8px;
+      box-shadow: 0 4px 0 #a16207; display: flex; align-items: center; justify-content: center;
+      font-weight: 900; color: #422006; font-size: .85rem;
+    }
+    .mc-tree:active, .mc-ore:active { transform: scale(.92); }
+    .mc-tree.dead, .mc-ore.dead { opacity: 0; pointer-events: none; }
+    .hp-bar {
+      height: 10px; background: #14532d; border-radius: 99px; overflow: hidden; margin-top: 6px; border: 1px solid #86efac;
+    }
+    .hp-fill { height: 100%; background: #f87171; width: 100%; transition: width .15s; }
+    .ctrl-panel {
+      background: #1e293b; border-radius: 16px; padding: 14px; border: 2px solid #64748b;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .tool-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tool-btn {
+      flex: 1; min-width: 110px; padding: 12px; border-radius: 12px; border: 2px solid #86efac;
+      background: #0f172a; color: #f8fafc; font-weight: 800; cursor: pointer;
+    }
+    .tool-btn.active { background: #166534; border-color: #fbbf24; box-shadow: 0 0 0 2px #fbbf24; }
+    .inv-line { font-size: .95rem; }
+    .inv-line b { color: #fbbf24; }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .phase-time {
+      font-size: .75rem; background: var(--primary-light,#e8f5e0); color: var(--primary-dark);
+      padding: 2px 10px; border-radius: 99px; font-weight: 700;
+    }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+    .task-steps label { cursor: pointer; }
+    .progress-wrap { margin: 12px 0 4px; }
+    .progress-bar { height: 12px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg,var(--primary,#61b01f),#84cc16); transition: width .25s; }
+    .progress-label { font-size: .9rem; font-weight: 700; color: var(--primary-dark); margin-top: 6px; }
+    .space-note {
+      background: linear-gradient(135deg,#fefce8,#ecfdf5); border: 2px dashed #65a30d;
+      border-radius: 18px; padding: 16px 18px; margin: 14px 0; font-weight: 700;
+    }
+    .arch-grid {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 12px; margin: 12px 0;
+    }
+    .arch-card {
+      background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 14px;
+    }
+    .arch-card h4 { margin: 0 0 6px; color: var(--primary-dark); }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Проект П11</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">П11</div>
+      <div>
+        <div class="module-pill">Проектная деятельность · сложный</div>
+        <h1>⛏️ Симулятор Minecraft</h1>
+        <p class="subtitle">Рубка дерева + копка руды + Terrain = простой «майнкрафт» в Roblox Studio</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🌳</div>
+    <div>
+      <strong>Миссия проекта:</strong> собрать два мини-симулятора и склеить их в один мир.
+      Сначала — дерево и топор. Потом — блок руды и кирка. Затем — ландшафт Terrain,
+      дубли деревьев и блоков: получается простой <b>симулятор в стиле Minecraft</b>.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом проекте ты:</h2>
+    <ul>
+      <li>соберёшь дерево из партов и склеишь его через <code>Union</code> 🌲</li>
+      <li>положишь инструменты в <code>StarterPack</code> 🪓</li>
+      <li>напишешь скрипты на <code>Touched</code> + здоровье блока ❤️</li>
+      <li>нарисуешь Terrain и размножишь модели в мире 🗺️</li>
+    </ul>
+  </div>
+
+  <!-- THEORY -->
+  <div class="card">
+    <h2>📚 Теория: как устроен «симулятор»</h2>
+
+    <div class="theory-section">
+      <h3>1. Идея симулятора</h3>
+      <p>В симуляторе игрок <b>взаимодействует с миром инструментом</b>: бьёт дерево топором, копает блок киркой.
+      Объект «ломается» после нескольких ударов и оставляет дроп (дерево → Wood, руда → Gold).</p>
+      <div class="arch-grid">
+        <div class="arch-card">
+          <h4>🪓 Tool</h4>
+          <p style="margin:0;font-size:.9rem;">Предмет в руке. Физическая часть удара почти всегда называется <code>Handle</code>.</p>
+        </div>
+        <div class="arch-card">
+          <h4>❤️ Health</h4>
+          <p style="margin:0;font-size:.9rem;">Счётчик ударов. Каждый касание Handle уменьшает здоровье на 1.</p>
+        </div>
+        <div class="arch-card">
+          <h4>💎 Drop</h4>
+          <p style="margin:0;font-size:.9rem;">Когда здоровье &lt; 1 — создаём новый Part и уничтожаем оригинал.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>2. Union — цельный блок</h3>
+      <p>Дерево из цилиндра + сферы удобно склеить в один <code>UnionOperation</code>.
+      Тогда скрипт висит на одном объекте, а <code>Touched</code> срабатывает по всему дереву.</p>
+      <div class="info-callout">
+        <span class="bulb">💡</span>
+        <div><b>Model → Solid Modeling → Union.</b> Выдели ствол и крону вместе (Ctrl), затем Union.</div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>3. StarterPack</h3>
+      <p>Всё, что лежит в <code>StarterPack</code>, появляется у игрока в инвентаре при входе.
+      Топор и кирку перетаскиваем из Workspace в StarterPack.</p>
+    </div>
+
+    <div class="theory-section">
+      <h3>4. Touched + Handle</h3>
+      <p>Скрипт на дереве/блоке слушает <code>Touched</code>. Если коснувшийся объект называется
+      <code>Handle</code> — это удар инструментом, а не просто касание ногой.</p>
+      <div class="tree-box">
+        <span class="keyword">if</span> object.Name == <span class="string">"Handle"</span> <span class="keyword">then</span><br>
+        &nbsp;&nbsp;health -= <span class="number">1</span><br>
+        <span class="keyword">end</span>
+      </div>
+    </div>
+
+    <div class="cheat-sheet">
+      <div class="cheat-grid">
+        <div class="cheat-item">
+          <div class="title">Union</div>
+          <div class="rule">Склеить парты в один блок</div>
+        </div>
+        <div class="cheat-item">
+          <div class="title">StarterPack</div>
+          <div class="rule">Инструменты при старте</div>
+        </div>
+        <div class="cheat-item">
+          <div class="title">Handle</div>
+          <div class="rule">Часть Tool, которая бьёт</div>
+        </div>
+        <div class="cheat-item">
+          <div class="title">Touched</div>
+          <div class="rule">Событие касания</div>
+        </div>
+        <div class="cheat-item">
+          <div class="title">Destroy()</div>
+          <div class="rule">Убрать дерево/блок</div>
+        </div>
+        <div class="cheat-item">
+          <div class="title">Terrain</div>
+          <div class="rule">Рисовать холмы и траву</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="card" id="quiz1">
+    <h2>🧠 Проверка теории</h2>
+    <div class="quiz-block quiz-question" data-name="q1" data-correct="b">
+      <p><b>1.</b> Зачем класть топор в <code>StarterPack</code>?</p>
+      <label class="choice-card"><input type="radio" name="q1" value="a"> Чтобы топор был невидимым</label>
+      <label class="choice-card"><input type="radio" name="q1" value="b"> Чтобы он появился в инвентаре при старте игры</label>
+      <label class="choice-card"><input type="radio" name="q1" value="c"> Чтобы склеить дерево Union</label>
+      <div class="q-feedback"></div>
+    </div>
+    <div class="quiz-block quiz-question" data-name="q2" data-correct="a">
+      <p><b>2.</b> Почему в скрипте проверяют <code>object.Name == "Handle"</code>?</p>
+      <label class="choice-card"><input type="radio" name="q2" value="a"> Чтобы считать удар инструментом, а не касание персонажем</label>
+      <label class="choice-card"><input type="radio" name="q2" value="b"> Чтобы дерево стало зелёным</label>
+      <label class="choice-card"><input type="radio" name="q2" value="c"> Чтобы создать Terrain</label>
+      <div class="q-feedback"></div>
+    </div>
+    <div class="quiz-block quiz-question" data-name="q3" data-correct="c">
+      <p><b>3.</b> Что делает кнопка <b>Union</b>?</p>
+      <label class="choice-card"><input type="radio" name="q3" value="a"> Удаляет дерево</label>
+      <label class="choice-card"><input type="radio" name="q3" value="b"> Кладёт кирку в StarterPack</label>
+      <label class="choice-card"><input type="radio" name="q3" value="c"> Склеивает выбранные парты в один цельный объект</label>
+      <div class="q-feedback"></div>
+    </div>
+    <button class="btn primary" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- MINI GAME -->
+  <div class="mini-game">
+    <h2>🎮 Мини-игра: руби и копай</h2>
+    <div class="mission-box">
+      Выбери инструмент → кликай по дереву топором и по жёлтому блоку киркой.
+      Набери <b>Wood ×1</b> и <b>Gold ×1</b>.
+    </div>
+    <div class="mc-stage">
+      <div class="mc-world" id="mcWorld">
+        <div class="mc-tree" id="mgTree" title="Дерево">
+          <div class="leaves"></div>
+          <div class="trunk"></div>
+          <div class="hp-bar"><div class="hp-fill" id="mgTreeHp"></div></div>
+        </div>
+        <div class="mc-ore" id="mgOre" title="Руда">GOLD<div class="hp-bar"><div class="hp-fill" id="mgOreHp"></div></div></div>
+      </div>
+      <div class="ctrl-panel">
+        <div class="tool-row">
+          <button class="tool-btn active" id="btnAxe" type="button">🪓 Топор</button>
+          <button class="tool-btn" id="btnPick" type="button">⛏️ Кирка</button>
+        </div>
+        <div class="inv-line">Инвентарь: Wood = <b id="mgWood">0</b> · Gold = <b id="mgGold">0</b></div>
+        <div class="inv-line">Удары: дерево <b id="mgTreeHits">0</b>/5 · руда <b id="mgOreHits">0</b>/5</div>
+        <div id="mgMsg" style="min-height:1.4em;color:#bbf7d0;font-weight:700;"></div>
+        <button class="btn" type="button" onclick="resetMiniMc()" style="background:#0f172a;color:#fff;border:1px solid #64748b;">Сброс</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT -->
+  <div class="project-box" id="keyTaskBox">
+    <h2>🛠️ Проект в Roblox Studio</h2>
+    <p>Идём по двум симуляторам, потом собираем «майнкрафт»-мир. Отмечай галочки — полоска покажет прогресс.</p>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="projectFill"></div></div>
+      <div class="progress-label" id="projectLabel">Выполнено шагов: 0</div>
+    </div>
+
+    <!-- PHASE 1 -->
+    <div class="phase">
+      <h3>🌲 Часть A · Фаза 1 — Модель дерева <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>Вставь <b>Part → Cylinder</b> (ствол) и <b>Part → Ball</b> (крона).</li>
+        <li>Покрась ствол в коричневый, крону в зелёный. Закрепи <b>Anchor</b>.</li>
+        <li>Поставь сферу на цилиндр — должно получиться простое дерево.</li>
+      </ol>
+      <img class="shot" src="assets/img/minecraft/01-tree-parts.png" alt="Дерево из серых партов" />
+      <p class="shot-cap">Сначала форма: цилиндр + сфера на Baseplate.</p>
+      <img class="shot" src="assets/img/minecraft/02-tree-colored.png" alt="Цветное дерево" />
+      <p class="shot-cap">После окраски: коричневый ствол и зелёная крона.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">Есть ствол (Cylinder) и крона (Ball).</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">Цвета и Anchor настроены.</label></li>
+      </ul>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase">
+      <h3>🔗 Часть A · Фаза 2 — Union <span class="phase-time">5 мин</span></h3>
+      <ol>
+        <li>Выдели <b>оба</b> парты дерева (Ctrl + клик).</li>
+        <li>Вкладка <b>MODEL</b> → раздел Solid Modeling → кнопка <b>Union</b>.</li>
+        <li>Дерево стало одним цельным блоком (<code>UnionOperation</code>).</li>
+      </ol>
+      <img class="shot" src="assets/img/minecraft/03-union.png" alt="Кнопка Union на вкладке Model" />
+      <p class="shot-cap">MODEL → Solid Modeling → Union (кнопка обведена).</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">Дерево склеено через Union.</label></li>
+      </ul>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase">
+      <h3>🪓 Часть A · Фаза 3 — Топор из Toolbox <span class="phase-time">8 мин</span></h3>
+      <ol>
+        <li>Открой <b>Toolbox</b> → Models → поиск <code>axe</code>.</li>
+        <li>Выбери первую модель <b>Axe Tool</b> и вставь возле дерева.</li>
+        <li>В Explorer перетащи <b>Axe Tool</b> из Workspace в папку <b>StarterPack</b>.</li>
+      </ol>
+      <img class="shot" src="assets/img/minecraft/04-axe-toolbox.png" alt="Поиск Axe в Toolbox" />
+      <p class="shot-cap">Toolbox → поиск «axe» → модель Axe Tool.</p>
+      <img class="shot" src="assets/img/minecraft/05-axe-near-tree.png" alt="Топор рядом с деревом" />
+      <p class="shot-cap">Топор стоит рядом с готовым деревом.</p>
+      <img class="shot" src="assets/img/minecraft/06-starterpack.png" alt="Перенос Axe Tool в StarterPack" />
+      <p class="shot-cap">Перетащи Axe Tool → StarterPack (стрелка на скрине).</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">Axe Tool взят из Toolbox.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">Axe Tool лежит в StarterPack.</label></li>
+      </ul>
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="phase">
+      <h3>📜 Часть A · Фаза 4 — Скрипт рубки <span class="phase-time">15 мин</span></h3>
+      <ol>
+        <li>Переименуй Union в <code>tree</code>.</li>
+        <li>Добавь внутрь <b>Script</b> (не LocalScript).</li>
+        <li>Вставь код ниже. Нажми <b>Play</b> и ударь дерево топором 5 раз.</li>
+      </ol>
+      <img class="shot" src="assets/img/minecraft/07-tree-script.png" alt="Script внутри tree" />
+      <p class="shot-cap">Иерархия: tree (Union) → Script.</p>
+      <img class="shot" src="assets/img/minecraft/08-tree-code.png" alt="Код скрипта дерева" />
+      <p class="shot-cap">Ориентир по коду в редакторе Studio.</p>
+
+<pre class="code-block"><span class="keyword">local</span> tree = script.Parent
+<span class="keyword">local</span> tree_health = <span class="number">5</span>
+
+<span class="keyword">local function</span> <span class="func">onTouch</span>(object)
+    <span class="keyword">if</span> object.Name == <span class="string">"Handle"</span> <span class="keyword">then</span>
+        tree_health -= <span class="number">1</span>
+        <span class="keyword">if</span> tree_health &lt; <span class="number">1</span> <span class="keyword">then</span>
+            <span class="keyword">local</span> drop = Instance.new(<span class="string">"Part"</span>, workspace)
+            drop.Position = tree.Position
+            drop.Material = Enum.Material.Wood
+            drop.Size = Vector3.new(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)
+            drop.BrickColor = BrickColor.new(<span class="string">"Brown"</span>)
+            drop.Name = <span class="string">"Wood"</span>
+            print(<span class="string">"Вы нашли "</span> .. drop.Name)
+            tree:Destroy()
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+tree.Touched:Connect(onTouch)</pre>
+
+      <div class="info-callout green">
+        <span class="bulb">✅</span>
+        <div>После 5 ударов дерево исчезнет, в мире появится кубик <code>Wood</code>, в Output — «Вы нашли Wood».</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">Union переименован в <code>tree</code>, Script добавлен.</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">В Play дерево ломается и падает Wood.</label></li>
+      </ul>
+    </div>
+
+    <!-- PHASE 5 -->
+    <div class="phase">
+      <h3>⛏️ Часть B · Фаза 5 — Симулятор копателя <span class="phase-time">15 мин</span></h3>
+      <ol>
+        <li>Создай обычный <b>Part</b> (куб руды). Покрась в жёлтый, Anchor = true.</li>
+        <li>Сразу добавь внутрь <b>Script</b>.</li>
+        <li>В Toolbox найди <code>pickaxe tool</code> → первая модель → в <b>StarterPack</b>.</li>
+        <li>Проверь в Play: киркой бей блок 5 раз → появится <code>Gold</code>.</li>
+      </ol>
+      <img class="shot" src="assets/img/minecraft/09-block-script.png" alt="Script внутри Part" />
+      <p class="shot-cap">Part → Script (скрипт — дочерний объект блока).</p>
+      <img class="shot" src="assets/img/minecraft/10-block-code.png" alt="Код скрипта копки" />
+      <p class="shot-cap">Логика копки: здоровье → дроп Gold → Destroy.</p>
+      <img class="shot" src="assets/img/minecraft/11-pickaxe-toolbox.png" alt="Pickaxe tool в Toolbox" />
+      <p class="shot-cap">Toolbox → «pickaxe tool» → Pickaxe tool.</p>
+      <img class="shot" src="assets/img/minecraft/12-test-tools.png" alt="Тест с киркой в Play" />
+      <p class="shot-cap">В Play в хотбаре: Axe Tool и Pickaxe. Бей жёлтый куб киркой.</p>
+
+<pre class="code-block"><span class="keyword">local</span> part = script.Parent
+<span class="keyword">local</span> BlockHealth = <span class="number">5</span>
+
+<span class="keyword">local function</span> <span class="func">onTouch</span>(object)
+    print(<span class="string">"Touch started: "</span> .. object.Name)
+    <span class="keyword">if</span> object.Name == <span class="string">"Handle"</span> <span class="keyword">then</span>
+        BlockHealth = BlockHealth - <span class="number">1</span>
+        print(BlockHealth)
+        <span class="keyword">if</span> BlockHealth &lt; <span class="number">1</span> <span class="keyword">then</span>
+            <span class="keyword">local</span> Drop = Instance.new(<span class="string">"Part"</span>, workspace)
+            Drop.Position = part.Position
+            Drop.Material = Enum.Material.Metal
+            Drop.Size = Vector3.new(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)
+            Drop.BrickColor = BrickColor.Yellow()
+            Drop.Name = <span class="string">"Gold"</span>
+            print(<span class="string">"Вы нашли "</span> .. Drop.Name)
+            part:Destroy()
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+part.Touched:Connect(onTouch)</pre>
+
+      <div class="info-callout warn">
+        <span class="bulb">⚠️</span>
+        <div><b>Частый баг:</b> <code>Touched</code> срабатывает много раз подряд, пока Handle касается блока.
+          Для урока это ок (ломается быстро). Позже можно добавить задержку через <code>debounce</code>.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">Есть блок с Script и кирка в StarterPack.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">Блок ломается и оставляет Gold.</label></li>
+      </ul>
+    </div>
+
+    <!-- PHASE 6 -->
+    <div class="phase">
+      <h3>🗺️ Часть C · Фаза 6 — Мир Minecraft <span class="phase-time">20 мин</span></h3>
+      <p>Теперь твоя задача — превратить песочницу в простой симулятор Minecraft:</p>
+      <ol>
+        <li>Открой <b>Home → Editor → Terrain Editor</b> (или вкладка Terrain).</li>
+        <li>Нарисуй холмы, траву, ямы — живой ландшафт вместо плоского Baseplate.</li>
+        <li>Скопируй дерево (<code>Ctrl+D</code>) несколько раз, расставь по миру.</li>
+        <li>Аналогично продублируй блоки руды / камня.</li>
+        <li>У каждого дубля должен быть свой Script (при дублировании скрипт копируется вместе с моделью).</li>
+      </ol>
+      <img class="shot" src="assets/img/minecraft/13-minecraft-world.png" alt="Готовый мир с деревьями и инструментами" />
+      <p class="shot-cap">Итог: трава, деревья, блоки, в инвентаре топор и кирка.</p>
+      <div class="space-note">🏆 Если в мире несколько деревьев и руд, Terrain нарисован, оба инструмента работают — симулятор готов!</div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6s0" onchange="updateProjectProgress()"><label for="p6s0">Нарисован Terrain (холмы / трава).</label></li>
+        <li><input type="checkbox" id="p6s1" onchange="updateProjectProgress()"><label for="p6s1">Несколько деревьев и блоков в мире.</label></li>
+        <li><input type="checkbox" id="p6s2" onchange="updateProjectProgress()"><label for="p6s2">Рубка и копка работают на дублях.</label></li>
+      </ul>
+    </div>
+
+    <!-- EXTRA -->
+    <div class="phase">
+      <h3>✨ Фаза 7 (доп) — Улучшения <span class="phase-time">15 мин</span></h3>
+      <ul>
+        <li>Сложи деревья в папку <code>Trees</code>, руду — в <code>Ores</code>.</li>
+        <li>Добавь разные типы блоков: камень (серый), уголь (чёрный), железо.</li>
+        <li>Сделай разное здоровье: дерево = 5, камень = 8, золото = 10.</li>
+        <li>Положи дроп в папку <code>Drops</code> и сделай его подбираемым (позже — через Tool или ClickDetector).</li>
+      </ul>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p7s0" onchange="updateProjectProgress()"><label for="p7s0">(Доп) Есть папки и хотя бы 2 типа блоков.</label></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧯 Если не работает</h2>
+    <table class="prop-table">
+      <tr><th>Симптом</th><th>Что проверить</th></tr>
+      <tr><td>Топор не в инвентаре</td><td>Модель лежит в <code>StarterPack</code>? Это Tool, а не просто Model?</td></tr>
+      <tr><td>Дерево не ломается</td><td>Имя <code>Handle</code>? Script внутри <code>tree</code>? Play, не Run?</td></tr>
+      <tr><td>Ломается от касания ногой</td><td>Проверка <code>object.Name == "Handle"</code> есть?</td></tr>
+      <tr><td>Дроп не появляется</td><td>Условие <code>health &lt; 1</code>? Смотри print в Output</td></tr>
+      <tr><td>Дубль не работает</td><td>При копировании Script должен остаться внутри объекта</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>собрал дерево через Union и скрипт рубки;</li>
+      <li>сделал копку блока с дропом Gold;</li>
+      <li>положил инструменты в StarterPack;</li>
+      <li>нарисовал Terrain и собрал мини-мир Minecraft.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Мир живой!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти, чиним баги</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь педагога</label>
+    </div>
+    <textarea placeholder="Зачем проверять имя Handle? Чем рубка дерева похожа на копку руды?"></textarea>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Проект П11 · Симулятор Minecraft</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function updateProjectProgress() {
+    const box = document.getElementById('keyTaskBox');
+    if (!box) return;
+    const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+    const checked = box.querySelectorAll('input[type="checkbox"]:checked').length;
+    const total = checkboxes.length;
+    const pct = total ? Math.round((checked / total) * 100) : 0;
+    const fill = document.getElementById('projectFill');
+    const label = document.getElementById('projectLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) {
+      label.textContent =
+        'Выполнено шагов: ' + checked + ' из ' + total +
+        (checked === total && total > 0 ? ' 🎉 Проект выполнен!' : '');
+    }
+  }
+
+  const state = {
+    tool: 'axe',
+    treeHp: 5,
+    oreHp: 5,
+    wood: 0,
+    gold: 0,
+    treeAlive: true,
+    oreAlive: true
+  };
+
+  function setTool(tool) {
+    state.tool = tool;
+    document.getElementById('btnAxe').classList.toggle('active', tool === 'axe');
+    document.getElementById('btnPick').classList.toggle('active', tool === 'pick');
+  }
+
+  function renderMini() {
+    document.getElementById('mgWood').textContent = state.wood;
+    document.getElementById('mgGold').textContent = state.gold;
+    document.getElementById('mgTreeHits').textContent = 5 - state.treeHp;
+    document.getElementById('mgOreHits').textContent = 5 - state.oreHp;
+    document.getElementById('mgTreeHp').style.width = (state.treeHp / 5 * 100) + '%';
+    document.getElementById('mgOreHp').style.width = (state.oreHp / 5 * 100) + '%';
+    document.getElementById('mgTree').classList.toggle('dead', !state.treeAlive);
+    document.getElementById('mgOre').classList.toggle('dead', !state.oreAlive);
+    const msg = document.getElementById('mgMsg');
+    if (state.wood >= 1 && state.gold >= 1) {
+      msg.textContent = '🏆 Миссия выполнена! Собирай то же в Studio.';
+    }
+  }
+
+  document.getElementById('btnAxe').addEventListener('click', function () { setTool('axe'); });
+  document.getElementById('btnPick').addEventListener('click', function () { setTool('pick'); });
+
+  document.getElementById('mgTree').addEventListener('click', function () {
+    if (!state.treeAlive) return;
+    if (state.tool !== 'axe') {
+      document.getElementById('mgMsg').textContent = 'Нужен топор! 🪓';
+      return;
+    }
+    state.treeHp -= 1;
+    if (state.treeHp < 1) {
+      state.treeAlive = false;
+      state.wood += 1;
+      document.getElementById('mgMsg').textContent = 'Вы нашли Wood!';
+    } else {
+      document.getElementById('mgMsg').textContent = 'Удар по дереву! Осталось ' + state.treeHp;
+    }
+    renderMini();
+  });
+
+  document.getElementById('mgOre').addEventListener('click', function () {
+    if (!state.oreAlive) return;
+    if (state.tool !== 'pick') {
+      document.getElementById('mgMsg').textContent = 'Нужна кирка! ⛏️';
+      return;
+    }
+    state.oreHp -= 1;
+    if (state.oreHp < 1) {
+      state.oreAlive = false;
+      state.gold += 1;
+      document.getElementById('mgMsg').textContent = 'Вы нашли Gold!';
+    } else {
+      document.getElementById('mgMsg').textContent = 'Удар по руде! Осталось ' + state.oreHp;
+    }
+    renderMini();
+  });
+
+  function resetMiniMc() {
+    state.tool = 'axe';
+    state.treeHp = 5;
+    state.oreHp = 5;
+    state.wood = 0;
+    state.gold = 0;
+    state.treeAlive = true;
+    state.oreAlive = true;
+    setTool('axe');
+    document.getElementById('mgMsg').textContent = '';
+    renderMini();
+  }
+
+  renderMini();
+  updateProjectProgress();
+</script>
+</body>
+</html>

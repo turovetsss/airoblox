@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>П6. Выживание в лесу — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: .88rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#14532d,#052e16); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #86efac;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .info-callout.warn { background: #78350f; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка выживания"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(170px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .82rem; }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .92rem; line-height: 1.7; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .b { color: #f472b6; }
+    .tree-box .t { color: #a3e635; }
+    .tree-box .r { color: #fbbf24; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.selected { border-color: var(--accent)!important; background: var(--accent-light)!important; }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .shot {
+      display: block; max-width: 100%; margin: 12px 0; border-radius: 14px;
+      border: 2px solid var(--line,#e2e8f0); background: #0f172a; box-shadow: 0 8px 24px rgba(15,23,42,.12);
+    }
+    .shot-cap { font-size: .9rem; color: #475569; margin: -4px 0 14px; padding: 0 4px; }
+    .mini-game {
+      background: linear-gradient(180deg,#052e16,#14532d); border-radius: 24px; padding: 20px;
+      border: 3px solid #86efac; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #bbf7d0; }
+    .surv-stage { display: grid; grid-template-columns: 1.1fr 1fr; gap: 16px; margin-top: 14px; }
+    @media (max-width:900px) { .surv-stage { grid-template-columns: 1fr; } }
+    .bars-panel {
+      background: #0f172a; border-radius: 16px; padding: 16px; border: 2px solid #86efac;
+    }
+    .stat-row { margin: 12px 0; }
+    .stat-row .name { font-size: .85rem; margin-bottom: 4px; opacity: .9; }
+    .stat-track { height: 18px; background: #334155; border-radius: 8px; overflow: hidden; }
+    .stat-fill { height: 100%; width: 100%; transition: width .2s; border-radius: 8px; }
+    .world-panel {
+      background: #1e293b; border-radius: 16px; padding: 14px; border: 2px solid #64748b;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .world-btn {
+      padding: 12px 14px; border-radius: 12px; border: 2px solid #86efac;
+      background: #052e16; color: #f8fafc; font-weight: 800; cursor: pointer; text-align: left;
+    }
+    .world-btn:hover { background: #14532d; }
+    .world-btn.apple { border-color: #f97316; background: #431407; }
+    .world-btn.fire { border-color: #38bdf8; background: #0c4a6e; }
+    .world-btn.tent { border-color: #a78bfa; background: #2e1065; }
+    .notif-toast {
+      background: rgba(0,0,0,.55); padding: 10px 14px; border-radius: 10px;
+      font-size: .9rem; min-height: 1.4em; margin-top: 8px;
+    }
+    .mission-box {
+      background: #052e16; border-radius: 12px; padding: 12px; border: 1px solid #86efac; margin-bottom: 10px;
+    }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .phase-time {
+      font-size: .75rem; background: var(--primary-light,#e8f5e0); color: var(--primary-dark);
+      padding: 2px 10px; border-radius: 99px; font-weight: 700;
+    }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+    .task-steps label { cursor: pointer; }
+    .progress-wrap { margin: 12px 0 4px; }
+    .progress-bar { height: 12px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg,var(--primary,#61b01f),#84cc16); transition: width .25s; }
+    .progress-label { font-size: .9rem; font-weight: 700; color: var(--primary-dark); margin-top: 6px; }
+    .space-note {
+      background: linear-gradient(135deg,#fefce8,#ecfdf5); border: 2px dashed #65a30d;
+      border-radius: 18px; padding: 16px 18px; margin: 14px 0; font-weight: 700;
+    }
+    .arch-grid {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 12px; margin: 12px 0;
+    }
+    .arch-card {
+      background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 14px;
+    }
+    .arch-card h4 { margin: 0 0 6px; color: var(--primary-dark); }
+    .sys-hunger { border-color: #fb923c; background: #fff7ed; }
+    .sys-warmth { border-color: #38bdf8; background: #f0f9ff; }
+    .sys-stamina { border-color: #4ade80; background: #f0fdf4; }
+    .details-code { margin: 10px 0; }
+    .details-code summary {
+      cursor: pointer; font-weight: 800; color: var(--primary-dark); padding: 8px 0;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Проект П6</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">П6</div>
+      <div>
+        <div class="module-pill">Проектная деятельность · средний</div>
+        <h1>🌲 Выживание в лесу</h1>
+        <p class="subtitle">Голод · тепло · отдых · костёр · палатка · респавн еды</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🏕️</div>
+    <div>
+      <strong>Миссия проекта:</strong> построить лес, лагерь и систему выживания.
+      Без еды, тепла и сна игрок слабеет. Яблоки появляются снова, у костра греешься,
+      в палатке восстанавливаешь отдых — с затемнением экрана.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом проекте ты:</h2>
+    <ul>
+      <li>соберёшь карту леса (Terrain + деревья) 🌳</li>
+      <li>сделаешь лагерь: <code>Tent</code> и <code>Campfire</code> (Union + Fire + свет) 🔥</li>
+      <li>создашь шаблон еды и <code>FoodManager</code> (ModuleScript) 🍎</li>
+      <li>свяжешь сервер и GUI: шкалы, уведомления, эффект сна 💤</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Теория систем</td><td>12 мин</td><td>3 шкалы, кто за что отвечает</td></tr>
+      <tr><td>Мини-игра</td><td>8 мин</td><td>Пробное выживание на сайте</td></tr>
+      <tr><td>Карта + лагерь</td><td>25 мин</td><td>Лес, Tent, Campfire</td></tr>
+      <tr><td>Еда + RemoteEvent</td><td>15 мин</td><td>Apple, FoodScript, события</td></tr>
+      <tr><td>Серверные скрипты</td><td>25 мин</td><td>FoodManager, Survival, Main</td></tr>
+      <tr><td>Клиент GUI</td><td>15 мин</td><td>Stats / Notify / Sleep</td></tr>
+      <tr><td>Тест + доп.</td><td>10 мин+</td><td>Play и доработки</td></tr>
+      <tr><td>Итого</td><td>~110 мин</td><td>лучше на 2 занятия</td></tr>
+    </table>
+    <p style="margin:10px 0 0;font-size:.95rem;color:#475569;">
+      <b>Нужно заранее:</b> моделирование, события, ClickDetector, RemoteEvent, основы GUI.
+      После кликера (П1) идти сюда проще — знакомы клиент/сервер.
+    </p>
+  </div>
+
+  <!-- ТЕОРИЯ -->
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: три шкалы выживания</h2>
+
+    <div class="theory-section">
+      <h3>📊 Что держит игрока в живых</h3>
+      <div class="arch-grid">
+        <div class="arch-card sys-hunger">
+          <h4>Голод (Hunger)</h4>
+          <p>Падает сам. Поднимается яблоками (+25).</p>
+        </div>
+        <div class="arch-card sys-warmth">
+          <h4>Тепло (Warmth)</h4>
+          <p>Падает на холоде. Растёт у костра (&lt; 15 studs).</p>
+        </div>
+        <div class="arch-card sys-stamina">
+          <h4>Отдых (Stamina)</h4>
+          <p>Падает сам. Полный отдых — клик по Tent.</p>
+        </div>
+      </div>
+      <p>Если любая шкала = 0 → Humanoid теряет здоровье. Это и есть «выживание».</p>
+    </div>
+
+    <div class="theory-section">
+      <h3>🧩 Кто что делает</h3>
+      <table class="prop-table">
+        <tr><th>Объект / скрипт</th><th>Роль</th></tr>
+        <tr><td><code>SurvivalManager</code></td><td>Создаёт SurvivalStats, уменьшает шкалы, сон, тепло</td></tr>
+        <tr><td><code>FoodManager</code> (Module)</td><td>Спавн / респавн яблок по точкам карты</td></tr>
+        <tr><td><code>Main</code></td><td>Один раз вызывает <code>FoodManager.Initialize()</code></td></tr>
+        <tr><td><code>FoodScript</code></td><td>Клик по яблоку → +голод → респавн</td></tr>
+        <tr><td><code>StatsDisplay</code></td><td>Рисует три полоски</td></tr>
+        <tr><td><code>NotificationHandler</code></td><td>Всплывающие сообщения</td></tr>
+        <tr><td><code>SleepEffect</code></td><td>Затемнение экрана при сне</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h3>📦 Целевая структура</h3>
+      <div class="tree-box">
+        <span class="g">Workspace</span> — лес, <span class="b">Tent</span>, <span class="b">Campfire</span><br>
+        <span class="g">ReplicatedStorage</span><br>
+        &nbsp;&nbsp;<span class="t">Apple</span> (шаблон) · <span class="t">FoodScript</span><br>
+        &nbsp;&nbsp;<span class="r">NotificationEvent</span> · <span class="r">SleepEvent</span><br>
+        <span class="g">ServerScriptService</span><br>
+        &nbsp;&nbsp;<span class="t">FoodManager</span> (ModuleScript) · <span class="t">SurvivalManager</span> · <span class="t">Main</span><br>
+        <span class="g">StarterGui</span><br>
+        &nbsp;&nbsp;<span class="t">SleepEffect</span> · <span class="t">NotificationHandler</span> · <span class="t">StatsDisplay</span>
+      </div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz1">
+      <h3>🧠 Квиз: где хранить шаблон яблока для клонирования?</h3>
+      <div class="choice-card" data-correct-choice="true">ReplicatedStorage</div>
+      <div class="choice-card" data-correct-choice="false">Только в Lighting</div>
+      <div class="choice-card" data-correct-choice="false">В StarterGui</div>
+      <button class="action-btn" onclick="checkChoices('quiz1')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz2">
+      <h3>🧠 Квиз: FoodManager — это какой тип скрипта?</h3>
+      <div class="choice-card" data-correct-choice="false">LocalScript</div>
+      <div class="choice-card" data-correct-choice="true">ModuleScript (подключаем через require)</div>
+      <div class="choice-card" data-correct-choice="false">RemoteEvent</div>
+      <button class="action-btn" onclick="checkChoices('quiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz3">
+      <h3>🧠 Квиз: клик по палатке должен…</h3>
+      <div class="choice-card" data-correct-choice="true">Восстановить Stamina и запустить SleepEvent клиенту</div>
+      <div class="choice-card" data-correct-choice="false">Удалить Campfire</div>
+      <div class="choice-card" data-correct-choice="false">Добавить энергию кликера</div>
+      <button class="action-btn" onclick="checkChoices('quiz3')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="cheat-sheet">
+    <div class="cheat-grid">
+      <div class="cheat-item"><div class="title">Голод</div><div class="rule">яблоко → +25</div></div>
+      <div class="cheat-item"><div class="title">Тепло</div><div class="rule">рядом с Campfire</div></div>
+      <div class="cheat-item"><div class="title">Отдых</div><div class="rule">клик по Tent</div></div>
+      <div class="cheat-item"><div class="title">Шаблон еды</div><div class="rule"><code>Apple</code> в RS</div></div>
+      <div class="cheat-item"><div class="title">Модуль</div><div class="rule"><code>require(FoodManager)</code></div></div>
+      <div class="cheat-item"><div class="title">Имена</div><div class="rule">Tent / Campfire точно!</div></div>
+    </div>
+  </div>
+
+  <!-- МИНИ-ИГРА -->
+  <div class="mini-game" id="miniGame">
+    <h2>🕹️ Мини-игра «Ночь в лесу»</h2>
+    <p style="opacity:.9;margin:0 0 8px;">Шкалы падают сами. Ешь, грейся, спи — как в настоящей игре.</p>
+    <div class="mission-box"><b>Миссия:</b> продержись 30 секунд, не уронив ни одну шкалу до 0.</div>
+    <div class="surv-stage">
+      <div class="bars-panel">
+        <div class="stat-row">
+          <div class="name">Голод: <span id="svH">100</span>%</div>
+          <div class="stat-track"><div class="stat-fill" id="svHFill" style="background:#f97316;"></div></div>
+        </div>
+        <div class="stat-row">
+          <div class="name">Тепло: <span id="svW">100</span>%</div>
+          <div class="stat-track"><div class="stat-fill" id="svWFill" style="background:#38bdf8;"></div></div>
+        </div>
+        <div class="stat-row">
+          <div class="name">Отдых: <span id="svS">100</span>%</div>
+          <div class="stat-track"><div class="stat-fill" id="svSFill" style="background:#4ade80;"></div></div>
+        </div>
+        <div class="notif-toast" id="svMsg">Лес ждёт…</div>
+        <div style="margin-top:10px;font-size:.9rem;opacity:.85;">Время: <b id="svTime">0</b> с · HP: <b id="svHp">100</b></div>
+      </div>
+      <div class="world-panel">
+        <button type="button" class="world-btn apple" id="svApple">🍎 Съесть яблоко (+25 голода)</button>
+        <button type="button" class="world-btn fire" id="svFire">🔥 Постоять у костра (3 сек)</button>
+        <button type="button" class="world-btn tent" id="svTent">🛏️ Лечь в палатку (полный отдых)</button>
+        <button type="button" class="action-btn" onclick="resetSurvivalMini()">Сброс</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПРОЕКТ -->
+  <div class="project-box" id="keyTaskBox">
+    <h2>🛠️ Проект в Studio: «Выживание в лесу»</h2>
+    <p>Иди по фазам. Имена объектов — как в коде, иначе скрипты не найдут лагерь и еду.</p>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="projectFill"></div></div>
+      <div class="progress-label" id="projectLabel">Выполнено шагов: 0</div>
+    </div>
+
+    <!-- ФАЗА 1 -->
+    <div class="phase" id="phase1">
+      <h3>🌲 Фаза 1 — Карта леса <span class="phase-time">15 мин</span></h3>
+      <ol>
+        <li>Открой <b>Home → Editor</b> (Terrain) или вкладку Terrain.</li>
+        <li>Нарисуй траву / холмы. Можно добавить небольшой водоём.</li>
+        <li>Расставь деревья (Toolbox → Trees или свои модели). Anchored = true.</li>
+        <li>Поставь SpawnLocation в будущий лагерь.</li>
+      </ol>
+      <div class="info-callout">
+        <span class="bulb">💡</span>
+        <div>Карта не обязана быть огромной. Важнее: место под костёр, палатку и 5–8 точек, где появятся яблоки.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">Есть Terrain (трава / рельеф).</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">Стоят деревья, карта выглядит как лес.</label></li>
+        <li><input type="checkbox" id="p1s2" onchange="updateProjectProgress()"><label for="p1s2">Есть SpawnLocation у лагеря.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 2 -->
+    <div class="phase" id="phase2">
+      <h3>🛏️ Фаза 2 — Палатка (Tent) <span class="phase-time">6 мин</span></h3>
+      <ol>
+        <li>Создай Part небольшого размера (как спальный мешок / подстилка).</li>
+        <li>Переименуй в <code>Tent</code>, Anchored = true, цвет на вкус.</li>
+        <li>Добавь внутрь <b>ClickDetector</b>.</li>
+      </ol>
+      <img class="shot" src="assets/img/survival/01-tent.png" alt="Part Tent на baseplate" />
+      <p class="shot-cap">Спальное место — плоский Part в лагере.</p>
+      <img class="shot" src="assets/img/survival/02-tent-explorer.png" alt="Tent с ClickDetector" />
+      <p class="shot-cap">Explorer: Tent → ClickDetector.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">Объект называется именно Tent.</label></li>
+        <li><input type="checkbox" id="p2s1" onchange="updateProjectProgress()"><label for="p2s1">Внутри есть ClickDetector.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 3 -->
+    <div class="phase" id="phase3">
+      <h3>🔥 Фаза 3 — Костёр (Campfire) <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>Собери конструкцию из Parts, похожую на костёр (основание + «брёвна»).</li>
+        <li>Выдели все части костра.</li>
+        <li>Вкладка <b>Model → Union</b> — объедини в один объект.</li>
+        <li>Переименуй в <code>Campfire</code>.</li>
+        <li>Нажми «+» на Campfire → добавь <b>Fire</b> и <b>PointLight</b>.</li>
+        <li>Настрой PointLight (примерно): Brightness ≈ 14, Color тёплый оранжевый, Range ≈ 18.</li>
+      </ol>
+      <img class="shot" src="assets/img/survival/03-campfire-build.png" alt="Сборка костра из партов" />
+      <p class="shot-cap">Сначала собираем из отдельных Parts.</p>
+      <img class="shot" src="assets/img/survival/04-campfire-select.png" alt="Выделение частей костра" />
+      <p class="shot-cap">Выделяем все части перед Union.</p>
+      <img class="shot" src="assets/img/survival/05-union-toolbar.png" alt="Кнопка Union на вкладке Model" />
+      <p class="shot-cap">Model → Union (обвести кнопку на панели).</p>
+      <img class="shot" src="assets/img/survival/06-campfire-explorer.png" alt="Campfire с Fire и PointLight" />
+      <p class="shot-cap">Campfire → Fire + PointLight.</p>
+      <img class="shot" src="assets/img/survival/07-pointlight.png" alt="Настройки PointLight" />
+      <p class="shot-cap">PointLight: яркость, цвет, радиус.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">Костёр объединён Union и назван Campfire.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">Добавлены Fire и PointLight.</label></li>
+        <li><input type="checkbox" id="p3s2" onchange="updateProjectProgress()"><label for="p3s2">Свет тёплый, костёр виден ночью.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 4 -->
+    <div class="phase" id="phase4">
+      <h3>🍎 Фаза 4 — Шаблон еды Apple <span class="phase-time">8 мин</span></h3>
+      <ol>
+        <li>Создай небольшой круглый Part (Shape = Ball), красный / ягодный цвет.</li>
+        <li>Имя: <code>Apple</code>, Anchored = true.</li>
+        <li>Добавь <b>ClickDetector</b>.</li>
+        <li><b>Не оставляй</b> рабочий Script внутри шаблона — логика будет в <code>FoodScript</code> (следующая фаза).</li>
+        <li>Перетащи <code>Apple</code> в <b>ReplicatedStorage</b>.</li>
+      </ol>
+      <img class="shot" src="assets/img/survival/08-apple.png" alt="Красный шар Apple" />
+      <p class="shot-cap">Яблоко — маленький Ball Part.</p>
+      <img class="shot" src="assets/img/survival/09-apple-explorer.png" alt="Apple с ClickDetector" />
+      <p class="shot-cap">В шаблоне достаточно ClickDetector (скрипт клонирует FoodManager).</p>
+      <div class="info-callout warn">
+        <span class="bulb">⚠️</span>
+        <div>
+          Если хочешь <b>сначала проверить</b> клик в Workspace — временно вставь простой скрипт из методички педагога,
+          потом удали его и перенеси чистый Apple в ReplicatedStorage. В бою работает связка Apple + FoodScript.
+        </div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">Apple создан (Ball) с ClickDetector.</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">Apple лежит в ReplicatedStorage.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 5 -->
+    <div class="phase" id="phase5">
+      <h3>📡 Фаза 5 — ReplicatedStorage: FoodScript + события <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>В ReplicatedStorage создай <b>Script</b> с именем <code>FoodScript</code> (это шаблон — сам не запускается, пока его не клонируют на яблоко).</li>
+        <li>Вставь код FoodScript ниже.</li>
+        <li>Создай два <b>RemoteEvent</b>:
+          <ul>
+            <li><code>NotificationEvent</code></li>
+            <li><code>SleepEvent</code></li>
+          </ul>
+        </li>
+      </ol>
+      <img class="shot" src="assets/img/survival/10-replicatedstorage.png" alt="Содержимое ReplicatedStorage" />
+      <p class="shot-cap">Должно быть: FoodScript, NotificationEvent, SleepEvent, Apple.</p>
+
+      <details class="details-code" open>
+        <summary>📄 Код FoodScript (ReplicatedStorage)</summary>
+        <div class="code-block">
+<span class="comment">-- ReplicatedStorage &gt; FoodScript (Script)</span><br>
+<span class="keyword">local</span> foodPart = script.Parent<br>
+<span class="keyword">local</span> clickDetector = foodPart:<span class="func">FindFirstChildOfClass</span>(<span class="string">"ClickDetector"</span>)<br>
+<span class="keyword">if not</span> clickDetector <span class="keyword">then</span><br>
+&nbsp;&nbsp;clickDetector = Instance.new(<span class="string">"ClickDetector"</span>)<br>
+&nbsp;&nbsp;clickDetector.Parent = foodPart<br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local</span> HUNGER_RESTORE = <span class="number">25</span><br>
+<span class="keyword">local</span> PICKUP_DISTANCE = <span class="number">15</span><br><br>
+<span class="keyword">local</span> ReplicatedStorage = game:<span class="func">GetService</span>(<span class="string">"ReplicatedStorage"</span>)<br>
+<span class="keyword">local</span> notificationEvent = ReplicatedStorage:<span class="func">WaitForChild</span>(<span class="string">"NotificationEvent"</span>)<br>
+<span class="keyword">local</span> ServerScriptService = game:<span class="func">GetService</span>(<span class="string">"ServerScriptService"</span>)<br>
+<span class="keyword">local</span> FoodManager = <span class="func">require</span>(ServerScriptService:<span class="func">WaitForChild</span>(<span class="string">"FoodManager"</span>))<br><br>
+clickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>(player)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> char = player.Character<br>
+&nbsp;&nbsp;<span class="keyword">if not</span> char <span class="keyword">then return end</span><br>
+&nbsp;&nbsp;<span class="keyword">local</span> rootPart = char:<span class="func">FindFirstChild</span>(<span class="string">"HumanoidRootPart"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">if not</span> rootPart <span class="keyword">then return end</span><br>
+&nbsp;&nbsp;<span class="keyword">if</span> (rootPart.Position - foodPart.Position).Magnitude &gt; PICKUP_DISTANCE <span class="keyword">then return end</span><br><br>
+&nbsp;&nbsp;<span class="keyword">local</span> stats = player:<span class="func">FindFirstChild</span>(<span class="string">"SurvivalStats"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">if</span> stats <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> hunger = stats:<span class="func">FindFirstChild</span>(<span class="string">"Hunger"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> hunger <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hunger.Value = math.min(<span class="number">100</span>, hunger.Value + HUNGER_RESTORE)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;notificationEvent:<span class="func">FireClient</span>(player, <span class="string">"Вы съели еду. +"</span>.. HUNGER_RESTORE .. <span class="string">"% голода"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FoodManager.<span class="func">OnFoodEaten</span>(foodPart.Position)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foodPart:<span class="func">Destroy</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span>)
+        </div>
+      </details>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">FoodScript создан и заполнен.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">Есть NotificationEvent и SleepEvent.</label></li>
+        <li><input type="checkbox" id="p5s2" onchange="updateProjectProgress()"><label for="p5s2">ReplicatedStorage как на скриншоте.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 6 -->
+    <div class="phase" id="phase6">
+      <h3>🖥️ Фаза 6 — ServerScriptService <span class="phase-time">20 мин</span></h3>
+      <ol>
+        <li>Создай <b>ModuleScript</b> → <code>FoodManager</code>.</li>
+        <li>Создай <b>Script</b> → <code>SurvivalManager</code>.</li>
+        <li>Создай <b>Script</b> → <code>Main</code> (только запуск еды).</li>
+      </ol>
+      <img class="shot" src="assets/img/survival/11-serverscripts.png" alt="Скрипты в ServerScriptService" />
+      <p class="shot-cap">SurvivalManager, Main, FoodManager (фиолетовая иконка модуля).</p>
+      <div class="info-callout green">
+        <span class="bulb">🔑</span>
+        <div>
+          <code>FoodManager.Initialize()</code> вызываем <b>один раз</b> из Main.
+          В SurvivalManager — только шкалы, костёр и палатка (без повторного Initialize).
+        </div>
+      </div>
+
+      <details class="details-code">
+        <summary>📄 FoodManager (ModuleScript) — полный код</summary>
+        <div class="code-block">
+<span class="keyword">local</span> FoodManager = {}<br><br>
+<span class="keyword">local</span> RESPAWN_MIN_TIME = <span class="number">20</span><br>
+<span class="keyword">local</span> RESPAWN_MAX_TIME = <span class="number">40</span><br>
+<span class="keyword">local</span> MAX_FOOD_ON_MAP = <span class="number">5</span><br>
+<span class="keyword">local</span> FOOD_MODEL = <span class="string">"Apple"</span><br>
+<span class="keyword">local</span> FOOD_SCRIPT_NAME = <span class="string">"FoodScript"</span><br><br>
+<span class="comment">-- Подправь координаты под свою карту</span><br>
+<span class="keyword">local</span> SPAWN_POINTS = {<br>
+&nbsp;&nbsp;Vector3.new(<span class="number">50</span>, <span class="number">100</span>, <span class="number">50</span>),<br>
+&nbsp;&nbsp;Vector3.new(<span class="number">-30</span>, <span class="number">100</span>, <span class="number">20</span>),<br>
+&nbsp;&nbsp;Vector3.new(<span class="number">10</span>, <span class="number">100</span>, <span class="number">-40</span>),<br>
+&nbsp;&nbsp;Vector3.new(<span class="number">-50</span>, <span class="number">100</span>, <span class="number">-30</span>),<br>
+&nbsp;&nbsp;Vector3.new(<span class="number">60</span>, <span class="number">100</span>, <span class="number">-20</span>),<br>
+&nbsp;&nbsp;Vector3.new(<span class="number">-20</span>, <span class="number">100</span>, <span class="number">60</span>),<br>
+&nbsp;&nbsp;Vector3.new(<span class="number">80</span>, <span class="number">100</span>, <span class="number">10</span>),<br>
+&nbsp;&nbsp;Vector3.new(<span class="number">-60</span>, <span class="number">100</span>, <span class="number">-50</span>),<br>
+}<br><br>
+<span class="keyword">local</span> ReplicatedStorage = game:<span class="func">GetService</span>(<span class="string">"ReplicatedStorage"</span>)<br>
+<span class="keyword">local</span> Workspace = game:<span class="func">GetService</span>(<span class="string">"Workspace"</span>)<br><br>
+<span class="keyword">local function</span> <span class="func">getTerrainHeight</span>(x, z)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> rayOrigin = Vector3.new(x, <span class="number">300</span>, z)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> rayDirection = Vector3.new(<span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>) * <span class="number">500</span><br>
+&nbsp;&nbsp;<span class="keyword">local</span> raycastParams = RaycastParams.new()<br>
+&nbsp;&nbsp;<span class="keyword">local</span> result = Workspace:<span class="func">Raycast</span>(rayOrigin, rayDirection, raycastParams)<br>
+&nbsp;&nbsp;<span class="keyword">if</span> result <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> result.Position.Y + <span class="number">1</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">return</span> <span class="number">5</span><br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local function</span> <span class="func">spawnFood</span>()<br>
+&nbsp;&nbsp;<span class="keyword">local</span> template = ReplicatedStorage:<span class="func">FindFirstChild</span>(FOOD_MODEL)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> foodScriptTemplate = ReplicatedStorage:<span class="func">FindFirstChild</span>(FOOD_SCRIPT_NAME)<br>
+&nbsp;&nbsp;<span class="keyword">if not</span> template <span class="keyword">or not</span> foodScriptTemplate <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">warn</span>(<span class="string">"Не найден шаблон еды или скрипт еды в ReplicatedStorage!"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">local</span> point = SPAWN_POINTS[math.random(<span class="number">1</span>, #SPAWN_POINTS)]<br>
+&nbsp;&nbsp;<span class="keyword">local</span> height = <span class="func">getTerrainHeight</span>(point.X, point.Z)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> position = Vector3.new(point.X, height, point.Z)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> newFood = template:<span class="func">Clone</span>()<br>
+&nbsp;&nbsp;newFood.Position = position<br>
+&nbsp;&nbsp;newFood.Parent = Workspace<br>
+&nbsp;&nbsp;<span class="keyword">local</span> clickDetector = newFood:<span class="func">FindFirstChildOfClass</span>(<span class="string">"ClickDetector"</span>) <span class="keyword">or</span> Instance.new(<span class="string">"ClickDetector"</span>)<br>
+&nbsp;&nbsp;clickDetector.Parent = newFood<br>
+&nbsp;&nbsp;foodScriptTemplate:<span class="func">Clone</span>().Parent = newFood<br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Еда заспавнена в"</span>, position)<br>
+&nbsp;&nbsp;<span class="keyword">return</span> newFood<br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">function</span> FoodManager.<span class="func">Initialize</span>()<br>
+&nbsp;&nbsp;<span class="keyword">for</span> _, obj <span class="keyword">in</span> ipairs(Workspace:<span class="func">GetChildren</span>()) <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> obj.Name == FOOD_MODEL <span class="keyword">then</span> obj:<span class="func">Destroy</span>() <span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">for</span> i = <span class="number">1</span>, MAX_FOOD_ON_MAP <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">spawnFood</span>()<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">function</span> FoodManager.<span class="func">OnFoodEaten</span>(foodPosition)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> delayTime = math.random(RESPAWN_MIN_TIME, RESPAWN_MAX_TIME)<br>
+&nbsp;&nbsp;task.delay(delayTime, <span class="keyword">function</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> currentFoodCount = <span class="number">0</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> _, obj <span class="keyword">in</span> ipairs(Workspace:<span class="func">GetChildren</span>()) <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> obj.Name == FOOD_MODEL <span class="keyword">then</span> currentFoodCount += <span class="number">1</span> <span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> currentFoodCount &lt; MAX_FOOD_ON_MAP <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">spawnFood</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">return</span> FoodManager
+        </div>
+      </details>
+
+      <details class="details-code">
+        <summary>📄 SurvivalManager (Script) — полный код</summary>
+        <div class="code-block">
+<span class="keyword">local</span> Players = game:<span class="func">GetService</span>(<span class="string">"Players"</span>)<br>
+<span class="keyword">local</span> ReplicatedStorage = game:<span class="func">GetService</span>(<span class="string">"ReplicatedStorage"</span>)<br><br>
+<span class="keyword">local</span> HUNGER_DECREASE_RATE = <span class="number">0.2</span><br>
+<span class="keyword">local</span> COLD_DECREASE_RATE = <span class="number">0.15</span><br>
+<span class="keyword">local</span> STAMINA_DECREASE_RATE = <span class="number">0.1</span><br>
+<span class="keyword">local</span> MAX_STAT = <span class="number">100</span><br><br>
+<span class="keyword">local</span> notificationEvent = ReplicatedStorage:<span class="func">WaitForChild</span>(<span class="string">"NotificationEvent"</span>)<br>
+<span class="keyword">local</span> sleepEvent = ReplicatedStorage:<span class="func">WaitForChild</span>(<span class="string">"SleepEvent"</span>)<br><br>
+<span class="keyword">local</span> campfire = workspace:<span class="func">FindFirstChild</span>(<span class="string">"Campfire"</span>)<br>
+<span class="keyword">local</span> tent = workspace:<span class="func">FindFirstChild</span>(<span class="string">"Tent"</span>)<br><br>
+<span class="keyword">if</span> campfire <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Campfire найден"</span>)<br>
+<span class="keyword">else</span><br>
+&nbsp;&nbsp;<span class="func">warn</span>(<span class="string">"Campfire не найден! Тепло не будет работать."</span>)<br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">if</span> tent <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Tent найден"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> click = tent:<span class="func">FindFirstChildWhichIsA</span>(<span class="string">"ClickDetector"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">if not</span> click <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;click = Instance.new(<span class="string">"ClickDetector"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;click.Parent = tent<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;click.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>(player)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> stats = player:<span class="func">FindFirstChild</span>(<span class="string">"SurvivalStats"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if not</span> stats <span class="keyword">then return end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> char = player.Character<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> char <span class="keyword">and</span> char:<span class="func">FindFirstChild</span>(<span class="string">"HumanoidRootPart"</span>) <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> dist = (char.HumanoidRootPart.Position - tent:<span class="func">GetPivot</span>().Position).Magnitude<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> dist &lt; <span class="number">12</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stats.Stamina.Value = MAX_STAT<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;notificationEvent:<span class="func">FireClient</span>(player, <span class="string">"Вы поспали. Отдых восстановлен."</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sleepEvent:<span class="func">FireClient</span>(player)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+<span class="keyword">else</span><br>
+&nbsp;&nbsp;<span class="func">warn</span>(<span class="string">"Tent не найден! Сон не будет работать."</span>)<br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local function</span> <span class="func">isNearHeatSource</span>(character)<br>
+&nbsp;&nbsp;<span class="keyword">if not</span> campfire <span class="keyword">then return false end</span><br>
+&nbsp;&nbsp;<span class="keyword">local</span> root = character <span class="keyword">and</span> character:<span class="func">FindFirstChild</span>(<span class="string">"HumanoidRootPart"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">if not</span> root <span class="keyword">then return false end</span><br>
+&nbsp;&nbsp;<span class="keyword">for</span> _, part <span class="keyword">in</span> ipairs(campfire:<span class="func">GetDescendants</span>()) <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> part:<span class="func">IsA</span>(<span class="string">"BasePart"</span>) <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (root.Position - part.Position).Magnitude &lt; <span class="number">15</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">return false</span><br>
+<span class="keyword">end</span><br><br>
+Players.PlayerAdded:<span class="func">Connect</span>(<span class="keyword">function</span>(player)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> stats = Instance.new(<span class="string">"Folder"</span>)<br>
+&nbsp;&nbsp;stats.Name = <span class="string">"SurvivalStats"</span><br>
+&nbsp;&nbsp;stats.Parent = player<br><br>
+&nbsp;&nbsp;<span class="keyword">local</span> hunger = Instance.new(<span class="string">"NumberValue"</span>)<br>
+&nbsp;&nbsp;hunger.Name = <span class="string">"Hunger"</span><br>
+&nbsp;&nbsp;hunger.Value = MAX_STAT<br>
+&nbsp;&nbsp;hunger.Parent = stats<br><br>
+&nbsp;&nbsp;<span class="keyword">local</span> warmth = Instance.new(<span class="string">"NumberValue"</span>)<br>
+&nbsp;&nbsp;warmth.Name = <span class="string">"Warmth"</span><br>
+&nbsp;&nbsp;warmth.Value = MAX_STAT<br>
+&nbsp;&nbsp;warmth.Parent = stats<br><br>
+&nbsp;&nbsp;<span class="keyword">local</span> stamina = Instance.new(<span class="string">"NumberValue"</span>)<br>
+&nbsp;&nbsp;stamina.Name = <span class="string">"Stamina"</span><br>
+&nbsp;&nbsp;stamina.Value = MAX_STAT<br>
+&nbsp;&nbsp;stamina.Parent = stats<br><br>
+&nbsp;&nbsp;<span class="keyword">local</span> nearFireFlag = <span class="keyword">false</span><br><br>
+&nbsp;&nbsp;task.spawn(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> lastUpdate = tick()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">while</span> player.Parent <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> dt = tick() - lastUpdate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastUpdate = tick()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> char = player.Character<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stats.Hunger.Value = math.max(<span class="number">0</span>, stats.Hunger.Value - HUNGER_DECREASE_RATE * dt)<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> isNear = char <span class="keyword">and</span> <span class="func">isNearHeatSource</span>(char)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> isNear <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stats.Warmth.Value = math.min(MAX_STAT, stats.Warmth.Value + <span class="number">0.5</span> * dt)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if not</span> nearFireFlag <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nearFireFlag = <span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;notificationEvent:<span class="func">FireClient</span>(player, <span class="string">"Вы греетесь у костра."</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stats.Warmth.Value = math.max(<span class="number">0</span>, stats.Warmth.Value - COLD_DECREASE_RATE * dt)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> nearFireFlag <span class="keyword">then</span> nearFireFlag = <span class="keyword">false</span> <span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stats.Stamina.Value = math.max(<span class="number">0</span>, stats.Stamina.Value - STAMINA_DECREASE_RATE * dt)<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (stats.Hunger.Value &lt;= <span class="number">0</span> <span class="keyword">or</span> stats.Warmth.Value &lt;= <span class="number">0</span> <span class="keyword">or</span> stats.Stamina.Value &lt;= <span class="number">0</span>) <span class="keyword">and</span> char <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> humanoid = char:<span class="func">FindFirstChild</span>(<span class="string">"Humanoid"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> humanoid <span class="keyword">and</span> humanoid.Health &gt; <span class="number">0</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;humanoid.Health = humanoid.Health - <span class="number">2</span> * dt<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;task.wait(<span class="number">0.1</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+<span class="keyword">end</span>)
+        </div>
+      </details>
+
+      <details class="details-code" open>
+        <summary>📄 Main (Script) — короткий</summary>
+        <div class="code-block">
+<span class="keyword">local</span> ServerScriptService = game:<span class="func">GetService</span>(<span class="string">"ServerScriptService"</span>)<br>
+<span class="keyword">local</span> FoodManager = <span class="func">require</span>(ServerScriptService:<span class="func">WaitForChild</span>(<span class="string">"FoodManager"</span>))<br>
+FoodManager.<span class="func">Initialize</span>()
+        </div>
+      </details>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6s0" onchange="updateProjectProgress()"><label for="p6s0">FoodManager — ModuleScript с кодом.</label></li>
+        <li><input type="checkbox" id="p6s1" onchange="updateProjectProgress()"><label for="p6s1">SurvivalManager создаёт SurvivalStats и обрабатывает Tent.</label></li>
+        <li><input type="checkbox" id="p6s2" onchange="updateProjectProgress()"><label for="p6s2">Main только вызывает Initialize().</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 7 -->
+    <div class="phase" id="phase7">
+      <h3>📱 Фаза 7 — StarterGui: три LocalScript <span class="phase-time">15 мин</span></h3>
+      <ol>
+        <li>В StarterGui создай три <b>LocalScript</b>:
+          <code>SleepEffect</code>, <code>NotificationHandler</code>, <code>StatsDisplay</code>.
+        </li>
+        <li>Вставь коды ниже (GUI создаётся из скрипта — ScreenGui вручную не нужен).</li>
+      </ol>
+      <img class="shot" src="assets/img/survival/12-startergui.png" alt="Три LocalScript в StarterGui" />
+      <p class="shot-cap">SleepEffect, NotificationHandler, StatsDisplay.</p>
+
+      <details class="details-code">
+        <summary>📄 SleepEffect</summary>
+        <div class="code-block">
+<span class="keyword">local</span> Players = game:<span class="func">GetService</span>(<span class="string">"Players"</span>)<br>
+<span class="keyword">local</span> player = Players.LocalPlayer<br>
+<span class="keyword">local</span> playerGui = player:<span class="func">WaitForChild</span>(<span class="string">"PlayerGui"</span>)<br>
+<span class="keyword">local</span> ReplicatedStorage = game:<span class="func">GetService</span>(<span class="string">"ReplicatedStorage"</span>)<br><br>
+<span class="keyword">local</span> sleepEvent = ReplicatedStorage:<span class="func">WaitForChild</span>(<span class="string">"SleepEvent"</span>, <span class="number">10</span>)<br>
+<span class="keyword">if not</span> sleepEvent <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="func">warn</span>(<span class="string">"SleepEvent not found!"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">return</span><br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local</span> screenGui = Instance.new(<span class="string">"ScreenGui"</span>)<br>
+screenGui.Name = <span class="string">"SleepGUI"</span><br>
+screenGui.Parent = playerGui<br><br>
+<span class="keyword">local</span> overlay = Instance.new(<span class="string">"Frame"</span>)<br>
+overlay.Name = <span class="string">"SleepOverlay"</span><br>
+overlay.Size = UDim2.new(<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)<br>
+overlay.BackgroundColor3 = Color3.new(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)<br>
+overlay.BackgroundTransparency = <span class="number">1</span><br>
+overlay.Visible = <span class="keyword">false</span><br>
+overlay.Parent = screenGui<br><br>
+sleepEvent.OnClientEvent:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;overlay.Visible = <span class="keyword">true</span><br>
+&nbsp;&nbsp;<span class="keyword">for</span> t = <span class="number">1</span>, <span class="number">0</span>, <span class="number">-0.05</span> <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;overlay.BackgroundTransparency = t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task.wait(<span class="number">0.025</span>)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;overlay.BackgroundTransparency = <span class="number">0</span><br>
+&nbsp;&nbsp;task.wait(<span class="number">3</span>)<br>
+&nbsp;&nbsp;<span class="keyword">for</span> t = <span class="number">0</span>, <span class="number">1</span>, <span class="number">0.05</span> <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;overlay.BackgroundTransparency = t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task.wait(<span class="number">0.025</span>)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;overlay.BackgroundTransparency = <span class="number">1</span><br>
+&nbsp;&nbsp;overlay.Visible = <span class="keyword">false</span><br>
+<span class="keyword">end</span>)
+        </div>
+      </details>
+
+      <details class="details-code">
+        <summary>📄 NotificationHandler</summary>
+        <div class="code-block">
+<span class="keyword">local</span> Players = game:<span class="func">GetService</span>(<span class="string">"Players"</span>)<br>
+<span class="keyword">local</span> player = Players.LocalPlayer<br>
+<span class="keyword">local</span> playerGui = player:<span class="func">WaitForChild</span>(<span class="string">"PlayerGui"</span>)<br>
+<span class="keyword">local</span> ReplicatedStorage = game:<span class="func">GetService</span>(<span class="string">"ReplicatedStorage"</span>)<br><br>
+<span class="keyword">local</span> notificationEvent = ReplicatedStorage:<span class="func">WaitForChild</span>(<span class="string">"NotificationEvent"</span>, <span class="number">10</span>)<br>
+<span class="keyword">if not</span> notificationEvent <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="func">warn</span>(<span class="string">"NotificationEvent not found!"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">return</span><br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local</span> screenGui = Instance.new(<span class="string">"ScreenGui"</span>)<br>
+screenGui.Name = <span class="string">"NotificationGUI"</span><br>
+screenGui.Parent = playerGui<br><br>
+<span class="keyword">local</span> container = Instance.new(<span class="string">"Frame"</span>)<br>
+container.Name = <span class="string">"NotificationContainer"</span><br>
+container.AnchorPoint = Vector2.new(<span class="number">0.5</span>, <span class="number">1</span>)<br>
+container.Position = UDim2.new(<span class="number">0.5</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">-20</span>)<br>
+container.Size = UDim2.new(<span class="number">0.35</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)<br>
+container.BackgroundTransparency = <span class="number">1</span><br>
+container.AutomaticSize = Enum.AutomaticSize.Y<br>
+container.Parent = screenGui<br><br>
+<span class="keyword">local</span> layout = Instance.new(<span class="string">"UIListLayout"</span>)<br>
+layout.Parent = container<br>
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center<br>
+layout.SortOrder = Enum.SortOrder.LayoutOrder<br>
+layout.VerticalAlignment = Enum.VerticalAlignment.Bottom<br>
+layout.Padding = UDim.new(<span class="number">0</span>, <span class="number">5</span>)<br><br>
+<span class="keyword">local function</span> <span class="func">showNotification</span>(text)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> msg = Instance.new(<span class="string">"Frame"</span>)<br>
+&nbsp;&nbsp;msg.Size = UDim2.new(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">40</span>)<br>
+&nbsp;&nbsp;msg.BackgroundColor3 = Color3.fromRGB(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)<br>
+&nbsp;&nbsp;msg.BackgroundTransparency = <span class="number">0.5</span><br>
+&nbsp;&nbsp;msg.BorderSizePixel = <span class="number">0</span><br>
+&nbsp;&nbsp;msg.LayoutOrder = <span class="number">-1</span><br>
+&nbsp;&nbsp;msg.Parent = container<br><br>
+&nbsp;&nbsp;<span class="keyword">local</span> label = Instance.new(<span class="string">"TextLabel"</span>)<br>
+&nbsp;&nbsp;label.Size = UDim2.new(<span class="number">1</span>, <span class="number">-10</span>, <span class="number">1</span>, <span class="number">0</span>)<br>
+&nbsp;&nbsp;label.Position = UDim2.new(<span class="number">0</span>, <span class="number">5</span>, <span class="number">0</span>, <span class="number">0</span>)<br>
+&nbsp;&nbsp;label.BackgroundTransparency = <span class="number">1</span><br>
+&nbsp;&nbsp;label.Text = text<br>
+&nbsp;&nbsp;label.TextColor3 = Color3.new(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)<br>
+&nbsp;&nbsp;label.TextScaled = <span class="keyword">true</span><br>
+&nbsp;&nbsp;label.Font = Enum.Font.SourceSansBold<br>
+&nbsp;&nbsp;label.Parent = msg<br><br>
+&nbsp;&nbsp;task.delay(<span class="number">4</span>, <span class="keyword">function</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> i = <span class="number">10</span>, <span class="number">1</span>, <span class="number">-1</span> <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg.BackgroundTransparency = msg.BackgroundTransparency + <span class="number">0.05</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;label.TextTransparency = label.TextTransparency + <span class="number">0.1</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;task.wait(<span class="number">0.05</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;msg:<span class="func">Destroy</span>()<br>
+&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+<span class="keyword">end</span><br><br>
+notificationEvent.OnClientEvent:<span class="func">Connect</span>(<span class="keyword">function</span>(text)<br>
+&nbsp;&nbsp;<span class="func">showNotification</span>(text)<br>
+<span class="keyword">end</span>)
+        </div>
+      </details>
+
+      <details class="details-code">
+        <summary>📄 StatsDisplay</summary>
+        <div class="code-block">
+<span class="keyword">local</span> Players = game:<span class="func">GetService</span>(<span class="string">"Players"</span>)<br>
+<span class="keyword">local</span> player = Players.LocalPlayer<br>
+<span class="keyword">local</span> playerGui = player:<span class="func">WaitForChild</span>(<span class="string">"PlayerGui"</span>)<br><br>
+<span class="keyword">local</span> screenGui = Instance.new(<span class="string">"ScreenGui"</span>)<br>
+screenGui.Name = <span class="string">"SurvivalGUI"</span><br>
+screenGui.Parent = playerGui<br><br>
+<span class="keyword">local function</span> <span class="func">createBar</span>(name, color, posY)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> barFrame = Instance.new(<span class="string">"Frame"</span>)<br>
+&nbsp;&nbsp;barFrame.Size = UDim2.new(<span class="number">0</span>, <span class="number">200</span>, <span class="number">0</span>, <span class="number">20</span>)<br>
+&nbsp;&nbsp;barFrame.Position = UDim2.new(<span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, posY)<br>
+&nbsp;&nbsp;barFrame.BackgroundColor3 = Color3.fromRGB(<span class="number">50</span>, <span class="number">50</span>, <span class="number">50</span>)<br>
+&nbsp;&nbsp;barFrame.Parent = screenGui<br><br>
+&nbsp;&nbsp;<span class="keyword">local</span> fill = Instance.new(<span class="string">"Frame"</span>)<br>
+&nbsp;&nbsp;fill.Name = <span class="string">"Fill"</span><br>
+&nbsp;&nbsp;fill.Size = UDim2.new(<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)<br>
+&nbsp;&nbsp;fill.BackgroundColor3 = color<br>
+&nbsp;&nbsp;fill.Parent = barFrame<br><br>
+&nbsp;&nbsp;<span class="keyword">local</span> label = Instance.new(<span class="string">"TextLabel"</span>)<br>
+&nbsp;&nbsp;label.Size = UDim2.new(<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)<br>
+&nbsp;&nbsp;label.BackgroundTransparency = <span class="number">1</span><br>
+&nbsp;&nbsp;label.Text = name .. <span class="string">": 100%"</span><br>
+&nbsp;&nbsp;label.TextColor3 = Color3.new(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)<br>
+&nbsp;&nbsp;label.TextScaled = <span class="keyword">true</span><br>
+&nbsp;&nbsp;label.Parent = barFrame<br><br>
+&nbsp;&nbsp;<span class="keyword">return</span> fill, label<br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local</span> hungerFill, hungerLabel = <span class="func">createBar</span>(<span class="string">"Голод"</span>, Color3.fromRGB(<span class="number">255</span>, <span class="number">170</span>, <span class="number">0</span>), <span class="number">50</span>)<br>
+<span class="keyword">local</span> warmthFill, warmthLabel = <span class="func">createBar</span>(<span class="string">"Тепло"</span>, Color3.fromRGB(<span class="number">0</span>, <span class="number">170</span>, <span class="number">255</span>), <span class="number">80</span>)<br>
+<span class="keyword">local</span> staminaFill, staminaLabel = <span class="func">createBar</span>(<span class="string">"Отдых"</span>, Color3.fromRGB(<span class="number">0</span>, <span class="number">255</span>, <span class="number">100</span>), <span class="number">110</span>)<br><br>
+task.spawn(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;<span class="keyword">while true do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> stats = player:<span class="func">FindFirstChild</span>(<span class="string">"SurvivalStats"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> stats <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> hunger = stats:<span class="func">FindFirstChild</span>(<span class="string">"Hunger"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> warmth = stats:<span class="func">FindFirstChild</span>(<span class="string">"Warmth"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> stamina = stats:<span class="func">FindFirstChild</span>(<span class="string">"Stamina"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> hunger <span class="keyword">and</span> warmth <span class="keyword">and</span> stamina <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> h, w, s = hunger.Value, warmth.Value, stamina.Value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hungerFill.Size = UDim2.new(h/<span class="number">100</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;warmthFill.Size = UDim2.new(w/<span class="number">100</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;staminaFill.Size = UDim2.new(s/<span class="number">100</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hungerLabel.Text = <span class="string">"Голод: "</span> .. math.floor(hunger.Value + <span class="number">0.5</span>) .. <span class="string">"%"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;warmthLabel.Text = <span class="string">"Тепло: "</span> .. math.floor(warmth.Value + <span class="number">0.5</span>) .. <span class="string">"%"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;staminaLabel.Text = <span class="string">"Отдых: "</span> .. math.floor(stamina.Value + <span class="number">0.5</span>) .. <span class="string">"%"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;task.wait(<span class="number">0.1</span>)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span>)
+        </div>
+      </details>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p7s0" onchange="updateProjectProgress()"><label for="p7s0">Три LocalScript лежат в StarterGui.</label></li>
+        <li><input type="checkbox" id="p7s1" onchange="updateProjectProgress()"><label for="p7s1">Коды вставлены без красных ошибок.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 8 -->
+    <div class="phase" id="phase8">
+      <h3>🧪 Фаза 8 — Проверка в Play <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>Play → смотри шкалы слева сверху.</li>
+        <li>Подойди к костру — тепло растёт, уведомление «греетесь».</li>
+        <li>Кликни Tent рядом — затемнение + полный отдых.</li>
+        <li>Собери яблоко — голод +25, через 20–40 сек появится новое.</li>
+      </ol>
+      <div class="info-callout warn">
+        <span class="bulb">📍</span>
+        <div>
+          Если яблоки спавнятся «в небе / в пустоте» — открой FoodManager и поправь
+          <code>SPAWN_POINTS</code> под координаты своей карты (X и Z).
+        </div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p8s0" onchange="updateProjectProgress()"><label for="p8s0">Три шкалы видны и падают со временем.</label></li>
+        <li><input type="checkbox" id="p8s1" onchange="updateProjectProgress()"><label for="p8s1">У костра тепло растёт.</label></li>
+        <li><input type="checkbox" id="p8s2" onchange="updateProjectProgress()"><label for="p8s2">Сон в Tent работает + затемнение.</label></li>
+        <li><input type="checkbox" id="p8s3" onchange="updateProjectProgress()"><label for="p8s3">Яблоки едятся и респавнятся.</label></li>
+        <li><input type="checkbox" id="p8s4" onchange="updateProjectProgress()"><label for="p8s4">Уведомления появляются внизу экрана.</label></li>
+      </ul>
+      <div class="space-note">🎉 Базовое выживание готово! Можно украшать лес и балансировать сложность.</div>
+    </div>
+
+    <!-- ДОП -->
+    <div class="phase" id="phase9" style="border-color:#38bdf8;">
+      <h3>⚖️ Фаза 9 (доп) — Баланс сложности <span class="phase-time">8 мин</span></h3>
+      <p>В SurvivalManager уменьши/увеличь <code>HUNGER_DECREASE_RATE</code>, <code>COLD_DECREASE_RATE</code>, <code>STAMINA_DECREASE_RATE</code>.
+        Для младших групп — медленнее падение.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p9s0" onchange="updateProjectProgress()"><label for="p9s0">Подобрал темп, при котором успеваешь есть и греться.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase10" style="border-color:#fbbf24;">
+      <h3>🫐 Фаза 10 (доп) — Второй вид еды <span class="phase-time">12 мин</span></h3>
+      <p>Сделай <code>Berry</code> по образцу Apple (+15 голода). Расширь FoodManager: массив моделей или случайный выбор шаблона.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p10s0" onchange="updateProjectProgress()"><label for="p10s0">Есть второй шаблон еды в ReplicatedStorage.</label></li>
+        <li><input type="checkbox" id="p10s1" onchange="updateProjectProgress()"><label for="p10s1">На карте появляются оба типа.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase11" style="border-color:#a78bfa;">
+      <h3>🌙 Фаза 11 (доп) — Атмосфера леса <span class="phase-time">15 мин</span></h3>
+      <ul>
+        <li>Lighting: Ambient темнее, Fog чуть плотнее.</li>
+        <li>Звук костра / сверчков из Toolbox.</li>
+        <li>Табличка у лагеря: «Выживание».</li>
+      </ul>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p11s0" onchange="updateProjectProgress()"><label for="p11s0">Лес выглядит «ночнее» / атмосфернее.</label></li>
+        <li><input type="checkbox" id="p11s1" onchange="updateProjectProgress()"><label for="p11s1">Есть звук или декор лагеря.</label></li>
+        <li><input type="checkbox" id="p11s2" onchange="updateProjectProgress()"><label for="p11s2">Механики после декора всё ещё работают.</label></li>
+      </ul>
+      <div class="space-note">🏆 Портфолио-проект: мир + 3 системы выживания + респавн ресурсов.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧯 Если не работает</h2>
+    <table class="prop-table">
+      <tr><th>Симптом</th><th>Что проверить</th></tr>
+      <tr><td>Нет шкал</td><td>StatsDisplay в StarterGui? SurvivalManager создаёт SurvivalStats?</td></tr>
+      <tr><td>Нет тепла</td><td>Объект точно <code>Campfire</code>? Стоишь ближе 15 studs?</td></tr>
+      <tr><td>Сон не работает</td><td>Имя <code>Tent</code>, ClickDetector, дистанция &lt; 12, есть SleepEvent</td></tr>
+      <tr><td>Нет яблок</td><td>Apple + FoodScript в RS? Main вызвал Initialize? Output на warn</td></tr>
+      <tr><td>Яблоко не кликается</td><td>Клон получил FoodScript? Стоишь ближе 15 studs?</td></tr>
+      <tr><td>Еда в воздухе</td><td>Поправь SPAWN_POINTS под карту</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>собрал лесной мир и лагерь (Tent + Campfire);</li>
+      <li>сделал три шкалы выживания на сервере;</li>
+      <li>научился респавнить еду через ModuleScript;</li>
+      <li>связал уведомления и эффект сна через RemoteEvent.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Выживаю в лесу!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти, чиним баги</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь педагога</label>
+    </div>
+    <textarea placeholder="Зачем FoodManager — ModuleScript? Почему шаблон Apple лежит в ReplicatedStorage, а не в Workspace?"></textarea>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Проект П6 · Выживание в лесу</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function updateProjectProgress() {
+    const box = document.getElementById('keyTaskBox');
+    if (!box) return;
+    const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+    const checked = box.querySelectorAll('input[type="checkbox"]:checked').length;
+    const total = checkboxes.length;
+    const pct = total ? Math.round((checked / total) * 100) : 0;
+    const fill = document.getElementById('projectFill');
+    const label = document.getElementById('projectLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) {
+      label.textContent =
+        'Выполнено шагов: ' + checked + ' из ' + total +
+        (checked === total && total > 0 ? ' 🎉 Проект выполнен!' : '');
+    }
+  }
+
+  const sv = {
+    h: 100, w: 100, s: 100, hp: 100, t: 0,
+    nearFire: false, fireUntil: 0, timer: null, running: true
+  };
+
+  function setMsg(text) {
+    document.getElementById('svMsg').textContent = text;
+  }
+
+  function renderSv() {
+    document.getElementById('svH').textContent = Math.floor(sv.h);
+    document.getElementById('svW').textContent = Math.floor(sv.w);
+    document.getElementById('svS').textContent = Math.floor(sv.s);
+    document.getElementById('svHp').textContent = Math.floor(sv.hp);
+    document.getElementById('svTime').textContent = Math.floor(sv.t);
+    document.getElementById('svHFill').style.width = Math.max(0, sv.h) + '%';
+    document.getElementById('svWFill').style.width = Math.max(0, sv.w) + '%';
+    document.getElementById('svSFill').style.width = Math.max(0, sv.s) + '%';
+  }
+
+  function tickSv() {
+    if (!sv.running) return;
+    sv.t += 0.2;
+    sv.h = Math.max(0, sv.h - 0.35);
+    sv.s = Math.max(0, sv.s - 0.2);
+    if (Date.now() < sv.fireUntil) {
+      sv.w = Math.min(100, sv.w + 1.2);
+    } else {
+      sv.w = Math.max(0, sv.w - 0.28);
+      sv.nearFire = false;
+    }
+    if (sv.h <= 0 || sv.w <= 0 || sv.s <= 0) {
+      sv.hp = Math.max(0, sv.hp - 1.5);
+    }
+    if (sv.hp <= 0) {
+      sv.running = false;
+      setMsg('💀 Не выжил… Сброс и ещё раз!');
+    } else if (sv.t >= 30) {
+      sv.running = false;
+      setMsg('🏆 30 секунд в лесу! Теперь собирай это в Studio.');
+    }
+    renderSv();
+  }
+
+  document.getElementById('svApple').addEventListener('click', function () {
+    if (!sv.running) return;
+    sv.h = Math.min(100, sv.h + 25);
+    setMsg('Вы съели еду. +25% голода');
+    renderSv();
+  });
+  document.getElementById('svFire').addEventListener('click', function () {
+    if (!sv.running) return;
+    sv.fireUntil = Date.now() + 3000;
+    if (!sv.nearFire) {
+      sv.nearFire = true;
+      setMsg('Вы греетесь у костра.');
+    }
+  });
+  document.getElementById('svTent').addEventListener('click', function () {
+    if (!sv.running) return;
+    sv.s = 100;
+    setMsg('Вы поспали. Отдых восстановлен.');
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:#000;opacity:0;z-index:9999;pointer-events:none;transition:opacity .4s;';
+    document.body.appendChild(overlay);
+    requestAnimationFrame(function () { overlay.style.opacity = '0.85'; });
+    setTimeout(function () {
+      overlay.style.opacity = '0';
+      setTimeout(function () { overlay.remove(); }, 450);
+    }, 1200);
+    renderSv();
+  });
+
+  function resetSurvivalMini() {
+    sv.h = 100; sv.w = 100; sv.s = 100; sv.hp = 100; sv.t = 0;
+    sv.nearFire = false; sv.fireUntil = 0; sv.running = true;
+    setMsg('Лес ждёт…');
+    renderSv();
+  }
+
+  setInterval(tickSv, 200);
+  renderSv();
+  updateProjectProgress();
+</script>
+</body>
+</html>

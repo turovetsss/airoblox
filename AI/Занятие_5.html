@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Занятие 5 · Экспедиция в мир умного поиска | РОБОВИТА</title>
+    <style>
+        :root {
+            --primary: #7C3AED;
+            --primary-light: #F5F3FF;
+            --primary-dark: #4C1D95;
+            --accent: #10B981;
+            --accent-light: #ECFDF5;
+            --danger: #EF4444;
+            --success: #10B981;
+            --line: #DDD6FE;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            --battle-bg: #F8FAFC;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #FAFAFE; font-family: 'Segoe UI', Roboto, sans-serif; color: #1E293B; font-size: 1.12rem; line-height: 1.6; }
+        .wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+        .site-header { background: linear-gradient(135deg, #0F172A, #1E1B4B); color: #F1F5F9; padding: 1.5rem 0 1rem; border-bottom: 4px solid var(--accent); }
+        .top-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+        .brand img { height: 44px; border-radius: 12px; }
+        .brand-name { font-weight: 700; font-size: 1.5rem; }
+        .hero { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+        .hex-badge { background: var(--accent); color: #1E293B; font-weight: 800; font-size: 2.2rem; width: 66px; height: 66px; display: flex; align-items: center; justify-content: center; border-radius: 16px; box-shadow: 0 8px 0 #047857; }
+        .module-pill { background: #6D28D9; color: #EDE9FE; padding: 4px 14px; border-radius: 30px; font-weight: 600; font-size: .95rem; display: inline-block; margin-bottom: 4px; }
+        .hero h1 { font-size: 2.1rem; margin: .2rem 0; }
+        .subtitle { color: #CBD5E1; font-size: 1.05rem; }
+        .layout { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+        @media(max-width:900px) { .layout { grid-template-columns: 1fr; } }
+        .internet-map { background: #0F172A; border-radius: 20px; padding: 1.2rem; color: #E2E8F0; border: 2px solid #334155; position: sticky; top: 12px; }
+        .internet-map h3 { margin: 0 0 1rem; font-size: 1.1rem; color: #94A3B8; }
+        .map-zone { display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin: 6px 0; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid transparent; transition: .4s; position: relative; overflow: hidden; }
+        .map-zone .icon { font-size: 1.6rem; } .map-zone .label { font-weight: 600; font-size: .95rem; }
+        .map-zone.locked { border-color: #475569; background: rgba(71,85,105,.2); } .map-zone.locked::after { content: '🔒'; position: absolute; right: 10px; }
+        .map-zone.unlocked { border-color: var(--accent); background: rgba(16,185,129,.2); } .map-zone.unlocked::after { content: '🔓'; position: absolute; right: 10px; }
+        .scenario-box { background: #1E293B; border-radius: 24px; padding: 20px 24px; margin: 1.5rem 0; display: flex; gap: 18px; align-items: center; color: #F1F5F9; border: 1px solid var(--accent); box-shadow: 0 0 20px rgba(16,185,129,.3); }
+        .scenario-avatar { font-size: 3rem; background: rgba(255,255,255,.1); border-radius: 20px; padding: 12px; } .scenario-box strong { color: var(--accent); }
+        .card, .task-box, .reflection-box, .ai-helper { background: #fff; border-radius: 20px; padding: 1.5rem 1.8rem; margin: 1.5rem 0; box-shadow: var(--card-shadow); border: 1px solid #E2E8F0; }
+        .card h2, .task-box h2 { margin-top: 0; color: var(--primary-dark); font-size: 1.45rem; }
+        .artifact-bar { background: #fff; border-radius: 20px; padding: 1rem 1.2rem; border: 1px solid var(--line); margin: 1rem 0; }
+        .artifact-bar h3 { margin: 0 0 .8rem; font-size: 1.1rem; color: var(--primary-dark); }
+        .artifact-slots { display: flex; flex-wrap: wrap; gap: 8px; }
+        .artifact-slot { width: 52px; height: 52px; border-radius: 14px; border: 2px dashed #CBD5E1; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; background: #F8FAFC; opacity: .5; transition: .3s; }
+        .artifact-slot.filled { opacity: 1; border-style: solid; border-color: var(--primary); background: var(--primary-light); animation: pop .4s; }
+        @keyframes pop { 0% { transform: scale(.5) } 70% { transform: scale(1.15) } 100% { transform: scale(1) } }
+        .supercomputer { background: linear-gradient(135deg,#1E1B4B,#312E81); border-radius: 24px; padding: 1.5rem; color: #fff; margin: 1.5rem 0; text-align: center; }
+        .supercomputer-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin: 1rem 0; } @media(max-width:600px) { .supercomputer-grid { grid-template-columns: repeat(3,1fr); } }
+        .sc-part { background: rgba(255,255,255,.08); border-radius: 12px; padding: 12px 6px; font-size: 1.8rem; opacity: .25; transition: .4s; }
+        .sc-part.active { opacity: 1; background: rgba(124,58,237,.3); box-shadow: 0 0 12px rgba(124,58,237,.5); } .sc-part .name { font-size: .65rem; display: block; margin-top: 4px; color: #CBD5E1; }
+        .xp-bar { font-weight: 700; color: var(--primary-dark); margin: .5rem 0; }
+        .lives { display: flex; gap: 6px; margin: .5rem 0; } .heart { font-size: 1.6rem; }
+        .roby-panel { position: fixed; bottom: 20px; right: 20px; z-index: 1000; max-width: 320px; display: flex; gap: 10px; align-items: flex-end; }
+        .roby-avatar { width: 64px; height: 64px; background: linear-gradient(135deg,#10B981,#047857); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,.2); flex-shrink: 0; animation: bob 2s ease-in-out infinite; }
+        @keyframes bob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+        .roby-bubble { background: #fff; border-radius: 16px 16px 4px 16px; padding: 12px 16px; box-shadow: 0 4px 20px rgba(0,0,0,.15); border: 2px solid var(--accent); font-size: .95rem; }
+        .action-btn { background: var(--primary); color: #fff; border: none; padding: 10px 22px; border-radius: 30px; font-weight: 700; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 0 var(--primary-dark); margin: 4px; display: inline-block; text-decoration: none; }
+        .action-btn:hover { background: #6D28D9; }
+        .action-btn.danger { background: var(--danger); box-shadow: 0 4px 0 #B91C1C; }
+        .sort-card { display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 2px solid #E2E8F0; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; background: #fff; }
+        .sort-card.done-right { border-color: #16A34A; background: #F0FDF4; } .sort-card.done-wrong { border-color: #DC2626; background: #FEF2F2; }
+        .drop-zone { flex: 1; min-width: 140px; min-height: 110px; border: 2px dashed #94A3B8; border-radius: 16px; padding: 10px; text-align: center; background: #F8FAFC; }
+        .drag-chip { padding: 8px 14px; background: #fff; border: 1px solid #CBD5E1; border-radius: 10px; cursor: grab; display: inline-block; margin: 4px; font-size: .95rem; }
+        .hint-btn { background: #FEF3C7; border: none; padding: 6px 16px; border-radius: 30px; font-weight: 600; color: #92400E; cursor: pointer; margin-top: 6px; }
+        .hint-box { display: none; background: #F8FAFC; border-radius: 12px; padding: 12px; margin-top: 8px; border-left: 4px solid var(--accent); } .hint-box.show { display: block; }
+        .cheat-sheet { background: #F8FAFC; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary); margin: 24px 0; position: relative; }
+        .cheat-sheet::before { content: "📘 Кодекс честного исследователя"; position: absolute; top: -14px; left: 20px; background: var(--primary-light); color: var(--primary-dark); padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: 0.9rem; border: 1px solid var(--primary); }
+        .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap: 12px; margin-top: 12px; }
+        .cheat-item { background: white; border-radius: 14px; padding: 12px 14px; border: 1px solid #E2E8F0; } .cheat-item .title { font-weight: 700; color: var(--primary-dark); }
+        .ai-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+        .alice-q-btn { background: var(--accent-light); color: #065F46; padding: 10px 16px; border-radius: 30px; font-weight: 600; border: 1px solid var(--accent); cursor: pointer; font-size: .95rem; text-decoration: none; display: inline-block; } .alice-q-btn:hover { background: var(--accent); color: #fff; }
+        .final-project { background: #fff; border-radius: 28px; padding: 2rem; border: 2px solid var(--primary); margin-top: 2rem; }
+        .final-project table { width: 100%; border-collapse: collapse; margin: 1rem 0; } .final-project th, .final-project td { border: 1px solid #E2E8F0; padding: 8px 12px; text-align: left; } .final-project th { background: var(--primary-light); }
+        .certificate { background: linear-gradient(135deg,#FFD54F,#FFB300); border-radius: 28px; padding: 2rem; text-align: center; color: #3E2C0B; border: 4px solid #FF8F00; margin: 2rem 0; display: none; } .certificate.show { display: block; }
+        .reflection-radio-label { display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px; cursor: pointer; }
+        textarea { width: 100%; min-height: 80px; border-radius: 12px; border: 1px solid var(--line); padding: 10px; font-family: inherit; font-size: 1rem; }
+        #confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+        .confetti-piece { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: fall 3s ease-out forwards; }
+        @keyframes fall { 0% { transform: translateY(-80px) rotate(0); opacity: 1 } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0 } }
+        .step-list { display: flex; flex-direction: column; gap: 8px; min-height: 60px; padding: 10px; border: 2px dashed var(--line); border-radius: 12px; background: #F8FAFC; }
+        .progress-mini { font-weight: 700; color: var(--primary-dark); margin-top: .5rem; }
+        .choice-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+        .choice-card { padding: 10px 16px; background: #F8FAFC; border: 2px solid #E2E8F0; border-radius: 14px; cursor: pointer; transition: .2s; user-select: none; }
+        .choice-card:hover { border-color: var(--primary); } .choice-card.selected { border-color: var(--primary); background: var(--primary-light); }
+        .choice-card.correct { border-color: var(--success)!important; background: #D1FAE5!important; } .choice-card.incorrect { border-color: var(--danger)!important; background: #FEE2E2!important; }
+        .improve-card { margin: 8px 0; padding: 8px; border: 1px solid #eee; border-radius: 8px; }
+        .improve-card select { padding: 6px; border-radius: 6px; border: 1px solid #ccc; }
+    </style>
+<link rel="stylesheet" href="ai-common.css" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <div class="top-bar">
+                <a class="brand" href="#"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" /><div><div class="brand-name">РОБОВИТА</div><div class="brand-tag">учимся программировать роботов и игры</div></div></a>
+                <div style="color:#aaa;">Занятие 5</div>
+            </div>
+            <div class="hero">
+                <div class="hex-badge">🔎</div>
+                <div>
+                    <div class="module-pill">Модуль 1 · Искусственный интеллект</div>
+                    <h1>Экспедиция в мир умного поиска</h1>
+                    <p class="subtitle">Освой Perplexity AI, стань исследователем и подготовь идеальный доклад</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <div class="scenario-box">
+            <div class="scenario-avatar">📚</div>
+            <div><strong>Роби:</strong> Интернет огромен! Чтобы не потеряться, нужны новые инструменты. Сегодня ты — <strong>исследователь знаний</strong>. Пройди 10 миссий, собери карточки исследователя и активируй <strong>Центр исследований</strong>!</div>
+        </div>
+
+        <div class="ai-objectives objectives">
+            <h2>🎯 Цели занятия</h2>
+            <ul>
+                <li>Понять разницу между обычным поиском и ИИ-поисковиком</li>
+                <li>Научиться задавать точные исследовательские запросы</li>
+                <li>Проверять источники и надёжность ответов</li>
+                <li>Собрать план мини-исследования с помощью ИИ</li>
+            </ul>
+        </div>
+        <div class="ai-timetable">
+            <h2>⏱️ План (≈90 минут)</h2>
+            <table>
+                <tr><th>Этап</th><th>Время</th></tr>
+                <tr><td>Теория: ИИ-поисковик</td><td>10 мин</td></tr>
+                <tr><td>Миссии 1–5</td><td>35 мин</td></tr>
+                <tr><td>Миссии 6–10</td><td>30 мин</td></tr>
+                <tr><td>Проект / рефлексия</td><td>15 мин</td></tr>
+            </table>
+        </div>
+
+        <div class="layout">
+            <aside class="internet-map">
+                <h3>📖 Карта библиотеки</h3>
+                <div class="map-zone locked" data-mission="1,2"><span class="icon">🔍</span><span class="label">Умный запрос</span></div>
+                <div class="map-zone locked" data-mission="3,4"><span class="icon">💬</span><span class="label">Диалог и источники</span></div>
+                <div class="map-zone locked" data-mission="5,6"><span class="icon">🛡️</span><span class="label">Надёжность и структура</span></div>
+                <div class="map-zone locked" data-mission="7,8"><span class="icon">⚖️</span><span class="label">Анализ и сравнение</span></div>
+                <div class="map-zone locked" data-mission="9,10"><span class="icon">📂</span><span class="label">План и исследование</span></div>
+            </aside>
+
+            <div class="main-content">
+                <div class="achieve-rail" id="achieveRail">
+                    <div class="achieve-rail-title"><span>🏅 Достижения</span><span style="opacity:.7;font-size:.85rem;">справа</span></div>
+                    <div id="progressProfileHost"></div>
+                    <div class="total-progress">
+                        <strong>Прогресс: <span id="totalPct">0</span>%</strong>
+                        <div class="tp-track" style="height:12px;background:#E2E8F0;border-radius:8px;overflow:hidden;margin-top:6px;"><div class="tp-fill" id="totalProgress" style="height:100%;width:0;background:linear-gradient(90deg,#7C3AED,#10B981);transition:width .3s;"></div></div>
+                    </div>
+                    <div class="badges-bar" style="margin:8px 0;padding:0;border:none;background:transparent;">
+                        <div class="badges-row" id="badgesContainer"><span style="opacity:.5;font-size:.85rem;">Бейджи появятся после миссий</span></div>
+                    </div>
+                    <div class="artifact-bar">
+                        <h3>📖 Карточки исследователя (<span id="artifactCount">0</span>/10)</h3>
+                        <div class="artifact-slots" id="artifactSlots"></div>
+                    </div>
+                    <div class="xp-bar" id="xpDisplay">⭐ Уровень: Новичок | XP: 0</div>
+                    <div class="lives" id="livesContainer"><span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span></div>
+                </div>
+
+                <div class="supercomputer">
+                    <h3>🔬 Центр исследований</h3>
+                    <p style="opacity:.7;font-size:.9rem;">Собери все 10 модулей</p>
+                    <div class="supercomputer-grid" id="scGrid"></div>
+                    <p id="scStatus" style="font-weight:700;opacity:.5;">Ожидание модулей...</p>
+                </div>
+
+                <div class="card">
+                    <h2>📚 Что такое ИИ-поисковик?</h2>
+                    <p><strong>Обычный поиск</strong> выдаёт сайты. <strong>ИИ-поисковик (Perplexity)</strong> читает сайты, сравнивает и даёт готовый ответ с ссылками.</p>
+                    <p><b>Важно:</b> ИИ тоже может ошибаться, поэтому всегда проверяй источники!</p>
+                </div>
+
+                <div class="ai-helper">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:.8rem;"><span style="font-size:32px;">🤖</span><div style="font-weight:700;font-size:1.3rem;color:var(--primary-dark);">Спроси нейросеть</div></div>
+                    <div class="ai-buttons">
+                        <a href="https://chat.deepseek.com/?q=Что%20такое%20Perplexity%20AI%20и%20как%20он%20работает%3F" target="_blank" class="alice-q-btn">Что такое Perplexity?</a>
+                        <a href="https://chat.deepseek.com/?q=Чем%20отличается%20Perplexity%20от%20Google%3F" target="_blank" class="alice-q-btn">Отличие от Google</a>
+                        <a href="https://chat.deepseek.com/?q=Можно%20ли%20доверять%20Perplexity%3F" target="_blank" class="alice-q-btn">Можно ли доверять?</a>
+                        <a href="https://chat.deepseek.com/?q=Как%20правильно%20задать%20вопрос%20Perplexity%20для%20школьного%20доклада%3F" target="_blank" class="alice-q-btn">Как задать вопрос?</a>
+                    </div>
+                </div>
+
+                <div id="missionsContainer"></div>
+
+                <div class="card" id="bossFight">
+                    <h2>🏆 Главный экзамен исследователя</h2>
+                    <p>Ответь на 5 вопросов о подготовке доклада. У тебя 3 жизни.</p>
+                    <div id="bossQuestions"></div>
+                    <button class="action-btn danger" onclick="startBossFight()">⚔️ Начать экзамен</button>
+                    <p id="bossResult" style="margin-top:1rem;font-weight:700;"></p>
+                </div>
+
+                <div class="final-project" id="finalMission">
+                    <h2>🧩 Задание на урок: исследовательский доклад</h2>
+                    <p><strong>На уроке</strong> используй <strong>Perplexity AI</strong>, чтобы подготовить школьный доклад. При необходимости доделай и сдай в Classroom.</p>
+                    <div style="background:#f0f7ff; padding:1rem; border-radius:16px; margin:1rem 0;">
+                        <p><strong>Шаг 1. Выбери тему</strong> (планеты, Египет, роботы, акулы, вулканы, динозавры, Олимпийские игры, Луна, электричество, космос).</p>
+                        <p><strong>Шаг 2. Задай Perplexity 5 вопросов</strong> («Что это?», «Как появилось?», «Какие бывают?», «Интересные факты», «Почему это важно?»).</p>
+                        <p><strong>Шаг 3. Проверь источники</strong> — Perplexity показывает ссылки.</p>
+                        <p><strong>Шаг 4. Оформи доклад:</strong> титульный лист, введение, основная часть, факты, заключение, источники.</p>
+                        <p><strong>Шаг 5. Добавь</strong> минимум 3 скриншота Perplexity и 5 источников.</p>
+                    </div>
+                    <h3>⭐ Критерии оценки</h3>
+                    <table>
+                        <tr><th>Критерий</th><th>Баллы</th></tr>
+                        <tr><td>Составлены хорошие запросы</td><td>2</td></tr>
+                        <tr><td>Использованы ответы Perplexity</td><td>2</td></tr>
+                        <tr><td>Проверены источники</td><td>2</td></tr>
+                        <tr><td>Доклад имеет правильную структуру</td><td>2</td></tr>
+                        <tr><td>Собственный вывод автора</td><td>2</td></tr>
+                    </table>
+                    <p><strong>Максимум — 10 баллов.</strong></p>
+                    <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать проект в Classroom</a>
+                </div>
+
+                <div class="card">
+                    <h2>🏁 Домашнее задание</h2>
+                    <p>Выбери уровень (это отдельно от доклада на уроке):</p>
+                    <ul>
+                        <li><strong>⭐ Лёгкое:</strong> Задай Perplexity 1 умный вопрос по школьной теме. Сохрани скрин и 2 ссылки.</li>
+                        <li><strong>⭐⭐ Среднее:</strong> Составь 5 хороших вопросов для будущего доклада (без полного текста доклада).</li>
+                        <li><strong>⭐⭐⭐ Сложное:</strong> Напиши короткий абзац (5–7 предложений) по теме + укажи источники из Perplexity.</li>
+                    </ul>
+                    <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать ДЗ в Classroom</a>
+                </div>
+
+                <div class="reflection-box">
+                    <h2>💭 Твой опыт</h2>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 12px;">
+                        <label class="reflection-radio-label"><input type="radio" name="satisfaction" value="yes"> 🚀 Всё понял!</label>
+                        <label class="reflection-radio-label"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти всё</label>
+                        <label class="reflection-radio-label"><input type="radio" name="satisfaction" value="no"> 😕 Сложно</label>
+                    </div>
+                    <textarea id="reflectionText" placeholder="Что нового ты узнал о поиске с ИИ?"></textarea>
+                    <button class="action-btn" onclick="submitReflection()">Отправить</button>
+                    <p id="reflectionResult" style="font-weight:700;margin-top:8px;"></p>
+                </div>
+
+                <div class="lesson-nav">
+                    <a class="nav-btn prev" href="Занятие_4.html">← 4. Детективы правды</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" /> Учебный центр «РОБОВИТА»</div>
+        <div>Занятие 5 · курс «ИИ-творец»</div>
+      </div>
+    </footer>
+
+    <div class="roby-panel">
+        <div class="roby-avatar">📖</div>
+        <div class="roby-bubble" id="robyText"><strong>Роби:</strong> Добро пожаловать в Центр Исследований! Начни с Миссии 1! 🔍</div>
+    </div>
+    <div id="confetti-container"></div>
+    <script src="ai-progress.js"></script>
+    <script>
+        const ARTIFACTS = [
+            { id: 1, icon: '🔍', name: 'Умный запрос' },
+            { id: 2, icon: '📖', name: 'Точный запрос' },
+            { id: 3, icon: '💬', name: 'Диалог с ИИ' },
+            { id: 4, icon: '🔗', name: 'Источники' },
+            { id: 5, icon: '🛡️', name: 'Надёжный источник' },
+            { id: 6, icon: '📋', name: 'Структура доклада' },
+            { id: 7, icon: '📝', name: 'Краткий пересказ' },
+            { id: 8, icon: '⚖️', name: 'Сравнение поисковиков' },
+            { id: 9, icon: '📊', name: 'План' },
+            { id: 10, icon: '📂', name: 'Исследовательский проект' }
+        ];
+
+        const ROBY_MSGS = {
+            start: 'Привет, исследователь! Начни с <strong>Миссии 1</strong> — научись задавать вопросы. 🔍',
+            mission1: 'Отлично! Теперь ты знаешь секрет хорошего запроса. 📖',
+            mission2: 'Супер! Учимся продолжать диалог с ИИ. 💬',
+            mission3: 'Диалог освоен! Найди источники. 🔗',
+            mission4: 'Источники в порядке! Отсортируй надёжные. 🛡️',
+            mission5: 'Молодец! Построй структуру доклада. 📋',
+            mission6: 'Структура готова! Научись выделять главное. 📝',
+            mission7: 'Краткость — сестра таланта. Сравни поисковики. ⚖️',
+            mission8: 'Отличное сравнение! Создай план доклада. 📊',
+            mission9: 'План готов! Осталось последнее испытание. 📂',
+            mission10: 'Поздравляю! Центр исследований активирован!',
+            artifact: 'Новая карточка в коллекции!',
+            wrong: 'Подумай ещё раз.',
+            life: 'Осторожно! Минус жизнь.',
+            supercomputer: '🎉 ЦЕНТР ИССЛЕДОВАНИЙ АКТИВИРОВАН!',
+            boss_win: 'Ты сдал экзамен! Ты настоящий исследователь!'
+        };
+
+        let xp = 0, lives = 3, studentName = 'Исследователь';
+        const missionsCompleted = new Set(), artifactsCollected = new Set();
+
+        function persistProgress() { if (window.RobovitaProgress) RobovitaProgress.save(); }
+        function restoreProgressVisuals() {
+            artifactsCollected.forEach(id => {
+                const art = ARTIFACTS.find(a => a.id === id); if (!art) return;
+                const slot = document.getElementById('art' + id);
+                if (slot) { slot.textContent = art.icon; slot.classList.add('filled'); }
+                document.getElementById('sc' + id)?.classList.add('active');
+            });
+            if (artifactsCollected.size === 10) {
+                const st = document.getElementById('scStatus');
+                if (st) { st.textContent = '🎉 ЦЕНТР ИССЛЕДОВАНИЙ АКТИВИРОВАН!'; st.style.opacity = '1'; }
+            }
+        }
+
+        window.addEventListener('load', () => {
+            initArtifacts(); initSupercomputer();
+            RobovitaProgress.mount({
+                key: 'robovita_l5',
+                defaultName: 'Исследователь',
+                promptText: 'Введи своё имя, исследователь:',
+                host: '#progressProfileHost',
+                getState() {
+                    return {
+                        xp, lives,
+                        missions: [...missionsCompleted],
+                        artifacts: [...artifactsCollected],
+                        badges: [...document.querySelectorAll('#badgesContainer .badge')].map(b => b.dataset.badge || b.textContent)
+                    };
+                },
+                applyState(d) {
+                    xp = d.xp || 0; lives = d.lives != null ? d.lives : 3;
+                    (d.missions || []).forEach(id => missionsCompleted.add(+id));
+                    (d.artifacts || []).forEach(id => artifactsCollected.add(+id));
+                    (d.badges || []).forEach(name => {
+                        if (!name) return;
+                        const box = document.getElementById('badgesContainer');
+                        if (!box || box.querySelector('[data-badge="' + name + '"]')) return;
+                        const hint = box.querySelector('span[style]'); if (hint) hint.remove();
+                        const b = document.createElement('span'); b.className = 'badge'; b.dataset.badge = name; b.textContent = name; box.appendChild(b);
+                    });
+                },
+                onNameChange(name) { studentName = name; },
+                onReady() { restoreProgressVisuals(); robySay('start'); updateUI(); }
+            });
+        });
+
+        function initArtifacts() { const slots = document.getElementById('artifactSlots'); ARTIFACTS.forEach(a => { const d = document.createElement('div'); d.className = 'artifact-slot'; d.id = 'art' + a.id; d.title = a.name; d.textContent = '?'; slots.appendChild(d); }); }
+        function initSupercomputer() { const grid = document.getElementById('scGrid'); ARTIFACTS.forEach(a => { const d = document.createElement('div'); d.className = 'sc-part'; d.id = 'sc' + a.id; d.innerHTML = a.icon + '<span class="name">' + a.name + '</span>'; grid.appendChild(d); }); }
+        function robySay(k) { document.getElementById('robyText').innerHTML = '<strong>Роби:</strong> ' + (ROBY_MSGS[k] || ROBY_MSGS.start); }
+        function addXP(n) { xp += n; updateUI(); }
+        function loseLife() { if (lives > 0) lives--; robySay('life'); updateUI(); if (lives === 0) { alert('💔 Жизни закончились! Попробуй снова.'); lives = 3; updateUI(); } }
+        function toggleHint(id) { document.getElementById(id).classList.toggle('show'); }
+
+        function updateUI() {
+            document.getElementById('artifactCount').textContent = artifactsCollected.size;
+            const pct = Math.round((missionsCompleted.size / 10) * 100);
+            const pctEl = document.getElementById('totalPct');
+            const fillEl = document.getElementById('totalProgress');
+            if (pctEl) pctEl.textContent = pct;
+            if (fillEl) fillEl.style.width = pct + '%';
+            let level = 'Новичок'; if (xp >= 100) level = 'Исследователь'; if (xp >= 250) level = 'Научный сотрудник'; if (xp >= 500) level = 'Профессор знаний';
+            document.getElementById('xpDisplay').textContent = `⭐ ${level} | XP: ${xp}`;
+            document.querySelectorAll('.heart').forEach((h, i) => h.textContent = i < lives ? '❤️' : '🖤');
+            document.querySelectorAll('.map-zone').forEach(z => { const ms = z.dataset.mission.split(',').map(Number); const ok = ms.every(m => missionsCompleted.has(m)); z.classList.toggle('unlocked', ok); z.classList.toggle('locked', !ok); });
+            persistProgress();
+        }
+
+        function earnBadge(name) {
+            const box = document.getElementById('badgesContainer');
+            if (!box) return;
+            if (box.querySelector('[data-badge="' + name + '"]')) return;
+            const hint = box.querySelector('span[style]');
+            if (hint) hint.remove();
+            const b = document.createElement('span');
+            b.className = 'badge'; b.dataset.badge = name; b.textContent = name;
+            box.appendChild(b);
+            persistProgress();
+        }
+
+        function completeMission(id) {
+            if (missionsCompleted.has(id)) return;
+            missionsCompleted.add(id); const art = ARTIFACTS.find(a => a.id === id);
+            if (art) { artifactsCollected.add(id); document.getElementById('art' + id).textContent = art.icon; document.getElementById('art' + id).classList.add('filled'); document.getElementById('sc' + id).classList.add('active'); }
+            addXP(50); earnBadge('Миссия ' + id); robySay('mission' + id);
+            if (artifactsCollected.size === 10) { document.getElementById('scStatus').textContent = '⚡ ЦЕНТР ИССЛЕДОВАНИЙ АКТИВИРОВАН!'; document.getElementById('scStatus').style.opacity = '1'; robySay('supercomputer'); launchConfetti(); }
+            updateUI();
+        }
+
+        function createMission(id, title, desc, html) {
+            const art = ARTIFACTS.find(a => a.id === id);
+            const d = document.createElement('div'); d.className = 'task-box'; d.id = 'mission' + id;
+            d.innerHTML = `<h2>🔎 Миссия ${id}: ${title} <span style="font-size:.85rem;color:#888;">→ ${art?.icon} ${art?.name}</span></h2><p>${desc}</p>${html}`;
+            document.getElementById('missionsContainer').appendChild(d);
+        }
+
+        /* ===== МИССИЯ 1 – ТРЕНАЖЁР ПРОМПТОВ ===== */
+        (function() {
+            const subMissions = { part1: false, part2: false, part3: false, part4: false };
+            const allQueries = [
+                { t: 'Что такое вулканы?', good: true },
+                { t: 'Почему извергаются вулканы?', good: true },
+                { t: 'Какие бывают вулканы?', good: true },
+                { t: 'Вулканы', good: false },
+                { t: 'Расскажи про чёрные дыры простыми словами', good: true },
+                { t: 'Космос', good: false },
+                { t: 'Сравни динозавров и современных ящериц в таблице', good: true },
+                { t: 'Динозавры', good: false },
+                { t: 'Напиши краткую биографию Александра Пушкина для 5 класса', good: true },
+                { t: 'История России', good: false },
+                { t: 'Объясни, как работает интернет, в трёх предложениях', good: true },
+                { t: 'Интернет', good: false },
+                { t: 'Приведи 5 интересных фактов о пингвинах', good: true },
+                { t: 'Животные', good: false },
+                { t: 'Как собрать робота из LEGO Mindstorms?', good: true },
+                { t: 'Роботы', good: false }
+            ];
+
+            const improveTasks = [
+                { bad: 'Космос', correct: 'Какие планеты входят в Солнечную систему?' },
+                { bad: 'Животные', correct: 'Какие животные живут в Арктике?' },
+                { bad: 'Интернет', correct: 'Объясни, как работает интернет простыми словами' },
+                { bad: 'История России', correct: 'Когда началась Отечественная война 1812 года?' },
+                { bad: 'Роботы', correct: 'Как собрать простого робота из LEGO Mindstorms?' }
+            ];
+
+            const formulaOrder = ['Почему идёт дождь?', 'Объясни', 'для 5 класса', 'в виде таблицы', 'не больше чем на 5 предложений'];
+
+            createMission(1, 'Секрет идеального запроса', 'Помоги Роби понять, какие запросы хорошие, улучши плохие и собери идеальный промпт!',
+                `<div class="task-box" style="margin-top:0; border:none; background:none; padding:0;">
+                    <!-- Часть 1 -->
+                    <div><strong>Часть 1. Выбери хорошие запросы</strong></div>
+                    <div class="choice-grid" id="mq1">${allQueries.map((q,i) => `<div class="choice-card" data-good="${q.good?1:0}" data-idx="${i}">${q.t}</div>`).join('')}</div>
+                    <button class="action-btn" onclick="checkM1part1()">Проверить</button>
+                    <p id="m1p1res" class="progress-mini"></p>
+
+                    <!-- Часть 2 -->
+                    <div style="margin-top:2rem;"><strong>Часть 2. Улучши плохие запросы</strong></div>
+                    <div id="improveSection">${improveTasks.map((t,i) => `
+                        <div class="improve-card">
+                            <strong>${t.bad}</strong> →
+                            <select id="impSel${i}" style="margin-left:8px;">
+                                <option value="">-- выбери --</option>
+                                <option value="a">${t.bad}</option>
+                                <option value="b">Расскажи про ${t.bad.toLowerCase()}</option>
+                                <option value="c">${t.correct}</option>
+                                <option value="d">Почему ${t.bad.toLowerCase()}?</option>
+                            </select>
+                        </div>
+                    `).join('')}</div>
+                    <button class="action-btn" onclick="checkM1part2()">Проверить улучшения</button>
+                    <p id="m1p2res" class="progress-mini"></p>
+
+                    <!-- Часть 3 -->
+                    <div style="margin-top:2rem;"><strong>Часть 3. Почему запрос хороший?</strong></div>
+                    <p><em>Запрос: «Напиши краткий доклад о белых медведях для 4 класса на 5 предложений.»</em></p>
+                    <div id="part3check1">
+                        <label><input type="checkbox" class="p3c1"> Есть тема</label><br>
+                        <label><input type="checkbox" class="p3c1"> Есть уточнение</label><br>
+                        <label><input type="checkbox" class="p3c1"> Есть формат ответа</label><br>
+                        <label><input type="checkbox" class="p3c1"> Есть возраст</label><br>
+                        <label><input type="checkbox" class="p3c1"> Есть количество предложений</label>
+                    </div>
+                    <p><em>Запрос: «Пингвины»</em></p>
+                    <div id="part3check2">
+                        <label><input type="checkbox" class="p3c2"> Есть тема</label><br>
+                        <label><input type="checkbox" class="p3c2"> Есть уточнение</label><br>
+                        <label><input type="checkbox" class="p3c2"> Есть формат ответа</label><br>
+                        <label><input type="checkbox" class="p3c2"> Есть ограничения</label>
+                    </div>
+                    <button class="action-btn" onclick="checkM1part3()">Проверить</button>
+                    <p id="m1p3res" class="progress-mini"></p>
+
+                    <!-- Мини-теория -->
+                    <div style="margin-top:2rem; background:#f0f7ff; border-radius:12px; padding:1rem;">
+                        <strong>📐 Формула хорошего запроса</strong><br>
+                        🎯 Тема + ❓ Что нужно сделать + 👦 Для кого + 📋 Формат + 📏 Ограничения<br>
+                        <em>Пример: Объясни виды вулканов для ученика 5 класса в виде таблицы не больше чем на 6 предложений.</em>
+                    </div>
+
+                    <!-- Финальная мини-игра -->
+                    <div style="margin-top:2rem;"><strong>🧩 Собери запрос</strong> (перетащи в правильном порядке)</div>
+                    <div class="step-list" id="promptTarget" ondragover="allowDrop(event)" ondrop="dropPrompt(event)"></div>
+                    <div id="promptBank">${[...formulaOrder].sort(()=>Math.random()-.5).map((t,i) => `<div class="drag-chip" draggable="true" ondragstart="dragStartPrompt(event)" id="pr${i}" data-text="${t}">${t}</div>`).join('')}</div>
+                    <button class="action-btn" onclick="checkPrompt()">Проверить</button>
+                    <p id="promptRes" class="progress-mini"></p>
+                </div>`
+            );
+
+            // --- Часть 1 ---
+            document.getElementById('mq1').addEventListener('click', e => {
+                if (e.target.classList.contains('choice-card')) e.target.classList.toggle('selected');
+            });
+            window.checkM1part1 = function() {
+                const cards = [...document.querySelectorAll('#mq1 .choice-card')];
+                let good = true;
+                cards.forEach(c => { const sel = c.classList.contains('selected'), need = c.dataset.good === '1'; if (sel !== need) good = false; });
+                if (good) {
+                    document.getElementById('m1p1res').textContent = '✅ Все хорошие запросы отмечены верно!';
+                    subMissions.part1 = true;
+                } else {
+                    document.getElementById('m1p1res').textContent = '❌ Есть ошибки. Хороший запрос — конкретный вопрос, а не одно слово.';
+                    loseLife();
+                }
+                checkAllSubMissions();
+            };
+
+            // --- Часть 2 ---
+            window.checkM1part2 = function() {
+                let allCorrect = true;
+                improveTasks.forEach((t, i) => {
+                    const sel = document.getElementById('impSel' + i).value;
+                    if (sel !== 'c') allCorrect = false;
+                });
+                if (allCorrect) {
+                    document.getElementById('m1p2res').textContent = '✅ Все запросы улучшены правильно!';
+                    subMissions.part2 = true;
+                } else {
+                    document.getElementById('m1p2res').textContent = '❌ Не все улучшения верны.';
+                    loseLife();
+                }
+                checkAllSubMissions();
+            };
+
+            // --- Часть 3 ---
+            window.checkM1part3 = function() {
+                const c1 = document.querySelectorAll('#part3check1 .p3c1');
+                const correct1 = [true, true, true, true, true]; // все должны быть отмечены
+                let ok1 = true;
+                c1.forEach((cb, i) => { if (cb.checked !== correct1[i]) ok1 = false; });
+                const c2 = document.querySelectorAll('#part3check2 .p3c2');
+                const correct2 = [true, false, false, false]; // только "Есть тема"
+                let ok2 = true;
+                c2.forEach((cb, i) => { if (cb.checked !== correct2[i]) ok2 = false; });
+                if (ok1 && ok2) {
+                    document.getElementById('m1p3res').textContent = '✅ Верно! Ты понял, что делает запрос хорошим.';
+                    subMissions.part3 = true;
+                } else {
+                    document.getElementById('m1p3res').textContent = '❌ Проверь галочки. Для белых медведей все 5 пунктов, для «Пингвины» только тема.';
+                    loseLife();
+                }
+                checkAllSubMissions();
+            };
+
+            // --- Финальная мини-игра ---
+            let promptDragEl = null;
+            window.dragStartPrompt = function(e) { promptDragEl = e.target; e.dataTransfer.setData('text', e.target.id); };
+            window.dropPrompt = function(e) {
+                e.preventDefault();
+                const list = document.getElementById('promptTarget');
+                if (promptDragEl) list.appendChild(promptDragEl);
+            };
+            window.checkPrompt = function() {
+                const got = [...document.getElementById('promptTarget').children].map(c => c.dataset.text);
+                if (JSON.stringify(got) === JSON.stringify(formulaOrder)) {
+                    document.getElementById('promptRes').textContent = '✅ Идеальный запрос собран!';
+                    subMissions.part4 = true;
+                } else {
+                    document.getElementById('promptRes').textContent = '❌ Порядок неверный.';
+                    loseLife();
+                }
+                checkAllSubMissions();
+            };
+
+            function checkAllSubMissions() {
+                if (subMissions.part1 && subMissions.part2 && subMissions.part3 && subMissions.part4) {
+                    completeMission(1);
+                    robySay('mission1');
+                }
+            }
+
+            // для drag & drop
+            window.allowDrop = function(e) { e.preventDefault(); };
+        })();
+       /* ===== МИССИЯ 2 – ЛАБОРАТОРИЯ ЗАПРОСОВ ===== */
+        (function() {
+            const m2parts = { part1: false, part2: false, part3: false, part4: false, part5: false };
+            const badQueries = ['Кошки', 'Космос', 'Динозавры', 'Роботы', 'Пингвины', 'Интернет'];
+            const constructorOrder = ['Почему кошки мурлыкают?', 'Объясни', 'для 4 класса', 'в виде таблицы', 'не больше 5 предложений'];
+
+            createMission(2, 'Лаборатория запросов', 'Преврати плохие запросы в точные и научись улучшать их с помощью уточнений.',
+                `<div style="margin-top:0;">
+                    <!-- Часть 1 -->
+                    <div><strong>Часть 1. Исправь запрос</strong> (введи улучшенную версию)</div>
+                    ${badQueries.map((q,i)=>`<div style="margin:8px 0;"><span>${q} → </span><input type="text" id="m2q${i}" placeholder="Например: Почему кошки мурлыкают?" style="width:70%; padding:6px;"></div>`).join('')}
+                    <button class="action-btn" onclick="checkM2part1()">Проверить все улучшения</button>
+                    <p id="m2p1res" class="progress-mini"></p>
+
+                    <!-- Часть 2 -->
+                    <div style="margin-top:2rem;"><strong>Часть 2. Добавь уточнения</strong> (основа: «Почему кошки мурлыкают?»)</div>
+                    <div id="m2part2checks">
+                        <label><input type="checkbox" class="m2p2c" value="для 3 класса"> для 3 класса</label><br>
+                        <label><input type="checkbox" class="m2p2c" value="кратко"> кратко</label><br>
+                        <label><input type="checkbox" class="m2p2c" value="в виде списка"> в виде списка</label><br>
+                        <label><input type="checkbox" class="m2p2c" value="5 предложений"> 5 предложений</label><br>
+                        <label><input type="checkbox" class="m2p2c" value="с примерами"> с примерами</label>
+                    </div>
+                    <button class="action-btn" onclick="checkM2part2()">Проверить</button>
+                    <p id="m2p2res" class="progress-mini"></p>
+
+                    <!-- Часть 3 -->
+                    <div style="margin-top:2rem;"><strong>Часть 3. Сравни ответы</strong></div>
+                    <div><em>Запрос 1: «Кошки»</em> → ответ: «Кошки — домашние животные...»<br><em>Запрос 2: «Почему кошки мурлыкают?»</em> → ответ: «Кошки мурлыкают, когда спокойны...»</div>
+                    <p>Какой ответ полезнее для доклада?</p>
+                    <label><input type="radio" name="m2p3a" value="2"> Второй</label>
+                    <label><input type="radio" name="m2p3a" value="1"> Первый</label>
+                    <div style="margin-top:8px;"><em>Запрос 1: «Космос»</em> → ответ общий<br><em>Запрос 2: «Расскажи о Солнечной системе для 4 класса в виде таблицы»</em> → структурированный ответ</div>
+                    <p>Какой ответ лучше?</p>
+                    <label><input type="radio" name="m2p3b" value="2"> Второй</label>
+                    <label><input type="radio" name="m2p3b" value="1"> Первый</label>
+                    <button class="action-btn" onclick="checkM2part3()">Проверить</button>
+                    <p id="m2p3res" class="progress-mini"></p>
+
+                    <!-- Часть 4 -->
+                    <div style="margin-top:2rem;"><strong>Часть 4. Мини-конструктор</strong> (собери запрос про кошек)</div>
+                    <div class="step-list" id="constructorTarget" ondragover="allowDrop(event)" ondrop="dropConstructor(event)"></div>
+                    <div id="constructorBank">${[...constructorOrder].sort(()=>Math.random()-.5).map((t,i)=>`<div class="drag-chip" draggable="true" ondragstart="dragStartConstr(event)" id="cr${i}" data-text="${t}">${t}</div>`).join('')}</div>
+                    <button class="action-btn" onclick="checkConstructor()">Проверить</button>
+                    <p id="m2p4res" class="progress-mini"></p>
+
+                    <!-- Часть 5 -->
+                    <div style="margin-top:2rem;"><strong>Часть 5. Самостоятельное задание</strong></div>
+                    <div>Выбери тему:
+                        <select id="m2theme">
+                            <option value="">-- выбери --</option>
+                            <option>Космос</option><option>Динозавры</option><option>Вулканы</option><option>Пингвины</option><option>Роботы</option><option>Замки</option>
+                        </select>
+                    </div>
+                    <textarea id="m2ownQuery" placeholder="Напиши свой идеальный запрос..." style="width:100%; margin-top:6px;"></textarea>
+                    <button class="action-btn" onclick="checkM2part5()">🤖 Проверить запрос</button>
+                    <p id="m2p5res" class="progress-mini"></p>
+                </div>`
+            );
+
+            // обработчики
+            window.checkM2part1 = function() {
+                let ok = 0;
+                badQueries.forEach((q, i) => {
+                    const val = document.getElementById('m2q' + i).value.trim();
+                    if (val.length > 10 && (val.includes('?') || val.includes('почему') || val.includes('как') || val.includes('что'))) ok++;
+                });
+                if (ok === badQueries.length) {
+                    document.getElementById('m2p1res').textContent = '✅ Все запросы улучшены!'; m2parts.part1 = true;
+                } else {
+                    document.getElementById('m2p1res').textContent = `Улучшено ${ok} из ${badQueries.length}. Попробуй ещё.`;
+                }
+                checkAllM2();
+            };
+
+            window.checkM2part2 = function() {
+                const checked = document.querySelectorAll('#m2part2checks input:checked');
+                if (checked.length >= 2) {
+                    document.getElementById('m2p2res').textContent = '✅ Отлично! Уточнения добавлены.'; m2parts.part2 = true;
+                } else {
+                    document.getElementById('m2p2res').textContent = '❌ Выбери минимум два уточнения.';
+                }
+                checkAllM2();
+            };
+
+            window.checkM2part3 = function() {
+                const r1 = document.querySelector('input[name="m2p3a"]:checked');
+                const r2 = document.querySelector('input[name="m2p3b"]:checked');
+                if (r1 && r1.value === '2' && r2 && r2.value === '2') {
+                    document.getElementById('m2p3res').textContent = '✅ Верно! Подробный запрос даёт лучший ответ.'; m2parts.part3 = true;
+                } else {
+                    document.getElementById('m2p3res').textContent = '❌ Подумай, какой ответ структурированнее.';
+                }
+                checkAllM2();
+            };
+
+            let constrDrag = null;
+            window.dragStartConstr = function(e) { constrDrag = e.target; e.dataTransfer.setData('text', e.target.id); };
+            window.dropConstructor = function(e) { e.preventDefault(); const list = document.getElementById('constructorTarget'); if (constrDrag) list.appendChild(constrDrag); };
+            window.checkConstructor = function() {
+                const got = [...document.getElementById('constructorTarget').children].map(c => c.dataset.text);
+                if (JSON.stringify(got) === JSON.stringify(constructorOrder)) {
+                    document.getElementById('m2p4res').textContent = '✅ Запрос собран!'; m2parts.part4 = true;
+                } else {
+                    document.getElementById('m2p4res').textContent = '❌ Порядок неверный.';
+                }
+                checkAllM2();
+            };
+
+           window.checkM2part5 = function() {
+    const theme = document.getElementById('m2theme').value;
+    const query = document.getElementById('m2ownQuery').value.trim();
+    if (!theme || !query) {
+        document.getElementById('m2p5res').textContent = '❌ Выбери тему и напиши запрос.';
+        return;
+    }
+    // Приводим всё к нижнему регистру, чтобы регистр не влиял на проверку
+    const themeLower = theme.toLowerCase();
+    const queryLower = query.toLowerCase();
+
+    // Условия хорошего запроса
+    const hasTheme = queryLower.includes(themeLower); // тема упомянута
+    const questionWords = ['почему', 'как', 'что', 'какие', 'сколько', 'кто', 'зачем', 'откуда'];
+    const hasQuestion = questionWords.some(word => queryLower.includes(word)) || query.includes('?');
+    const longEnough = query.length >= 20;
+
+    if (hasTheme && hasQuestion && longEnough) {
+        document.getElementById('m2p5res').textContent = '✅ Отличный запрос! Ты настоящий исследователь.';
+        m2parts.part5 = true;
+    } else {
+        let feedback = '';
+        if (!hasTheme) {
+            feedback = '⚠️ Упомяни в запросе тему («' + theme + '»).';
+        } else if (!hasQuestion) {
+            feedback = '⚠️ Добавь в запрос вопрос (почему, как, что...).';
+        } else if (!longEnough) {
+            feedback = '⚠️ Сделай запрос подробнее (не менее 20 символов).';
+        } else {
+            feedback = '⚠️ Проверь запрос.';
+        }
+        document.getElementById('m2p5res').textContent = feedback;
+    }
+    checkAllM2();
+};
+        })();
+
+      /* ===== МИССИЯ 3: Продолжи диалог (уровни 1 и 2) ===== */
+(function() {
+    const m3part1Done = false, m3part2Done = false;
+
+    createMission(3, 'Продолжи диалог', 
+        `Ты спросил у ИИ: «Почему кошки мурлыкают?»<br>
+        <em>Ответ ИИ:</em> «Кошки мурлыкают, когда чувствуют себя спокойно и безопасно. Иногда они мурлыкают, чтобы успокоиться или показать, что им хорошо.»`,
+        `<div id="m3container">
+            <!-- Часть 1: выбор действий -->
+            <div id="m3part1">
+                <strong>Что можно сделать дальше? Отметь ВСЕ правильные варианты.</strong>
+                <div class="choice-grid" id="mq3">
+                    ${[
+                        'Попросить объяснить проще.',
+                        'Задать уточняющий вопрос.',
+                        'Попросить привести пример.',
+                        'Проверить ответ в другом источнике или другом ИИ.',
+                        'Спросить: «А почему некоторые кошки не мурлыкают?»',
+                        'Написать случайный набор букв.',
+                        'Повторять один и тот же вопрос много раз.',
+                        'Попросить сделать ответ в виде списка.'
+                    ].map((t, i) => `<div class="choice-card" data-good="${i < 6 && i !== 5 && i !== 6 ? 1 : 0}">${t}</div>`).join('')}
+                </div>
+                <button class="action-btn" onclick="checkM3part1()">Проверить</button>
+                <p id="m3p1res" class="progress-mini"></p>
+            </div>
+            <!-- Часть 2: напиши следующий вопрос (появляется после части 1) -->
+            <div id="m3part2" style="display:none; margin-top:1.5rem;">
+                <strong>Часть 2. Продолжи разговор с ИИ.</strong>
+                <p>Напиши один следующий вопрос (например, «Почему кошки мурлыкают, когда болеют?»).</p>
+                <input type="text" id="m3userQuestion" placeholder="Твой вопрос..." style="width:70%; padding:8px; margin-right:8px;">
+                <button class="action-btn" onclick="checkM3part2()">Отправить</button>
+                <p id="m3p2res" class="progress-mini"></p>
+            </div>
+            <a href="https://chat.deepseek.com/?q=Почему%20кошки%20мурлыкают%3F%20Объясни%20проще%20и%20приведи%20примеры." target="_blank" class="action-btn" style="background:var(--accent);box-shadow:0 4px 0 #047857; margin-top:10px;">🤖 Попробовать в DeepSeek</a>
+        </div>`
+    );
+
+    // Обработчики кликов для карточек
+    document.getElementById('mq3').addEventListener('click', e => {
+        if (e.target.classList.contains('choice-card')) e.target.classList.toggle('selected');
+    });
+
+    window.checkM3part1 = function() {
+        const cards = [...document.querySelectorAll('#mq3 .choice-card')];
+        let allCorrect = true;
+        cards.forEach(c => {
+            const sel = c.classList.contains('selected');
+            const need = c.dataset.good === '1';
+            if (sel !== need) allCorrect = false;
+        });
+        if (allCorrect) {
+            document.getElementById('m3p1res').textContent = '✅ Молодец! Ты знаешь, как вести диалог с ИИ.';
+            document.getElementById('m3p1res').style.color = '#2E7D32';
+            // Показать часть 2
+            document.getElementById('m3part2').style.display = 'block';
+            // Заблокировать карточки, чтобы нельзя было изменить
+            document.querySelectorAll('#mq3 .choice-card').forEach(c => c.style.pointerEvents = 'none');
+            // Не завершаем миссию, ждём часть 2
+        } else {
+            document.getElementById('m3p1res').textContent = '❌ Не все правильные действия выбраны. Попробуй ещё раз.';
+            loseLife();
+            // сброс выделения, чтобы можно было попробовать снова
+            cards.forEach(c => c.classList.remove('selected'));
+        }
+    };
+
+    window.checkM3part2 = function() {
+        const q = document.getElementById('m3userQuestion').value.trim();
+        const res = document.getElementById('m3p2res');
+        if (!q) {
+            res.textContent = '❌ Напиши вопрос.';
+            res.style.color = '#C0392B';
+            return;
+        }
+        const qLower = q.toLowerCase();
+        // Проверяем, что вопрос связан с кошками или мурлыканьем (ключевые слова)
+        const isRelated = qLower.includes('кош') || qLower.includes('мурлык') || qLower.includes('животн') || qLower.includes('звук');
+        const isQuestion = q.includes('?') || /^(почему|как|какие|зачем|что|кто)/i.test(q);
+        if (isRelated && isQuestion) {
+            res.textContent = '⭐ Отлично! Ты задал уточняющий вопрос. Диалог продолжается!';
+            res.style.color = '#2E7D32';
+            completeMission(3);
+        } else {
+            res.textContent = '💡 Этот вопрос не связан с предыдущим ответом. Попробуй спросить что-то, что поможет узнать тему лучше.';
+            res.style.color = '#B8860B';
+            // не штрафуем жизнями, даём подумать
+        }
+    };
+})();
+
+        /* ===== НОВАЯ МИССИЯ 4 – АНАЛИЗИРУЙ ОТВЕТ ИИ ===== */
+        (function() {
+            const factSpots = [
+                { text: 'Пингвины живут в Антарктиде.', id: 'f1', isFact: true },
+                { text: 'Они могут нырять на глубину до 500 метров.', id: 'f2', isFact: false },
+                { text: 'Пингвины питаются рыбой, крилем и кальмарами.', id: 'f3', isFact: true },
+                { text: 'Императорский пингвин достигает роста 1,2 метра.', id: 'f4', isFact: true },
+                { text: 'Пингвины умеют летать на короткие расстояния.', id: 'f5', isFact: false },
+                { text: 'У пингвинов есть перья, но они не летают.', id: 'f6', isFact: true },
+                { text: 'Пингвины живут только в Южном полушарии.', id: 'f7', isFact: true }
+            ];
+            let factChecked = 0;
+            createMission(4, 'Анализируй ответ ИИ', 'Perplexity выдал такой текст. Кликни на те факты, которые нужно проверить в других источниках (не все из них правдивы).',
+                `<div style="background:#F8FAFC; padding:1rem; border-radius:12px; line-height:1.8;">
+                    ${factSpots.map(f => `<span class="hallu-spot" data-id="${f.id}" data-isfact="${f.isFact}">${f.text}</span>`).join(' ')}
+                </div>
+                <p class="progress-mini" id="factProg">Проверено фактов: 0 / 5 (сомнительных)</p>
+                <button class="hint-btn" onclick="toggleHint('hint4')">📖 Подсказка</button>
+                <div id="hint4" class="hint-box">Сомнительные факты: глубина 500 м (рекорд ~300 м), умение летать. Остальные нужно просто проверить, но здесь они верны. Нажимай только на ошибочные.</div>`
+            );
+            setTimeout(() => {
+                document.querySelectorAll('#mission4 .hallu-spot').forEach(el => {
+                    el.addEventListener('click', function() {
+                        if (this.dataset.clicked) return;
+                        this.dataset.clicked = '1';
+                        if (this.dataset.isfact === 'false') {
+                            this.classList.add('found');
+                            factChecked++;
+                            document.getElementById('factProg').textContent = `Проверено фактов: ${factChecked} / 2 (сомнительных)`;
+                            if (factChecked === 2) completeMission(4);
+                        } else {
+                            this.style.color = '#999';
+                            this.style.textDecoration = 'line-through';
+                        }
+                    });
+                });
+            }, 100);
+        })();
+
+        // Миссия 5: Надёжный источник — drag & drop
+        const sources = [
+            { id: 's0', t: 'Wikipedia', z: 'ok' }, { id: 's1', t: 'NASA', z: 'ok' }, { id: 's2', t: 'Личный блог', z: 'bad' },
+            { id: 's3', t: 'TikTok', z: 'bad' }, { id: 's4', t: 'Britannica', z: 'ok' }, { id: 's5', t: 'Официальный музей',
+                z: 'ok' }
+        ];
+        createMission(5, 'Надёжный источник', 'Перетащи каждый источник в подходящую зону.',
+            `<div class="drop-row"><div class="drop-zone ok" id="sz-ok" ondragover="allowDrop(event)" ondrop="dropSource(event)">🟢 Надёжно</div><div class="drop-zone bad" id="sz-bad" ondragover="allowDrop(event)" ondrop="dropSource(event)">🔴 Ненадёжно</div></div>
+            <div id="sourceBank">${sources.map(s=>`<div class="drag-chip" draggable="true" ondragstart="dragStart(event)" id="${s.id}">${s.t}</div>`).join('')}</div>
+            <button class="action-btn" onclick="checkSources()">Проверить</button><p id="sRes" class="progress-mini"></p>`);
+        const sourceAns = { s0: 'sz-ok', s1: 'sz-ok', s2: 'sz-bad', s3: 'sz-bad', s4: 'sz-ok', s5: 'sz-ok' };
+        let dragEl = null;
+
+        function dragStart(e) { dragEl = e.target;
+            e.dataTransfer.setData('text', e.target.id); }
+
+        function allowDrop(e) { e.preventDefault(); }
+
+        function dropSource(e) { e.preventDefault();
+            const zone = e.target.closest('.drop-zone'); if (zone && dragEl) zone.appendChild(dragEl); }
+
+        function checkSources() {
+            let ok = 0;
+            Object.keys(sourceAns).forEach(id => { if (document.getElementById(id).parentElement.id === sourceAns[id]) ok++; });
+            document.getElementById('sRes').textContent = `Правильно: ${ok}/6`; if (ok === 6) completeMission(5);
+            else { loseLife(); }
+        }
+
+        // Миссия 6: Собери структуру доклада
+        const structOrder = ['Название', 'Введение', 'Основная часть', 'Интересные факты', 'Вывод'];
+        createMission(6, 'Собери доклад', 'Перетащи части в правильном порядке.',
+            `<div class="step-list" id="structTarget" ondragover="allowDrop(event)" ondrop="dropStruct(event)"></div>
+            <div id="structBank">${[...structOrder].sort(()=>Math.random()-.5).map((t,i)=>`<div class="drag-chip" draggable="true" ondragstart="dragStart(event)" id="st${i}" data-text="${t}">${t}</div>`).join('')}</div>
+            <button class="action-btn" onclick="checkStruct()">Проверить</button><p id="stRes" class="progress-mini"></p>`);
+
+        function dropStruct(e) { e.preventDefault();
+            const list = document.getElementById('structTarget'); if (dragEl) list.appendChild(dragEl); }
+
+        function checkStruct() {
+            const got = [...document.getElementById('structTarget').children].map(c => c.dataset.text);
+            if (JSON.stringify(got) === JSON.stringify(structOrder)) { document.getElementById('stRes').textContent =
+                    '✅ Структура собрана!';
+                completeMission(6); } else { document.getElementById('stRes').textContent = '❌ Неверный порядок.';
+                loseLife(); }
+        }
+
+        // Миссия 7: Найди главное (клик по предложениям)
+        const longText = `Пингвины — это нелетающие морские птицы. Они живут в Южном полушарии. Пингвины отлично плавают и ныряют. Их крылья превратились в ласты. Питаются рыбой и крилем. Императорские пингвины самые крупные. Они высиживают яйца на льду. Пингвины живут большими колониями.`;
+        const important = [0, 1, 2, 5, 6];
+        let found = 0;
+        createMission(7, 'Найди главное', 'Кликни на 5 самых важных предложений в тексте.',
+            `<div id="longText">${longText.split('. ').map((s,i)=>`<span class="choice-card" style="display:inline-block; margin:4px;" data-idx="${i}">${s}.</span>`).join('')}</div>
+            <p id="m7res" class="progress-mini"></p>`);
+        document.getElementById('longText').addEventListener('click', e => {
+            if (e.target.classList.contains('choice-card') && !e.target.dataset.clicked) {
+                e.target.dataset.clicked = '1';
+                if (important.includes(parseInt(e.target.dataset.idx))) { e.target.classList.add('done-right');
+                    found++; } else { e.target.classList.add('done-wrong');
+                    loseLife(); }
+                if (found === 5) { document.getElementById('m7res').textContent = '✅ Главное выделено!';
+                    completeMission(7); }
+            }
+        });
+
+        // Миссия 8: Сравни поисковики (тест с битвой)
+        createMission(8, 'Сравни поисковики', 'Какой инструмент лучше для школьного доклада?',
+            `<div class="battle-round">
+                <p><strong>Perplexity (готовый ответ + ссылки)</strong></p>
+                <button class="action-btn" onclick="ansM8('perplexity')">Выбрать Perplexity</button>
+                <button class="action-btn" onclick="ansM8('google')">Выбрать Google</button>
+                <button class="action-btn" onclick="ansM8('chatgpt')">Выбрать ChatGPT</button>
+            </div>
+            <p id="m8res" class="progress-mini"></p>
+            <a href="https://www.perplexity.ai/?q=Почему%20Perplexity%20лучше%20для%20докладов" target="_blank" class="action-btn" style="background:var(--accent);box-shadow:0 4px 0 #047857;">🔍 Проверить в Perplexity</a>`);
+
+        function ansM8(ans) {
+            if (ans === 'perplexity') { document.getElementById('m8res').textContent =
+                '✅ Да, Perplexity удобнее для докладов благодаря ссылкам.';
+                completeMission(8); } else { document.getElementById('m8res').textContent =
+                    '❌ Подумай: какой сервис даёт готовый ответ и источники?';
+                loseLife(); }
+        }
+
+        // Миссия 9: Построй план доклада (drag & drop)
+        const planOrder = ['Введение', 'Причины', 'История', 'Интересный факт', 'Заключение'];
+        createMission(9, 'Построй план', 'Собери структуру доклада про вулканы.',
+            `<div class="step-list" id="planTarget" ondragover="allowDrop(event)" ondrop="dropPlan(event)"></div>
+            <div id="planBank">${[...planOrder].sort(()=>Math.random()-.5).map((t,i)=>`<div class="drag-chip" draggable="true" ondragstart="dragStart(event)" id="pl${i}" data-text="${t}">${t}</div>`).join('')}</div>
+            <button class="action-btn" onclick="checkPlan()">Проверить</button><p id="plRes" class="progress-mini"></p>`);
+
+        function dropPlan(e) { e.preventDefault();
+            const list = document.getElementById('planTarget'); if (dragEl) list.appendChild(dragEl); }
+
+        function checkPlan() {
+            const got = [...document.getElementById('planTarget').children].map(c => c.dataset.text);
+            if (JSON.stringify(got) === JSON.stringify(planOrder)) { document.getElementById('plRes').textContent =
+                    '✅ План готов!';
+                completeMission(9); } else { document.getElementById('plRes').textContent = '❌ Порядок неверный.';
+                loseLife(); }
+        }
+
+        // Миссия 10: Мини-исследование (ввод вопросов и проверка через Perplexity)
+        createMission(10, 'Мини-исследование', 'Выбери 5 вопросов о пингвинах для своего доклада.',
+            `<div class="choice-grid" id="mq10">${['Где живут пингвины?','Чем питаются?','Как размножаются?','Какие враги?','Сколько живут?','Какого цвета снег?'].map((t,i)=>`<div class="choice-card" data-good="${i<5?1:0}">${t}</div>`).join('')}</div>
+            <button class="action-btn" onclick="checkM10()">Проверить</button>
+            <a href="https://www.perplexity.ai/?q=Где+живут+пингвины%3F+Чем+питаются%3F+Как+размножаются%3F" target="_blank" class="action-btn" style="background:var(--accent);box-shadow:0 4px 0 #047857;">🔍 Открыть в Perplexity</a>
+            <p id="m10res" class="progress-mini"></p>`);
+        document.getElementById('mq10').addEventListener('click', e => { if (e.target.classList.contains('choice-card')) e.target
+                .classList.toggle('selected'); });
+
+        function checkM10() {
+            const cards = [...document.querySelectorAll('#mq10 .choice-card')];
+            let good = true;
+            cards.forEach(c => { const sel = c.classList.contains('selected'),
+                    need = c.dataset.good === '1'; if (sel !== need) good = false; });
+            if (good) { document.getElementById('m10res').textContent = '✅ Отличные вопросы для исследования!';
+                completeMission(10); } else { document.getElementById('m10res').textContent =
+                    '❌ Выбери все подходящие вопросы.';
+                loseLife(); }
+        }
+
+        // Финальный экзамен (босс)
+        const bossQ = [
+            { q: 'Что делать первым при подготовке доклада?', ok: 1, o: ['Копировать ответ', 'Составить запрос',
+                'Читать один сайт'] },
+            { q: 'Зачем проверять источники?', ok: 0, o: ['Чтобы убедиться в достоверности', 'Просто так'] },
+            { q: 'Какой инструмент даёт ссылки на источники?', ok: 0, o: ['Perplexity', 'Google', 'ChatGPT'] },
+            { q: 'Нужно ли писать вывод в докладе?', ok: 0, o: ['Да', 'Нет'] },
+            { q: 'Что делать, если ИИ ошибся?', ok: 1, o: ['Использовать ошибку', 'Проверить по другим источникам',
+                'Поверить ИИ'] }
+        ];
+        let bI = 0,
+            bQs = [];
+
+        function startBossFight() { if (artifactsCollected.size < 10) { alert(
+                    'Сначала собери все 10 карточек исследователя!'); return; }
+            bI = 0;
+            bQs = bossQ.sort(() => Math.random() - .5).slice(0, 5);
+            showBoss(); }
+
+        function showBoss() { const c = document.getElementById('bossQuestions'); if (bI >= bQs.length) { document.getElementById(
+                    'bossResult').textContent = '🎉 Экзамен сдан!';
+                robySay('boss_win');
+                launchConfetti(); return; } const q = bQs[bI];
+            c.innerHTML = `<p><strong>${q.q}</strong></p>` + q.o.map((x, i) =>
+                `<label><input type="radio" name="bq" value="${i}"> ${x}</label><br>`).join('') +
+                `<button class="action-btn" onclick="ansBoss(${q.ok})">Ответить</button>`; }
+
+        function ansBoss(ok) { const s = document.querySelector('input[name="bq"]:checked'); if (!s) return; if (parseInt(s
+                .value) === ok) { bI++;
+                showBoss(); } else { loseLife();
+                alert('Неправильно!'); } }
+
+        function launchConfetti() { const box = document.getElementById('confetti-container'); for (let i = 0; i < 60; i++) { const
+                p = document.createElement('div');
+                p.className = 'confetti-piece';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.background = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1'][i % 4];
+                p.style.animationDelay = Math.random() * 2 + 's';
+                box.appendChild(p);
+                setTimeout(() => p.remove(), 3000); } }
+
+        function submitReflection() { const t = document.getElementById('reflectionText'); if (!t.value.trim()) { alert(
+                'Напиши отзыв!'); return; }
+            alert('✅ Спасибо!');
+            t.disabled = true; }
+        updateUI();
+    </script>
+</body>
+</html>

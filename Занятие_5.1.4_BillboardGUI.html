@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.1.4. GUI: BillboardGui — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: 1rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#0c1a2e,#1a3a5c); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #38bdf8;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка BillboardGui"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(170px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .9rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .85rem; }
+    .compare-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 14px 0; }
+    @media (max-width:800px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-card { border-radius: 16px; padding: 14px; border: 2px solid var(--line); background: #fff; }
+    .compare-card h4 { margin: 0 0 8px; font-size: .95rem; }
+    .compare-card.screen { border-color: #38bdf8; background: #f0f9ff; }
+    .compare-card.surface { border-color: #a78bfa; background: #faf5ff; }
+    .compare-card.bill { border-color: #fbbf24; background: #fffbeb; }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .95rem; line-height: 1.7; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .b { color: #f472b6; }
+    .tree-box .t { color: #a3e635; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.selected { border-color: var(--accent)!important; background: var(--accent-light)!important; }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .mini-game {
+      background: linear-gradient(180deg,#0a1628,#12324f); border-radius: 24px; padding: 20px;
+      border: 3px solid #38bdf8; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #7dd3fc; }
+    .tag-stage { display: grid; grid-template-columns: 1.15fr 1fr; gap: 16px; margin-top: 14px; }
+    @media (max-width:900px) { .tag-stage { grid-template-columns: 1fr; } }
+    .world-view {
+      background: linear-gradient(180deg,#87ceeb 0%,#87ceeb 55%,#4ade80 55%,#22c55e 100%);
+      border-radius: 16px; border: 2px solid #334155; min-height: 300px; position: relative;
+      overflow: hidden;
+    }
+    .world-view.far { filter: brightness(.95); }
+    .world-wall {
+      position: absolute; left: 18%; top: 28%; width: 28%; height: 42%;
+      background: #78716c; border: 3px solid #57534e; border-radius: 4px; z-index: 2;
+    }
+    .world-box {
+      position: absolute; left: 52%; top: 48%; width: 70px; height: 70px;
+      background: linear-gradient(160deg,#b45309,#78350f); border: 3px solid #451a03;
+      border-radius: 8px; z-index: 3; transform: translateX(-50%);
+    }
+    .float-tag {
+      position: absolute; left: 52%; z-index: 5; transform: translateX(-50%);
+      background: #0f172a; color: #fde047; border: 2px solid #fbbf24; border-radius: 10px;
+      padding: 6px 12px; font-weight: 900; font-size: .95rem; white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,.35); transition: top .2s, opacity .2s, font-size .2s;
+    }
+    .float-tag.behind { z-index: 1; opacity: .35; }
+    .float-tag.hidden { opacity: 0; pointer-events: none; }
+    .cam-label {
+      position: absolute; bottom: 10px; left: 12px; font-size: .8rem; background: rgba(15,23,42,.7);
+      padding: 4px 10px; border-radius: 8px;
+    }
+    .controls-panel {
+      background: #1e293b; border-radius: 16px; padding: 14px; border: 2px solid #64748b;
+    }
+    .controls-panel label { display: block; font-size: .85rem; opacity: .85; margin: 8px 0 4px; }
+    .controls-panel input[type=range] { width: 100%; }
+    .mission-box {
+      background: #0c4a6e; border-radius: 12px; padding: 12px; margin-bottom: 10px;
+      border: 1px solid #38bdf8;
+    }
+    .mission-box .ok { color: #a3e635; font-weight: 800; }
+    .toggle-row { display: flex; align-items: center; gap: 8px; margin: 10px 0; font-weight: 700; }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin: 0 0 8px; color: var(--primary-dark,#1a4a0a); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .phase-time { font-size: .85rem; background: var(--accent-light,#f0e6f5); color: var(--accent-ink,#4a1a5a); padding: 3px 12px; border-radius: 20px; font-weight: 700; }
+    .progress-track { background: #e2e8f0; height: 10px; border-radius: 10px; margin: 16px 0 8px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg,var(--primary,#61b01f),#a3e635); transition: width .3s; }
+    .progress-label { font-size: .92rem; color: #334155; font-weight: 600; }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; align-items: baseline; gap: 8px; margin: 8px 0; line-height: 1.5; }
+    .task-steps li input[type="checkbox"] { transform: scale(1.2); flex-shrink: 0; margin-top: 3px; }
+    details.hint { background: #f1f5f9; border-radius: 12px; padding: 10px 14px; margin: 10px 0; border-left: 4px solid var(--accent,#6e0091); }
+    details.hint summary { cursor: pointer; font-weight: 700; color: var(--accent-ink,#4a1a5a); }
+    .space-note { background: #1a1a4a; color: #fbbf24; border-left: 4px solid #fbbf24; padding: 12px 16px; border-radius: 12px; margin: 12px 0; }
+    .build-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); gap: 10px; margin: 14px 0; }
+    .build-card {
+      background: linear-gradient(160deg,#0c1a2e,#1a3a5c); color: #f8fafc; border-radius: 14px;
+      padding: 12px; text-align: center; border: 2px solid #38bdf8;
+    }
+    .build-card .ico { font-size: 1.8rem; }
+    .build-card .nm { font-weight: 800; margin: 4px 0; font-size: .9rem; }
+    .build-card .props { font-size: .75rem; opacity: .85; }
+    .path-flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; font-weight: 800; }
+    .path-flow span { background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+    .reflection-box textarea { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--line); font-family: inherit; min-height: 80px; }
+    .layer-flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; font-weight: 800; }
+    .layer-flow span { background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+    .tz-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 12px; margin: 14px 0; }
+    .tz-item { background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 14px; padding: 12px 14px; }
+    .tz-item .icon { font-size: 1.6rem; }
+    .tz-item .name { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin: 4px 0; }
+    .tz-item .req { font-size: .88rem; color: #64748b; line-height: 1.4; }
+    .tz-rules { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .tz-rules th, .tz-rules td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .tz-rules th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 5.1.4</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">5.1.4</div>
+      <div>
+        <div class="module-pill">Раздел 5.1 · GUI</div>
+        <h1>🏷️ BillboardGui</h1>
+        <p class="subtitle">Метки в воздухе: теория → мини-игра → остров квестов</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🧭</div>
+    <div>
+      <strong>SurfaceGui лежит на стене.</strong> А имя над NPC, восклицательный знак над квестом, метка над сундуком?
+      Это <b>BillboardGui</b> — табличка в мире, которая <b>всегда смотрит на камеру</b>.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом уроке ты:</h2>
+    <ul>
+      <li>поймёшь, чем BillboardGui отличается от ScreenGui и SurfaceGui 🏷️</li>
+      <li>настроишь StudsOffset, AlwaysOnTop и MaxDistance ⚙️</li>
+      <li>соберёшь проект «Остров квестов» с метками над объектами 🏝️</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Теория BillboardGui</td><td>15 мин</td><td>Сравнение, свойства, квиз</td></tr>
+      <tr><td>Мини-игра «Настрой метку»</td><td>10 мин</td><td>Offset, дистанция, AlwaysOnTop</td></tr>
+      <tr><td>Проект: остров квестов</td><td>45 мин</td><td>NPC, сундуки, скрипт сбора</td></tr>
+      <tr><td>ТЗ: достройка острова</td><td>15 мин</td><td>Декор локации</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Рефлексия</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- ===== ТЕОРИЯ ===== -->
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: BillboardGui</h2>
+
+    <div class="theory-section">
+      <h3>🖥️ Три вида GUI — три места</h3>
+      <div class="compare-grid">
+        <div class="compare-card screen">
+          <h4>ScreenGui</h4>
+          <p>На <b>экране</b> игрока. Меню, HP, кнопки.</p>
+        </div>
+        <div class="compare-card surface">
+          <h4>SurfaceGui</h4>
+          <p>На <b>грани Part</b>. Вывеска, табло на стене.</p>
+        </div>
+        <div class="compare-card bill">
+          <h4>BillboardGui</h4>
+          <p>В воздухе над объектом, <b>смотрит на камеру</b>.</p>
+        </div>
+      </div>
+      <div class="info-callout">
+        <span class="bulb">💡</span>
+        <div>Обойди объект кругом: SurfaceGui «прилип» к стороне, BillboardGui всё время поворачивается к тебе — как имя над головой в мультиках.</div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🧱 Как создать метку</h3>
+      <ol>
+        <li>Выбери Part (или Head у NPC).</li>
+        <li>Insert Object → <b>BillboardGui</b>.</li>
+        <li>Внутрь → <b>TextLabel</b> (текст) или Frame + несколько Label.</li>
+      </ol>
+      <div class="layer-flow">
+        <span>Part / Head</span> →
+        <span>BillboardGui</span> →
+        <span>TextLabel</span>
+      </div>
+      <div class="tree-box">
+        <span class="g">Workspace</span><br>
+        &nbsp;&nbsp;<span class="g">Chest</span> (Part)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="b">BillboardGui</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="t">TextLabel</span> ← «?» или «СОКРОВИЩЕ»
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>⚙️ Главные свойства BillboardGui</h3>
+      <table class="prop-table">
+        <tr><th>Свойство</th><th>Пример</th><th>Зачем</th></tr>
+        <tr><td><code>Size</code></td><td><code>{0, 200}, {0, 50}</code></td><td>Размер «холста» метки (пиксели)</td></tr>
+        <tr><td><code>StudsOffset</code></td><td><code>0, 3, 0</code></td><td>Сдвиг вверх/вниз/вбок в студax</td></tr>
+        <tr><td><code>AlwaysOnTop</code></td><td><code>true</code></td><td>Метка поверх стен и объектов</td></tr>
+        <tr><td><code>MaxDistance</code></td><td><code>50</code></td><td>Дальше этого — метка исчезает</td></tr>
+        <tr><td><code>Enabled</code></td><td><code>true/false</code></td><td>Показать / спрятать метку скриптом</td></tr>
+      </table>
+      <p>У TextLabel внутри: Text, TextScaled = true, BackgroundTransparency = 1 (часто без фона).</p>
+    </div>
+
+    <div class="theory-section">
+      <h3>🎯 Где вешать метку</h3>
+      <ul>
+        <li><b>Head</b> — имя над NPC / игроком</li>
+        <li><b>Сундук / кристалл</b> — «!» или «?» для квеста</li>
+        <li><b>Точка телепорта</b> — «Вход»</li>
+      </ul>
+      <div class="info-callout purple">
+        <span class="bulb">📌</span>
+        <div>StudsOffset по Y поднимает текст выше объекта. Если метка «внутри» блока — увеличь Y (например с 1 до 3).</div>
+      </div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz1">
+      <h3>🧠 Квиз: чем BillboardGui отличается от SurfaceGui?</h3>
+      <div class="choice-card" data-correct-choice="true">Всегда повёрнут к камере</div>
+      <div class="choice-card" data-correct-choice="false">Живёт только в StarterGui</div>
+      <div class="choice-card" data-correct-choice="false">Нельзя повесить на Part</div>
+      <button class="action-btn" onclick="checkChoices('quiz1')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz2">
+      <h3>🧠 Квиз: метка пропала вдали — что проверить?</h3>
+      <div class="choice-card" data-correct-choice="false">Face = Front</div>
+      <div class="choice-card" data-correct-choice="true">MaxDistance</div>
+      <div class="choice-card" data-correct-choice="false">LightInfluence</div>
+      <button class="action-btn" onclick="checkChoices('quiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="cheat-sheet">
+    <div class="cheat-grid">
+      <div class="cheat-item"><div class="title">🏷️ BillboardGui</div><div class="rule">смотрит на камеру</div></div>
+      <div class="cheat-item"><div class="title">⬆️ StudsOffset</div><div class="rule"><code>0, 3, 0</code> вверх</div></div>
+      <div class="cheat-item"><div class="title">🔝 AlwaysOnTop</div><div class="rule">поверх всего</div></div>
+      <div class="cheat-item"><div class="title">📏 MaxDistance</div><div class="rule">дальность видимости</div></div>
+      <div class="cheat-item"><div class="title">✍️ TextLabel</div><div class="rule">текст метки</div></div>
+      <div class="cheat-item"><div class="title">👁️ Enabled</div><div class="rule">вкл / выкл метку</div></div>
+    </div>
+  </div>
+
+  <!-- ===== МИНИ-ИГРА ===== -->
+  <div class="mini-game" id="miniGame">
+    <h2>🎮 Мини-игра: Настрой метку</h2>
+    <p style="opacity:.9;margin:0;">У сундука BillboardGui. Подгони StudsOffset, MaxDistance и AlwaysOnTop под задание.</p>
+
+    <div class="tag-stage">
+      <div class="world-view" id="worldView">
+        <div class="world-wall" id="worldWall"></div>
+        <div class="world-box" title="Сундук"></div>
+        <div class="float-tag" id="floatTag">?</div>
+        <div class="cam-label" id="camLabel">Камера: близко · дистанция ≈ 10</div>
+      </div>
+
+      <div class="controls-panel">
+        <div class="mission-box">
+          <div style="font-weight:800;" id="missionTitle">Задание 1 из 3</div>
+          <div id="missionText" style="margin-top:6px;">Подними метку: StudsOffset Y ≥ 2.5 (чтобы «?» был над сундуком).</div>
+          <div id="missionResult" class="ok" style="margin-top:8px;min-height:1.3em;"></div>
+        </div>
+
+        <label>StudsOffset Y: <span id="offVal">1</span></label>
+        <input type="range" id="offsetY" min="0" max="5" step="0.5" value="1" oninput="renderTag()" />
+
+        <label>MaxDistance: <span id="maxVal">100</span></label>
+        <input type="range" id="maxDist" min="5" max="100" step="5" value="100" oninput="renderTag()" />
+
+        <label>Дистанция камеры: <span id="camVal">10</span></label>
+        <input type="range" id="camDist" min="5" max="80" step="5" value="10" oninput="renderTag()" />
+
+        <label class="toggle-row"><input type="checkbox" id="alwaysOnTop" onchange="renderTag()" /> AlwaysOnTop</label>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+          <button type="button" class="action-btn" onclick="checkMission()">Проверить</button>
+          <button type="button" class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetMissions()">🔄 Сначала</button>
+        </div>
+        <p id="scoreLine" style="margin-top:10px;font-weight:800;">Очки: 0 / 3</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,#E8F5E0,#e0f2fe);border:2px solid var(--primary);border-radius:20px;padding:20px 24px;margin:20px 0;">
+    <h2 style="margin:0 0 .4rem;color:var(--primary-dark);">🗺️ С чего начать</h2>
+    <p>Открой Baseplate. Все метки вешаешь на Parts в Workspace — BillboardGui живёт в мире, не в StarterGui.</p>
+  </div>
+
+  <!-- ===== ПРОЕКТ ===== -->
+  <div class="project-box" id="mainProject">
+    <h2>🏝️ Проект «Остров квестов»</h2>
+    <p>Один большой проект: NPC с именем, сундуки с метками «?», сбор клада меняет BillboardGui.</p>
+
+    <div class="path-flow">
+      <span>🏝️ Остров</span> →
+      <span>🧑 NPC</span> →
+      <span>📦 Сундуки</span> →
+      <span>✨ Скрипт</span> →
+      <span>🏁 Финиш</span>
+    </div>
+
+    <div class="build-grid">
+      <div class="build-card"><div class="ico">🧑</div><div class="nm">QuestNPC</div><div class="props">имя над головой</div></div>
+      <div class="build-card"><div class="ico">📦</div><div class="nm">Chest1–3</div><div class="props">метка «?»</div></div>
+      <div class="build-card"><div class="ico">🚩</div><div class="nm">FinishFlag</div><div class="props">«ФИНИШ»</div></div>
+      <div class="build-card"><div class="ico">📜</div><div class="nm">Script</div><div class="props">Touched + Enabled</div></div>
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="projectProgress"></div></div>
+    <span class="progress-label" id="projectLabel">Выполнено шагов: 0 из 17</span>
+
+    <div class="phase" id="phase0">
+      <h3>🏝️ Фаза 0 — Остров и папка <span class="phase-time">8 мин</span></h3>
+      <ol>
+        <li>Папка <b>QuestIsland</b> в Workspace.</li>
+        <li>Платформа-остров (несколько Part или одна большая).</li>
+        <li>SpawnLocation на острове.</li>
+        <li>Удали BasePlate</li>
+      </ol>
+         <img src="assets/images/lesson-5.1.4/1.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> </div>
+     
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p0s0" onchange="updateProjectProgress()"><label for="p0s0">Папка QuestIsland и платформа готовы.</label></li>
+        <li><input type="checkbox" id="p0s1" onchange="updateProjectProgress()"><label for="p0s1">SpawnLocation стоит на острове.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase1">
+      <h3>🧑 Фаза 1 — NPC с именем <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>Сгенерируй NPC- вкладка Avatar - Character.</li>
+         <img src="assets/images/lesson-5.1.4/2.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> 
+     
+        <li>В <b>Head</b> (или верхний Part) добавь BillboardGui → TextLabel.</li>
+         <img src="assets/images/lesson-5.1.4/3.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> 
+       <img src="assets/images/lesson-5.1.4/4.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> 
+     
+        <li>Текст: своё имя гида, например <code>Капитан Робо</code>.</li>
+        <li>BillboardGui: Size ≈ {0,200},{0,50}, StudsOffset = 0, 2.5, 0, AlwaysOnTop = true, MaxDistance = 80.</li>
+      </ol>
+         <img src="assets/images/lesson-5.1.4/5.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> 
+     
+      <div class="info-callout">
+        <span class="bulb">🏷️</span>
+        <div>Обойди NPC кругом в Play — имя всегда читается лицом к тебе. Это и есть BillboardGui.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">QuestNPC собран / вставлен в QuestIsland.</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">BillboardGui + TextLabel с именем над головой.</label></li>
+        <li><input type="checkbox" id="p1s2" onchange="updateProjectProgress()"><label for="p1s2">StudsOffset и AlwaysOnTop настроены, в Play имя видно.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase2">
+      <h3>📦 Фаза 2 — Три сундука с «?» <span class="phase-time">12 мин</span></h3>
+      <p>Создай 3 Part (коричневые): <b>Chest1</b>, <b>Chest2</b>, <b>Chest3</b>. На каждый — свой BillboardGui + TextLabel с текстом <code>?</code>.</p>
+      <ul>
+        <li>StudsOffset = 0, 3, 0</li>
+        <li>AlwaysOnTop = true</li>
+        <li>MaxDistance = 40 (метка только рядом — интереснее искать)</li>
+      </ul>
+       <img src="assets/images/lesson-5.1.4/6.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> 
+     
+      <p>Положи сундуки в разных углах острова.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">Три сундука с BillboardGui «?».</label></li>
+        <li><input type="checkbox" id="p2s1" onchange="updateProjectProgress()"><label for="p2s1">MaxDistance = 40 у меток сундуков.</label></li>
+        <li><input type="checkbox" id="p2s2" onchange="updateProjectProgress()"><label for="p2s2">Издалека метки пропадают, вблизи появляются.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase3">
+      <h3>✨ Фаза 3 — Скрипт сбора <span class="phase-time">14 мин</span></h3>
+      <p>В папку QuestIsland положи Script <code>ChestScript</code>. При касании сундука метка меняется на «✓» и отключается через пару секунд.</p>
+      <div class="code-block">
+        <span class="keyword">local</span> folder = script.Parent<br><br>
+        <span class="keyword">local</span> <span class="func">function</span> setupChest(chest)<br>
+        &nbsp;&nbsp;<span class="keyword">local</span> gui = chest:<span class="func">FindFirstChild</span>(<span class="string">"BillboardGui"</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> <span class="keyword">not</span> gui <span class="keyword">then</span> <span class="keyword">return</span> <span class="keyword">end</span><br>
+        &nbsp;&nbsp;<span class="keyword">local</span> label = gui:<span class="func">FindFirstChildWhichIsA</span>(<span class="string">"TextLabel"</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">local</span> taken = <span class="keyword">false</span><br><br>
+        &nbsp;&nbsp;chest.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> taken <span class="keyword">then</span> <span class="keyword">return</span> <span class="keyword">end</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> hit.Parent:<span class="func">FindFirstChild</span>(<span class="string">"Humanoid"</span>) <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;taken = <span class="keyword">true</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> label <span class="keyword">then</span> label.Text = <span class="string">"✓"</span> <span class="keyword">end</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;chest.BrickColor = BrickColor.new(<span class="string">"Bright green"</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Сундук найден: "</span> .. chest.Name)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">task.wait</span>(<span class="number">2</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gui.Enabled = <span class="keyword">false</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+        &nbsp;&nbsp;<span class="keyword">end</span>)<br>
+        <span class="keyword">end</span><br><br>
+        setupChest(folder.Chest1)<br>
+        setupChest(folder.Chest2)<br>
+        setupChest(folder.Chest3)
+      </div>
+      <div class="info-callout green">
+        <span class="bulb">🔍</span>
+        <div>Снова <code>FindFirstChild</code>: ищем BillboardGui и Humanoid. <code>gui.Enabled = false</code> прячет метку после сбора.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">ChestScript лежит в QuestIsland.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">Касание → «?» становится «✓», сундук зеленеет.</label></li>
+        <li><input type="checkbox" id="p3s2" onchange="updateProjectProgress()"><label for="p3s2">Через 2 сек метка исчезает (Enabled = false).</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase4">
+      <h3>🚩 Фаза 4 — Финишный флаг <span class="phase-time">8 мин</span></h3>
+      <ol>
+        <li>Part <b>FinishFlag</b> (высокий столбик + флажок из Parts).</li>
+        <li>BillboardGui с текстом <code>ФИНИШ</code>, MaxDistance = 100, AlwaysOnTop = true.</li>
+        <li>Проверь весь маршрут: NPC → 3 сундука → флаг.</li>
+      </ol>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">FinishFlag с меткой «ФИНИШ».</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">Все метки читаются, сундуки собираются.</label></li>
+      </ul>
+      <div class="space-note">🎉 Базовый остров готов! Дальше — доп. фазы и ТЗ на локацию.</div>
+    </div>
+
+    <div class="phase" id="phase5" style="border-color:#38bdf8;">
+      <h3>💬 Фаза 5 (доп) — Подсказка у NPC <span class="phase-time">8 мин</span></h3>
+      <p>Второй TextLabel в BillboardGui NPC (ниже имени): <code>Собери 3 сундука!</code>. Или второй BillboardGui с StudsOffset = 0, 1.2, 0.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">Подсказка видна под именем NPC.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">Оба текста не слипаются (разный Offset или Size).</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase6" style="border-color:#fbbf24;">
+      <h3>🎨 Фаза 6 (доп) — Цвета меток <span class="phase-time">6 мин</span></h3>
+      <ul>
+        <li>Метка NPC — жёлтая, сундуки — белая «?», финиш — зелёный.</li>
+        <li>После сбора в скрипте можно менять TextColor3 на зелёный (по желанию).</li>
+      </ul>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6s0" onchange="updateProjectProgress()"><label for="p6s0">У разных объектов разные цвета меток.</label></li>
+        <li><input type="checkbox" id="p6s1" onchange="updateProjectProgress()"><label for="p6s1">Всё лежит в QuestIsland, имена аккуратные.</label></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== ТЗ ОСТРОВ ===== -->
+  <div class="project-box" id="islandBuild" style="border-color:#38bdf8;background:linear-gradient(135deg,#fff,#e0f2fe);">
+    <h2>🏗️ Часть 2 — Достройка острова (ТЗ)</h2>
+    <p>Метки и скрипт уже работают. По ТЗ оформи локацию из Parts / Toolbox — без новых обязательных скриптов.</p>
+
+    <div class="info-callout purple">
+      <span class="bulb">📁</span>
+      <div>Подпапка <code>QuestIsland/Decor</code> — туда декор. Не перекрывай сундуки и NPC так, чтобы нельзя было подойти.</div>
+    </div>
+
+    <h3 style="color:var(--accent-ink,#4a1a5a);">📋 Техническое задание: остров</h3>
+    <div class="tz-grid">
+      <div class="tz-item">
+        <div class="icon">🌴</div>
+        <div class="name">Растительность</div>
+        <div class="req">Минимум 3 дерева / пальмы / куста вокруг острова.</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">🪨</div>
+        <div class="name">Рельеф</div>
+        <div class="req">2+ скалы или холма (Parts), чтобы остров не был «плоской тарелкой».</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">🛤️</div>
+        <div class="name">Тропинки</div>
+        <div class="req">Дорожки от Spawn к NPC и к сундукам (плиты Path).</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">💡</div>
+        <div class="name">Свет</div>
+        <div class="req">2 фонаря / факела с PointLight у ключевых точек.</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">⚓</div>
+        <div class="name">Декор темы</div>
+        <div class="req">1 «морской» объект: лодка, якорь, бочка, мостик (Toolbox или Parts).</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">🏷️</div>
+        <div class="name">Ещё одна метка</div>
+        <div class="req">BillboardGui «СТАРТ» над Spawn или табличка у причала.</div>
+      </div>
+    </div>
+
+    <table class="tz-rules">
+      <tr><th>Правило</th><th>Зачем</th></tr>
+      <tr><td>Декор в <code>QuestIsland/Decor</code></td><td>Порядок в Explorer</td></tr>
+      <tr><td>Anchored = true</td><td>Ничего не падает</td></tr>
+      <tr><td>Сундуки доступны пешком</td><td>Квест проходится</td></tr>
+      <tr><td>Минимум 10 новых объектов</td><td>Остров выглядит живым</td></tr>
+    </table>
+
+    <details class="hint"><summary>📖 Toolbox</summary>
+      <p><code>palm tree</code>, <code>rock</code>, <code>torch</code>, <code>boat</code>, <code>barrel</code>, <code>wooden bridge</code>. Модели с зелёной галочкой.</p>
+    </details>
+
+    <div class="progress-track"><div class="progress-fill" id="buildProgress"></div></div>
+    <span class="progress-label" id="buildLabel">Выполнено шагов ТЗ: 0 из 7</span>
+
+    <div class="phase" id="phase7" style="border-color:#38bdf8;">
+      <h3>🌟 Фаза 7 — Собираем остров по ТЗ <span class="phase-time">15 мин</span></h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="b0" onchange="updateBuildProgress()"><label for="b0">Папка Decor создана.</label></li>
+        <li><input type="checkbox" id="b1" onchange="updateBuildProgress()"><label for="b1">3+ растения / деревья.</label></li>
+        <li><input type="checkbox" id="b2" onchange="updateBuildProgress()"><label for="b2">Рельеф: скалы или холмы.</label></li>
+        <li><input type="checkbox" id="b3" onchange="updateBuildProgress()"><label for="b3">Тропинки к NPC и сундукам.</label></li>
+        <li><input type="checkbox" id="b4" onchange="updateBuildProgress()"><label for="b4">2 источника света.</label></li>
+        <li><input type="checkbox" id="b5" onchange="updateBuildProgress()"><label for="b5">Морской декор + метка «СТАРТ».</label></li>
+        <li><input type="checkbox" id="b6" onchange="updateBuildProgress()"><label for="b6">Play: квест работает, декор на месте, ничего не падает.</label></li>
+      </ul>
+      <div class="space-note">🏆 Готово! BillboardGui + квест + локация острова.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>отличил BillboardGui от ScreenGui и SurfaceGui;</li>
+      <li>настроил StudsOffset, AlwaysOnTop, MaxDistance;</li>
+      <li>поиграл в «Настрой метку»;</li>
+      <li>собрал остров квестов с метками и скриптом сбора;</li>
+      <li>достроил локацию по ТЗ.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Метки летают!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти собрал остров</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь</label>
+    </div>
+    <textarea placeholder="Где ещё повесишь BillboardGui? Чем он удобнее SurfaceGui над NPC?"></textarea>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="Занятие_5.1.3_SurfaceGUI.html">
+      <div class="lbl">← Назад</div>
+      <div class="ttl">5.1.3 SurfaceGui</div>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 5.1.4 · BillboardGui</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  let missionIndex = 0;
+  let score = 0;
+
+  const missions = [
+    {
+      title: 'Задание 1 из 3',
+      text: 'Подними метку: <b>StudsOffset Y ≥ 2.5</b>, чтобы «?» был над сундуком.',
+      check: () => Number(document.getElementById('offsetY').value) >= 2.5
+    },
+    {
+      title: 'Задание 2 из 3',
+      text: 'Включи <b>AlwaysOnTop</b>, чтобы метка не пряталась за стеной.',
+      check: () => document.getElementById('alwaysOnTop').checked
+    },
+    {
+      title: 'Задание 3 из 3',
+      text: 'Поставь <b>MaxDistance = 20</b> и отодвинь камеру дальше 20 — метка должна пропасть.',
+      check: () => {
+        const maxD = Number(document.getElementById('maxDist').value);
+        const cam = Number(document.getElementById('camDist').value);
+        return maxD === 20 && cam > 20 && document.getElementById('floatTag').classList.contains('hidden');
+      }
+    }
+  ];
+
+  function renderTag() {
+    const off = Number(document.getElementById('offsetY').value);
+    const maxD = Number(document.getElementById('maxDist').value);
+    const cam = Number(document.getElementById('camDist').value);
+    const onTop = document.getElementById('alwaysOnTop').checked;
+
+    document.getElementById('offVal').textContent = off;
+    document.getElementById('maxVal').textContent = maxD;
+    document.getElementById('camVal').textContent = cam;
+
+    const tag = document.getElementById('floatTag');
+    // Map offset 0..5 to top% (lower top = higher on screen). Box center ~48%
+    const topPct = 48 - off * 5.5;
+    tag.style.top = topPct + '%';
+    tag.style.fontSize = (cam > 40 ? 0.7 : cam > 20 ? 0.85 : 0.95) + 'rem';
+
+    const tooFar = cam > maxD;
+    tag.classList.toggle('hidden', tooFar);
+    tag.classList.toggle('behind', !onTop && !tooFar);
+
+    document.getElementById('worldView').classList.toggle('far', cam > 40);
+    document.getElementById('camLabel').textContent =
+      'Камера: ' + (cam <= 15 ? 'близко' : cam <= 40 ? 'средне' : 'далеко') +
+      ' · дистанция ≈ ' + cam +
+      (tooFar ? ' · метка скрыта (MaxDistance)' : '');
+  }
+
+  function showMission() {
+    const m = missions[missionIndex];
+    if (!m) return;
+    document.getElementById('missionTitle').textContent = m.title;
+    document.getElementById('missionText').innerHTML = m.text;
+    document.getElementById('missionResult').textContent = '';
+  }
+
+  function checkMission() {
+    const m = missions[missionIndex];
+    if (!m) return;
+    const res = document.getElementById('missionResult');
+    if (m.check()) {
+      score++;
+      res.textContent = '✅ Верно!';
+      res.style.color = '#a3e635';
+      document.getElementById('scoreLine').textContent = 'Очки: ' + score + ' / 3';
+      missionIndex++;
+      if (missionIndex >= missions.length) {
+        document.getElementById('missionTitle').textContent = 'Готово!';
+        document.getElementById('missionText').textContent = 'StudsOffset, AlwaysOnTop и MaxDistance освоены. Пора в Studio!';
+        res.textContent = '🏆 Все 3 задания выполнены!';
+      } else {
+        setTimeout(showMission, 400);
+      }
+    } else {
+      res.textContent = '❌ Ещё не то — подкрути ползунки под текст задания.';
+      res.style.color = '#f87171';
+    }
+  }
+
+  function resetMissions() {
+    missionIndex = 0;
+    score = 0;
+    document.getElementById('scoreLine').textContent = 'Очки: 0 / 3';
+    document.getElementById('offsetY').value = 1;
+    document.getElementById('maxDist').value = 100;
+    document.getElementById('camDist').value = 10;
+    document.getElementById('alwaysOnTop').checked = false;
+    renderTag();
+    showMission();
+  }
+
+  function updateProjectProgress() {
+    const cbs = document.querySelectorAll('#mainProject .task-steps input[type=checkbox]');
+    let done = 0;
+    cbs.forEach(cb => { if (cb.checked) done++; });
+    const total = cbs.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('projectProgress').style.width = pct + '%';
+    document.getElementById('projectLabel').textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+  }
+
+  function updateBuildProgress() {
+    const cbs = document.querySelectorAll('#islandBuild .task-steps input[type=checkbox]');
+    let done = 0;
+    cbs.forEach(cb => { if (cb.checked) done++; });
+    const total = cbs.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('buildProgress').style.width = pct + '%';
+    document.getElementById('buildLabel').textContent = 'Выполнено шагов ТЗ: ' + done + ' из ' + total;
+  }
+
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const selected = container.querySelector('.choice-card.selected');
+    const resultDiv = container.querySelector('.activity-result');
+    container.querySelectorAll('.choice-card').forEach(c => c.classList.remove('correct', 'incorrect'));
+    if (!selected) {
+      resultDiv.textContent = '⚠️ Выбери вариант!';
+      resultDiv.className = 'activity-result neutral';
+      return;
+    }
+    const ok = selected.dataset.correctChoice === 'true';
+    selected.classList.add(ok ? 'correct' : 'incorrect');
+    resultDiv.textContent = ok ? '✅ Верно!' : '❌ Попробуй ещё раз.';
+    resultDiv.className = 'activity-result ' + (ok ? 'done' : 'neutral');
+  }
+
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.choice-card');
+    if (!card) return;
+    const parent = card.closest('.interactive-box') || card.parentElement;
+    parent.querySelectorAll('.choice-card').forEach(c => {
+      c.classList.remove('selected', 'correct', 'incorrect');
+    });
+    card.classList.add('selected');
+  });
+
+  renderTag();
+  showMission();
+</script>
+</body>
+</html>

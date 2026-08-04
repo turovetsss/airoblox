@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.1.3. GUI: SurfaceGui — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: 1rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#1a1030,#2d1b4e); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #a78bfa;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка SurfaceGui"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .9rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .85rem; }
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+    @media (max-width:700px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-card {
+      border-radius: 16px; padding: 14px 16px; border: 2px solid var(--line);
+      background: #fff;
+    }
+    .compare-card h4 { margin: 0 0 8px; }
+    .compare-card.screen { border-color: #38bdf8; background: #f0f9ff; }
+    .compare-card.surface { border-color: #a78bfa; background: #faf5ff; }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .95rem; line-height: 1.7; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .b { color: #f472b6; }
+    .tree-box .t { color: #a3e635; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.selected { border-color: var(--accent)!important; background: var(--accent-light)!important; }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .mini-game {
+      background: linear-gradient(180deg,#0f0a1a,#1e1035); border-radius: 24px; padding: 20px;
+      border: 3px solid #c084fc; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #e9d5ff; }
+    .sign-stage {
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: 16px; margin-top: 14px;
+    }
+    @media (max-width:900px) { .sign-stage { grid-template-columns: 1fr; } }
+    .wall-scene {
+      background: linear-gradient(180deg,#0c1220,#1a2336); border-radius: 16px; padding: 16px;
+      border: 2px solid #475569; min-height: 280px; position: relative;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+    }
+    .wall-scene.night { background: linear-gradient(180deg,#020617,#0f172a); }
+    .cube {
+      width: 160px; height: 160px; position: relative;
+      transform-style: preserve-3d; transform: rotateX(-18deg) rotateY(-28deg);
+    }
+    .face {
+      position: absolute; width: 160px; height: 160px; border: 2px solid #64748b;
+      background: #334155; display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: .85rem; color: #94a3b8; backface-visibility: hidden;
+    }
+    .face.front { transform: translateZ(80px); }
+    .face.back { transform: rotateY(180deg) translateZ(80px); }
+    .face.right { transform: rotateY(90deg) translateZ(80px); }
+    .face.left { transform: rotateY(-90deg) translateZ(80px); }
+    .face.top { transform: rotateX(90deg) translateZ(80px); }
+    .face.bottom { transform: rotateX(-90deg) translateZ(80px); }
+    .face.has-sign {
+      background: #1e1b4b; border-color: #c084fc; color: #fde047;
+      text-shadow: 0 0 12px #fbbf24, 0 0 24px #a855f7;
+      font-size: 1.1rem; padding: 8px; text-align: center; line-height: 1.2;
+    }
+    .face.has-sign.dim { color: #78716c; text-shadow: none; background: #292524; border-color: #57534e; }
+    .face.active-face { box-shadow: 0 0 0 3px #38bdf8 inset; }
+    .controls-panel {
+      background: #1e293b; border-radius: 16px; padding: 14px; border: 2px solid #64748b;
+    }
+    .controls-panel label { display: block; font-size: .85rem; opacity: .85; margin: 8px 0 4px; }
+    .controls-panel select, .controls-panel input[type=text] {
+      width: 100%; padding: 8px 10px; border-radius: 10px; border: 1px solid #475569;
+      background: #0f172a; color: #f8fafc; font-weight: 700;
+    }
+    .face-btns { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; }
+    .face-btns button {
+      border: 2px solid #475569; background: #0f172a; color: #e2e8f0; border-radius: 10px;
+      padding: 6px 10px; font-weight: 800; cursor: pointer; font-size: .8rem;
+    }
+    .face-btns button.on { border-color: #c084fc; background: #4c1d95; color: #fde047; }
+    .mission-box {
+      background: #312e81; border-radius: 12px; padding: 12px; margin-top: 10px;
+      border: 1px solid #818cf8;
+    }
+    .mission-box .ok { color: #a3e635; font-weight: 800; }
+    .slider-row { display: flex; align-items: center; gap: 10px; }
+    .slider-row input { flex: 1; }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin: 0 0 8px; color: var(--primary-dark,#1a4a0a); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .phase-time { font-size: .85rem; background: var(--accent-light,#f0e6f5); color: var(--accent-ink,#4a1a5a); padding: 3px 12px; border-radius: 20px; font-weight: 700; }
+    .progress-track { background: #e2e8f0; height: 10px; border-radius: 10px; margin: 16px 0 8px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg,var(--primary,#61b01f),#a3e635); transition: width .3s; }
+    .progress-label { font-size: .92rem; color: #334155; font-weight: 600; }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; align-items: baseline; gap: 8px; margin: 8px 0; line-height: 1.5; }
+    .task-steps li input[type="checkbox"] { transform: scale(1.2); flex-shrink: 0; margin-top: 3px; }
+    details.hint { background: #f1f5f9; border-radius: 12px; padding: 10px 14px; margin: 10px 0; border-left: 4px solid var(--accent,#6e0091); }
+    details.hint summary { cursor: pointer; font-weight: 700; color: var(--accent-ink,#4a1a5a); }
+    .space-note { background: #1a1a4a; color: #fbbf24; border-left: 4px solid #fbbf24; padding: 12px 16px; border-radius: 12px; margin: 12px 0; }
+    .build-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); gap: 10px; margin: 14px 0; }
+    .build-card {
+      background: linear-gradient(160deg,#1a1030,#2d1b4e); color: #f8fafc; border-radius: 14px;
+      padding: 12px; text-align: center; border: 2px solid #c084fc;
+    }
+    .build-card .ico { font-size: 1.8rem; }
+    .build-card .nm { font-weight: 800; margin: 4px 0; font-size: .9rem; }
+    .build-card .props { font-size: .75rem; opacity: .85; }
+    .path-flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; font-weight: 800; }
+    .path-flow span { background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+    .reflection-box textarea { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--line); font-family: inherit; min-height: 80px; }
+    .layer-flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; font-weight: 800; }
+    .layer-flow span { background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+    .face-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 12px 0; max-width: 360px; }
+    .face-chip {
+      background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 10px; text-align: center;
+      font-weight: 800; font-size: .85rem; border: 2px solid #475569;
+    }
+    .face-chip.hl { border-color: #c084fc; background: #4c1d95; color: #fde047; }
+    .tz-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 12px; margin: 14px 0; }
+    .tz-item { background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 14px; padding: 12px 14px; }
+    .tz-item .icon { font-size: 1.6rem; }
+    .tz-item .name { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin: 4px 0; }
+    .tz-item .req { font-size: .88rem; color: #64748b; line-height: 1.4; }
+    .tz-rules { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .tz-rules th, .tz-rules td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .tz-rules th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 5.1.3</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">5.1.3</div>
+      <div>
+        <div class="module-pill">Раздел 5.1 · GUI</div>
+        <h1>🪧 SurfaceGui</h1>
+        <p class="subtitle">Вывески в мире: теория → мини-игра → неоновое кафе</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🌃</div>
+    <div>
+      <strong>ScreenGui живёт на экране.</strong> А если нужно табло на стене магазина или кнопка на пульте в мире?
+      Сегодня — <b>SurfaceGui</b>: интерфейс, приклеенный к грани Part.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом уроке ты:</h2>
+    <ul>
+      <li>поймёшь разницу ScreenGui и SurfaceGui 🖥️ vs 🪧</li>
+      <li>научишься вешать TextLabel / TextButton на грань Part (Face) 📐</li>
+      <li>сделаешь яркую вывеску через <code>LightInfluence</code> 💡</li>
+      <li>соберёшь проект «Неоновое кафе» в Studio ☕</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Теория SurfaceGui</td><td>15 мин</td><td>Сравнение, Face, свойства, квиз</td></tr>
+      <tr><td>Мини-игра «Повесь вывеску»</td><td>10 мин</td><td>Face + LightInfluence на кубе</td></tr>
+      <tr><td>Проект: неоновое кафе</td><td>50 мин</td><td>Вывеска, меню, кнопка заказа, дверь</td></tr>
+      <tr><td>Доп. фазы 5–6</td><td>по желанию</td><td>Две стороны вывески, цвета меню</td></tr>
+      <tr><td>ТЗ: здание кафе</td><td>20–25 мин</td><td>Достройка локации из Parts / Toolbox</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Рефлексия</td></tr>
+      <tr><td>Итого</td><td>90 мин + доп.</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- ===== ТЕОРИЯ ===== -->
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: SurfaceGui</h2>
+
+    <div class="theory-section">
+      <h3>🖥️ ScreenGui vs 🪧 SurfaceGui</h3>
+      <div class="compare-grid">
+        <div class="compare-card screen">
+          <h4>ScreenGui</h4>
+          <p>Живёт в <b>StarterGui</b> → у каждого игрока на <b>экране</b>.</p>
+          <p>Меню, HP, кнопки «Играть».</p>
+        </div>
+        <div class="compare-card surface">
+          <h4>SurfaceGui</h4>
+          <p>Живёт внутри <b>Part</b> (или с Adornee на Part).</p>
+          <p>Вывеска на стене, табло, пульт в мире.</p>
+        </div>
+      </div>
+      <div class="info-callout">
+        <span class="bulb">💡</span>
+        <div>SurfaceGui видят все, кто смотрит на эту грань Part — как настоящую табличку в комнате.</div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🧱 Как создать вывеску</h3>
+      <ol>
+        <li>Создай Part (доска) — удобный размер около <b>8 × 4 × 1</b>. Имя <code>SignBoard</code>.</li>
+        <li>Anchored = true.</li>
+        <li>В Part: Insert Object → <b>SurfaceGui</b>.</li>
+        <li>В SurfaceGui: Insert Object → <b>TextLabel</b> (надпись) или <b>TextButton</b> (кнопка).</li>
+      </ol>
+      <div class="layer-flow">
+        <span>Part</span> →
+        <span>SurfaceGui</span> →
+        <span>TextLabel / TextButton</span>
+      </div>
+      <div class="tree-box">
+        <span class="g">Workspace</span><br>
+        &nbsp;&nbsp;<span class="g">SignBoard</span> (Part)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="b">SurfaceGui</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="t">TextLabel</span> ← «КАФЕ РОБО»
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>📐 Face — на какой стороне висит GUI?</h3>
+          <img src="assets/images/lesson-5.1.3/1.png" alt="Волки в пещере" />
+      <p>У Part шесть граней. Свойство <b>Face</b> у SurfaceGui выбирает сторону:</p>
+      <div class="face-grid">
+        <div class="face-chip">Top</div>
+        <div class="face-chip hl">Front</div>
+        <div class="face-chip">Bottom</div>
+        <div class="face-chip">Left</div>
+        <div class="face-chip">Back</div>
+        <div class="face-chip">Right</div>
+      </div>
+      <p>По умолчанию — <b>Front</b>. Если надпись «смотрит в стену» — смени Face или поверни Part.</p>
+    </div>
+
+    <div class="theory-section">
+      <h3>⚙️ Свойства TextLabel на поверхности</h3>
+      <table class="prop-table">
+        <tr><th>Свойство</th><th>Значение для центра</th><th>Зачем</th></tr>
+        <tr><td><code>AnchorPoint</code></td><td><code>0.5, 0.5</code></td><td>Точка привязки — центр</td></tr>
+        <tr><td><code>Position</code></td><td><code>{0.5,0},{0.5,0}</code></td><td>В центре поверхности</td></tr>
+        <tr><td><code>Size</code></td><td><code>{0,700},{0,300}</code> или scale</td><td>Крупная надпись</td></tr>
+        <tr><td><code>TextScaled</code></td><td><code>true</code></td><td>Текст подстроится под размер</td></tr>
+        <tr><td><code>BackgroundTransparency</code></td><td><code>1</code></td><td>Без серого фона (по желанию)</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h3>💡 LightInfluence — «неон ночью»</h3>
+      <p>Обычно SurfaceGui затемняется вместе с миром. Для яркой вывески:</p>
+      <ul>
+        <li><b>LightInfluence = 1</b> — как освещение вокруг (по умолчанию)</li>
+        <img src="assets/images/lesson-5.1.3/5.png" alt="Волки в пещере" />
+                          <img src="assets/images/lesson-5.1.3/4.png" alt="Волки в пещере" />
+      
+        <li><b>LightInfluence = 0</b> — всегда яркий, как неон</li>
+          <img src="assets/images/lesson-5.1.3/2.png" alt="Волки в пещере" />
+                          <img src="assets/images/lesson-5.1.3/3.png" alt="Волки в пещере" />
+      </ul>
+      <div class="info-callout purple">
+        <span class="bulb">✨</span>
+        <div>Поставь <code>LightInfluence = 0</code> на вывеске кафе — ночью она будет светиться!</div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🔘 Кнопки на SurfaceGui</h3>
+      <p>Можно положить <b>TextButton</b> внутрь SurfaceGui. Надёжный способ для урока:</p>
+      <ul>
+        <li>на Part с кнопкой добавь ещё <b>ClickDetector</b>;</li>
+        <li>в Script лови <code>MouseClick</code> и меняй текст на SurfaceGui / открывай дверь.</li>
+      </ul>
+      <p>Так клик работает стабильно, а SurfaceGui делает панель красивой.</p>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz1">
+      <h3>🧠 Квиз: куда кладём SurfaceGui?</h3>
+      <div class="choice-card" data-correct-choice="true">В Part (доску / стену / пульт)</div>
+      <div class="choice-card" data-correct-choice="false">Только в StarterGui</div>
+      <div class="choice-card" data-correct-choice="false">В Lighting</div>
+      <button class="action-btn" onclick="checkChoices('quiz1')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz2">
+      <h3>🧠 Квиз: яркая неоновая вывеска</h3>
+      <div class="choice-card" data-correct-choice="false">LightInfluence = 1</div>
+      <div class="choice-card" data-correct-choice="true">LightInfluence = 0</div>
+      <div class="choice-card" data-correct-choice="false">Удалить SurfaceGui</div>
+      <button class="action-btn" onclick="checkChoices('quiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="cheat-sheet">
+    <div class="cheat-grid">
+      <div class="cheat-item"><div class="title">🪧 SurfaceGui</div><div class="rule">Внутри Part</div></div>
+      <div class="cheat-item"><div class="title">📐 Face</div><div class="rule">Front / Back / Left…</div></div>
+      <div class="cheat-item"><div class="title">💡 LightInfluence</div><div class="rule"><code>0</code> = неон</div></div>
+      <div class="cheat-item"><div class="title">✍️ TextLabel</div><div class="rule">надпись на стене</div></div>
+      <div class="cheat-item"><div class="title">🔘 ClickDetector</div><div class="rule">клик по пульту</div></div>
+      <div class="cheat-item"><div class="title">📍 Центр</div><div class="rule">Anchor 0.5 + Pos 0.5</div></div>
+    </div>
+  </div>
+
+  <!-- ===== МИНИ-ИГРА ===== -->
+  <div class="mini-game" id="miniGame">
+    <h2>🎮 Мини-игра: Повесь вывеску</h2>
+    <p style="opacity:.9;margin:0;">Выбери грань (Face), текст и LightInfluence. Выполни 3 задания подряд.</p>
+
+    <div class="sign-stage">
+      <div class="wall-scene" id="wallScene">
+        <div class="cube" id="signCube" aria-hidden="true">
+          <div class="face front" data-face="Front" id="faceFront">Front</div>
+          <div class="face back" data-face="Back" id="faceBack">Back</div>
+          <div class="face right" data-face="Right" id="faceRight">Right</div>
+          <div class="face left" data-face="Left" id="faceLeft">Left</div>
+          <div class="face top" data-face="Top" id="faceTop">Top</div>
+          <div class="face bottom" data-face="Bottom" id="faceBottom">Bottom</div>
+        </div>
+        <div id="sceneHint" style="font-size:.9rem;opacity:.85;">Выбери Face и нажми «Повесить»</div>
+      </div>
+
+      <div class="controls-panel">
+        <div class="mission-box">
+          <div style="font-weight:800;" id="missionTitle">Задание 1 из 3</div>
+          <div id="missionText" style="margin-top:6px;">Повесь вывеску «КАФЕ» на грань <b>Front</b>.</div>
+          <div id="missionResult" class="ok" style="margin-top:8px;min-height:1.3em;"></div>
+        </div>
+
+        <label>Face</label>
+        <div class="face-btns" id="faceBtns">
+          <button type="button" class="on" data-face="Front" onclick="pickFace('Front')">Front</button>
+          <button type="button" data-face="Back" onclick="pickFace('Back')">Back</button>
+          <button type="button" data-face="Left" onclick="pickFace('Left')">Left</button>
+          <button type="button" data-face="Right" onclick="pickFace('Right')">Right</button>
+          <button type="button" data-face="Top" onclick="pickFace('Top')">Top</button>
+          <button type="button" data-face="Bottom" onclick="pickFace('Bottom')">Bottom</button>
+        </div>
+
+        <label>Текст вывески</label>
+        <input type="text" id="signText" value="КАФЕ" maxlength="12" />
+
+        <label>LightInfluence: <span id="liVal">0</span></label>
+        <div class="slider-row">
+          <span style="font-size:.8rem;">неон</span>
+          <input type="range" id="lightInf" min="0" max="1" step="1" value="0" oninput="updateLI()" />
+          <span style="font-size:.8rem;">тень</span>
+        </div>
+
+        <label style="display:flex;align-items:center;gap:8px;margin-top:10px;">
+          <input type="checkbox" id="nightMode" onchange="toggleNight()" />
+          Ночь в сцене
+        </label>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+          <button type="button" class="action-btn" onclick="hangSign()">Повесить</button>
+          <button type="button" class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetMissions()">🔄 Сначала</button>
+        </div>
+        <p id="scoreLine" style="margin-top:10px;font-weight:800;">Очки: 0 / 3</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card map-card" style="background:linear-gradient(135deg,#E8F5E0,#F4EAFA);border:2px solid var(--primary);border-radius:20px;padding:20px 24px;margin:20px 0;">
+    <h2 style="margin:0 0 .4rem;color:var(--primary-dark);">🗺️ С чего начать</h2>
+    <p>Открой Baseplate в Roblox Studio. Всё собираешь в Workspace — вывески живут на Parts в мире.</p>
+  </div>
+
+  <!-- ===== ПРОЕКТ ===== -->
+  <div class="project-box" id="mainProject">
+    <h2>☕ Проект «Неоновое кафе»</h2>
+    <p>Один большой проект: фасад кафе, яркая вывеска, меню на стене, пульт заказа и дверь для посетителей.</p>
+
+    <div class="path-flow">
+      <span>🧱 Фасад</span> →
+      <span>🪧 Вывеска</span> →
+      <span>📋 Меню</span> →
+      <span>🛎️ Заказ</span> →
+      <span>🚪 Дверь</span>
+    </div>
+
+    <div class="build-grid">
+      <div class="build-card"><div class="ico">🧱</div><div class="nm">Wall</div><div class="props">стена кафе</div></div>
+      <div class="build-card"><div class="ico">🪧</div><div class="nm">SignBoard</div><div class="props">неон + TextLabel</div></div>
+      <div class="build-card"><div class="ico">📋</div><div class="nm">MenuBoard</div><div class="props">3 позиции меню</div></div>
+      <div class="build-card"><div class="ico">🛎️</div><div class="nm">OrderPanel</div><div class="props">кнопка + ClickDetector</div></div>
+      <div class="build-card"><div class="ico">🚪</div><div class="nm">Door</div><div class="props">открывается заказом</div></div>
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="projectProgress"></div></div>
+    <span class="progress-label" id="projectLabel">Выполнено шагов: 0 из 18</span>
+
+    <!-- ФАЗА 0 -->
+    <div class="phase" id="phase0">
+      <h3>🧱 Фаза 0 — Фасад кафе <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>Создай папку <b>Cafe</b> в Workspace.</li>
+        <li>Собери стену <b>Wall</b> (широкий Part) и рядом <b>Door</b> (дверь, Anchored).</li>
+        <li>В Door добавь BoolValue <b>IsOpen</b> = false.</li>
+        <li>Поставь SpawnLocation перед входом.</li>
+      </ol>
+               
+                          <img src="assets/images/lesson-5.1.3/6.png" alt="Волки в пещере" />
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p0s0" onchange="updateProjectProgress()"><label for="p0s0">Папка Cafe, Wall и Door созданы.</label></li>
+        <li><input type="checkbox" id="p0s1" onchange="updateProjectProgress()"><label for="p0s1">IsOpen в Door, SpawnLocation у входа.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 1 -->
+    <div class="phase" id="phase1">
+      <h3>🪧 Фаза 1 — Неоновая вывеска <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>Part <b>SignBoard</b> на фасаде (примерно 8×3×1).</li>
+        <li>Внутрь → <b>SurfaceGui</b> → <b>TextLabel</b> с текстом <code>КАФЕ РОБО</code>.</li>
+        <li>На SurfaceGui: <b>LightInfluence = 0</b>, Face = Front.</li>
+        <li>У TextLabel: Настрой свойства, выделенные на картинках зеленым цветом на свой вкус</li>
+      </ol>
+           <img src="assets/images/lesson-5.1.3/7.png" alt="Волки в пещере" />
+                          <img src="assets/images/lesson-5.1.3/8.png" alt="Волки в пещере" />
+      
+      <div class="info-callout purple">
+        <span class="bulb">✨</span>
+        <div>Если надпись не видна — повернись к Front или смени Face. Ночью (Lighting) проверь, что вывеска не гаснет.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">SignBoard + SurfaceGui + TextLabel созданы.</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">LightInfluence = 0, текст по центру.</label></li>
+        <li><input type="checkbox" id="p1s2" onchange="updateProjectProgress()"><label for="p1s2">В Play вывеска читается с улицы.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 2 -->
+    <div class="phase" id="phase2">
+      <h3>📋 Фаза 2 — Меню на стене <span class="phase-time">12 мин</span></h3>
+      <p>Part <b>MenuBoard</b> рядом со входом. Один SurfaceGui, внутри три TextLabel:</p>
+      <ul>
+        <li><b>Item1</b> — «🍕 Пицца — 10»</li>
+        <li><b>Item2</b> — «🧃 Сок — 5»</li>
+        <li><b>Item3</b> — «🍰 Торт — 8»</li>
+      </ul>
+      <p>Расположи их столбиком (разный Position.Y). У SurfaceGui LightInfluence можно 0 или 0.3.</p>
+         <img src="assets/images/lesson-5.1.3/9.png" alt="Волки в пещере" />
+         <img src="assets/images/lesson-5.1.3/10.png" alt="Волки в пещере" />
+         <img src="assets/images/lesson-5.1.3/11.png" alt="Волки в пещере" />
+       <img src="assets/images/lesson-5.1.3/12.png" alt="Волки в пещере" />
+      
+      <div class="tree-box">
+        <span class="g">MenuBoard</span><br>
+        &nbsp;&nbsp;<span class="b">SurfaceGui</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">Item1</span>, <span class="t">Item2</span>, <span class="t">Item3</span>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">MenuBoard с SurfaceGui и 3 TextLabel.</label></li>
+        <li><input type="checkbox" id="p2s1" onchange="updateProjectProgress()"><label for="p2s1">Пункты меню видны и читаются.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 3 -->
+    <div class="phase" id="phase3">
+      <h3>🛎️ Фаза 3 — Пульт заказа <span class="phase-time">14 мин</span></h3>
+      <ol>
+        <li>Part <b>OrderPanel</b> у стойки (или на стене).</li>
+        <li>Добавь <b>ClickDetector</b>.</li>
+        <li>SurfaceGui → TextButton (или TextLabel) с именем <b>OrderBtn</b>, текст <code>ЗАКАЗАТЬ</code>.</li>
+        <li>Ещё один TextLabel <b>Status</b> — сначала пустой или «Ждём заказ».</li>
+      </ol>
+        <img src="assets/images/lesson-5.1.3/13.png" alt="Волки в пещере" />
+                          <img src="assets/images/lesson-5.1.3/14.png" alt="Волки в пещере" />
+      <p>Script внутри OrderPanel:</p>
+      <div class="code-block">
+        <span class="keyword">local</span> panel = script.Parent<br>
+        <span class="keyword">local</span> gui = panel:<span class="func">WaitForChild</span>(<span class="string">"SurfaceGui"</span>)<br>
+        <span class="keyword">local</span> status = gui:<span class="func">WaitForChild</span>(<span class="string">"Status"</span>)<br>
+        <span class="keyword">local</span> door = workspace.Cafe:<span class="func">WaitForChild</span>(<span class="string">"Door"</span>)<br>
+        <span class="keyword">local</span> isOpen = door:<span class="func">WaitForChild</span>(<span class="string">"IsOpen"</span>)<br><br>
+        panel.ClickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        &nbsp;&nbsp;status.Text = <span class="string">"Заказ принят! ☕"</span><br>
+        &nbsp;&nbsp;isOpen.Value = <span class="keyword">true</span><br>
+        &nbsp;&nbsp;door.Transparency = <span class="number">0.6</span><br>
+        &nbsp;&nbsp;door.CanCollide = <span class="keyword">false</span><br>
+        &nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Дверь кафе открыта"</span>)<br>
+        <span class="keyword">end</span>)
+      </div>
+      <div class="info-callout green">
+        <span class="bulb">🛎️</span>
+        <div>SurfaceGui рисует кнопку, ClickDetector ловит клик. Вместе получается «умный» пульт в мире.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">OrderPanel: ClickDetector + SurfaceGui (OrderBtn, Status).</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">Скрипт меняет Status и открывает дверь.</label></li>
+        <li><input type="checkbox" id="p3s2" onchange="updateProjectProgress()"><label for="p3s2">Play → клик по пульту → статус и открытая дверь.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 4 -->
+    <div class="phase" id="phase4">
+      <h3>🚪 Фаза 4 — Закрыть кафе + проверка <span class="phase-time">10 мин</span></h3>
+      <p>Добавь на тот же пульт второй «режим»: повторный клик закрывает дверь.</p>
+      <div class="code-block">
+        panel.ClickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> isOpen.Value == <span class="keyword">false</span> <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;status.Text = <span class="string">"Заказ принят! ☕"</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;isOpen.Value = <span class="keyword">true</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;door.Transparency = <span class="number">0.6</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;door.CanCollide = <span class="keyword">false</span><br>
+        &nbsp;&nbsp;<span class="keyword">else</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;status.Text = <span class="string">"Кафе закрыто"</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;isOpen.Value = <span class="keyword">false</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;door.Transparency = <span class="number">0</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;door.CanCollide = <span class="keyword">true</span><br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <p>Замени предыдущий обработчик этим (один Connect).</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">Повторный клик закрывает дверь и меняет Status.</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">Полный круг: вывеска → меню → заказ → дверь работает.</label></li>
+      </ul>
+      <div class="space-note">🎉 Базовое кафе готово! Дальше — доп. фазы, потом ТЗ на здание.</div>
+    </div>
+
+    <!-- ФАЗА 5 доп -->
+    <div class="phase" id="phase5" style="border-color:#38bdf8;">
+      <h3>🔄 Фаза 5 (доп) — Вывеска с двух сторон <span class="phase-time">8 мин</span></h3>
+      <p>Скопируй SurfaceGui на SignBoard (Ctrl+D). У копии поставь <b>Face = Back</b> и текст, например <code>OPEN</code> или своё имя кафе.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">Второй SurfaceGui на Back.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">С задней стороны видна другая надпись.</label></li>
+        <li><input type="checkbox" id="p5s2" onchange="updateProjectProgress()"><label for="p5s2">У обоих LightInfluence = 0.</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 6 доп -->
+    <div class="phase" id="phase6" style="border-color:#fbbf24;">
+      <h3>🎨 Фаза 6 (доп) — Цвета и «сегодняшнее блюдо» <span class="phase-time">8 мин</span></h3>
+      <ol>
+        <li>Покрась пункты меню в разные цвета TextColor3.</li>
+        <li>Добавь на MenuBoard TextLabel <b>Special</b> — «Сегодня: Пицца».</li>
+        <li>В скрипте заказа при открытии меняй Special на «Заказ в работе!» (через <code>MenuBoard.SurfaceGui.Special.Text = ...</code>).</li>
+      </ol>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6s0" onchange="updateProjectProgress()"><label for="p6s0">Пункты меню разноцветные.</label></li>
+        <li><input type="checkbox" id="p6s1" onchange="updateProjectProgress()"><label for="p6s1">Special меняется при заказе.</label></li>
+        <li><input type="checkbox" id="p6s2" onchange="updateProjectProgress()"><label for="p6s2">Всё лежит в папке Cafe, имена аккуратные.</label></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ===== ЧАСТЬ 2: ТЗ НА ЗДАНИЕ ===== -->
+  <div class="project-box" id="cafeBuild" style="border-color:#a78bfa;background:linear-gradient(135deg,#fff,#faf5ff);">
+    <h2>🏗️ Часть 2 — Достройка здания кафе</h2>
+    <p>
+      Скрипты и SurfaceGui уже работают. Теперь по <b>техническому заданию</b> дострой полноценное здание и улицу вокруг —
+      из своих Parts и/или моделей из Toolbox (только декор, без новых скриптов).
+    </p>
+
+    <div class="info-callout purple">
+      <span class="bulb">📁</span>
+      <div>
+        Создай (или используй) папку <code>Cafe</code> в Workspace.
+        Внутри заведи подпапку <b>Building</b> — туда сложи стены, крышу, окна, мебель и декор.
+        Уже готовые SignBoard, MenuBoard, OrderPanel, Door <b>не ломай</b> — они остаются на фасаде.
+      </div>
+    </div>
+
+    <h3 style="color:var(--accent-ink,#4a1a5a);margin-top:1.2rem;">📋 Техническое задание: здание «КАФЕ РОБО»</h3>
+    <div class="tz-grid">
+      <div class="tz-item">
+        <div class="icon">🧱</div>
+        <div class="name">Коробка здания</div>
+        <div class="req">Пол + 4 стены + крыша (минимум 6 Parts) или готовая модель здания из Toolbox. Дверь Door остаётся на фасаде / в проёме.</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">🪟</div>
+        <div class="name">Окна</div>
+        <div class="req">Минимум 2 окна: полупрозрачные Part (Transparency ≈ 0.4–0.6) или модели Window из Toolbox.</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">🛤️</div>
+        <div class="name">Дорожка ко входу</div>
+        <div class="req">От SpawnLocation до Door — дорожка из 3+ плит (Path / Brick).</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">🪑</div>
+        <div class="name">Летняя терраса</div>
+        <div class="req">Снаружи: минимум 1 столик + 2 стула (Parts или Toolbox: table, chair).</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">🛋️</div>
+        <div class="name">Интерьер</div>
+        <div class="req">Внутри: стойка/барная стойка + 1–2 предмета (стул гостя, полка, касса — на выбор).</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">💡</div>
+        <div class="name">Освещение</div>
+        <div class="req">Минимум 2 источника света: фонарь у входа и лампа внутри (Part + PointLight). Ночью кафе должно быть видно.</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">🌳</div>
+        <div class="name">Озеленение</div>
+        <div class="req">2+ дерева / куста / кашпо у фасада (Toolbox: tree, bush, plant).</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">🚧</div>
+        <div class="name">Ограда террасы</div>
+        <div class="req">Низкий забор или бордюр вокруг летней зоны (fence / barrier).</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">🏷️</div>
+        <div class="name">Табличка «Цены внутри»</div>
+        <div class="req">Ещё один Part + SurfaceGui + TextLabel «Цены внутри» на боковой стене (Face правильный, LightInfluence = 0).</div>
+      </div>
+      <div class="tz-item">
+        <div class="icon">🕐</div>
+        <div class="name">Часы работы</div>
+        <div class="req">Маленькая вывеска SurfaceGui: «10:00 – 22:00» или свой график рядом с входом.</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:1rem;">✅ Правила приёмки</h3>
+    <table class="tz-rules">
+      <tr><th>Правило</th><th>Зачем</th></tr>
+      <tr><td>Всё здание и декор в <code>Cafe/Building</code> (или аккуратно в <code>Cafe</code>)</td><td>Порядок в Explorer — легко проверить</td></tr>
+      <tr><td>Anchored = true у всех Parts / моделей</td><td>Ничего не падает при Play</td></tr>
+      <tr><td>Не перекрывай SignBoard, MenuBoard, OrderPanel</td><td>Интерфейс и клики остаются рабочими</td></tr>
+      <tr><td>Проём двери свободен — персонаж проходит после заказа</td><td>Сценарий урока не ломается</td></tr>
+      <tr><td>Минимум <b>12</b> новых объектов (Parts или Toolbox)</td><td>Локация «живая», не пустая стена</td></tr>
+      <tr><td>Play → заказ → дверь → зайти внутрь</td><td>Код + здание работают вместе</td></tr>
+    </table>
+
+    <details class="hint"><summary>📖 Подсказка: что искать в Toolbox</summary>
+      <p>Запросы: <code>cafe</code>, <code>restaurant</code>, <code>table chair</code>, <code>street lamp</code>, <code>window</code>, <code>awning</code> (козырёк), <code>fence</code>, <code>potted plant</code>, <code>counter</code>. Бери модели с зелёной галочкой. После вставки проверь Anchored.</p>
+    </details>
+
+    <div class="progress-track"><div class="progress-fill" id="buildProgress"></div></div>
+    <span class="progress-label" id="buildLabel">Выполнено шагов ТЗ: 0 из 10</span>
+
+    <div class="phase" id="phase7" style="border-color:#a78bfa;margin-top:8px;">
+      <h3>🌟 Фаза 7 — Собираем здание по ТЗ <span class="phase-time">20–25 мин</span></h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="b0" onchange="updateBuildProgress()"><label for="b0">Папка <code>Cafe/Building</code> создана, декор складываю туда.</label></li>
+        <li><input type="checkbox" id="b1" onchange="updateBuildProgress()"><label for="b1">Коробка здания: пол, стены, крыша (или модель) + проём под Door.</label></li>
+        <li><input type="checkbox" id="b2" onchange="updateBuildProgress()"><label for="b2">Минимум 2 окна на фасаде / боковых стенах.</label></li>
+        <li><input type="checkbox" id="b3" onchange="updateBuildProgress()"><label for="b3">Дорожка от Spawn к двери из 3+ плит.</label></li>
+        <li><input type="checkbox" id="b4" onchange="updateBuildProgress()"><label for="b4">Терраса: столик + 2 стула снаружи.</label></li>
+        <li><input type="checkbox" id="b5" onchange="updateBuildProgress()"><label for="b5">Интерьер: стойка + хотя бы 1 предмет внутри.</label></li>
+        <li><input type="checkbox" id="b6" onchange="updateBuildProgress()"><label for="b6">2 источника света (вход + внутри), PointLight включён.</label></li>
+        <li><input type="checkbox" id="b7" onchange="updateBuildProgress()"><label for="b7">Озеленение 2+ и ограда террасы.</label></li>
+        <li><input type="checkbox" id="b8" onchange="updateBuildProgress()"><label for="b8">SurfaceGui «Цены внутри» + вывеска часов работы.</label></li>
+        <li><input type="checkbox" id="b9" onchange="updateBuildProgress()"><label for="b9">Play: заказ открывает дверь, захожу внутрь, ничего не падает, вывески на месте.</label></li>
+      </ul>
+      <div class="space-note">🏆 Готово! У тебя локация: SurfaceGui + скрипт заказа + полноценное здание кафе по ТЗ.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>отличил ScreenGui от SurfaceGui;</li>
+      <li>настроил Face и LightInfluence;</li>
+      <li>поиграл в «Повесь вывеску»;</li>
+      <li>собрал неоновое кафе с меню и пультом заказа;</li>
+      <li>достроил здание и улицу по техническому заданию 🏗️</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Вывеска горит!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти собрал кафе</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь</label>
+    </div>
+    <textarea placeholder="Как назвал своё кафе? Что интереснее — SurfaceGui или достройка здания по ТЗ?"></textarea>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="Занятие_5.1.2_GUITextBoxImageLabelImageButton.html">
+      <div class="lbl">← Назад</div>
+      <div class="ttl">5.1.2 TextBox и картинки</div>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 5.1.3 · SurfaceGui</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  let currentFace = 'Front';
+  let hung = {}; // face -> {text, li}
+  let missionIndex = 0;
+  let score = 0;
+
+  const missions = [
+    { title: 'Задание 1 из 3', text: 'Повесь вывеску «КАФЕ» на грань <b>Front</b> (неон, LightInfluence = 0).', face: 'Front', sign: 'КАФЕ', li: 0 },
+    { title: 'Задание 2 из 3', text: 'Повесь «OPEN» на грань <b>Back</b>.', face: 'Back', sign: 'OPEN', li: 0 },
+    { title: 'Задание 3 из 3', text: 'Включи <b>ночь</b> и повесь «НЕОН» на <b>Front</b> с LightInfluence = 0 (чтобы светилось!).', face: 'Front', sign: 'НЕОН', li: 0, needNight: true }
+  ];
+
+  function pickFace(face) {
+    currentFace = face;
+    document.querySelectorAll('#faceBtns button').forEach(b => {
+      b.classList.toggle('on', b.dataset.face === face);
+    });
+    document.querySelectorAll('.face').forEach(f => {
+      f.classList.toggle('active-face', f.dataset.face === face);
+    });
+  }
+
+  function updateLI() {
+    document.getElementById('liVal').textContent = document.getElementById('lightInf').value;
+    renderHung();
+  }
+
+  function toggleNight() {
+    document.getElementById('wallScene').classList.toggle('night', document.getElementById('nightMode').checked);
+  }
+
+  function renderHung() {
+    const li = Number(document.getElementById('lightInf').value);
+    const night = document.getElementById('nightMode').checked;
+    document.querySelectorAll('.face').forEach(el => {
+      const face = el.dataset.face;
+      el.classList.remove('has-sign', 'dim');
+      if (hung[face]) {
+        el.classList.add('has-sign');
+        el.textContent = hung[face].text;
+        const dim = hung[face].li === 1 && night;
+        if (dim) el.classList.add('dim');
+      } else {
+        el.textContent = face;
+      }
+      el.classList.toggle('active-face', face === currentFace);
+    });
+    // preview current selection dimness for active face if not hung yet — optional
+    void li;
+  }
+
+  function hangSign() {
+    const text = (document.getElementById('signText').value || '').trim().toUpperCase();
+    const li = Number(document.getElementById('lightInf').value);
+    if (!text) {
+      document.getElementById('missionResult').textContent = '⚠️ Введи текст вывески';
+      document.getElementById('missionResult').style.color = '#fbbf24';
+      return;
+    }
+    hung[currentFace] = { text: text, li: li };
+    // clear other faces for clearer teaching? keep multi-face
+    renderHung();
+    document.getElementById('sceneHint').textContent = 'SurfaceGui.Face = ' + currentFace + ', LightInfluence = ' + li;
+
+    const m = missions[missionIndex];
+    if (!m) return;
+
+    const nightOk = !m.needNight || document.getElementById('nightMode').checked;
+    const ok = currentFace === m.face
+      && text === m.sign
+      && li === m.li
+      && nightOk;
+
+    const res = document.getElementById('missionResult');
+    if (ok) {
+      score++;
+      res.textContent = '✅ Верно! Вывеска на месте.';
+      res.style.color = '#a3e635';
+      document.getElementById('scoreLine').textContent = 'Очки: ' + score + ' / 3';
+      missionIndex++;
+      if (missionIndex >= missions.length) {
+        document.getElementById('missionTitle').textContent = 'Готово!';
+        document.getElementById('missionText').textContent = 'Ты освоил Face и LightInfluence. Пора в Studio!';
+        res.textContent = '🏆 Все 3 задания выполнены!';
+      } else {
+        showMission();
+      }
+    } else {
+      let tip = '❌ Пока не то.';
+      if (m.needNight && !document.getElementById('nightMode').checked) tip = '❌ Включи «Ночь в сцене».';
+      else if (currentFace !== m.face) tip = '❌ Нужна грань ' + m.face + '.';
+      else if (text !== m.sign) tip = '❌ Текст должен быть «' + m.sign + '».';
+      else if (li !== m.li) tip = '❌ LightInfluence должен быть ' + m.li + '.';
+      res.textContent = tip;
+      res.style.color = '#f87171';
+    }
+  }
+
+  function showMission() {
+    const m = missions[missionIndex];
+    document.getElementById('missionTitle').textContent = m.title;
+    document.getElementById('missionText').innerHTML = m.text;
+    document.getElementById('missionResult').textContent = '';
+    document.getElementById('signText').value = m.sign;
+    document.getElementById('lightInf').value = String(m.li);
+    updateLI();
+    pickFace(m.face);
+  }
+
+  function resetMissions() {
+    hung = {};
+    missionIndex = 0;
+    score = 0;
+    document.getElementById('scoreLine').textContent = 'Очки: 0 / 3';
+    document.getElementById('nightMode').checked = false;
+    toggleNight();
+    renderHung();
+    showMission();
+  }
+
+  function updateProjectProgress() {
+    const cbs = document.querySelectorAll('#mainProject .task-steps input[type=checkbox]');
+    let done = 0;
+    cbs.forEach(cb => { if (cb.checked) done++; });
+    const total = cbs.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('projectProgress').style.width = pct + '%';
+    document.getElementById('projectLabel').textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+  }
+
+  function updateBuildProgress() {
+    const cbs = document.querySelectorAll('#cafeBuild .task-steps input[type=checkbox]');
+    let done = 0;
+    cbs.forEach(cb => { if (cb.checked) done++; });
+    const total = cbs.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('buildProgress').style.width = pct + '%';
+    document.getElementById('buildLabel').textContent = 'Выполнено шагов ТЗ: ' + done + ' из ' + total;
+  }
+
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const selected = container.querySelector('.choice-card.selected');
+    const resultDiv = container.querySelector('.activity-result');
+    container.querySelectorAll('.choice-card').forEach(c => c.classList.remove('correct', 'incorrect'));
+    if (!selected) {
+      resultDiv.textContent = '⚠️ Выбери вариант!';
+      resultDiv.className = 'activity-result neutral';
+      return;
+    }
+    const ok = selected.dataset.correctChoice === 'true';
+    selected.classList.add(ok ? 'correct' : 'incorrect');
+    if (ok) {
+      resultDiv.textContent = '✅ Верно!';
+      resultDiv.className = 'activity-result done';
+    } else {
+      resultDiv.textContent = '❌ Попробуй ещё раз.';
+      resultDiv.className = 'activity-result neutral';
+    }
+  }
+
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.choice-card');
+    if (!card) return;
+    const parent = card.closest('.interactive-box') || card.parentElement;
+    parent.querySelectorAll('.choice-card').forEach(c => {
+      c.classList.remove('selected', 'correct', 'incorrect');
+    });
+    card.classList.add('selected');
+  });
+
+  // init mini-game
+  pickFace('Front');
+  showMission();
+  renderHung();
+</script>
+</body>
+</html>

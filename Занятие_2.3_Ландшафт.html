@@ -668,7 +668,15 @@
     </div>
 
     <!-- ===== ИТОГОВЫЙ ОПРОС: ОБЩИЕ ВОПРОСЫ ПО ТЕРРЕЙНУ ===== -->
-    <div class="quiz-wrap" id="quiz1">
+    
+    <!-- ===== МИНИ-ИГРА ===== -->
+    <div id="lessonMiniGame" class="rmg"></div>
+    <script src="assets/js/mini-games.js"></script>
+    <script>
+      RoboMiniGame.mount(document.getElementById("lessonMiniGame"), {"type":"matchPick","title":"Инструменты Terrain","hint":"Выбери нужный инструмент ландшафта.","rounds":[{"q":"Нужно насыпать холм","options":["Add","Subtract","Paint","Grow"],"answer":"Add"},{"q":"Нужно вырыть яму под озеро","options":["Subtract","Add","Paint","Smooth"],"answer":"Subtract"},{"q":"Нужно закрасить берег песком (Sand)","options":["Paint","Add","Subtract","Sea Level"],"answer":"Paint"},{"q":"Материал для пляжа","options":["Sand","Rock","Snow","Concrete"],"answer":"Sand"},{"q":"Сделать склон мягче","options":["Smooth","Paint","Erase","Import"],"answer":"Smooth"}]});
+    </script>
+
+<div class="quiz-wrap" id="quiz1">
       <h2>📝 Проверь себя (общие вопросы)</h2>
 
       <div class="quiz-question" data-name="quiz1q0" data-correct="b">
@@ -728,10 +736,6 @@
       <a class="nav-btn prev" href="Занятие_1.6_Строим_карту_деревни.html">
         <div class="lbl">← Назад</div>
         <div class="ttl">1.6 Строим карту деревни</div>
-      </a>
-      <a class="nav-btn next" href="Занятие_2.2_Строим_лес.html">
-        <div class="lbl">Далее →</div>
-        <div class="ttl">2.2 Строим лес</div>
       </a>
     </div>
 

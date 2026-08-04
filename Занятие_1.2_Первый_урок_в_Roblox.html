@@ -210,10 +210,12 @@
     <div class="activity-result"></div>
   </div>
 
-  <div class="reflection-box">
-    <h2>💭 Рефлексия</h2>
-    <textarea placeholder="Сегодня в Roblox Studio я...&#10;Самым сложным было...&#10;На следующем уроке хочу..."></textarea>
-  </div>
+  <div class="reflection-box" id="reflectionBlock">
+  <h2>💭 Рефлексия</h2>
+  <textarea id="reflectionText" placeholder="Сегодня в Roblox Studio я...&#10;Самым сложным было...&#10;На следующем уроке хочу..."></textarea>
+  <button class="action-btn" onclick="submitReflection()">Отправить</button>
+  <div id="reflectionResult" style="margin-top:10px; font-weight:700;"></div>
+</div>
 
   <!-- Блок ИИ-помощника (Алиса) -->
   <div class="ai-helper">
@@ -341,7 +343,6 @@
   <!-- Навигация -->
   <div class="lesson-nav">
     <a class="nav-btn prev" href="Занятие_1.1_Знакомство_с_компьютером.html"><div class="lbl">← Назад</div><div class="ttl">1.1 Знакомство с компьютером</div></a>
-    <a class="nav-btn next" href="Занятие_1.3_Инструменты_моделирования.html"><div class="lbl">Далее →</div><div class="ttl">1.3 Инструменты моделирования</div></a>
   </div>
 </main>
 
@@ -356,5 +357,19 @@
   </div>
 </footer>
 <script src="assets/js/lesson.js"></script>
+<script> function submitReflection() {
+    const textarea = document.getElementById('reflectionText');
+    const resultDiv = document.getElementById('reflectionResult');
+    if (textarea.value.trim() === '') {
+      resultDiv.textContent = 'Пожалуйста, напишите хотя бы несколько слов.';
+      resultDiv.style.color = '#C0392B';
+      return;
+    }
+    resultDiv.textContent = '✅ Спасибо! Твой ответ записан.';
+    resultDiv.style.color = '#2E7D32';
+    textarea.disabled = true;
+    const btn = document.querySelector('#reflectionBlock .action-btn');
+    if (btn) btn.disabled = true;
+  }</script>
 </body>
 </html>

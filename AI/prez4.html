@@ -1,0 +1,868 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ИИ-Творец · Занятие 4 · Этика и фактчекинг</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #61B01F;
+      --green-dark: #2E4A17;
+      --green-light: #E8F5E0;
+      --purple: #6C3F9B;
+      --purple-light: #F4EAFA;
+      --orange: #F0A500;
+      --orange-light: #FFF4DB;
+      --orange-ink: #875B00;
+      --red: #D32F2F;
+      --red-light: #FFEBEE;
+      --navy: #12274C;
+      --white: #FFFFFF;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #fff; overflow: hidden; height: 100vh; color: var(--green-dark); }
+    .presentation { display: flex; flex-direction: column; height: 100vh; }
+    .slide-stage { flex: 1; position: relative; overflow: hidden; }
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      padding: 28px 48px 20px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+      background: #fff;
+      animation: fade .4s ease;
+    }
+    .slide.active { display: flex; align-items: center; justify-content: center; }
+    .slide-inner {
+      width: 100%;
+      max-width: none;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 32px;
+      align-items: center;
+      height: 100%;
+      max-height: none;
+      padding: 0 1.5vw;
+    }
+    .slide-inner.full { grid-template-columns: 1fr; }
+    .slide-inner.stack { grid-template-columns: 1fr; max-width: none; }
+
+    .title-slide { background: var(--navy); color: #fff; }
+    .title-slide .slide-inner { grid-template-columns: 1.1fr 0.9fr; }
+    .title-slide h1 { font-size: clamp(34px, 5.5vw, 64px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; }
+    .title-slide h2 { font-size: clamp(26px, 3.8vw, 44px); font-weight: 800; color: #b9eb8d; margin: 10px 0; }
+    .title-slide p { font-size: clamp(18px, 2.2vw, 28px); font-weight: 700; max-width: none; opacity: .95; }
+    .title-slide .stars {
+      position: absolute; inset: 0; pointer-events: none; opacity: .35;
+      background-image: radial-gradient(2px 2px at 20% 30%, #fff, transparent),
+        radial-gradient(2px 2px at 70% 20%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 40% 70%, #9cf, transparent),
+        radial-gradient(2px 2px at 85% 60%, #fff, transparent),
+        radial-gradient(1px 1px at 10% 80%, #fff, transparent);
+    }
+
+    .eyebrow {
+      display: inline-block; padding: 8px 18px; border-radius: 99px;
+      font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;
+      background: var(--green-light); color: var(--green-dark);
+    }
+    .eyebrow.orange { background: var(--orange); color: #fff; }
+    .eyebrow.red { background: var(--red); color: #fff; }
+    h2 { font-size: clamp(34px, 4.8vw, 58px); font-weight: 900; line-height: 1.1; color: var(--green-dark); margin: 10px 0 8px; }
+    .lead { font-weight: 800; font-size: clamp(19px, 2.1vw, 28px); line-height: 1.45; }
+    .list { margin-top: 16px; display: grid; gap: 12px; font-size: clamp(18px, 2vw, 26px); font-weight: 800; }
+    .list span { display: flex; align-items: flex-start; gap: 10px; }
+    .tick {
+      width: 32px; height: 32px; border-radius: 50%; background: var(--green-light);
+      display: grid; place-items: center; color: var(--green); font-size: 14px; flex-shrink: 0; margin-top: 1px;
+    }
+    .tick.red { background: var(--red-light); color: var(--red); }
+    .tick.orange { background: var(--orange-light); color: var(--orange); }
+    .note {
+      padding: 16px 20px; border-radius: 18px; background: var(--orange-light); color: var(--orange-ink);
+      font-weight: 800; font-size: clamp(17px, 1.7vw, 23px); margin-top: 14px;
+    }
+    .note.green { background: var(--green-light); color: var(--green-dark); }
+    .note.purple { background: var(--purple-light); color: var(--purple); }
+    .note.red { background: var(--red-light); color: var(--red); }
+    .discuss {
+      margin-top: 14px; padding: 12px 16px; border-radius: 16px; border: 2px dashed var(--purple);
+      background: #faf5ff; color: var(--purple); font-weight: 800; font-size: clamp(14px, 1.2vw, 18px);
+    }
+    .discuss.red { border-color: var(--red); background: var(--red-light); color: var(--red); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    .can-card { padding: 16px; border-radius: 20px; font-weight: 800; }
+    .can-card h3 { font-size: clamp(16px, 1.5vw, 22px); margin-bottom: 6px; }
+    .can-card ul { list-style: none; padding: 0; font-size: clamp(16px, 1.6vw, 22px); display: grid; gap: 4px; }
+    .can-card ul li::before { content: "• "; }
+    .can { background: var(--green-light); color: var(--green-dark); }
+    .cannot { background: var(--red-light); color: var(--red); }
+
+    .steps { display: grid; gap: 10px; margin-top: 12px; }
+    .step {
+      display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start;
+      background: var(--green-light); border-radius: 16px; padding: 12px 14px; font-weight: 800;
+      font-size: clamp(17px, 1.8vw, 24px);
+    }
+    
+    .step-num {
+      min-width: 42px; height: 42px; padding: 0 10px; border-radius: 999px; white-space: nowrap; font-size: 14px; background: var(--green); color: #fff;
+      display: grid; place-items: center; font-weight: 900;
+    }
+    .step.alt { background: var(--purple-light); }
+    .step.alt .step-num { background: var(--purple); }
+    .step.warn { background: var(--orange-light); }
+    .step.warn .step-num { background: var(--orange); color: #3E2C0B; }
+    .step.danger { background: var(--red-light); }
+    .step.danger .step-num { background: var(--red); color: #fff; }
+
+    .illustration { position: relative; display: flex; align-items: center; justify-content: center; min-height: 280px; }
+    .blob {
+      position: absolute; width: 78%; aspect-ratio: 1; border-radius: 45% 55% 60% 40%;
+      background: var(--green-light); transform: rotate(-12deg); opacity: 0.55;
+    }
+    .blob.red { background: var(--red-light); }
+    .blob.orange { background: var(--orange-light); }
+    .title-slide .blob { background: #244d82; opacity: 0.35; }
+
+    .robot {
+      position: relative; width: 150px; height: 180px; z-index: 2;
+      filter: drop-shadow(0 10px 12px rgba(18,39,76,0.15));
+    }
+    .robot-head {
+      position: absolute; width: 112px; height: 82px; left: 19px; top: 16px;
+      border-radius: 36px; background: linear-gradient(145deg, #fff, #c8e6ff); border: 5px solid #193a66;
+    }
+    .robot-ear {
+      position: absolute; top: 38px; width: 20px; height: 36px; border-radius: 12px;
+      background: var(--green); border: 4px solid #193a66;
+    }
+    .robot-ear.left { left: 2px; } .robot-ear.right { right: 2px; }
+    .robot-eye {
+      position: absolute; top: 36px; width: 15px; height: 20px; background: #193a66; border-radius: 50%;
+    }
+    .robot-eye.one { left: 42px; } .robot-eye.two { right: 42px; }
+    .robot-eye.think { height: 6px; top: 42px; border-radius: 4px; }
+    .robot-mouth {
+      position: absolute; width: 30px; height: 12px; left: 41px; top: 60px;
+      border-bottom: 4px solid #193a66; border-radius: 0 0 20px 20px;
+    }
+    .robot-mouth.worried {
+      width: 20px; height: 14px; left: 46px; top: 58px;
+      border: 4px solid #193a66; border-radius: 50%; background: transparent;
+    }
+    .antenna { position: absolute; width: 6px; height: 22px; left: 72px; top: -4px; background: #193a66; }
+    .antenna::before {
+      content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%;
+      background: var(--orange); left: -4px; top: -8px;
+    }
+    .robot-body {
+      position: absolute; width: 100px; height: 72px; left: 25px; bottom: 4px;
+      border-radius: 28px 28px 20px 20px; background: var(--green); border: 5px solid #193a66;
+    }
+    .robot-panel {
+      position: absolute; width: 48px; height: 28px; left: 26px; top: 18px;
+      border-radius: 12px; background: #f8fff4; border: 4px solid #193a66;
+    }
+    .robot-panel::before, .robot-panel::after {
+      content: ''; position: absolute; width: 7px; height: 7px; border-radius: 50%; top: 7px; background: var(--purple);
+    }
+    .robot-panel::before { left: 10px; } .robot-panel::after { right: 10px; }
+
+    .float-icon {
+      position: absolute; z-index: 3; width: 56px; height: 56px; display: grid; place-items: center;
+      border-radius: 18px; background: white; box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      font-size: 26px; animation: bob 3s ease-in-out infinite;
+    }
+    .float-icon.a { top: 4%; left: 4%; }
+    .float-icon.b { top: 10%; right: 4%; animation-delay: .6s; }
+    .float-icon.c { bottom: 8%; left: 2%; animation-delay: 1.2s; }
+    .float-icon.d { bottom: 4%; right: 6%; animation-delay: 1.7s; }
+
+    .chat-bubble {
+      border-radius: 16px; padding: 12px 16px; font-weight: 800;
+      font-size: clamp(16px, 1.6vw, 22px); line-height: 1.4; margin-bottom: 10px;
+    }
+    .bad { background: var(--orange-light); border: 3px solid #f5c15a; color: var(--orange-ink); }
+    .good { background: var(--green-light); border: 3px solid #9bce75; color: var(--green-dark); }
+    .danger-bubble { background: var(--red-light); border: 3px solid var(--red); color: var(--red); }
+
+    .task-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; }
+    .task-card {
+      background: var(--green-light); border-radius: 16px; padding: 14px; font-weight: 800;
+      font-size: clamp(16px, 1.5vw, 21px); border: 2px solid transparent; transition: .2s;
+    }
+    .task-card:hover { border-color: var(--green); }
+
+    .ref-links {
+      margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .ref-links a {
+      background: #f0f4f9; padding: 4px 12px; border-radius: 20px;
+      font-weight: 700; font-size: 13px; text-decoration: none; color: var(--purple);
+      border: 1px solid #dce3ec; transition: .2s;
+    }
+    .ref-links a:hover { background: var(--purple-light); border-color: var(--purple); }
+
+    .teacher-toggle {
+      position: fixed; bottom: 90px; right: 20px; z-index: 999;
+      background: var(--purple); color: #fff; border: none; border-radius: 40px;
+      padding: 12px 20px; font-weight: 900; font-size: 14px; cursor: pointer;
+      box-shadow: 0 8px 20px rgba(108,63,155,.4); transition: .2s; font-family: inherit;
+    }
+    .teacher-toggle:hover { transform: scale(1.05); background: #5a2f8a; }
+    .teacher-panel {
+      position: fixed; bottom: 150px; right: 20px; width: 360px; max-height: 60vh;
+      overflow-y: auto; background: #fff; border-radius: 24px; padding: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.2); z-index: 998; display: none;
+      font-size: 14px; line-height: 1.5; border: 3px solid var(--purple-light);
+    }
+    .teacher-panel.open { display: block; }
+    .teacher-panel h4 { color: var(--purple); margin-bottom: 8px; }
+    .teacher-panel p { margin-bottom: 6px; padding: 4px 6px; border-radius: 6px; transition: .2s; }
+    .teacher-panel .meta { color: var(--orange-ink); font-weight: 700; }
+    .teacher-panel .active-note { background: var(--green-light); }
+
+    .footer-nav {
+      height: 76px; background: white; border-top: 1px solid #e6eee1;
+      display: flex; align-items: center; justify-content: center; padding: 0 16px; flex-shrink: 0;
+    }
+    .nav-inner {
+      width: 100%; max-width: none; width: 100%; padding: 0 40px; display: flex; align-items: center;
+      justify-content: space-between; gap: 12px;
+    }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border: 0;
+      border-radius: 30px; font-weight: 900; font-size: 15px; cursor: pointer; transition: .2s;
+      background: var(--green-light); color: var(--green-dark); font-family: inherit;
+    }
+    .nav-btn:hover { transform: translateY(-2px); background: #d8efc7; }
+    .nav-btn.primary { background: var(--green); color: white; }
+    .nav-btn.primary:hover { background: #52991a; }
+    .nav-btn:disabled { opacity: .4; pointer-events: none; }
+    .progress-wrap { flex: 1; max-width: 420px; }
+    .progress-track { height: 8px; border-radius: 99px; background: #e7eee5; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: inherit; transition: width .3s; }
+    .dots { display: flex; gap: 4px; justify-content: center; margin-top: 6px; flex-wrap: wrap; }
+    .nav-dot {
+      border: 0; padding: 0; width: 7px; height: 7px; border-radius: 50%;
+      background: #cad7c4; cursor: pointer; transition: .2s;
+    }
+    .nav-dot.active { background: var(--purple); transform: scale(1.35); }
+    .counter { font-weight: 900; font-size: 18px; white-space: nowrap; min-width: 72px; text-align: center; }
+
+    @keyframes bob { 50% { transform: translateY(-10px) rotate(3deg); } }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 760px) {
+      .slide { padding: 16px; }
+      .slide-inner, .title-slide .slide-inner { grid-template-columns: 1fr; gap: 14px; }
+      .illustration { min-height: 180px; order: -1; }
+      .robot { transform: scale(0.72); }
+      .two-col, .task-cards { grid-template-columns: 1fr; }
+      .footer-nav { height: 68px; }
+      .progress-wrap { display: none; }
+      .nav-btn { padding: 8px 14px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+<div class="presentation">
+  <main class="slide-stage">
+
+    <!-- 1. Титульный -->
+    <section class="slide title-slide active">
+      <div class="stars"></div>
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow" style="background:#F0A500;color:#12274C;">Курс · Занятие 4</span>
+          <h1>ИИ-ТВОРЕЦ: ОТ ИДЕИ ДО СВОЕГО ПЕРВОГО ПОМОЩНИКА</h1>
+          <h2>Этика и фактчекинг: критическая оценка информации</h2>
+          <p>🔍 Твой четвёртый шаг в мир ИИ</p>
+          <p style="margin-top:10px;font-size:clamp(14px,1.5vw,18px);font-weight:700;opacity:.9;">Сегодня: что такое галлюцинации ИИ, как проверять факты, авторское право, этичные промпты и ответственное использование технологий.</p>
+    
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div class="float-icon a">🔍</div>
+          <div class="float-icon b">⚖️</div>
+          <div class="float-icon c">📋</div>
+          <div class="float-icon d">🧐</div>
+          <div class="robot">
+            <div class="antenna"></div>
+            <div class="robot-ear left"></div><div class="robot-ear right"></div>
+            <div class="robot-head"></div>
+            <div class="robot-eye one think"></div><div class="robot-eye two think"></div>
+            <div class="robot-mouth worried"></div>
+            <div class="robot-body"><div class="robot-panel"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Повторение пройденного -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Повторяем</span>
+          <h2>Что мы уже знаем?</h2>
+          <div class="list">
+            <span><span class="tick">🤖</span> ИИ учится на примерах, но может ошибаться и выдавать вымысел за правду</span>
+            <span><span class="tick">💬</span> Формула хорошего промпта: Роль + Задача + Контекст + Формат</span>
+            <span><span class="tick">🛡️</span> В интернете важно защищать данные, не доверять дипфейкам и сообщать взрослым о кибербуллинге</span>
+          </div>
+          <div class="discuss">❓ Почему даже самый умный ИИ может дать неверный ответ? Что такое «галлюцинация»?</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;background:#fff;border-radius:24px;padding:22px;box-shadow:0 10px 28px rgba(0,0,0,.08);text-align:center;font-weight:900;">
+            <div style="font-size:56px;">🧠</div>
+            <div style="font-size:16px;color:var(--purple);">Вспоминаем прошлые занятия</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Галлюцинации ИИ: определение -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow red">Галлюцинации</span>
+          <h2>Когда ИИ «фантазирует»</h2>
+          <p class="lead"><strong>Галлюцинация</strong> — это правдоподобная, но ложная информация, которую ИИ выдаёт за истину. Он не врет намеренно — он просто комбинирует наиболее вероятные слова, не понимая смысла.</p>
+          <div class="list">
+            <span><span class="tick red">📖</span> Может придумать факты, имена, даты, ссылки на несуществующие источники</span>
+            <span><span class="tick red">📰</span> Способен генерировать фейковые новости или искажать реальные события</span>
+            <span><span class="tick red">⚠️</span> В некоторых случаях галлюцинация может быть опасной (например, медицинские советы)</span>
+          </div>
+          <div class="note red">🧠 Главное: ИИ не отделяет правду от вымысла — за этим должны следить мы.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob red"></div>
+          <div style="position:relative;z-index:2;font-size:80px;">🤖💭❓</div>
+          <div style="position:absolute;bottom:10%;right:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);color:var(--red);">«Я это выдумал?»</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Примеры галлюцинаций -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow orange">Примеры</span>
+          <h2>Как выглядят галлюцинации</h2>
+          <div class="chat-bubble bad">❌ «Первый человек на Луне — Жан-Люк Пикар» (на самом деле Нил Армстронг)</div>
+          <div class="chat-bubble bad">❌ «Столица Австралии — Сидней» (на самом деле Канберра)</div>
+          <div class="chat-bubble bad">❌ «В 2020 году в России не было интернета» (очевидно неправда)</div>
+          <div class="note red">⚠️ Заметили, как уверенно звучат ошибочные утверждения? Именно поэтому мы учимся фактчекингу.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob orange"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🤯</div>
+          <div style="position:absolute;bottom:8%;right:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);">Правда или нет?</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Причины галлюцинаций -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Анализ</span>
+          <h2>Почему ИИ галлюцинирует?</h2>
+          <div class="steps">
+            <div class="step danger"><div class="step-num">1</div><div><strong>Недостаток данных</strong>: ИИ «дорисовывает» пробелы в знаниях, опираясь на похожие примеры</div></div>
+            <div class="step danger"><div class="step-num">2</div><div><strong>Смешение источников</strong>: объединяет факты из разных текстов, создавая новую, но ложную информацию</div></div>
+            <div class="step danger"><div class="step-num">3</div><div><strong>Ошибки в обучающих данных</strong>: если в исходных текстах были неточности, ИИ их повторит</div></div>
+            <div class="step danger"><div class="step-num">4</div><div><strong>Отсутствие понимания</strong>: модель не отличает реальность от вымысла, она лишь предсказывает следующее слово</div></div>
+          </div>
+          <div class="note green">💡 Вывод: галлюцинации — не злой умысел, а особенность архитектуры. Но ответственность за проверку лежит на нас.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🧩</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Дипфейки и авторское право (новый слайд) -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow red">Дипфейки</span>
+          <h2>Этическая сторона дипфейков</h2>
+          <p class="lead">Создание реалистичных поддельных видео и аудио с помощью ИИ поднимает серьёзные этические вопросы.</p>
+          <div class="list">
+            <span><span class="tick red">🎭</span> Дипфейки могут разрушить репутацию человека, стать инструментом шантажа или дезинформации</span>
+            <span><span class="tick red">⚖️</span> Во многих странах создание и распространение дипфейков без согласия человека преследуется по закону</span>
+            <span><span class="tick">✅</span> Этичное использование: кино, образование, юмор — но только с маркировкой «создано ИИ»</span>
+          </div>
+          <div class="note red">🛡️ Правило: если вы встретили подозрительное видео, используйте принцип «Pause — Check — Tell» (остановись, проверь, расскажи взрослым).</div>
+        </div>
+        <div class="illustration">
+          <div class="blob red"></div>
+          <div style="position:relative;z-index:2;font-size:80px;">🎭</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Авторское право и ИИ -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Этика</span>
+          <h2>Авторское право и искусственный интеллект</h2>
+          <p class="lead">Когда вы используете текст, картинку или музыку, созданные ИИ, вы должны помнить о правах и обязанностях.</p>
+          <div class="list">
+            <span><span class="tick">📝</span> <strong>Указывайте</strong>, что работа создана с помощью ИИ — это проявление академической честности</span>
+            <span><span class="tick">📚</span> <strong>Не выдавайте</strong> сгенерированный текст за полностью свой — вы должны его проанализировать и переработать</span>
+            <span><span class="tick">🖼️</span> Картинки от нейросетей могут иметь ограничения: некоторые сервисы запрещают коммерческое использование</span>
+            <span><span class="tick">⚖️</span> Если сомневаетесь — проверьте пользовательское соглашение сервиса или спросите учителя</span>
+          </div>
+          <div class="note purple">📌 Пример правильной подписи: «Изображение сгенерировано Kandinsky 3.1, промпт: …, авторская обработка: имя ученика».</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">⚖️</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Этичное указание использования ИИ -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow green">Честность</span>
+          <h2>Как указывать, что ты использовал ИИ?</h2>
+          <div class="chat-bubble good">✅ «При подготовке доклада использовался ChatGPT для поиска идей. Весь текст проверен и отредактирован автором.»</div>
+          <div class="chat-bubble good">✅ «Рисунок создан нейросетью Шедеврум, затем доработан в графическом редакторе.»</div>
+          <div class="list">
+            <span><span class="tick">🔹</span> Называйте конкретный инструмент (ChatGPT, Kandinsky, GigaChat)</span>
+            <span><span class="tick">🔹</span> Описывайте, что именно вы сделали сами: проверку, редактирование, дополнение фактов</span>
+            <span><span class="tick">🔹</span> Это не недостаток, а признак грамотного и ответственного пользователя</span>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">📝</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Фактчекинг: пошаговый алгоритм -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Навык</span>
+          <h2>Фактчекинг: 4 шага проверки</h2>
+          <p class="lead"><strong>Фактчекинг</strong> — это проверка достоверности информации.</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div><strong>Найди первоисточник</strong> — откуда ИИ взял эту информацию?</div></div>
+            <div class="step alt"><div class="step-num">2</div><div><strong>Сравни с другими источниками</strong> — минимум 2–3 надёжных сайта или книг</div></div>
+            <div class="step warn"><div class="step-num">3</div><div><strong>Оцени авторитетность</strong> — кто автор? Есть ли у сайта репутация?</div></div>
+            <div class="step danger"><div class="step-num">4</div><div><strong>Задай уточняющий вопрос ИИ</strong>: попроси показать источник или перепроверить утверждение</div></div>
+          </div>
+          <div class="note purple">🧠 Правило трёх источников: если три независимых и надёжных источника говорят одно и то же — вероятно, это правда.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🔍</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Инструменты фактчекинга -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Инструменты</span>
+          <h2>Сайты для проверки фактов</h2>
+          <div class="list">
+            <span><span class="tick">🌍</span> <strong>Snopes.com</strong> — один из старейших фактчекинговых ресурсов, проверяет вирусные истории и слухи</span>
+            <span><span class="tick">🌍</span> <strong>FactCheck.org</strong> — мониторинг точности политических заявлений и новостей</span>
+            <span><span class="tick">🇷🇺</span> <strong>Проверено.Медиа</strong> — российский проект по проверке фактов и борьбе с фейками</span>
+            <span><span class="tick">🇷🇺</span> <strong>Лапша-Медиа</strong> — разоблачение ложной информации в рунете</span>
+            <span><span class="tick">🔎</span> <strong>Google / Яндекс</strong> — просто поищите ключевые факты в нескольких источниках</span>
+          </div>
+          <div class="ref-links">
+            <a href="https://www.snopes.com" target="_blank">🔍 Snopes</a>
+            <a href="https://www.factcheck.org" target="_blank">🔍 FactCheck.org</a>
+            <a href="https://проверено.медиа" target="_blank">🇷🇺 Проверено.Медиа</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🌐</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. Практика: разбор текста с галлюцинациями -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow orange">Практика</span>
+          <h2>Найди ошибки в тексте от ИИ</h2>
+          <p class="lead">Работа в группах (по 3–4 человека). Вот ответ нейросети. Найдите все галлюцинации.</p>
+          <div class="chat-bubble bad" style="font-size:clamp(14px,1.2vw,18px);">
+            «Первый искусственный спутник Земли был запущен в 1958 году. Он назывался "Спутник-2" и на его борту была собака Белка. Спутник весил 500 килограммов и проработал на орбите 3 месяца. После этого Советский Союз запустил человека в космос — Юрия Гагарина в 1962 году.»
+          </div>
+          <div class="discuss red">⏱ 5 минут: обсудите, запишите все неточности. Потом сверим.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Разбор практики -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow green">Разбор</span>
+          <h2>Что было не так?</h2>
+          <div class="list">
+            <span><span class="tick red">❌</span> Первый спутник — <strong>1957 год</strong> (4 октября), а не 1958</span>
+            <span><span class="tick red">❌</span> Название — <strong>«Спутник-1»</strong>, а не «Спутник-2»</span>
+            <span><span class="tick red">❌</span> На борту «Спутника-1» не было животных. Собака — <strong>Лайка</strong> полетела на «Спутнике-2»</span>
+            <span><span class="tick red">❌</span> Вес — около <strong>83,6 кг</strong>, а не 500</span>
+            <span><span class="tick red">❌</span> Гагарин полетел <strong>12 апреля 1961 года</strong>, а не в 1962</span>
+          </div>
+          <div class="note green">🧠 Видите, сколько ошибок в одном коротком абзаце? Вот почему критическое мышление необходимо!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">✅</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. Игра «Этично или нет?» -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow orange">Игра</span>
+          <h2>🎯 Этично или нет?</h2>
+          <p class="lead">Я читаю ситуацию. Поднимайте 👍, если считаете действие этичным, и ✋, если нет.</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>«Ученик написал сочинение полностью через ChatGPT и сдал как своё, не указав ИИ.» → <strong style="color:var(--red);">НЕТ ✋</strong></div></div>
+            <div class="step alt"><div class="step-num">2</div><div>«Девочка попросила ИИ объяснить тему, пересказала своими словами и указала, что использовала нейросеть.» → <strong style="color:var(--green);">ДА 👍</strong></div></div>
+            <div class="step warn"><div class="step-num">3</div><div>«Школьник создал дипфейк с лицом одноклассника, чтобы разыграть друзей, не спросив разрешения.» → <strong style="color:var(--red);">НЕТ ✋</strong></div></div>
+            <div class="step danger"><div class="step-num">4</div><div>«Студент проверил написанный им текст через ИИ-редактор, исправил ошибки и сдал, отметив использование инструмента.» → <strong style="color:var(--green);">ДА 👍</strong></div></div>
+          </div>
+          <div class="discuss">🧠 Обсуждение: почему одни ситуации этичны, а другие — нет? Где грань?</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14. Памятка «Проверяю ИИ» -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Твой инструмент</span>
+          <h2>Памятка: как проверять информацию от ИИ</h2>
+          <div class="check-list">
+            <div class="check-item"><span class="ok">1</span> Получи ответ от ИИ и прочитай его внимательно</div>
+            <div class="check-item"><span class="ok">2</span> Спроси себя: «Звучит ли это правдоподобно?»</div>
+            <div class="check-item"><span class="ok">3</span> Найди первоисточник: откуда ИИ взял информацию?</div>
+            <div class="check-item"><span class="ok">4</span> Сравни с 2–3 надёжными источниками (учебник, энциклопедия, проверенные сайты)</div>
+            <div class="check-item"><span class="ok">5</span> Попроси ИИ уточнить или показать ссылку на источник</div>
+            <div class="check-item"><span class="ok">6</span> Если сомневаешься — обязательно спроси учителя или родителей</div>
+          </div>
+          <div class="note purple">📋 Сохрани эту памятку в заметках телефона — она пригодится каждый день.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">📋</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15. Как ИИ может помочь в фактчекинге -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Совет</span>
+          <h2>Используй ИИ для проверки ИИ</h2>
+          <p class="lead">Сам ChatGPT может помочь вам проверять факты, если правильно его попросить.</p>
+          <div class="chat-bubble good">✅ «Проверь, пожалуйста, этот текст на фактические ошибки и укажи источники.»</div>
+          <div class="chat-bubble good">✅ «Ты уверен, что это утверждение верно? Можешь подтвердить ссылкой на надёжный источник?»</div>
+          <div class="note green">💡 Важно: не верьте ИИ на слово, даже когда он «проверяет» — всё равно сравнивайте с независимыми данными!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🤖➡️🔍</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16. Кейс: галлюцинация в реальной жизни -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow red">Кейс</span>
+          <h2>Реальная история: ChatGPT и судебный прецедент</h2>
+          <p class="lead">В 2023 году адвокат в США использовал ChatGPT для подготовки судебного документа. ИИ придумал несуществующие судебные решения и цитаты. Адвокат не проверил текст, и это привело к серьёзным последствиям.</p>
+          <div class="list">
+            <span><span class="tick red">⚖️</span> Судья обнаружил фальшивые ссылки и оштрафовал адвоката</span>
+            <span><span class="tick red">📰</span> Этот случай стал известен на весь мир как пример опасности галлюцинаций</span>
+            <span><span class="tick">✅</span> Урок: всегда перепроверяйте критически важную информацию, особенно в ответственных документах</span>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob red"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">⚖️❌</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17. Этика промптов: как задавать вопросы -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Этичный промптинг</span>
+          <h2>Не проси ИИ делать то, что неэтично</h2>
+          <p class="lead">Даже самый точный промпт не должен нарушать этические нормы.</p>
+          <div class="two-col">
+            <div class="can-card cannot">
+              <h3>❌ Так нельзя</h3>
+              <ul>
+                <li>«Напиши письмо от имени учителя с ложной информацией»</li>
+                <li>«Создай фейковый аккаунт одноклассника»</li>
+                <li>«Придумай, как обмануть родителей»</li>
+              </ul>
+            </div>
+            <div class="can-card can">
+              <h3>✅ А так можно</h3>
+              <ul>
+                <li>«Помоги составить черновик письма, который я потом отредактирую»</li>
+                <li>«Объясни, как работают дипфейки, чтобы я мог их распознать»</li>
+                <li>«Предложи идеи, как рассказать родителям о проблеме»</li>
+              </ul>
+            </div>
+          </div>
+          <div class="note red">🧠 Главный принцип: не используй ИИ для обмана, вторжения в личную жизнь или нарушения закона.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🚫</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18. Рефлексия -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Рефлексия</span>
+          <h2>Что было самым важным?</h2>
+          <div class="list">
+            <span><span class="tick">❓</span> Что такое галлюцинации ИИ? Приведи свой пример.</span>
+            <span><span class="tick">❓</span> Почему важно указывать, что ты использовал ИИ?</span>
+            <span><span class="tick">❓</span> Какие шаги фактчекинга ты запомнил?</span>
+            <span><span class="tick">❓</span> Что из сегодняшнего урока пригодится тебе в жизни?</span>
+          </div>
+          <div class="discuss">Обсуди с соседом (2 минуты), затем послушаем 2–3 человека.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 19. Ресурсы для самостоятельного изучения -->
+    
+
+    <!-- 20. Итоги занятия -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow green">Отлично!</span>
+          <h2>Итоги занятия</h2>
+          <div class="check-list">
+            <div class="check-item"><span class="ok">✔️</span> узнал, что такое <strong>галлюцинации ИИ</strong> и почему они возникают</div>
+            <div class="check-item"><span class="ok">✔️</span> разобрался с <strong>авторским правом</strong> и этичным указанием использования ИИ</div>
+            <div class="check-item"><span class="ok">✔️</span> освоил <strong>фактчекинг</strong> — алгоритм проверки информации</div>
+            <div class="check-item"><span class="ok">✔️</span> создал личную <strong>памятку «Проверяю ИИ»</strong></div>
+            <div class="check-item"><span class="ok">✔️</span> понял, как отличать <strong>этичные</strong> промпты от неэтичных</div>
+          </div>
+          <p style="font-weight:900;color:var(--purple);font-size:clamp(18px,1.8vw,28px);margin-top:14px;">🔍 Теперь ты не просто пользователь — ты критически мыслящий исследователь! Ты молодец!</p>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div class="float-icon a">🎉</div>
+          <div class="float-icon b">⭐</div>
+          <div class="float-icon c">🏆</div>
+          <div class="float-icon d">🔍</div>
+          <div class="robot">
+            <div class="antenna"></div>
+            <div class="robot-ear left"></div><div class="robot-ear right"></div>
+            <div class="robot-head"></div>
+            <div class="robot-eye one"></div><div class="robot-eye two"></div>
+            <div class="robot-mouth"></div>
+            <div class="robot-body"><div class="robot-panel"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 21. Задание на урок (проект) -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">На уроке · проект</span>
+          <h2>«Поймай ошибку ИИ»</h2>
+          <p class="lead">На занятии: 5 вопросов к ChatGPT, проверка в двух источниках, таблица и вывод.</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Выбери тему и задай ChatGPT <strong>5 вопросов</strong>. Скриншоты ответов.</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>Проверь каждый ответ в <strong>двух источниках</strong>. Таблица: Вопрос · Ответ · Проверка · Итог.</div></div>
+            <div class="step warn"><div class="step-num">3</div><div><strong>Вывод:</strong> почему нельзя слепо доверять ИИ? Когда он полезен?</div></div>
+          </div>
+          <div class="note">📌 При необходимости доделай дома и сдай проект в Classroom (макс. 10 баллов).</div>
+          <div class="ref-links">
+            <a href="https://classroom.google.com" target="_blank">📤 Сдать проект</a>
+            <a href="https://chat.openai.com" target="_blank">💬 ChatGPT</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:110px;">🕵️🔍</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 21b. Домашнее задание -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Google Classroom</span>
+          <h2>Домашнее задание</h2>
+          <p class="lead">Отдельно от проекта на уроке — выбери уровень:</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">⭐</div><div><strong>Лёгкое:</strong> 1 вопрос-факт ИИ + проверка в 1 источнике. Скрин.</div></div>
+            <div class="step alt"><div class="step-num">⭐⭐</div><div><strong>Среднее:</strong> 3 вопроса ИИ — отметь верно / неверно / неточно + источники.</div></div>
+            <div class="step warn"><div class="step-num">⭐⭐⭐</div><div><strong>Сложное:</strong> Найди ошибку ИИ и напиши правильный ответ со ссылкой.</div></div>
+          </div>
+          <div class="ref-links">
+            <a href="https://classroom.google.com" target="_blank">📤 Сдать ДЗ</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:110px;">🏠💻</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 22. Анонс следующего занятия -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Продолжение</span>
+          <h2>На следующем занятии</h2>
+          <div class="list">
+            <span><span class="tick">🔹</span> Познакомимся с <strong>ИИ-поисковиками</strong> (Perplexity AI)</span>
+            <span><span class="tick">🔹</span> Научимся искать информацию с помощью ИИ и проверять её</span>
+            <span><span class="tick">🔹</span> Подготовим <strong>структурированный доклад</strong> с опорой на проверенные источники</span>
+            <span><span class="tick">🔹</span> Применим фактчекинг на практике — проверим несколько новостей из интернета</span>
+          </div>
+          <p style="font-weight:900;color:var(--purple);font-size:clamp(20px,2vw,32px);margin-top:16px;">🚀 До встречи! Ты уже готов к новым открытиям!</p>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:110px;transform:rotate(20deg);">🚀</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 23. Благодарность и напутствие -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow green">Спасибо!</span>
+          <h2>Ты — молодец!</h2>
+          <p class="lead">Сегодня мы заложили фундамент ответственного отношения к ИИ. Помни: технологии — это продолжение человеческих ценностей. Используй ИИ во благо, проверяй информацию и всегда оставайся человеком — думающим, этичным и творческим.</p>
+          <div class="note green">💚 ИИ — твой помощник, но главные решения всегда за тобой.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:90px;">🌟</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer-nav">
+    <nav class="nav-inner">
+      <button class="nav-btn" id="prevBtn" type="button">← Назад</button>
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="dots" id="dots"></div>
+      </div>
+      <span class="counter" id="counter">1 / 23</span>
+      <button class="nav-btn primary" id="nextBtn" type="button">Вперёд →</button>
+    </nav>
+  </footer>
+</div>
+
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progressFill = document.getElementById('progressFill');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let current = 0;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Слайд ' + (i + 1));
+    dot.addEventListener('click', () => showSlide(i));
+    dots.appendChild(dot);
+  });
+
+  function showSlide(index) {
+    current = Math.max(0, Math.min(index, slides.length - 1));
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+    document.querySelectorAll('.nav-dot').forEach((dot, i) => dot.classList.toggle('active', i === current));
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progressFill.style.width = ((current + 1) / slides.length * 100) + '%';
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+
+    const notes = document.querySelectorAll('#teacherNotes p');
+    notes.forEach((p, i) => {
+      p.classList.toggle('active-note', i === current);
+    });
+    const activeNote = notes[current];
+    if (activeNote) {
+      activeNote.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  }
+
+  prevBtn.addEventListener('click', () => showSlide(current - 1));
+  nextBtn.addEventListener('click', () => showSlide(current + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); showSlide(current + 1); }
+    if (e.key === 'ArrowLeft') showSlide(current - 1);
+    if (e.key === 'Home') showSlide(0);
+    if (e.key === 'End') showSlide(slides.length - 1);
+  });
+  showSlide(0);
+
+  const toggleBtn = document.getElementById('teacherToggle');
+  const panel = document.getElementById('teacherPanel');
+  toggleBtn.addEventListener('click', () => {
+    panel.classList.toggle('open');
+    toggleBtn.textContent = panel.classList.contains('open') ? '📕 Скрыть заметки' : '📘 Для учителя';
+  });
+</script>
+</body>
+</html>

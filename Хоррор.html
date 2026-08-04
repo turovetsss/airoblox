@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>П10. Хоррор — РОБОВИТА</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #1a1a1a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: .84rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: #1e293b; color: #f8fafc; }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: #7f1d1d; }
+    .scenario-box {
+      background: linear-gradient(135deg,#0f172a,#1e293b); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #64748b;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.warn { background: #78350f; }
+    .info-callout.green { background: #14532d; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid #334155;
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка хоррора"; position: absolute; top: -14px; left: 20px;
+      background: #1e293b; color: #f8fafc;
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid #64748b;
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: #7f1d1d; margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .tree-box {
+      background: #0f172a; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .88rem; line-height: 1.65; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .t { color: #a3e635; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: #7f1d1d; }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .shot {
+      display: block; max-width: 100%; margin: 12px 0; border-radius: 14px;
+      border: 2px solid #334155; background: #0f172a; box-shadow: 0 8px 24px rgba(15,23,42,.2);
+    }
+    .shot-cap { font-size: .9rem; color: #475569; margin: -4px 0 14px; padding: 0 4px; }
+    .mini-game {
+      background: linear-gradient(180deg,#020617,#1e293b); border-radius: 24px; padding: 20px;
+      border: 3px solid #475569; margin: 24px 0; color: #f1f5f9;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #e2e8f0; }
+    .mission-box {
+      background: #0f172a; border-radius: 12px; padding: 12px; border: 1px solid #64748b; margin-bottom: 10px;
+    }
+    .fog-stage {
+      position: relative; height: 200px; border-radius: 16px; overflow: hidden;
+      background: linear-gradient(180deg,#020617 0%,#14532d 70%,#166534 100%);
+      border: 2px solid #64748b; margin-top: 12px;
+    }
+    .fog-layer {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(148,163,184,.55), rgba(15,23,42,.85));
+      pointer-events: none; transition: opacity .3s;
+    }
+    .cabin-mini {
+      position: absolute; bottom: 36px; left: 40%; width: 70px; height: 50px;
+      background: #78350f; border: 2px solid #92400e; border-radius: 4px;
+    }
+    .killer-mini {
+      position: absolute; bottom: 40px; left: 12%; font-size: 2rem;
+      transition: left .4s linear;
+    }
+    .hero-mini {
+      position: absolute; bottom: 40px; left: 55%; font-size: 2rem;
+      transition: left .15s linear;
+    }
+    .ctrl-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; align-items: center; }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#f1f5f9); border: 3px solid #334155;
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: #7f1d1d; margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin-top: 0; color: #7f1d1d; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .phase-time {
+      font-size: .75rem; background: #fee2e2; color: #7f1d1d;
+      padding: 2px 10px; border-radius: 99px; font-weight: 700;
+    }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+    .task-steps label { cursor: pointer; }
+    .progress-wrap { margin: 12px 0 4px; }
+    .progress-bar { height: 12px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg,#7f1d1d,#61b01f); transition: width .25s; }
+    .progress-label { font-size: .9rem; font-weight: 700; color: #7f1d1d; margin-top: 6px; }
+    .space-note {
+      background: linear-gradient(135deg,#fef2f2,#f1f5f9); border: 2px dashed #7f1d1d;
+      border-radius: 18px; padding: 16px 18px; margin: 14px 0; font-weight: 700;
+    }
+    .arch-grid {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(170px,1fr)); gap: 12px; margin: 12px 0;
+    }
+    .arch-card {
+      background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 14px;
+    }
+    .arch-card h4 { margin: 0 0 6px; color: #7f1d1d; }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Проект П10</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">П10</div>
+      <div>
+        <div class="module-pill">Проектная деятельность · сложный</div>
+        <h1>👻 Хоррор Роблокс</h1>
+        <p class="subtitle">Ночь · туман · домик · киллер · вид от 1-го лица · спринт</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🔦</div>
+    <div>
+      <strong>Миссия:</strong> собрать хоррор-локацию (трава, Cabin, лес, Horror Sky, ночь, туман),
+      положить Spawn + Flashlight, добавить Killer и скрипты героя:
+      руки/ноги в FP-виде и бег на Left Shift.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом проекте ты:</h2>
+    <ul>
+      <li>соберёшь атмосферу через <code>Lighting</code>, Sky и Fog 🌫️</li>
+      <li>расставишь Cabin, Trees, Spawn, Flashlight, Killer 🏚️</li>
+      <li>покажешь руки и ноги в виде от 1-го лица 👀</li>
+      <li>сделаешь спринт на Shift (убежать от киллера) 🏃</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📚 Теория</h2>
+
+    <div class="theory-section">
+      <h3>1. Атмосфера = Lighting + Sky + Fog</h3>
+      <div class="arch-grid">
+        <div class="arch-card">
+          <h4>🌌 Horror Sky</h4>
+          <p style="margin:0;font-size:.9rem;">Тёмный Skybox из Toolbox</p>
+        </div>
+        <div class="arch-card">
+          <h4>🕐 TimeOfDay</h4>
+          <p style="margin:0;font-size:.9rem;">Ночь: <code>02:00:00</code></p>
+        </div>
+        <div class="arch-card">
+          <h4>🌫️ FogEnd</h4>
+          <p style="margin:0;font-size:.9rem;">Туман ближе = страшнее. Ставим <code>1000</code></p>
+        </div>
+      </div>
+      <div class="info-callout">
+        <div class="bulb">💡</div>
+        <div>В Explorer сервис называется <b>Lighting</b> (не Lightning). TimeOfDay и FogEnd — его свойства.</div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>2. Вид от первого лица</h3>
+      <p>В FP Roblox прячет тело игрока через <code>LocalTransparencyModifier</code>. Скрипт каждый кадр (<code>RenderStepped</code>) ставит его в <code>0</code> для рук или ног — и они снова видны.</p>
+      <div class="tree-box">
+        <span class="g">StarterPlayer</span><br>
+        &nbsp;&nbsp;└─ <span class="g">StarterPlayerScripts</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="t">ArmFPview</span> (Arm / Hand)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <span class="t">LegFPview</span> (Leg / Foot)
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>3. Спринт</h3>
+      <p>LocalScript в <code>StarterGui</code>: при зажатии клавиши поднимаем <code>WalkSpeed</code> до 50 и чуть увеличиваем <code>FieldOfView</code>. При отпускании — обратно 16.</p>
+    </div>
+
+    <div class="cheat-sheet">
+      <div class="cheat-grid">
+        <div class="cheat-item"><div class="title">Anchor</div><div class="rule">Земля не падает</div></div>
+        <div class="cheat-item"><div class="title">Grass</div><div class="rule">Материал земли</div></div>
+        <div class="cheat-item"><div class="title">FogEnd</div><div class="rule">Дальность тумана</div></div>
+        <div class="cheat-item"><div class="title">LocalTransparency</div><div class="rule">Видимость частей тела</div></div>
+        <div class="cheat-item"><div class="title">WalkSpeed</div><div class="rule">Скорость бега</div></div>
+        <div class="cheat-item"><div class="title">Killer</div><div class="rule">NPC из Toolbox</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="quiz1">
+    <h2>🧠 Проверка теории</h2>
+    <div class="quiz-block quiz-question" data-name="q1" data-correct="b">
+      <p><b>1.</b> Где настраивают TimeOfDay и FogEnd?</p>
+      <label class="choice-card"><input type="radio" name="q1" value="a"> В ServerStorage</label>
+      <label class="choice-card"><input type="radio" name="q1" value="b"> В Lighting</label>
+      <label class="choice-card"><input type="radio" name="q1" value="c"> В StarterPack</label>
+      <div class="q-feedback"></div>
+    </div>
+    <div class="quiz-block quiz-question" data-name="q2" data-correct="a">
+      <p><b>2.</b> Куда кладут ArmFPview и LegFPview?</p>
+      <label class="choice-card"><input type="radio" name="q2" value="a"> StarterPlayer → StarterPlayerScripts</label>
+      <label class="choice-card"><input type="radio" name="q2" value="b"> ServerScriptService</label>
+      <label class="choice-card"><input type="radio" name="q2" value="c"> Lighting</label>
+      <div class="q-feedback"></div>
+    </div>
+    <div class="quiz-block quiz-question" data-name="q3" data-correct="c">
+      <p><b>3.</b> Зачем спринт в хорроре?</p>
+      <label class="choice-card"><input type="radio" name="q3" value="a"> Чтобы летать</label>
+      <label class="choice-card"><input type="radio" name="q3" value="b"> Чтобы отключить туман</label>
+      <label class="choice-card"><input type="radio" name="q3" value="c"> Чтобы убежать от киллера</label>
+      <div class="q-feedback"></div>
+    </div>
+    <button class="btn primary" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <div class="mini-game">
+    <h2>🎮 Мини-сцена: туман и погоня</h2>
+    <div class="mission-box">Зажми «Спринт» и удирай от киллера. Ползунок — густота тумана (как FogEnd).</div>
+    <div class="fog-stage" id="fogStage">
+      <div class="cabin-mini"></div>
+      <div class="killer-mini" id="mgKiller">🪓</div>
+      <div class="hero-mini" id="mgHero">🔦</div>
+      <div class="fog-layer" id="fogLayer"></div>
+    </div>
+    <div class="ctrl-row">
+      <label>Туман <input type="range" id="fogRange" min="20" max="100" value="70"></label>
+      <button type="button" class="btn primary" id="sprintBtn">🏃 Спринт (зажать)</button>
+      <span id="mgMsg" style="font-weight:800;"></span>
+    </div>
+  </div>
+
+  <div class="project-box" id="keyTaskBox">
+    <h2>🛠️ Проект в Roblox Studio</h2>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="projectFill"></div></div>
+      <div class="progress-label" id="projectLabel">Выполнено шагов: 0</div>
+    </div>
+
+    <div class="phase">
+      <h3>🌿 Фаза 1 — Земля и локация <span class="phase-time">20 мин</span></h3>
+      <ol>
+        <li>Создай Part, растяни Move/Scale на всю площадку.</li>
+        <li>Properties: зелёный цвет, Material = <b>Grass</b>, включи <b>Anchor</b>.</li>
+        <li>Toolbox → <code>Cabin</code> — поставь домик(и).</li>
+        <li>Toolbox → <code>Forest</code> / <code>Trees</code> — лес. По желанию вышки с светом.</li>
+        <li>Toolbox → <code>Horror Sky</code> — перетащи тёмный Skybox на экран.</li>
+        <li>Explorer → <b>Lighting</b>: TimeOfDay = <code>02:00:00</code>, FogEnd = <code>1000</code>.</li>
+      </ol>
+      <img class="shot" src="assets/img/horror/01-map-overview.png" alt="Общий план карты" />
+      <p class="shot-cap">Ночь, туман, лес и постройки — общий план.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">Трава с Anchor готова.</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">Cabin + деревья + Horror Sky.</label></li>
+        <li><input type="checkbox" id="p1s2" onchange="updateProjectProgress()"><label for="p1s2">TimeOfDay 02:00:00 и FogEnd 1000.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>🔦 Фаза 2 — Спавн, фонарик, киллер <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>Toolbox → <b>SpawnLocation</b> — возле дома.</li>
+        <li>Toolbox → <b>Flashlight</b> — рядом со спавном (подхватить сразу).</li>
+        <li>Toolbox → <b>Killer</b> → Jason The Killer (или другой). Расставь сколько хочешь.</li>
+        <li>Play: киллер бежит за героем.</li>
+      </ol>
+      <img class="shot" src="assets/img/horror/02-cabin-spawn.png" alt="Cabin и Spawn" />
+      <p class="shot-cap">Дом в тумане + SpawnLocation на крыльце.</p>
+      <img class="shot" src="assets/img/horror/03-killer.png" alt="Jason The Killer" />
+      <p class="shot-cap">Killer на карте рядом с хижиной.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">Spawn + Flashlight у дома.</label></li>
+        <li><input type="checkbox" id="p2s1" onchange="updateProjectProgress()"><label for="p2s1">Киллер преследует в Play.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>👀 Фаза 3 — Вид от 1-го лица (руки и ноги) <span class="phase-time">15 мин</span></h3>
+      <ol>
+        <li>Explorer → StarterPlayer → <b>StarterPlayerScripts</b> → «+» → LocalScript.</li>
+        <li>Переименуй в <code>ArmFPview</code>, вставь код рук.</li>
+        <li>Скопируй скрипт → второй LocalScript <code>LegFPview</code>: Arm/Hand → Leg/Foot.</li>
+        <li>Play: приблизь камеру колёсиком — видны руки и ноги.</li>
+      </ol>
+      <img class="shot" src="assets/img/horror/04-starterplayer-scripts.png" alt="StarterPlayerScripts" />
+      <p class="shot-cap">StarterPlayer → StarterPlayerScripts.</p>
+      <img class="shot" src="assets/img/horror/05-armfpview-code.png" alt="Код ArmFPview" />
+      <p class="shot-cap">ArmFPview — руки и кисти.</p>
+
+<pre class="code-block"><span class="comment">-- ArmFPview (LocalScript в StarterPlayerScripts)</span>
+<span class="keyword">local</span> player = game:GetService(<span class="string">"Players"</span>).LocalPlayer
+<span class="keyword">local</span> character = player.Character <span class="keyword">or</span> player.CharacterAdded:Wait()
+
+game:GetService(<span class="string">"RunService"</span>).RenderStepped:Connect(<span class="keyword">function</span>()
+    <span class="keyword">for</span> i, part <span class="keyword">in</span> pairs(character:GetChildren()) <span class="keyword">do</span>
+        <span class="keyword">if</span> string.match(part.Name, <span class="string">"Arm"</span>) <span class="keyword">or</span> string.match(part.Name, <span class="string">"Hand"</span>) <span class="keyword">then</span>
+            part.LocalTransparencyModifier = <span class="number">0</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>)</pre>
+
+      <img class="shot" src="assets/img/horror/06-fp-arms.png" alt="Руки в FP" />
+      <p class="shot-cap">Проверка: руки видны от первого лица.</p>
+      <img class="shot" src="assets/img/horror/07-legfpview-code.png" alt="Код LegFPview" />
+      <p class="shot-cap">LegFPview — то же для Leg и Foot.</p>
+
+<pre class="code-block"><span class="comment">-- LegFPview (второй LocalScript)</span>
+<span class="keyword">local</span> player = game:GetService(<span class="string">"Players"</span>).LocalPlayer
+<span class="keyword">local</span> character = player.Character <span class="keyword">or</span> player.CharacterAdded:Wait()
+
+game:GetService(<span class="string">"RunService"</span>).RenderStepped:Connect(<span class="keyword">function</span>()
+    <span class="keyword">for</span> i, part <span class="keyword">in</span> pairs(character:GetChildren()) <span class="keyword">do</span>
+        <span class="keyword">if</span> string.match(part.Name, <span class="string">"Leg"</span>) <span class="keyword">or</span> string.match(part.Name, <span class="string">"Foot"</span>) <span class="keyword">then</span>
+            part.LocalTransparencyModifier = <span class="number">0</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>)</pre>
+
+      <img class="shot" src="assets/img/horror/08-fp-legs-flashlight.png" alt="Ноги и фонарик" />
+      <p class="shot-cap">Ноги видны; фонарик лежит у ног у спавна.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">ArmFPview работает.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">LegFPview работает.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>🏃 Фаза 4 — Спринт от киллера <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>StarterGui → «+» → LocalScript (спринт).</li>
+        <li>Вставь код: зажатие клавиши → WalkSpeed 50 + FOV; отпускание → 16.</li>
+        <li>Play: удирай от киллера на всех парах.</li>
+        <li>Добавь ещё противников и предметы самостоятельно!</li>
+      </ol>
+      <img class="shot" src="assets/img/horror/09-startergui.png" alt="StarterGui +" />
+      <p class="shot-cap">StarterGui → добавить LocalScript.</p>
+      <img class="shot" src="assets/img/horror/10-sprint-code.png" alt="Код спринта" />
+      <p class="shot-cap">Спринт: KeyDown / KeyUp, WalkSpeed и FieldOfView.</p>
+
+<pre class="code-block"><span class="comment">-- LocalScript в StarterGui</span>
+<span class="keyword">local</span> Mos = game.Players.LocalPlayer:GetMouse()
+
+<span class="comment">-- если клавиша нажата</span>
+Mos.KeyDown:Connect(<span class="keyword">function</span>(key)
+    <span class="keyword">if</span> key == string.char(<span class="number">48</span>) <span class="keyword">then</span>
+        game.Workspace.CurrentCamera.FieldOfView =
+            game.Workspace.CurrentCamera.FieldOfView + <span class="number">1.6</span>
+        game.Players.LocalPlayer.Character:FindFirstChild(<span class="string">"Humanoid"</span>).WalkSpeed = <span class="number">50</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+<span class="comment">-- Если клавиша отпущена</span>
+Mos.KeyUp:Connect(<span class="keyword">function</span>(key)
+    <span class="keyword">if</span> key == string.char(<span class="number">48</span>) <span class="keyword">then</span>
+        game.Workspace.CurrentCamera.FieldOfView =
+            game.Workspace.CurrentCamera.FieldOfView - <span class="number">1.6</span>
+        game.Players.LocalPlayer.Character:FindFirstChild(<span class="string">"Humanoid"</span>).WalkSpeed = <span class="number">16</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>)</pre>
+
+      <div class="info-callout warn">
+        <div class="bulb">⚠️</div>
+        <div>В уроке используется <code>string.char(48)</code> — как в методичке. Если спринт не ловится на твоей клавиатуре — попроси педагога проверить раскладку / клавишу.</div>
+      </div>
+
+      <img class="shot" src="assets/img/horror/11-sprint-flashlight.png" alt="Фонарик в тумане" />
+      <p class="shot-cap">Итог: FP + фонарик + туман + погоня.</p>
+      <div class="space-note">🏆 Карта, атмосфера, киллер и мобильный герой — хоррор готов!</div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">Спринт ускоряет героя.</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">Добавлен минимум ещё 1 киллер или предмет.</label></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧯 Если не работает</h2>
+    <table class="prop-table">
+      <tr><th>Симптом</th><th>Что проверить</th></tr>
+      <tr><td>Земля падает</td><td>Anchor включён?</td></tr>
+      <tr><td>Светло как днём</td><td>Horror Sky? TimeOfDay = 02:00:00?</td></tr>
+      <tr><td>Нет тумана</td><td>Lighting → FogEnd = 1000?</td></tr>
+      <tr><td>Тело не видно в FP</td><td>Скрипты в StarterPlayerScripts? Имена Arm/Hand, Leg/Foot?</td></tr>
+      <tr><td>Спринт молчит</td><td>LocalScript в StarterGui? Character уже загружен?</td></tr>
+      <tr><td>Киллер стоит</td><td>Модель из Toolbox с AI? Не сломан ли скрипт модели?</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>собрал хоррор-локацию с ночью и туманом;</li>
+      <li>расставил дом, лес, спавн, фонарик и киллера;</li>
+      <li>показал руки и ноги в виде от 1-го лица;</li>
+      <li>добавил спринт, чтобы убежать от преследователя.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Страшно и весело!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти, чиним скрипты</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь педагога</label>
+    </div>
+    <textarea placeholder="Что сильнее создаёт страх — туман, темнота или киллер? Почему FP-скрипты LocalScript?"></textarea>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Проект П10 · Хоррор Роблокс</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function updateProjectProgress() {
+    const box = document.getElementById('keyTaskBox');
+    if (!box) return;
+    const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+    const checked = box.querySelectorAll('input[type="checkbox"]:checked').length;
+    const total = checkboxes.length;
+    const pct = total ? Math.round((checked / total) * 100) : 0;
+    const fill = document.getElementById('projectFill');
+    const label = document.getElementById('projectLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) {
+      label.textContent =
+        'Выполнено шагов: ' + checked + ' из ' + total +
+        (checked === total && total > 0 ? ' 🎉 Проект выполнен!' : '');
+    }
+  }
+
+  const fogLayer = document.getElementById('fogLayer');
+  const fogRange = document.getElementById('fogRange');
+  const killer = document.getElementById('mgKiller');
+  const hero = document.getElementById('mgHero');
+  const msg = document.getElementById('mgMsg');
+  let sprint = false;
+  let heroX = 55;
+  let killerX = 12;
+
+  fogRange.addEventListener('input', function () {
+    fogLayer.style.opacity = String(Number(fogRange.value) / 100);
+  });
+  fogLayer.style.opacity = '0.7';
+
+  const sprintBtn = document.getElementById('sprintBtn');
+  sprintBtn.addEventListener('mousedown', function () { sprint = true; msg.textContent = 'WalkSpeed 50!'; });
+  sprintBtn.addEventListener('mouseup', function () { sprint = false; msg.textContent = 'WalkSpeed 16'; });
+  sprintBtn.addEventListener('mouseleave', function () { sprint = false; });
+  sprintBtn.addEventListener('touchstart', function (e) { e.preventDefault(); sprint = true; msg.textContent = 'WalkSpeed 50!'; });
+  sprintBtn.addEventListener('touchend', function () { sprint = false; msg.textContent = 'WalkSpeed 16'; });
+
+  setInterval(function () {
+    heroX += sprint ? 1.8 : 0.35;
+    if (heroX > 88) heroX = 20;
+    killerX += 0.9;
+    if (killerX > heroX - 8) killerX = heroX - 18;
+    if (killerX < 5) killerX = 5;
+    hero.style.left = heroX + '%';
+    killer.style.left = killerX + '%';
+  }, 80);
+
+  updateProjectProgress();
+</script>
+</body>
+</html>

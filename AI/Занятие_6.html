@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Занятие 6 · Агент безопасности ИИ | РОБОВИТА</title>
+<style>
+:root{
+  --primary:#4F46E5;--primary-light:#EEF2FF;--primary-dark:#3730A3;
+  --accent:#10B981;--accent-light:#ECFDF5;--danger:#EF4444;--success:#10B981;
+  --line:#C7D2FE;--warn:#F59E0B;--card-shadow:0 8px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#F5F3FF;font-family:'Segoe UI',Roboto,sans-serif;color:#1E293B;font-size:1.08rem;line-height:1.55}
+.wrap{max-width:1120px;margin:0 auto;padding:0 1.4rem}
+.site-header{background:linear-gradient(135deg,#1E1B4B,#312E81);color:#F1F5F9;padding:1.4rem 0 1rem;border-bottom:4px solid var(--accent)}
+.top-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.brand img{height:44px;border-radius:12px}
+.brand-name{font-weight:700;font-size:1.45rem}
+.brand-tag{font-size:.82rem;color:#A5B4FC}
+.hero{display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap}
+.hex-badge{background:var(--accent);color:#064E3B;font-weight:800;font-size:2rem;width:64px;height:64px;display:flex;align-items:center;justify-content:center;border-radius:16px;box-shadow:0 8px 0 #047857}
+.module-pill{background:#6D28D9;color:#EDE9FE;padding:4px 14px;border-radius:30px;font-weight:600;font-size:.9rem;display:inline-block}
+.hero h1{font-size:2rem;margin:.2rem 0}
+.subtitle{color:#CBD5E1}
+.layout{display:grid;grid-template-columns:270px 1fr;gap:1.4rem;margin:1.4rem 0}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.mission-map{background:#0F172A;border-radius:20px;padding:1.1rem;color:#E2E8F0;border:2px solid #334155;position:sticky;top:10px}
+.mission-map h3{margin:0 0 .8rem;color:#94A3B8;font-size:1.05rem}
+.map-item{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:6px 0;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid #475569;position:relative;opacity:.55;transition:.35s}
+.map-item .ico{font-size:1.35rem}
+.map-item .lab{font-weight:600;font-size:.9rem}
+.map-item.open{opacity:1;border-color:var(--accent);background:rgba(16,185,129,.18)}
+.map-item.current{animation:pulseMap 1.4s infinite;border-color:#A78BFA;box-shadow:0 0 0 2px rgba(167,139,250,.35)}
+.map-item.done{opacity:1;border-color:var(--success);background:rgba(16,185,129,.25)}
+.map-item.done::after{content:'✅';position:absolute;right:10px}
+.map-item.locked::after{content:'🔒';position:absolute;right:10px}
+@keyframes pulseMap{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.scenario-box{background:#1E293B;border-radius:22px;padding:18px 22px;margin:1.3rem 0;display:flex;gap:16px;align-items:center;color:#F1F5F9;border:1px solid var(--accent)}
+.total-progress{background:#fff;border-radius:16px;padding:12px 16px;border:1px solid var(--line);margin:1rem 0}
+.tp-track{height:14px;background:#E0E7FF;border-radius:10px;overflow:hidden;margin-top:6px}
+.tp-fill{height:100%;width:0;background:linear-gradient(90deg,#4F46E5,#10B981);transition:width .4s}
+.artifact-bar,.badges-bar{background:#fff;border-radius:18px;padding:1rem 1.1rem;border:1px solid var(--line);margin:1rem 0}
+.artifact-slots,.badges-row{display:flex;flex-wrap:wrap;gap:8px}
+.artifact-slot{width:48px;height:48px;border-radius:14px;border:2px dashed #CBD5E1;display:flex;align-items:center;justify-content:center;font-size:1.35rem;background:#F8FAFC;opacity:.45}
+.artifact-slot.filled{opacity:1;border-style:solid;border-color:var(--primary);background:var(--primary-light);animation:artifactFly .5s}
+@keyframes artifactFly{0%{transform:translateY(-20px) scale(.4);opacity:0}100%{transform:none;opacity:1}}
+.badge{display:inline-block;background:var(--accent);color:#fff;padding:5px 12px;border-radius:20px;font-weight:700;font-size:.8rem;animation:badgeEarn .5s}
+@keyframes badgeEarn{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.xp-bar{font-weight:700;color:var(--primary-dark)}
+.supercomputer{background:linear-gradient(135deg,#1E1B4B,#312E81);border-radius:22px;padding:1.3rem;color:#fff;margin:1.2rem 0;text-align:center}
+.supercomputer-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:1rem 0}
+@media(max-width:600px){.supercomputer-grid{grid-template-columns:repeat(3,1fr)}}
+.sc-part{background:rgba(255,255,255,.08);border-radius:12px;padding:10px 4px;font-size:1.6rem;opacity:.25;transition:.35s}
+.sc-part.active{opacity:1;background:rgba(79,70,229,.35);box-shadow:0 0 10px rgba(79,70,229,.45)}
+.sc-part .name{font-size:.58rem;display:block;margin-top:3px;color:#CBD5E1}
+section.mission{background:#fff;border-radius:20px;padding:1.4rem 1.6rem;margin:1.3rem 0;box-shadow:var(--card-shadow);border:2px solid #E2E8F0;display:none}
+section.mission.active{display:block}
+section.mission[data-char="petya"]{border-color:#93C5FD}
+section.mission[data-char="masha"]{border-color:#F9A8D4}
+section.mission[data-char="ded"]{border-color:#FCD34D}
+section.mission[data-char="teacher"]{border-color:#A5B4FC}
+section.mission[data-char="misha"]{border-color:#6EE7B7}
+section.mission[data-char="all"]{border-color:#C4B5FD}
+section.mission[data-char="roby"]{border-color:#818CF8}
+.mission h2{margin-top:0;color:var(--primary-dark);font-size:1.35rem}
+.comic{display:flex;gap:10px;flex-wrap:wrap;margin:1rem 0}
+.comic-panel{flex:1;min-width:200px;background:#F8FAFC;border:2px solid #E2E8F0;border-radius:16px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.comic-avatar{font-size:2.2rem;line-height:1}
+.theory{background:var(--primary-light);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:12px 0}
+.theory h4{margin:.2rem 0 .5rem;color:var(--primary-dark)}
+.theory .ex{display:grid;gap:6px;margin-top:8px}
+.theory .ex span{background:#fff;border-radius:10px;padding:6px 10px;font-size:.95rem;border:1px solid #E2E8F0}
+.feedback{display:none;border-radius:14px;padding:12px 14px;margin:12px 0;border-left:5px solid var(--primary)}
+.feedback.show{display:block}
+.feedback.ok{background:#ECFDF5;border-color:var(--success)}
+.feedback.err{background:#FEF2F2;border-color:var(--danger)}
+.feedback.info{background:#EEF2FF;border-color:var(--primary)}
+.action-btn{background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:30px;font-weight:700;cursor:pointer;font-size:.98rem;box-shadow:0 4px 0 var(--primary-dark);margin:4px;display:inline-block;text-decoration:none}
+.action-btn:hover{background:#4338CA}
+.action-btn.accent{background:var(--accent);box-shadow:0 4px 0 #047857}
+.action-btn:disabled{opacity:.45;cursor:not-allowed}
+.drop-row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.drop-zone{flex:1;min-width:140px;min-height:120px;border:2px dashed #94A3B8;border-radius:16px;padding:10px;text-align:center;background:#F8FAFC}
+.drop-zone.truth{border-color:var(--success);background:#ECFDF5}
+.drop-zone.lie{border-color:var(--danger);background:#FEF2F2}
+.drop-zone.safe{border-color:var(--accent);background:#ECFDF5}
+.drop-zone.table{border-color:#94A3B8}
+.drag-chip{padding:8px 12px;background:#fff;border:1px solid #CBD5E1;border-radius:10px;cursor:grab;display:inline-block;margin:4px;font-size:.9rem;user-select:none}
+.chip-bank{min-height:50px;margin:8px 0}
+.choice-card{display:inline-block;padding:10px 14px;margin:4px;border:2px solid #E2E8F0;border-radius:14px;cursor:pointer;background:#F8FAFC}
+.choice-card.selected{border-color:var(--primary);background:var(--primary-light)}
+.choice-card.good{border-color:var(--success);background:#D1FAE5}
+.choice-card.bad{border-color:var(--danger);background:#FEE2E2}
+.chat-box{background:#F1F5F9;border-radius:14px;padding:1rem;min-height:110px;margin-bottom:.8rem;display:flex;flex-direction:column;gap:8px}
+.chat-msg{max-width:85%;padding:8px 14px;border-radius:16px;font-size:.92rem}
+.chat-msg.ai{background:#fff;align-self:flex-start;border:1px solid #E2E8F0}
+.chat-msg.user{background:var(--primary-light);align-self:flex-end}
+.step-list{display:flex;flex-direction:column;gap:8px;min-height:70px;padding:10px;border:2px dashed var(--line);border-radius:12px;background:#F8FAFC}
+.m9-slots{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.m9-slot{display:flex;align-items:center;gap:10px;min-height:52px;padding:6px 10px;border:2px dashed #94A3B8;border-radius:14px;background:#F8FAFC;transition:.2s}
+.m9-slot.filled{border-style:solid;border-color:var(--primary);background:#EEF2FF}
+.m9-slot.drag-over{border-color:var(--accent);background:#ECFDF5}
+.m9-num{width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+.m9-slot-body{flex:1;min-height:40px;display:flex;align-items:center}
+.m9-slot-body .drag-chip{width:100%;margin:0;text-align:center}
+#m9bank{min-height:56px;padding:10px;border:2px dashed #CBD5E1;border-radius:14px;background:#fff;margin:8px 0}
+.poster{padding:2rem;border-radius:20px;text-align:center;margin:1rem 0;font-size:1.35rem;font-weight:700;color:#fff}
+.poster.blue{background:linear-gradient(135deg,#2563EB,#4F46E5)}
+.poster.purple{background:linear-gradient(135deg,#7C3AED,#C026D3)}
+.poster.green{background:linear-gradient(135deg,#059669,#10B981)}
+.poster.bold{font-weight:900;letter-spacing:.02em}
+.level-tag{display:inline-block;background:#EEF2FF;color:var(--primary-dark);padding:3px 10px;border-radius:20px;font-size:.8rem;font-weight:700;margin-bottom:8px}
+.progress-mini{font-weight:700;color:var(--primary-dark);margin-top:.5rem}
+.hidden{display:none!important}
+textarea,input[type=text],select{width:100%;border-radius:12px;border:1px solid var(--line);padding:10px;font-family:inherit;font-size:1rem;margin:6px 0}
+.prompt-box{background:#F0F7FF;padding:1rem;border-radius:12px;margin:1rem 0;border:1px solid #BFDBFE;word-break:break-word}
+#finalCongrats{display:none;background:linear-gradient(135deg,#FFD54F,#FFB300);border-radius:28px;padding:2rem;text-align:center;color:#3E2C0B;border:4px solid #FF8F00;margin:2rem 0}
+#finalCongrats.show{display:block}
+.reflection-box{background:#fff;border-radius:20px;padding:1.4rem;margin:1.4rem 0;border:1px solid #E2E8F0}
+.reflection-radio-label{display:inline-flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;cursor:pointer;margin:4px}
+.roby-panel{position:fixed;bottom:18px;right:18px;z-index:1000;max-width:340px;display:flex;gap:10px;align-items:flex-end}
+.roby-avatar{width:64px;height:64px;background:linear-gradient(135deg,#4F46E5,#3730A3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 4px 12px rgba(0,0,0,.2);cursor:pointer;animation:bob 2s ease-in-out infinite;flex-shrink:0}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.roby-bubble{background:#fff;border-radius:16px 16px 4px 16px;padding:12px 14px;box-shadow:0 4px 20px rgba(0,0,0,.15);border:2px solid var(--primary);font-size:.92rem;max-height:160px;overflow:auto;transition:.25s}
+.roby-bubble.collapsed{max-height:0;padding:0 14px;opacity:0;overflow:hidden;border-width:0}
+#confetti-container{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:fall 3s ease-out forwards}
+@keyframes fall{0%{transform:translateY(-60px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.source-btn.active{background:#D1FAE5!important;color:#065F46}
+</style>
+<link rel="stylesheet" href="ai-common.css" />
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="#">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" />
+        <div><div class="brand-name">РОБОВИТА</div><div class="brand-tag">учимся программировать роботов и игры</div></div>
+      </a>
+      <div style="color:#aaa;">Занятие 6</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">🛡️</div>
+      <div>
+        <div class="module-pill">Модуль 1 · Итог</div>
+        <h1>Финальная миссия: Агент безопасности ИИ</h1>
+        <p class="subtitle">Помоги Пете, Маше, дедушке и учительнице — стань экспертом!</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="scenario-box">
+    <div style="font-size:2.8rem;">🤖</div>
+    <div><strong>Роби:</strong> Четыре героя просят помощи. Пройди 10 миссий по порядку, собери артефакты и получи звание <strong>Агента безопасности ИИ</strong>!</div>
+  </div>
+
+  <div class="ai-objectives objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Повторить безопасное общение с ИИ</li>
+      <li>Помочь разным персонажам в реальных ситуациях</li>
+      <li>Собрать правила честного и безопасного использования ИИ</li>
+      <li>Получить звание «Агент безопасности ИИ»</li>
+    </ul>
+  </div>
+  <div class="ai-timetable">
+    <h2>⏱️ План (≈90 минут)</h2>
+    <table>
+      <tr><th>Этап</th><th>Время</th></tr>
+      <tr><td>Миссии 1–4 (герои и ситуации)</td><td>30 мин</td></tr>
+      <tr><td>Миссии 5–8</td><td>30 мин</td></tr>
+      <tr><td>Миссии 9–10 + финал</td><td>20 мин</td></tr>
+      <tr><td>Рефлексия</td><td>10 мин</td></tr>
+    </table>
+  </div>
+
+  <div class="layout">
+    <aside class="mission-map" id="missionMap">
+      <h3>📑 Карта миссий</h3>
+      <!-- заполняется JS -->
+    </aside>
+
+    <div class="main-content">
+      <div class="achieve-rail" id="achieveRail">
+        <div class="achieve-rail-title"><span>🏅 Достижения</span><span style="opacity:.7;font-size:.85rem;">справа</span></div>
+        <div id="progressProfileHost"></div>
+        <div class="total-progress">
+          <strong>Прогресс занятия: <span id="totalPct">0</span>%</strong>
+          <div class="tp-track"><div class="tp-fill" id="totalProgress"></div></div>
+        </div>
+        <div class="badges-bar">
+          <h3 style="margin:0 0 .6rem;color:var(--primary-dark);font-size:1.05rem;">🏅 Значки</h3>
+          <div class="badges-row" id="badgesContainer"><span style="opacity:.5;font-size:.9rem;">Пока пусто — выполняй миссии!</span></div>
+        </div>
+        <div class="artifact-bar">
+          <h3 style="margin:0 0 .6rem;color:var(--primary-dark);font-size:1.05rem;">🧩 Артефакты (<span id="artifactCount">0</span>/10)</h3>
+          <div class="artifact-slots" id="artifactSlots"></div>
+        </div>
+        <div class="xp-bar" id="xpDisplay">⭐ Уровень: Новичок | XP: 0</div>
+      </div>
+
+      <div class="supercomputer">
+        <h3>🛡️ Центр безопасности ИИ</h3>
+        <p style="opacity:.7;font-size:.9rem;">Собери все 10 артефактов</p>
+        <div class="supercomputer-grid" id="scGrid"></div>
+        <p id="scStatus" style="font-weight:700;opacity:.5;">Ожидание...</p>
+      </div>
+
+      <div id="missionsContainer"></div>
+
+      <div id="finalCongrats">
+        <h2>🏆 ПОЗДРАВЛЯЕМ!</h2>
+        <p>Ты прошёл весь модуль. Теперь ты умеешь задавать запросы, защищать данные, проверять ответы ИИ и использовать ИИ честно.</p>
+        <p style="font-size:1.4rem;font-weight:800;">🛡️ Агент безопасности ИИ</p>
+        <p style="margin-top:10px;"><strong>🧩 Задание на урок:</strong> памятка в Gamma (миссия 10) — оформи на занятии и при необходимости сдай в Classroom.</p>
+      </div>
+
+      <div class="card">
+        <h2>🏁 Домашнее задание</h2>
+        <p>Выбери уровень (это отдельно от памятки-проекта на уроке):</p>
+        <ul>
+          <li><strong>⭐ Лёгкое:</strong> Выпиши по памяти 5 правил безопасной работы с ИИ. Текст или фото.</li>
+          <li><strong>⭐⭐ Среднее:</strong> Покажи памятку родителям и запиши 1 их совет по безопасности.</li>
+          <li><strong>⭐⭐⭐ Сложное:</strong> Доделай оформление в Gamma (если не успел на уроке) и сдай ссылку или PDF.</li>
+        </ul>
+        <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать ДЗ в Classroom</a>
+        <a href="https://gamma.app" target="_blank" class="action-btn" style="margin-left:8px;">🎨 Gamma</a>
+      </div>
+
+      <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <div>
+          <label class="reflection-radio-label"><input type="radio" name="satisfaction" value="yes"> 🚀 Я эксперт!</label>
+          <label class="reflection-radio-label"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти всё</label>
+          <label class="reflection-radio-label"><input type="radio" name="satisfaction" value="no"> 😕 Нужно повторить</label>
+        </div>
+        <textarea id="reflectionText" placeholder="Какое правило безопасности ИИ самое важное?"></textarea>
+        <button class="action-btn" onclick="submitReflection()">Отправить</button>
+        <p id="reflectionResult" style="font-weight:700;margin-top:8px;"></p>
+      </div>
+
+      <div class="lesson-nav">
+        <a class="nav-btn prev" href="Занятие_5.html">← 5. Умный поиск</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" /> Учебный центр «РОБОВИТА»</div>
+    <div>Занятие 6 · курс «ИИ-творец»</div>
+  </div>
+</footer>
+
+<div class="roby-panel">
+  <div class="roby-avatar" id="robyAvatar" title="Свернуть/развернуть">🤖</div>
+  <div class="roby-bubble" id="robyBubble"><strong>Роби:</strong> <span id="robyText">Привет! Начни с миссии 1 — помоги Пете.</span></div>
+</div>
+<div id="confetti-container"></div>
+<script src="ai-progress.js"></script>
+<script>
+/* ===================== CORE ===================== */
+const ARTIFACTS = [
+  {id:1,icon:'🔥',name:'Основы',xp:100},
+  {id:2,icon:'📝',name:'Хороший запрос',xp:120},
+  {id:3,icon:'🔒',name:'Опасные данные',xp:150},
+  {id:4,icon:'🧠',name:'Проверка ответа',xp:150},
+  {id:5,icon:'💬',name:'Диалог',xp:130},
+  {id:6,icon:'⚖️',name:'Честность',xp:140},
+  {id:7,icon:'✍️',name:'Моё правило',xp:150},
+  {id:8,icon:'🤖',name:'Помощь ChatGPT',xp:160},
+  {id:9,icon:'🧩',name:'Сборка',xp:170},
+  {id:10,icon:'🚀',name:'Презентация',xp:200}
+];
+const MAP_LABELS = [
+  {id:1,ico:'🔥',lab:'1. Основы'},
+  {id:2,ico:'📝',lab:'2. Запрос'},
+  {id:3,ico:'🔒',lab:'3. Данные'},
+  {id:4,ico:'🧠',lab:'4. Проверка'},
+  {id:5,ico:'💬',lab:'5. Диалог'},
+  {id:6,ico:'⚖️',lab:'6. Честность'},
+  {id:7,ico:'✍️',lab:'7. Постер'},
+  {id:8,ico:'🤖',lab:'8. ChatGPT'},
+  {id:9,ico:'🧩',lab:'9. Сборка'},
+  {id:10,ico:'🚀',lab:'10. Финал'}
+];
+const CHARS = {
+  petya:{emoji:'👦',name:'Петя'},
+  masha:{emoji:'👧',name:'Маша'},
+  ded:{emoji:'👴',name:'Дедушка'},
+  teacher:{emoji:'👩‍🏫',name:'Учительница'},
+  misha:{emoji:'🧑‍🎓',name:'Миша'},
+  all:{emoji:'👨‍👩‍👧‍👦',name:'Все вместе'},
+  roby:{emoji:'🤖',name:'Роби'}
+};
+
+const gameState = {
+  xp:0, lives:3, current:1,
+  completed:new Set(),
+  artifacts:new Set(),
+  badges:new Set(),
+  posterRule:'',
+  studentName:'Агент'
+};
+
+function saveState(){
+  if(window.RobovitaProgress) RobovitaProgress.save();
+}
+function loadState(){ /* прогресс загружает RobovitaProgress.mount → applyState */ }
+
+const MissionManager = {
+  complete(id){
+    if(gameState.completed.has(id)) return;
+    gameState.completed.add(id);
+    const art=ARTIFACTS.find(a=>a.id===id);
+    if(art){
+      gameState.artifacts.add(id);
+      gameState.xp += art.xp;
+      const slot=document.getElementById('art'+id);
+      if(slot){slot.textContent=art.icon;slot.classList.add('filled');slot.title=art.name;}
+      const sc=document.getElementById('sc'+id);
+      if(sc) sc.classList.add('active');
+      playAnimation(slot,'pop');
+    }
+    if(id<10) gameState.current = id+1;
+    else gameState.current = 11;
+    updateUI();
+    unlockMissions();
+    saveState();
+    if(gameState.completed.size===10){
+      document.getElementById('scStatus').textContent='⚡ ЦЕНТР БЕЗОПАСНОСТИ АКТИВИРОВАН!';
+      document.getElementById('scStatus').style.opacity='1';
+      document.getElementById('finalCongrats').classList.add('show');
+      gameState.xp+=500;
+      earnBadge('🏅 Эксперт ИИ');
+      launchConfetti();
+      robySay('Ты собрал все артефакты! Центр безопасности работает. Оформи памятку в Gamma и сдай в Classroom. Ты — настоящий Агент безопасности ИИ!');
+      updateUI(); saveState();
+    }
+  }
+};
+
+function playAnimation(el,type){ if(!el)return; el.style.animation='none'; void el.offsetWidth; el.style.animation=(type==='pop'?'artifactFly':'badgeEarn')+' .5s'; }
+function robySay(msg){
+  document.getElementById('robyText').textContent=msg;
+  document.getElementById('robyBubble').classList.remove('collapsed');
+}
+function showFeedback(areaId, message, type){
+  const el=document.getElementById(areaId); if(!el)return;
+  el.className='feedback show '+(type||'info');
+  el.innerHTML='<strong>🤖 Роби:</strong> '+message;
+}
+function earnBadge(name){
+  if(gameState.badges.has(name))return;
+  gameState.badges.add(name);
+  const box=document.getElementById('badgesContainer');
+  if(box.querySelector('span[style]')) box.innerHTML='';
+  const b=document.createElement('span'); b.className='badge'; b.textContent=name; box.appendChild(b);
+  playAnimation(b,'badge'); saveState();
+}
+function comicHTML(charKey, panels){
+  const c=CHARS[charKey];
+  return `<div class="comic">${panels.map(p=>`<div class="comic-panel"><div class="comic-avatar">${p.emoji||c.emoji}</div><div><strong>${p.who||c.name}:</strong> ${p.text}</div></div>`).join('')}</div>`;
+}
+function theoryHTML(title, text, examples){
+  return `<div class="theory"><h4>📚 ${title}</h4><p>${text}</p>${examples?`<div class="ex">${examples.map(e=>`<span>${e}</span>`).join('')}</div>`:''}</div>`;
+}
+
+let dragEl=null;
+function dragStart(e){dragEl=e.target.closest('.drag-chip');e.dataTransfer.setData('text',dragEl?.id||'');}
+function allowDrop(e){e.preventDefault();}
+
+function updateUI(){
+  document.getElementById('artifactCount').textContent=gameState.artifacts.size;
+  let level='Новичок'; if(gameState.xp>=300)level='Агент'; if(gameState.xp>=800)level='Мастер безопасности'; if(gameState.xp>=1400)level='Агент безопасности ИИ';
+  document.getElementById('xpDisplay').textContent=`⭐ ${level} | XP: ${gameState.xp}`;
+  const pct=Math.round(gameState.completed.size/10*100);
+  document.getElementById('totalPct').textContent=pct;
+  document.getElementById('totalProgress').style.width=pct+'%';
+  // map
+  document.querySelectorAll('.map-item').forEach(item=>{
+    const id=+item.dataset.id;
+    item.classList.remove('locked','open','current','done');
+    if(gameState.completed.has(id)) item.classList.add('done');
+    else if(id===gameState.current) item.classList.add('open','current');
+    else if(id<gameState.current) item.classList.add('open');
+    else item.classList.add('locked');
+  });
+}
+function unlockMissions(){
+  document.querySelectorAll('section.mission').forEach(sec=>{
+    const id=+sec.dataset.missionId;
+    sec.classList.toggle('active', id===gameState.current || (gameState.current>10 && id===10) || gameState.completed.has(id));
+    // show current + completed (so they can revisit), hide future
+    if(id > gameState.current) sec.classList.remove('active');
+    if(id === gameState.current) sec.classList.add('active');
+    if(gameState.completed.has(id)) sec.classList.add('active');
+  });
+  const cur=document.getElementById('mission'+gameState.current);
+  if(cur) cur.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function createMissionShell(id, title, charKey, inner){
+  const art=ARTIFACTS.find(a=>a.id===id);
+  const sec=document.createElement('section');
+  sec.className='mission'; sec.dataset.missionId=id; sec.dataset.char=charKey; sec.id='mission'+id;
+  sec.innerHTML=`<h2>🛡️ Миссия ${id}: ${title} <span style="font-size:.82rem;color:#64748B;">→ ${art.icon} ${art.name} · +${art.xp} XP</span></h2>${inner}`;
+  document.getElementById('missionsContainer').appendChild(sec);
+}
+function initShell(){
+  const map=document.getElementById('missionMap');
+  MAP_LABELS.forEach(m=>{
+    const d=document.createElement('div');
+    d.className='map-item locked'; d.dataset.id=m.id;
+    d.innerHTML=`<span class="ico">${m.ico}</span><span class="lab">${m.lab}</span>`;
+    map.appendChild(d);
+  });
+  ARTIFACTS.forEach(a=>{
+    const s=document.createElement('div'); s.className='artifact-slot'; s.id='art'+a.id; s.title=a.name; s.textContent='?';
+    document.getElementById('artifactSlots').appendChild(s);
+    const p=document.createElement('div'); p.className='sc-part'; p.id='sc'+a.id;
+    p.innerHTML=`${a.icon}<span class="name">${a.name}</span>`;
+    document.getElementById('scGrid').appendChild(p);
+  });
+  // restore filled
+  gameState.artifacts.forEach(id=>{
+    const art=ARTIFACTS.find(a=>a.id===id);
+    const slot=document.getElementById('art'+id); if(slot&&art){slot.textContent=art.icon;slot.classList.add('filled');}
+    document.getElementById('sc'+id)?.classList.add('active');
+  });
+  gameState.badges.forEach(name=>{
+    const box=document.getElementById('badgesContainer');
+    if(box.querySelector('span[style]')) box.innerHTML='';
+    const b=document.createElement('span'); b.className='badge'; b.textContent=name; box.appendChild(b);
+  });
+}
+
+document.getElementById('robyAvatar').onclick=()=>document.getElementById('robyBubble').classList.toggle('collapsed');
+
+/* ===================== MISSION 1 ===================== */
+(function buildM1(){
+  const stmts=[
+    {t:'ИИ всегда знает правильный ответ',ok:false},
+    {t:'ИИ помогает искать информацию',ok:true},
+    {t:'Можно писать ИИ свой пароль',ok:false},
+    {t:'ИИ иногда придумывает факты',ok:true},
+    {t:'Ответ ИИ всегда надо проверять',ok:true},
+    {t:'Можно сообщать номер банковской карты',ok:false},
+    {t:'ИИ можно использовать как помощника',ok:true},
+    {t:'ИИ всегда прав',ok:false},
+    {t:'Нейросеть может ошибаться',ok:true},
+    {t:'Верить всему, что пишет ИИ',ok:false},
+    {t:'Проверять информацию в учебнике',ok:true},
+    {t:'Отправлять фото паспорта',ok:false},
+    {t:'Спрашивать у ИИ советы по учёбе',ok:true},
+    {t:'Указывать настоящий адрес',ok:false},
+    {t:'Сравнивать ответы разных ИИ',ok:true}
+  ];
+  createMissionShell(1,'Правда или ложь','petya',
+    comicHTML('petya',[
+      {text:'Смотри! В видео говорят: «ИИ никогда не ошибается!» Значит, можно верить всему?'},
+      {emoji:'🤖',who:'Роби',text:'Стоп, Петя! Давай проверим утверждения вместе. Перетащи их в зоны Правда / Ложь.'}
+    ])+
+    theoryHTML('Факт, мнение, ложь и галлюцинация ИИ',
+      'Факт можно проверить. Мнение — чья-то оценка. Ложь — намеренный обман. Галлюцинация ИИ — когда нейросеть уверенно придумывает неправду.',
+      ['✅ «У кошек 4 лапы» — факт','💭 «Кошки лучше собак» — мнение','🤖 «У пауков 10 ног» (от ИИ) — галлюцинация']
+    )+
+    `<div class="drop-row">
+      <div class="drop-zone truth" id="m1truth" ondragover="allowDrop(event)" ondrop="m1Drop(event,'truth')">✅ Правда</div>
+      <div class="drop-zone lie" id="m1lie" ondragover="allowDrop(event)" ondrop="m1Drop(event,'lie')">❌ Ложь</div>
+    </div>
+    <div class="chip-bank" id="m1bank">${stmts.map((s,i)=>`<div class="drag-chip" draggable="true" ondragstart="dragStart(event)" id="m1c${i}" data-ok="${s.ok?1:0}">${s.t}</div>`).join('')}</div>
+    <button class="action-btn" onclick="checkM1()">Проверить все</button>
+    <p class="progress-mini" id="m1prog">В зонах: 0 / 15</p>
+    <div class="feedback" id="m1fb"></div>`
+  );
+  window.m1Drop=function(e,zone){
+    e.preventDefault(); if(!dragEl||!dragEl.id.startsWith('m1c'))return;
+    const ok=dragEl.dataset.ok==='1';
+    const correct=(zone==='truth'&&ok)||(zone==='lie'&&!ok);
+    if(correct){
+      e.currentTarget.appendChild(dragEl);
+      dragEl.style.background=ok?'#D1FAE5':'#FEE2E2';
+      showFeedback('m1fb','Верно! Карточка на своём месте. Продолжай — осталось разобрать все утверждения.','ok');
+      robySay('Так держать! Правда и ложь — разные вещи. Не путай факт с уверенным тоном ИИ.');
+    }else{
+      document.getElementById('m1bank').appendChild(dragEl);
+      showFeedback('m1fb', zone==='truth'
+        ? 'Это не правда. Такое утверждение опасное или ложное — положи его в «Ложь».'
+        : 'Это как раз правда / хорошее правило. Положи в зону «Правда».','err');
+      robySay('Ой! Карточка вернулась. Подумай: можно ли доверять этому утверждению про ИИ и данные?');
+    }
+    updateM1Prog();
+  };
+  function updateM1Prog(){
+    const n=document.querySelectorAll('#m1truth .drag-chip, #m1lie .drag-chip').length;
+    document.getElementById('m1prog').textContent=`В зонах: ${n} / 15`;
+  }
+  window.checkM1=function(){
+    const all=[...document.querySelectorAll('#m1truth .drag-chip, #m1lie .drag-chip')];
+    if(all.length<15){showFeedback('m1fb','Разложи все 15 карточек по зонам, потом жми «Проверить».','err');return;}
+    let good=true;
+    all.forEach(c=>{
+      const ok=c.dataset.ok==='1';
+      const inT=c.parentElement.id==='m1truth';
+      if((ok&&!inT)||(!ok&&inT)) good=false;
+    });
+    if(good){
+      showFeedback('m1fb','Отлично! Ты отделил правду от лжи. Петя больше не поверит ролику вслепую. Артефакт «Основы» твой!','ok');
+      robySay('Петя понял: ИИ бывает полезным, но не всеведущим. Данные и пароли — никогда. Ты заработал артефакт «Основы»!');
+      earnBadge('🏅 Мастер правды'); MissionManager.complete(1);
+    }else{
+      showFeedback('m1fb','Есть ошибки. Проверь карточки ещё раз — особенно про пароли, адрес и «ИИ всегда прав».','err');
+    }
+  };
+})();
+
+/* ===================== MISSION 2 ===================== */
+/* ===================== MISSION 2 (упрощённая, без сложного уровня 3) ===================== */
+(function buildM2(){
+  createMissionShell(2,'Конструктор запросов','masha',
+    comicHTML('masha',[
+      {text:'Я написала в поиск просто «Космос»… и получила миллион ссылок! Что делать?'},
+      {emoji:'🤖',who:'Роби',text:'Запрос должен быть конкретным. Давай соберём хороший вопрос по формуле!'}
+    ])+
+    theoryHTML('Формула хорошего запроса',
+      'Тема + вопрос + для кого + формат + ограничения. Чем точнее — тем полезнее ответ.',
+      ['❌ Плохо: «Космос»','✅ Хорошо: «Почему Луна светится ночью? Объясни для 5 класса списком»']
+    )+
+    `<div id="m2l1">
+      <span class="level-tag">Уровень 1 · Сборка</span>
+      <p>Собери запрос «Почему Луна светится ночью?» из блоков (правильный порядок):</p>
+      <div class="step-list" id="m2target" ondragover="allowDrop(event)" ondrop="m2Drop(event)"></div>
+      <div class="chip-bank" id="m2bank"></div>
+      <button class="action-btn" onclick="checkM2L1()">Проверить уровень 1</button>
+    </div>
+    <div id="m2l2" class="hidden">
+      <span class="level-tag">Уровень 2 · Хорошие / плохие</span>
+      <p>Кликни по <strong>хорошим</strong> запросам (отметь все подходящие):</p>
+      <div id="m2qgrid"></div>
+      <div class="tp-track" style="margin:8px 0;"><div class="tp-fill" id="m2bar" style="width:0%"></div></div>
+      <button class="action-btn" onclick="checkM2L2()">Проверить уровень 2 и завершить миссию</button>
+    </div>
+    <div class="feedback" id="m2fb"></div>`
+  );
+  const blocks=['🎯 Тема: Луна','❓ Почему светится ночью?','📏 Для 5 класса','📋 В виде короткого списка'];
+  const order=[...blocks];
+  document.getElementById('m2bank').innerHTML=[...blocks].sort(()=>Math.random()-.5).map((t,i)=>`<div class="drag-chip" draggable="true" ondragstart="dragStart(event)" id="m2b${i}" data-text="${t}">${t}</div>`).join('');
+  window.m2Drop=function(e){e.preventDefault(); if(dragEl&&dragEl.id.startsWith('m2b')) document.getElementById('m2target').appendChild(dragEl);};
+  window.checkM2L1=function(){
+    const got=[...document.getElementById('m2target').children].map(c=>c.dataset.text);
+    if(JSON.stringify(got)===JSON.stringify(order)){
+      showFeedback('m2fb','Уровень 1 пройден! Ты собрал конкретный запрос. Сравни: «Космос» vs твой набор блоков — небо и земля.','ok');
+      robySay('Видишь разницу? Конкретика помогает ИИ отвечать понятнее. Переходим к уровню 2!');
+      document.getElementById('m2l2').classList.remove('hidden');
+    }else showFeedback('m2fb','Порядок неверный. Начни с темы, потом вопрос, аудитория, формат.','err');
+  };
+  const qs=[
+    {t:'Почему кошки мурлыкают?',g:1},{t:'Кошки',g:0},{t:'Как работает радуга? Объясни просто',g:1},
+    {t:'Роботы',g:0},{t:'Что такое нейрон? Для детей, 3 предложения',g:1},{t:'Интернет',g:0},
+    {t:'Почему небо голубое?',g:1},{t:'История',g:0},{t:'Как безопасно пользоваться ИИ? Список правил',g:1},{t:'Игры',g:0}
+  ];
+  document.getElementById('m2qgrid').innerHTML=qs.map((q,i)=>`<div class="choice-card" data-g="${q.g}" id="m2q${i}" onclick="this.classList.toggle('selected')">${q.t}</div>`).join('');
+  window.checkM2L2=function(){
+    let ok=true,sel=0,need=0;
+    qs.forEach((q,i)=>{
+      const el=document.getElementById('m2q'+i); const s=el.classList.contains('selected');
+      if(q.g) need++; if(s&&q.g) sel++;
+      if(s!==!!q.g) ok=false;
+      el.classList.toggle('good',q.g); el.classList.toggle('bad',s&&!q.g);
+    });
+    document.getElementById('m2bar').style.width=Math.round(sel/need*100)+'%';
+    if(ok){
+      showFeedback('m2fb','Отлично! Хороший запрос задаёт вопрос и уточняет задачу. Плохой — одно слово без смысла. Артефакт «Хороший запрос» твой!','ok');
+      robySay('Маша теперь умеет спрашивать конкретно. Короткий запрос = шум. Длинный с вопросом = польза.');
+      earnBadge('🏅 Мастер запросов'); MissionManager.complete(2);
+    }else showFeedback('m2fb','Отметь все хорошие (с вопросом/уточнением) и не отмечай однословные.','err');
+  };
+})();
+/* ===================== MISSION 3 ===================== */
+(function buildM3(){
+  createMissionShell(3,'Сейф данных','ded',
+    comicHTML('ded',[
+      {text:'Нейросеть спросила пароль «для проверки»… Я уже почти написал!'},
+      {emoji:'🤖',who:'Роби',text:'Дедушка, стой! Сейчас положим опасные данные в сейф.'}
+    ])+
+    theoryHTML('Персональные данные',
+      'ИИ — не сейф. Пароль, адрес, телефон, карта, паспорт, семейные секреты — нельзя. Хобби и имя кота — обычно можно.',
+      ['🔒 Нельзя: пароль, карта, паспорт','✅ Можно: любимая игра, имя кота, хобби']
+    )+
+    `<div id="m3s1">
+      <span class="level-tag">Этап 1 · Сейф</span>
+      <div class="drop-row">
+        <div class="drop-zone safe" id="m3safe" ondragover="allowDrop(event)" ondrop="m3Drop(event,'safe')">🔒 Сейф (опасное)</div>
+        <div class="drop-zone table" id="m3table" ondragover="allowDrop(event)" ondrop="m3Drop(event,'table')">🪑 Стол (безопасное)</div>
+      </div>
+      <div class="chip-bank" id="m3bank"></div>
+      <button class="action-btn" onclick="checkM3S1()">Проверить этап 1</button>
+    </div>
+    <div id="m3s2" class="hidden">
+      <span class="level-tag">Этап 2 · Кейс</span>
+      <p>Маша спросила у ИИ: «Какой у меня домашний адрес?» Что сделать? (можно выбрать оба верных)</p>
+      <div class="choice-card" data-ok="1" onclick="this.classList.toggle('selected')">Попросить сменить тему</div>
+      <div class="choice-card" data-ok="1" onclick="this.classList.toggle('selected')">Сообщить родителям</div>
+      <div class="choice-card" data-ok="0" onclick="this.classList.toggle('selected')">Продолжить разговор и уточнить адрес</div>
+      <button class="action-btn" onclick="checkM3S2()">Проверить этап 2</button>
+    </div>
+    <div class="feedback" id="m3fb"></div>
+    <div id="m3card" class="hidden theory"><h4>🧾 Что нельзя отправлять ИИ</h4><p>Пароль, телефон, адрес, номер карты, паспорт, секреты семьи. Если ИИ просит личное — останови разговор и расскажи взрослому.</p></div>`
+  );
+  const items=[
+    {t:'🔑 Пароль',d:1},{t:'📱 Телефон',d:1},{t:'🏠 Адрес',d:1},{t:'💳 Номер карты',d:1},
+    {t:'🎮 Любимая игра',d:0},{t:'🐱 Имя кота',d:0},{t:'📖 Любимая книга',d:0},{t:'🍕 Любимая еда',d:0}
+  ];
+  document.getElementById('m3bank').innerHTML=items.map((it,i)=>`<div class="drag-chip" draggable="true" ondragstart="dragStart(event)" id="m3i${i}" data-d="${it.d}">${it.t}</div>`).join('');
+  window.m3Drop=function(e,zone){
+    e.preventDefault(); if(!dragEl||!dragEl.id.startsWith('m3i'))return;
+    const danger=dragEl.dataset.d==='1';
+    const ok=(zone==='safe'&&danger)||(zone==='table'&&!danger);
+    if(ok){ e.currentTarget.appendChild(dragEl); showFeedback('m3fb', danger?'Верно: это в сейф!':'Верно: это можно оставить на столе.','ok'); }
+    else{
+      document.getElementById('m3bank').appendChild(dragEl);
+      showFeedback('m3fb', danger?'Опасные данные нельзя оставлять на столе — в сейф!':'Хобби не секрет — оставь на столе, не в сейфе.','err');
+      robySay('Данные бывают разные. Личное и секретное — только в сейф. Игрушки и хобби — можно обсуждать.');
+    }
+  };
+  window.checkM3S1=function(){
+    const safe=[...document.querySelectorAll('#m3safe .drag-chip')];
+    const table=[...document.querySelectorAll('#m3table .drag-chip')];
+    if(safe.length+table.length<8){showFeedback('m3fb','Разложи все 8 карточек.','err');return;}
+    const ok=safe.every(c=>c.dataset.d==='1')&&table.every(c=>c.dataset.d==='0')&&safe.length===4;
+    if(ok){
+      showFeedback('m3fb','Этап 1 готов! Опасное спрятано. Теперь разберём ситуацию с Машей.','ok');
+      robySay('Дедушка больше не отдаст пароль нейросети. Переходим к кейсу!');
+      document.getElementById('m3s2').classList.remove('hidden');
+    }else showFeedback('m3fb','В сейфе должны быть пароль, телефон, адрес и карта. Остальное — на столе.','err');
+  };
+  window.checkM3S2=function(){
+    const cards=[...document.querySelectorAll('#m3s2 .choice-card')];
+    let good=true;
+    cards.forEach(c=>{ const s=c.classList.contains('selected'); const need=c.dataset.ok==='1'; if(s!==need) good=false; });
+    if(good){
+      document.getElementById('m3card').classList.remove('hidden');
+      showFeedback('m3fb','Правильно: сменить тему и рассказать взрослым. Продолжать разговор про адрес нельзя. Артефакт «Опасные данные» твой!','ok');
+      robySay('Личные данные — как ключи от дома. ИИ их не хранит для тебя безопасно. Ты защитил дедушку и Машу!');
+      earnBadge('🏅 Защитник данных'); MissionManager.complete(3);
+    }else showFeedback('m3fb','Нужно выбрать оба безопасных действия и не выбирать «продолжить разговор».','err');
+  };
+})();
+
+/* ===================== MISSION 4 ===================== */
+(function buildM4(){
+  const rounds=[
+    {claim:'Самая высокая гора Беларуси — Эверест',
+      sources:[{t:'📚 Учебник',ok:1},{t:'🌐 Энциклопедия',ok:1},{t:'👩 Взрослый',ok:1},{t:'🤖 Другой ИИ',ok:0}],
+      fact:'✅ Факт: гора Дзержинская — около 345 м. Эверест — в Гималаях.'},
+    {claim:'Солнце вращается вокруг Земли',
+      sources:[{t:'📚 Учебник астрономии',ok:1},{t:'🌐 NASA',ok:1},{t:'💬 Блог астролога',ok:0}],
+      fact:'✅ Земля вращается вокруг Солнца. Блог астролога — ненадёжный источник.'},
+    {claim:'Киты — это рыбы',
+      sources:[{t:'📚 Энциклопедия животных',ok:1},{t:'🎥 Видео «5 фактов о китах»',ok:1},{t:'🌐 Britannica',ok:1}],
+      fact:'✅ Киты — млекопитающие, не рыбы.'},
+    {claim:'Вода кипит при 90°C',
+      sources:[{t:'📚 Учебник физики',ok:1},{t:'🔬 Сайт университета',ok:1},{t:'📢 Реклама чайника',ok:0}],
+      fact:'✅ При нормальном давлении вода кипит при 100°C. Реклама — не источник.'}
+  ];
+  let r=0, picked=new Set();
+  createMissionShell(4,'Проверь ответ ИИ','teacher',
+    comicHTML('teacher',[
+      {text:'ИИ написал: «Самая высокая гора Беларуси — Эверест». Помогите проверить!'},
+      {emoji:'🤖',who:'Роби',text:'Откроем источники. Не верь одному ответу — сравни минимум два надёжных.'}
+    ])+
+    theoryHTML('Как проверять информацию',
+      'Алгоритм: учебник → энциклопедия → надёжный сайт → спросить взрослого → сравнить с другим ИИ → вывод.',
+      ['✅ Учебник + энциклопедия','❌ Только блог / реклама / один ИИ']
+    )+
+    `<div id="m4round"></div>
+     <button class="action-btn" onclick="checkM4Round()">Проверить источники</button>
+     <div class="feedback" id="m4fb"></div>
+     <div id="m4done" class="hidden theory"><h4>🧠 Всегда проверяй информацию</h4><p>Даже уверенный ответ ИИ может быть ошибкой. Два независимых источника сильнее одной красивой фразы.</p></div>`
+  );
+  function renderRound(){
+    picked=new Set();
+    const cur=rounds[r];
+    document.getElementById('m4round').innerHTML=`<span class="level-tag">Раунд ${r+1} / ${rounds.length}</span>
+      <p><strong>🤖 ИИ говорит:</strong> «${cur.claim}»</p>
+      <p>Выбери минимум 2 <em>надёжных</em> источника:</p>
+      <div>${cur.sources.map((s,i)=>`<button class="action-btn source-btn" id="m4s${i}" onclick="pickSrc(${i})">${s.t}</button>`).join('')}</div>
+      <p class="progress-mini" id="m4pick">Выбрано: 0</p>`;
+  }
+  window.pickSrc=function(i){
+    const btn=document.getElementById('m4s'+i);
+    if(picked.has(i)){picked.delete(i);btn.classList.remove('active');}
+    else{picked.add(i);btn.classList.add('active');}
+    document.getElementById('m4pick').textContent='Выбрано: '+picked.size;
+  };
+  window.checkM4Round=function(){
+    const cur=rounds[r];
+    if(picked.size<2){showFeedback('m4fb','Нужно минимум 2 источника.','err');return;}
+    let allGood=true, hasBad=false;
+    picked.forEach(i=>{ if(!cur.sources[i].ok){allGood=false;hasBad=true;} });
+    const goodCount=[...picked].filter(i=>cur.sources[i].ok).length;
+    if(allGood && goodCount>=2){
+      showFeedback('m4fb', cur.fact+' Можно переходить дальше.','ok');
+      robySay('Отличная проверка! Надёжные источники подтверждают или опровергают ответ ИИ. Не останавливайся на одном клике.');
+      r++;
+      if(r>=rounds.length){
+        document.getElementById('m4done').classList.remove('hidden');
+        earnBadge('🏅 Проверяющий факты'); MissionManager.complete(4);
+        showFeedback('m4fb','Все раунды пройдены! Учительница может доверять твоей проверке. Артефакт «Проверка ответа» получен.','ok');
+      } else setTimeout(renderRound, 700);
+    }else{
+      showFeedback('m4fb', hasBad
+        ? 'Среди выбора есть ненадёжный источник (блог/реклама/только ИИ). Выбери учебник, энциклопедию, NASA, Britannica, сайт университета или взрослого.'
+        : 'Выбери именно надёжные источники.','err');
+      robySay('Не каждый сайт — источник правды. Реклама и астрологи часто ошибаются специально или случайно.');
+    }
+  };
+  renderRound();
+})();
+
+/* ===================== MISSION 5 ===================== */
+(function buildM5(){
+  let progress=0; const used=new Set();
+  createMissionShell(5,'Продолжи диалог','petya',
+    comicHTML('petya',[
+      {text:'Я спросил «Почему идёт дождь?» и получил короткий ответ. Что дальше?'},
+      {emoji:'🤖',who:'Роби',text:'Диалог — это уточнения! Попроси объяснить проще, пример или описание картинки.'}
+    ])+
+    theoryHTML('Искусство диалога',
+      'Можно просить: объяснить проще, привести пример, описать картинку, уточнить детали. Один вопрос — только начало.',
+      ['✅ «А можно проще?»','✅ «Покажи пример»','❌ Сразу закрыть чат']
+    )+
+    `<div class="chat-box" id="m5chat">
+      <div class="chat-msg user">Почему идёт дождь?</div>
+      <div class="chat-msg ai">Дождь идёт, когда капли в облаках становятся тяжёлыми и падают на землю.</div>
+    </div>
+    <div id="m5btns">
+      <button class="action-btn" data-k="simple" onclick="m5Act('simple')">А можно проще?</button>
+      <button class="action-btn" data-k="example" onclick="m5Act('example')">Покажи пример</button>
+      <button class="action-btn" data-k="draw" onclick="m5Act('draw')">Нарисуй</button>
+      <button class="action-btn" data-k="close" onclick="m5Act('close')">Закрыть чат</button>
+    </div>
+    <p class="progress-mini" id="m5prog">Полезных действий: 0 / 3</p>
+    <div class="feedback" id="m5fb"></div>
+    <div id="m5card" class="hidden theory"><h4>💬 Диалог с ИИ — серия уточнений</h4><p>Чем точнее следующий вопрос, тем полезнее ответ. Не бойся переспрашивать.</p></div>`
+  );
+  const replies={
+    simple:{user:'А можно проще?',ai:'Представь облако как мокрую губку: когда воды слишком много — она капает. Это и есть дождь.'},
+    example:{user:'Покажи пример',ai:'Как когда выжимаешь тряпку: вода не удерживается и падает вниз каплями.'},
+    draw:{user:'Нарисуй',ai:'(словами) Картинка: серое облако, стрелки вниз к земле, лужи и зонтик. Так выглядит дождь!'}
+  };
+  window.m5Act=function(k){
+    if(k==='close'){
+      showFeedback('m5fb','Не закрывай чат так рано! Ты ещё можешь уточнить ответ — это и есть навык диалога. Жизнь не отнимаем, попробуй другие кнопки.','info');
+      robySay('Закрыть чат можно потом. Сначала выжми пользу: проще, пример, картинка словами.');
+      return;
+    }
+    if(used.has(k)){showFeedback('m5fb','Это уточнение ты уже использовал. Выбери другое.','info');return;}
+    used.add(k); progress++;
+    const r=replies[k];
+    const box=document.getElementById('m5chat');
+    box.innerHTML+=`<div class="chat-msg user">${r.user}</div><div class="chat-msg ai">${r.ai}</div>`;
+    document.querySelector(`#m5btns [data-k="${k}"]`).disabled=true;
+    document.getElementById('m5prog').textContent=`Полезных действий: ${progress} / 3`;
+    showFeedback('m5fb','Отличное уточнение! Каждый новый вопрос делает ответ понятнее для Пети.','ok');
+    robySay('Видишь? Один ответ — мало. Три уточнения — уже мини-урок. Так работают сильные пользователи ИИ.');
+    if(progress>=3){
+      document.getElementById('m5card').classList.remove('hidden');
+      earnBadge('🏅 Отличный собеседник'); MissionManager.complete(5);
+      showFeedback('m5fb','Диалог освоен! Артефакт «Диалог» твой.','ok');
+    }
+  };
+})();/* ===================== MISSION 6 ===================== */
+(function buildM6(){
+  const cases=[
+    {who:'Миша',q:'«Напиши сочинение про осень за меня»',
+      opts:[{t:'Скопировать и сдать',ok:0},{t:'Попросить план и написать самому',ok:1},{t:'Сказать учителю, что болел',ok:0}],
+      fb:'Честно: попросить план/идеи и писать самому. Списывать и врать — нельзя.'},
+    {who:'Маша',q:'«Проверь мой текст на ошибки»',
+      opts:[{t:'Проверить ошибки и подсказать правки',ok:1},{t:'Стереть текст и написать заново за неё',ok:0},{t:'Ничего не делать',ok:0}],
+      fb:'Проверка ошибок — отличное использование ИИ. Полностью переписывать чужую работу — уже не её текст.'},
+    {who:'Петя',q:'«Придумай идею для проекта»',
+      opts:[{t:'Взять идею и сделать самому',ok:1},{t:'Сказать, что это моя идея без ИИ',ok:0},{t:'Попросить сделать проект полностью',ok:0}],
+      fb:'Идея от ИИ — ок, если дальше работаешь ты. Врать про авторство и отдавать всё ИИ — нечестно.'}
+  ];
+  let ci=0;
+  createMissionShell(6,'Используй ИИ честно','misha',
+    comicHTML('misha',[
+      {text:'ИИ, напиши сочинение целиком, я просто сдам!'},
+      {emoji:'🤖',who:'Роби',text:'Миша, подожди. Давай разберём три ситуации — где помощь, а где списывание.'}
+    ])+
+    theoryHTML('Академическая честность и ИИ',
+      'ИИ можно для идей, плана, проверки ошибок. Нельзя — сдавать чужой текст как свой.',
+      ['✅ План + своя работа','❌ «Напиши всё, я сдам»']
+    )+
+    `<div id="m6case"></div><div class="feedback" id="m6fb"></div>
+     <div id="m6card" class="hidden theory"><h4>⚖️ Используй ИИ как помощника</h4><p>Помощник усиливает тебя. Списывание подменяет тебя. Выбирай первое.</p></div>`
+  );
+  function renderCase(){
+    const c=cases[ci];
+    document.getElementById('m6case').innerHTML=`<span class="level-tag">Кейс ${ci+1} / 3 · ${c.who}</span>
+      <p><strong>${c.who}:</strong> ${c.q}</p>
+      ${c.opts.map((o,i)=>`<button class="action-btn" onclick="m6Pick(${i})">${o.t}</button>`).join('')}`;
+  }
+  window.m6Pick=function(i){
+    const c=cases[ci]; const o=c.opts[i];
+    if(o.ok){
+      showFeedback('m6fb', c.fb,'ok');
+      robySay(c.fb+' Запомни это правило навсегда — оно пригодится в школе каждый день.');
+      ci++;
+      if(ci>=cases.length){
+        document.getElementById('m6card').classList.remove('hidden');
+        earnBadge('🏅 Честный ученик'); MissionManager.complete(6);
+        showFeedback('m6fb','Все кейсы решены честно! Артефакт «Честность» твой.','ok');
+      } else setTimeout(renderCase,500);
+    }else{
+      showFeedback('m6fb','Так нельзя: это списывание или обман. Выбери вариант, где ученик думает и работает сам, а ИИ только помогает.','err');
+      robySay('Честность важнее скорости. Учитель ждёт твою голову, а не копипаст.');
+    }
+  };
+  renderCase();
+})();
+
+/* ===================== MISSION 7 ===================== */
+(function buildM7(){
+  createMissionShell(7,'Мастерская постеров','all',
+    comicHTML('all',[
+      {emoji:'🤖',who:'Роби',text:'Время создать ваше главное правило безопасности и оформить плакат!'},
+      {emoji:'👦',who:'Петя',text:'Хочу правило про пароли!'}
+    ])+
+    theoryHTML('Как сформулировать правило',
+      'Коротко, ясно, с глаголом: «Не сообщай…», «Проверяй…», «Спрашивай…».',
+      ['✅ «Не сообщай пароль ИИ»','❌ «Пароли всякие там»']
+    )+
+    `<div id="m7s1">
+      <span class="level-tag">Этап 1 · Правило</span>
+      <input type="text" id="m7rule" placeholder="Например: Проверяй ответы ИИ в учебнике">
+      <button class="action-btn" onclick="m7CheckRule()">Дальше к оформлению</button>
+    </div>
+    <div id="m7s2" class="hidden">
+      <span class="level-tag">Этап 2 · Оформление</span>
+      <p>Цвет:</p>
+      <label><input type="radio" name="m7c" value="blue" checked> Синий</label>
+      <label><input type="radio" name="m7c" value="purple"> Фиолетовый</label>
+      <label><input type="radio" name="m7c" value="green"> Зелёный</label>
+      <p>Иконка:</p>
+      <label><input type="radio" name="m7i" value="🛡️" checked> Щит</label>
+      <label><input type="radio" name="m7i" value="⭐"> Звезда</label>
+      <label><input type="radio" name="m7i" value="🔒"> Замок</label>
+      <p>Шрифт:</p>
+      <label><input type="radio" name="m7f" value="" checked> Обычный</label>
+      <label><input type="radio" name="m7f" value="bold"> Жирный</label>
+      <button class="action-btn" onclick="m7Poster()">Сгенерировать постер</button>
+      <div id="m7poster"></div>
+      <button class="action-btn accent hidden" id="m7doneBtn" onclick="m7Finish()">Сохранить в памятку</button>
+    </div>
+    <div class="feedback" id="m7fb"></div>`
+  );
+  const verbs=/не\s+\w+|сообща|проверя|спрашива|использу|защищ|думай|пиши|читай|сравни/i;
+  window.m7CheckRule=function(){
+    const v=document.getElementById('m7rule').value.trim();
+    if(v.length<10 || !verbs.test(v)){
+      showFeedback('m7fb','Переформулируй: минимум 10 символов и глагол действия (проверяй, не сообщай, используй…).','err');
+      robySay('Правило должно звучать как команда героя, а не как обрывок фразы.');
+      return;
+    }
+    gameState.posterRule=v; saveState();
+    document.getElementById('m7s2').classList.remove('hidden');
+    showFeedback('m7fb','Сильное правило! Теперь выбери цвет, иконку и шрифт.','ok');
+  };
+  window.m7Poster=function(){
+    const c=document.querySelector('input[name="m7c"]:checked').value;
+    const ico=document.querySelector('input[name="m7i"]:checked').value;
+    const f=document.querySelector('input[name="m7f"]:checked').value;
+    document.getElementById('m7poster').innerHTML=`<div class="poster ${c} ${f}">${ico} ${gameState.posterRule}</div>`;
+    document.getElementById('m7doneBtn').classList.remove('hidden');
+    showFeedback('m7fb','Постер готов! Он появится в итоговой памятке.','ok');
+    robySay('Красиво и по делу. Такое правило можно повесить в классе!');
+  };
+  window.m7Finish=function(){
+    earnBadge('🏅 Автор правил'); MissionManager.complete(7);
+    showFeedback('m7fb','Артефакт «Моё правило» получен!','ok');
+  };
+})();
+
+/* ===================== MISSION 8 ===================== */
+(function buildM8(){
+  createMissionShell(8,'Работа с ChatGPT','roby',
+    comicHTML('roby',[
+      {text:'Попросим ChatGPT сформулировать 3 правила безопасности. Потом сравним и выберем лучшее!'}
+    ])+
+    theoryHTML('Как использовать готовые ответы ИИ',
+      'Не копируй слепо: сравни, выбери, объясни почему. Ты — редактор, ИИ — помощник.',
+      ['✅ Сравнить 3 варианта','❌ Взять первый без чтения']
+    )+
+    `<div id="m8s1">
+      <span class="level-tag">Этап 1 · Получи 3 правила</span>
+      <p>Открой ChatGPT и попроси: <em>«Напиши 3 коротких правила безопасной работы с ИИ для детей»</em>.</p>
+      <a class="action-btn accent" href="https://chatgpt.com" target="_blank" rel="noopener">Открыть ChatGPT</a>
+      <p>Вставь три правила сюда:</p>
+      <textarea id="m8r1" placeholder="Правило 1"></textarea>
+      <textarea id="m8r2" placeholder="Правило 2"></textarea>
+      <textarea id="m8r3" placeholder="Правило 3"></textarea>
+      <button class="action-btn" onclick="m8S1()">Дальше</button>
+    </div>
+    <div id="m8s2" class="hidden">
+      <span class="level-tag">Этап 2 · Выбери лучшее</span>
+      <div id="m8radios"></div>
+      <textarea id="m8why" placeholder="Почему это правило самое важное? (не меньше 10 слов)"></textarea>
+      <button class="action-btn" onclick="m8S2()">Отправить выбор</button>
+    </div>
+    <div class="feedback" id="m8fb"></div>`
+  );
+  window.m8S1=function(){
+    const rs=[1,2,3].map(i=>document.getElementById('m8r'+i).value.trim());
+    if(rs.some(r=>r.length<=10)){showFeedback('m8fb','Заполни все три поля (каждое длиннее 10 символов).','err');return;}
+    document.getElementById('m8radios').innerHTML=rs.map((r,i)=>`<label style="display:block;margin:8px 0;"><input type="radio" name="m8best" value="${i}"> <strong>Правило ${i+1}:</strong> ${r}</label>`).join('');
+    document.getElementById('m8s2').classList.remove('hidden');
+    showFeedback('m8fb','Отлично, правила на месте. Теперь выбери лучшее и объясни почему — это и есть мышление, а не копипаст.','ok');
+    robySay('Сравнение ответов ИИ — навык детектива. Одно правило обычно сильнее других.');
+  };
+  window.m8S2=function(){
+    const sel=document.querySelector('input[name="m8best"]:checked');
+    const why=document.getElementById('m8why').value.trim();
+    const words=why.split(/\s+/).filter(Boolean);
+    if(!sel){showFeedback('m8fb','Выбери одно правило.','err');return;}
+    if(words.length<10){showFeedback('m8fb','Напиши обоснование минимум из 10 слов.','err');return;}
+    showFeedback('m8fb','Сильный выбор! Ты не просто взял ответ ИИ — ты его оценил. Артефакт «Помощь ChatGPT» твой.','ok');
+    robySay('Сравнивать и комментировать важнее, чем слепо копировать. Так рождается настоящая работа с ИИ.');
+    MissionManager.complete(8);
+  };
+})();
+
+/* ===================== MISSION 9 ===================== */
+(function buildM9(){
+  const order=['Введение','Хороший запрос','Опасные данные','Проверка ответа','Диалог','Честность','Моё правило','Заключение'];
+  const slotsHTML=order.map((_,i)=>`
+    <div class="m9-slot" id="m9slot${i}" data-i="${i}"
+      ondragover="m9Over(event)" ondragleave="m9Leave(event)" ondrop="m9DropSlot(event,${i})">
+      <div class="m9-num">${i+1}</div>
+      <div class="m9-slot-body" id="m9body${i}"></div>
+    </div>`).join('');
+  createMissionShell(9,'Конструктор презентации','teacher',
+    comicHTML('teacher',[
+      {text:'Соберите блоки презентации в правильном порядке — как настоящие методисты!'},
+      {emoji:'🤖',who:'Роби',text:'Сначала структура, потом короткие описания к каждому блоку.'}
+    ])+
+    theoryHTML('Структура хорошей презентации',
+      'Введение → правила/запросы → данные → проверка → диалог → честность → твоё правило → заключение.',
+      ['✅ Логика «от простого к итогу»','❌ Свалка слайдов без порядка']
+    )+
+    `<div id="m9s1">
+      <span class="level-tag">Этап 1 · Порядок</span>
+      <p>Перетащи каждый блок <strong>под номер</strong>. Ошибся — просто перетащи на другой номер или обратно в запас. Можно менять местами сколько угодно.</p>
+      <div class="m9-slots" id="m9slots">${slotsHTML}</div>
+      <p style="font-size:.9rem;color:#64748B;margin:4px 0;">Запас (свободные блоки):</p>
+      <div id="m9bank" ondragover="allowDrop(event)" ondrop="m9DropBank(event)">${[...order].sort(()=>Math.random()-.5).map((t,i)=>`<div class="drag-chip" draggable="true" ondragstart="dragStart(event)" id="m9c${i}" data-text="${t}">${t}</div>`).join('')}</div>
+      <button class="action-btn" onclick="m9CheckOrder()">Проверить порядок</button>
+    </div>
+    <div id="m9s2" class="hidden">
+      <span class="level-tag">Этап 2 · Описания</span>
+      <p>К каждому блоку напиши 2–3 предложения (больше 20 символов):</p>
+      <div id="m9desc"></div>
+      <button class="action-btn" onclick="m9CheckDesc()">Готово</button>
+    </div>
+    <div class="feedback" id="m9fb"></div>`
+  );
+  function m9RefreshSlots(){
+    order.forEach((_,i)=>{
+      const slot=document.getElementById('m9slot'+i);
+      const body=document.getElementById('m9body'+i);
+      if(slot&&body) slot.classList.toggle('filled', !!body.querySelector('.drag-chip'));
+    });
+  }
+  function m9Place(chip, targetBody){
+    if(!chip||!targetBody) return;
+    const fromBody=chip.parentElement;
+    const existing=targetBody.querySelector('.drag-chip');
+    if(existing===chip) return;
+    if(existing){
+      if(fromBody&&fromBody.classList.contains('m9-slot-body')) fromBody.appendChild(existing);
+      else document.getElementById('m9bank').appendChild(existing);
+    }
+    targetBody.appendChild(chip);
+    m9RefreshSlots();
+  }
+  window.m9Over=function(e){
+    e.preventDefault();
+    const slot=e.currentTarget.closest('.m9-slot')||e.currentTarget;
+    slot.classList.add('drag-over');
+  };
+  window.m9Leave=function(e){
+    const slot=e.currentTarget.closest('.m9-slot')||e.currentTarget;
+    slot.classList.remove('drag-over');
+  };
+  window.m9DropSlot=function(e,i){
+    e.preventDefault();
+    const slot=document.getElementById('m9slot'+i);
+    if(slot) slot.classList.remove('drag-over');
+    if(!dragEl||!dragEl.id.startsWith('m9c')) return;
+    m9Place(dragEl, document.getElementById('m9body'+i));
+  };
+  window.m9DropBank=function(e){
+    e.preventDefault();
+    if(!dragEl||!dragEl.id.startsWith('m9c')) return;
+    document.getElementById('m9bank').appendChild(dragEl);
+    m9RefreshSlots();
+  };
+  window.m9CheckOrder=function(){
+    const got=order.map((_,i)=>{
+      const chip=document.getElementById('m9body'+i)?.querySelector('.drag-chip');
+      return chip?chip.dataset.text:null;
+    });
+    if(got.some(t=>!t)){
+      showFeedback('m9fb','Заполни все номера 1–8. Свободные блоки лежат в запасе снизу.','err');
+      return;
+    }
+    if(JSON.stringify(got)!==JSON.stringify(order)){
+      showFeedback('m9fb','Порядок пока неверный. Перетащи блоки на другие номера — можно менять сколько угодно. Введение в начале, заключение в конце.','err');
+      return;
+    }
+    document.getElementById('m9desc').innerHTML=order.map((t,i)=>`<label><strong>${i+1}. ${t}</strong></label><textarea id="m9d${i}" placeholder="Краткое описание блока..."></textarea>`).join('');
+    document.getElementById('m9s2').classList.remove('hidden');
+    showFeedback('m9fb','Структура верная! Теперь наполни блоки смыслом.','ok');
+    robySay('Учительница будет довольна: презентация уже выглядит как план урока.');
+  };
+  window.m9CheckDesc=function(){
+    let ok=true;
+    order.forEach((_,i)=>{ if(document.getElementById('m9d'+i).value.trim().length<=20) ok=false; });
+    if(!ok){showFeedback('m9fb','Каждое описание — длиннее 20 символов (2–3 предложения).','err');return;}
+    showFeedback('m9fb','Сборка готова! Артефакт «Сборка» твой.','ok');
+    robySay('От структуры зависит, поймут ли тебя слушатели. Ты собрал каркас как профи.');
+    MissionManager.complete(9);
+  };
+})();
+
+/* ===================== MISSION 10 ===================== */
+(function buildM10(){
+  createMissionShell(10,'Финальная презентация','all',
+    comicHTML('all',[
+      {emoji:'🤖',who:'Роби',text:'Финал! Оформим памятку в Gamma. Выберите стиль — я соберу промпт.'},
+      {emoji:'👩‍🏫',who:'Учительница',text:'И не забудьте сдать готовую презентацию в Classroom!'}
+    ])+
+    theoryHTML('Как сделать презентацию в Gamma',
+      '1) Открой Gamma. 2) Вставь промпт. 3) Выбери оформление. 4) Проверь текст и сдай PDF/ссылку.',
+      ['✅ Свой промпт + проверка','❌ Случайный шаблон без правил']
+    )+
+    `<div id="m10s1">
+      <span class="level-tag">Этап 1 · Стиль</span>
+      <p><strong>Стиль:</strong></p>
+      <label><input type="radio" name="m10st" value="современный" checked> Современный</label>
+      <label><input type="radio" name="m10st" value="комикс"> Комикс</label>
+      <label><input type="radio" name="m10st" value="мультфильм"> Мультфильм</label>
+      <label><input type="radio" name="m10st" value="роботы"> Роботы</label>
+      <p><strong>Цвета:</strong></p>
+      <label><input type="radio" name="m10col" value="сине-фиолетовые" checked> Сине-фиолетовые</label>
+      <label><input type="radio" name="m10col" value="зелёно-голубые"> Зелёно-голубые</label>
+      <p><strong>Герой:</strong></p>
+      <label><input type="radio" name="m10hero" value="робот Роби" checked> 🤖 Роби</label>
+      <label><input type="radio" name="m10hero" value="кот-учёный"> 🐱 Кот-учёный</label>
+      <label><input type="radio" name="m10hero" value="астронавт"> 🧑‍🚀 Астронавт</label>
+      <button class="action-btn" onclick="m10Prompt()">Сгенерировать промпт</button>
+    </div>
+    <div id="m10s2" class="hidden">
+      <span class="level-tag">Этап 2 · Промпт для Gamma</span>
+      <div class="prompt-box" id="m10out"></div>
+      <button class="action-btn" onclick="m10Copy()">📋 Скопировать</button>
+      <a class="action-btn accent" href="https://gamma.app" target="_blank" rel="noopener" onclick="m10Finish()">🚀 Открыть Gamma</a>
+      <a class="action-btn" href="https://classroom.google.com" target="_blank" rel="noopener">📤 Classroom</a>
+    </div>
+    <div class="feedback" id="m10fb"></div>`
+  );
+  window.m10Prompt=function(){
+    const st=document.querySelector('input[name="m10st"]:checked').value;
+    const col=document.querySelector('input[name="m10col"]:checked').value;
+    const hero=document.querySelector('input[name="m10hero"]:checked').value;
+    const rule=gameState.posterRule||'Не сообщай пароль ИИ и проверяй факты';
+    const prompt=`Создай яркую презентацию для детей 9–12 лет «Как безопасно пользоваться ИИ».
+Стиль: ${st}. Цвета: ${col}. Главный герой: ${hero}.
+Структура слайдов: введение; хороший запрос; опасные данные; проверка ответа; диалог; честность; моё правило «${rule}»; заключение с чек-листом.
+Текст простой, с эмодзи, без страшилок. В конце — 5 правил-шпаргалка.`;
+    document.getElementById('m10out').textContent=prompt;
+    document.getElementById('m10s2').classList.remove('hidden');
+    showFeedback('m10fb','Промпт собран! Скопируй его в Gamma или открой сервис — и миссия засчитается.','ok');
+    robySay('Финишная прямая! Оформи презентацию и сдай в Classroom. Все герои тобой гордятся.');
+  };
+  window.m10Copy=function(){
+    const t=document.getElementById('m10out').textContent;
+    navigator.clipboard?.writeText(t).then(()=>{
+      showFeedback('m10fb','Скопировано! Вставь в Gamma.app и оформи слайды.','ok');
+      m10Finish();
+    }).catch(()=>{
+      prompt('Скопируй промпт вручную:', t);
+      m10Finish();
+    });
+  };
+  window.m10Finish=function(){
+    if(gameState.completed.has(10)) return;
+    earnBadge('🏅 Эксперт ИИ');
+    MissionManager.complete(10);
+    showFeedback('m10fb','Артефакт «Презентация» получен! Ты — Агент безопасности ИИ.','ok');
+    robySay('Поздравляю! Пройден весь путь: от правды/лжи до памятки в Gamma. Сдай работу учителю.');
+  };
+})();
+
+/* ===================== UTILS + BOOT ===================== */
+function launchConfetti(){
+  const box=document.getElementById('confetti-container');
+  for(let i=0;i<50;i++){
+    const p=document.createElement('div'); p.className='confetti-piece';
+    p.style.left=Math.random()*100+'%';
+    p.style.background=['#FFD700','#FF6B6B','#4ECDC4','#818CF8','#34D399'][i%5];
+    p.style.animationDelay=Math.random()*1.5+'s';
+    box.appendChild(p); setTimeout(()=>p.remove(),3000);
+  }
+}
+function submitReflection(){
+  const t=document.getElementById('reflectionText');
+  if(!t.value.trim()){alert('Напиши отзыв!');return;}
+  alert('✅ Спасибо! Роби сохранил твою мысль.');
+  t.disabled=true;
+  robySay('Спасибо за рефлексию! Самое важное правило — то, которое ты реально будешь соблюдать.');
+}
+
+window.addEventListener('load',()=>{
+  RobovitaProgress.mount({
+    key:'robovita_l6',
+    defaultName:'Агент',
+    promptText:'Как тебя зовут, агент?',
+    host:'#progressProfileHost',
+    getState(){
+      return {
+        xp:gameState.xp,
+        current:gameState.current,
+        completed:[...gameState.completed],
+        artifacts:[...gameState.artifacts],
+        badges:[...gameState.badges],
+        posterRule:gameState.posterRule
+      };
+    },
+    applyState(d){
+      gameState.xp=d.xp||0;
+      gameState.current=d.current||1;
+      gameState.completed=new Set(d.completed||[]);
+      gameState.artifacts=new Set(d.artifacts||[]);
+      gameState.badges=new Set(d.badges||[]);
+      gameState.posterRule=d.posterRule||'';
+      if(d.studentName) gameState.studentName=d.studentName;
+    },
+    onNameChange(name){ gameState.studentName=name; },
+    onReady(){
+      if(gameState.completed.size>0 && gameState.current<=gameState.completed.size){
+        gameState.current = Math.min(10, Math.max(...[...gameState.completed])+1);
+        if(gameState.completed.size===10) gameState.current=11;
+      }
+      initShell();
+      const box=document.getElementById('badgesContainer');
+      if(box && gameState.badges.size){
+        box.innerHTML='';
+        gameState.badges.forEach(name=>{
+          const b=document.createElement('span'); b.className='badge'; b.textContent=name; box.appendChild(b);
+        });
+      }
+      updateUI();
+      unlockMissions();
+      if(gameState.completed.size===0){
+        robySay('Привет, '+gameState.studentName+'! Начни с миссии 1 — помоги Пете отличить правду от лжи.');
+      } else if(gameState.completed.size===10){
+        robySay('С возвращением! Все миссии уже пройдены. Можно оформить Gamma или сдать работу.');
+        document.getElementById('finalCongrats').classList.add('show');
+      } else {
+        robySay('С возвращением, '+gameState.studentName+'! Открыта миссия '+gameState.current+'.');
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>

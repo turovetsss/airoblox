@@ -1,0 +1,1012 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ИИ-Творец · Занятие 5 · ИИ-поисковики</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #61B01F;
+      --green-dark: #2E4A17;
+      --green-light: #E8F5E0;
+      --purple: #6C3F9B;
+      --purple-light: #F4EAFA;
+      --orange: #F0A500;
+      --orange-light: #FFF4DB;
+      --orange-ink: #875B00;
+      --red: #D32F2F;
+      --red-light: #FFEBEE;
+      --blue: #2677BD;
+      --blue-light: #E3F0FA;
+      --navy: #12274C;
+      --white: #FFFFFF;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #fff; overflow: hidden; height: 100vh; color: var(--green-dark); }
+    .presentation { display: flex; flex-direction: column; height: 100vh; }
+    .slide-stage { flex: 1; position: relative; overflow: hidden; }
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      padding: 28px 48px 20px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+      background: #fff;
+      animation: fade .4s ease;
+    }
+    .slide.active { display: flex; align-items: center; justify-content: center; }
+    .slide-inner {
+      width: 100%;
+      max-width: none;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 32px;
+      align-items: center;
+      height: 100%;
+      max-height: none;
+      padding: 0 1.5vw;
+    }
+    .slide-inner.full { grid-template-columns: 1fr; }
+    .slide-inner.stack { grid-template-columns: 1fr; max-width: none; }
+
+    .title-slide { background: var(--navy); color: #fff; }
+    .title-slide .slide-inner { grid-template-columns: 1.1fr 0.9fr; }
+    .title-slide h1 { font-size: clamp(34px, 5.5vw, 64px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; }
+    .title-slide h2 { font-size: clamp(26px, 3.8vw, 44px); font-weight: 800; color: #b9eb8d; margin: 10px 0; }
+    .title-slide p { font-size: clamp(18px, 2.2vw, 28px); font-weight: 700; max-width: none; opacity: .95; }
+    .title-slide .stars {
+      position: absolute; inset: 0; pointer-events: none; opacity: .35;
+      background-image: radial-gradient(2px 2px at 20% 30%, #fff, transparent),
+        radial-gradient(2px 2px at 70% 20%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 40% 70%, #9cf, transparent),
+        radial-gradient(2px 2px at 85% 60%, #fff, transparent),
+        radial-gradient(1px 1px at 10% 80%, #fff, transparent);
+    }
+
+    .eyebrow {
+      display: inline-block; padding: 8px 18px; border-radius: 99px;
+      font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;
+      background: var(--green-light); color: var(--green-dark);
+    }
+    .eyebrow.orange { background: var(--orange); color: #fff; }
+    .eyebrow.blue { background: var(--blue); color: #fff; }
+    .eyebrow.red { background: var(--red); color: #fff; }
+    h2 { font-size: clamp(34px, 4.8vw, 58px); font-weight: 900; line-height: 1.1; color: var(--green-dark); margin: 10px 0 8px; }
+    .lead { font-weight: 800; font-size: clamp(19px, 2.1vw, 28px); line-height: 1.45; }
+    .list { margin-top: 16px; display: grid; gap: 12px; font-size: clamp(18px, 2vw, 26px); font-weight: 800; }
+    .list span { display: flex; align-items: flex-start; gap: 10px; }
+    .tick {
+      width: 32px; height: 32px; border-radius: 50%; background: var(--green-light);
+      display: grid; place-items: center; color: var(--green); font-size: 14px; flex-shrink: 0; margin-top: 1px;
+    }
+    .tick.red { background: var(--red-light); color: var(--red); }
+    .tick.orange { background: var(--orange-light); color: var(--orange); }
+    .tick.blue { background: var(--blue-light); color: var(--blue); }
+    .note {
+      padding: 16px 20px; border-radius: 18px; background: var(--orange-light); color: var(--orange-ink);
+      font-weight: 800; font-size: clamp(17px, 1.7vw, 23px); margin-top: 14px;
+    }
+    .note.green { background: var(--green-light); color: var(--green-dark); }
+    .note.purple { background: var(--purple-light); color: var(--purple); }
+    .note.blue { background: var(--blue-light); color: var(--blue); }
+    .note.red { background: var(--red-light); color: var(--red); }
+    .discuss {
+      margin-top: 14px; padding: 12px 16px; border-radius: 16px; border: 2px dashed var(--purple);
+      background: #faf5ff; color: var(--purple); font-weight: 800; font-size: clamp(14px, 1.2vw, 18px);
+    }
+    .discuss.blue { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    .can-card { padding: 16px; border-radius: 20px; font-weight: 800; }
+    .can-card h3 { font-size: clamp(16px, 1.5vw, 22px); margin-bottom: 6px; }
+    .can-card ul { list-style: none; padding: 0; font-size: clamp(16px, 1.6vw, 22px); display: grid; gap: 4px; }
+    .can-card ul li::before { content: "• "; }
+    .can { background: var(--green-light); color: var(--green-dark); }
+    .cannot { background: var(--red-light); color: var(--red); }
+    .blue-card { background: var(--blue-light); color: var(--blue); }
+
+    .steps { display: grid; gap: 10px; margin-top: 12px; }
+    .step {
+      display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start;
+      background: var(--green-light); border-radius: 16px; padding: 12px 14px; font-weight: 800;
+      font-size: clamp(17px, 1.8vw, 24px);
+    }
+    
+    .step-num {
+      min-width: 42px; height: 42px; padding: 0 10px; border-radius: 999px; white-space: nowrap; font-size: 14px; background: var(--green); color: #fff;
+      display: grid; place-items: center; font-weight: 900;
+    }
+    .step.alt { background: var(--purple-light); }
+    .step.alt .step-num { background: var(--purple); }
+    .step.warn { background: var(--orange-light); }
+    .step.warn .step-num { background: var(--orange); color: #3E2C0B; }
+    .step.blue-step { background: var(--blue-light); }
+    .step.blue-step .step-num { background: var(--blue); }
+
+    .illustration { position: relative; display: flex; align-items: center; justify-content: center; min-height: 280px; }
+    .blob {
+      position: absolute; width: 78%; aspect-ratio: 1; border-radius: 45% 55% 60% 40%;
+      background: var(--green-light); transform: rotate(-12deg); opacity: 0.55;
+    }
+    .blob.blue { background: var(--blue-light); }
+    .blob.red { background: var(--red-light); }
+    .blob.orange { background: var(--orange-light); }
+    .title-slide .blob { background: #244d82; opacity: 0.35; }
+
+    .robot {
+      position: relative; width: 150px; height: 180px; z-index: 2;
+      filter: drop-shadow(0 10px 12px rgba(18,39,76,0.15));
+    }
+    .robot-head {
+      position: absolute; width: 112px; height: 82px; left: 19px; top: 16px;
+      border-radius: 36px; background: linear-gradient(145deg, #fff, #c8e6ff); border: 5px solid #193a66;
+    }
+    .robot-ear {
+      position: absolute; top: 38px; width: 20px; height: 36px; border-radius: 12px;
+      background: var(--green); border: 4px solid #193a66;
+    }
+    .robot-ear.left { left: 2px; } .robot-ear.right { right: 2px; }
+    .robot-eye {
+      position: absolute; top: 36px; width: 15px; height: 20px; background: #193a66; border-radius: 50%;
+    }
+    .robot-eye.one { left: 42px; } .robot-eye.two { right: 42px; }
+    .robot-eye.think { height: 6px; top: 42px; border-radius: 4px; }
+    .robot-mouth {
+      position: absolute; width: 30px; height: 12px; left: 41px; top: 60px;
+      border-bottom: 4px solid #193a66; border-radius: 0 0 20px 20px;
+    }
+    .robot-mouth.o {
+      width: 18px; height: 18px; left: 47px; top: 56px;
+      border: 4px solid #193a66; border-radius: 50%; background: transparent;
+    }
+    .antenna { position: absolute; width: 6px; height: 22px; left: 72px; top: -4px; background: #193a66; }
+    .antenna::before {
+      content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%;
+      background: var(--orange); left: -4px; top: -8px;
+    }
+    .robot-body {
+      position: absolute; width: 100px; height: 72px; left: 25px; bottom: 4px;
+      border-radius: 28px 28px 20px 20px; background: var(--green); border: 5px solid #193a66;
+    }
+    .robot-panel {
+      position: absolute; width: 48px; height: 28px; left: 26px; top: 18px;
+      border-radius: 12px; background: #f8fff4; border: 4px solid #193a66;
+    }
+    .robot-panel::before, .robot-panel::after {
+      content: ''; position: absolute; width: 7px; height: 7px; border-radius: 50%; top: 7px; background: var(--purple);
+    }
+    .robot-panel::before { left: 10px; } .robot-panel::after { right: 10px; }
+
+    .float-icon {
+      position: absolute; z-index: 3; width: 56px; height: 56px; display: grid; place-items: center;
+      border-radius: 18px; background: white; box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      font-size: 26px; animation: bob 3s ease-in-out infinite;
+    }
+    .float-icon.a { top: 4%; left: 4%; }
+    .float-icon.b { top: 10%; right: 4%; animation-delay: .6s; }
+    .float-icon.c { bottom: 8%; left: 2%; animation-delay: 1.2s; }
+    .float-icon.d { bottom: 4%; right: 6%; animation-delay: 1.7s; }
+
+    .ability-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+    .ability {
+      background: var(--green-light); border-radius: 16px; padding: 14px; font-weight: 800;
+      display: flex; gap: 10px; align-items: center; font-size: clamp(16px, 1.7vw, 22px);
+    }
+    .ability .ico { font-size: 28px; }
+    .ability.blue { background: var(--blue-light); }
+
+    .browser {
+      background: #fff; border-radius: 22px; box-shadow: 0 12px 28px rgba(17,53,76,0.12);
+      overflow: hidden; border: 3px solid #d8e8d1; width: 100%; max-width: 460px;
+    }
+    .browser-top { background: #e9f6e2; padding: 10px 16px; display: flex; gap: 8px; align-items: center; }
+    .browser-top .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--orange); }
+    .browser-top .dot:nth-child(2) { background: #a8d985; }
+    .browser-top .dot:nth-child(3) { background: #7e65a8; }
+    .browser-content { padding: 16px; }
+    .chat-bubble {
+      border-radius: 16px; padding: 12px 16px; font-weight: 800;
+      font-size: clamp(16px, 1.6vw, 22px); line-height: 1.4; margin-bottom: 10px;
+    }
+    .bad { background: var(--orange-light); border: 3px solid #f5c15a; color: var(--orange-ink); }
+    .good { background: var(--green-light); border: 3px solid #9bce75; color: var(--green-dark); }
+    .blue-bubble { background: var(--blue-light); border: 3px solid var(--blue); color: var(--blue); }
+
+    .flow-pill {
+      display: inline-block; padding: 8px 14px; border-radius: 30px; font-weight: 900;
+      font-size: clamp(16px, 1.5vw, 21px);
+    }
+    .arrow { font-size: 22px; font-weight: 900; color: var(--orange); margin: 0 2px; }
+
+    .cta-link {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
+      background: var(--green); color: #fff; padding: 12px 22px; border-radius: 30px;
+      font-weight: 900; text-decoration: none; font-size: clamp(16px, 1.7vw, 22px);
+      box-shadow: 0 4px 0 #4a8a18;
+    }
+    .cta-link:hover { background: #52991a; }
+    .cta-link.blue { background: var(--blue); box-shadow: 0 4px 0 #1a5a8a; }
+    .cta-link.blue:hover { background: #1f6aa0; }
+
+    .check-list { margin-top: 12px; display: grid; gap: 8px; }
+    .check-item {
+      display: flex; gap: 10px; align-items: flex-start; font-weight: 800;
+      font-size: clamp(17px, 1.7vw, 23px); background: var(--green-light);
+      padding: 10px 14px; border-radius: 14px;
+    }
+    .check-item .ok { color: var(--green); font-size: 22px; line-height: 1; }
+    .check-item.blue { background: var(--blue-light); }
+    .check-item.blue .ok { color: var(--blue); }
+
+    .ref-links {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ref-links a {
+      background: #f0f4f9;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      color: var(--purple);
+      border: 1px solid #dce3ec;
+      transition: .2s;
+    }
+    .ref-links a:hover {
+      background: var(--purple-light);
+      border-color: var(--purple);
+    }
+
+    .teacher-toggle {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      z-index: 999;
+      background: var(--purple);
+      color: #fff;
+      border: none;
+      border-radius: 40px;
+      padding: 12px 20px;
+      font-weight: 900;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(108,63,155,.4);
+      transition: .2s;
+      font-family: inherit;
+    }
+    .teacher-toggle:hover { transform: scale(1.05); background: #5a2f8a; }
+    .teacher-panel {
+      position: fixed;
+      bottom: 150px;
+      right: 20px;
+      width: 360px;
+      max-height: 60vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.2);
+      z-index: 998;
+      display: none;
+      font-size: 14px;
+      line-height: 1.5;
+      border: 3px solid var(--purple-light);
+    }
+    .teacher-panel.open { display: block; }
+    .teacher-panel h4 { color: var(--purple); margin-bottom: 8px; }
+    .teacher-panel p { margin-bottom: 6px; padding: 4px 6px; border-radius: 6px; transition: .2s; }
+    .teacher-panel .meta { color: var(--orange-ink); font-weight: 700; }
+    .teacher-panel .active-note { background: var(--green-light); }
+
+    .footer-nav {
+      height: 76px;
+      background: white;
+      border-top: 1px solid #e6eee1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+    .nav-inner {
+      width: 100%;
+      max-width: none; width: 100%; padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border: 0;
+      border-radius: 30px; font-weight: 900; font-size: 15px; cursor: pointer; transition: .2s;
+      background: var(--green-light); color: var(--green-dark); font-family: inherit;
+    }
+    .nav-btn:hover { transform: translateY(-2px); background: #d8efc7; }
+    .nav-btn.primary { background: var(--green); color: white; }
+    .nav-btn.primary:hover { background: #52991a; }
+    .nav-btn:disabled { opacity: .4; pointer-events: none; }
+    .progress-wrap { flex: 1; max-width: 420px; }
+    .progress-track { height: 8px; border-radius: 99px; background: #e7eee5; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: inherit; transition: width .3s; }
+    .dots { display: flex; gap: 4px; justify-content: center; margin-top: 6px; flex-wrap: wrap; }
+    .nav-dot {
+      border: 0; padding: 0; width: 7px; height: 7px; border-radius: 50%;
+      background: #cad7c4; cursor: pointer; transition: .2s;
+    }
+    .nav-dot.active { background: var(--purple); transform: scale(1.35); }
+    .counter { font-weight: 900; font-size: 18px; white-space: nowrap; min-width: 72px; text-align: center; }
+
+    .chip {
+      display: inline-block; background: #fff; border-radius: 12px; padding: 6px 10px;
+      font-weight: 800; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,.06); margin: 3px;
+    }
+
+    @keyframes bob { 50% { transform: translateY(-10px) rotate(3deg); } }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 760px) {
+      .slide { padding: 16px; }
+      .slide-inner, .title-slide .slide-inner { grid-template-columns: 1fr; gap: 14px; }
+      .illustration { min-height: 180px; order: -1; }
+      .title-slide .illustration { order: 0; }
+      .robot { transform: scale(0.72); }
+      .two-col, .ability-grid { grid-template-columns: 1fr; }
+      .footer-nav { height: 68px; }
+      .progress-wrap { display: none; }
+      .nav-btn { padding: 8px 14px; font-size: 13px; }
+      .teacher-toggle { bottom: 80px; right: 10px; padding: 10px 16px; font-size: 12px; }
+      .teacher-panel { width: 280px; right: 10px; bottom: 130px; }
+    }
+  </style>
+</head>
+<body>
+<div class="presentation">
+  <main class="slide-stage">
+
+    <!-- 1. Титульный -->
+    <section class="slide title-slide active">
+      <div class="stars"></div>
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow" style="background:#F0A500;color:#12274C;">Курс · Занятие 5</span>
+          <h1>ИИ-ТВОРЕЦ: ОТ ИДЕИ ДО СВОЕГО ПЕРВОГО ПОМОЩНИКА</h1>
+          <h2>ИИ-поисковики: как находить информацию с помощью нейросетей</h2>
+          <p>🔍 Твой пятый шаг в мир ИИ</p>
+          <p style="margin-top:10px;font-size:clamp(14px,1.5vw,18px);font-weight:700;opacity:.9;">Сегодня ты узнаешь, как использовать ИИ для поиска информации, научишься работать с Perplexity AI и подготовишь структурированный доклад.</p>
+          <div class="ref-links" style="margin-top:18px;">
+            <a href="https://www.perplexity.ai" target="_blank">🔍 Perplexity AI</a>
+         
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div class="float-icon a">🔍</div>
+          <div class="float-icon b">📊</div>
+          <div class="float-icon c">📚</div>
+          <div class="float-icon d">🧠</div>
+          <div class="robot">
+            <div class="antenna"></div>
+            <div class="robot-ear left"></div><div class="robot-ear right"></div>
+            <div class="robot-head"></div>
+            <div class="robot-eye one think"></div><div class="robot-eye two think"></div>
+            <div class="robot-mouth o"></div>
+            <div class="robot-body"><div class="robot-panel"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Повтор -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Повторяем</span>
+          <h2>Что мы уже знаем?</h2>
+          <div class="list">
+            <span><span class="tick">🤖</span> ИИ учится на примерах, но может ошибаться (галлюцинации)</span>
+            <span><span class="tick">💬</span> Формула хорошего промпта: Роль + Задача + Контекст + Формат</span>
+            <span><span class="tick">🛡️</span> Важно проверять информацию, соблюдать этику и авторские права</span>
+          </div>
+          <div class="discuss">❓ Как вы думаете, чем отличается поиск в Google от поиска с помощью ИИ? Кто уже пробовал Perplexity?</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;background:#fff;border-radius:24px;padding:22px;box-shadow:0 10px 28px rgba(0,0,0,.08);text-align:center;font-weight:900;">
+            <div style="font-size:56px;">🧠</div>
+            <div style="font-size:16px;color:var(--purple);">Вспоминаем прошлые занятия</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Мотивация: как мы ищем информацию -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Подумай</span>
+          <h2>Как ты ищешь информацию?</h2>
+          <p class="lead">Обычный поиск в интернете выглядит так:</p>
+          <div class="list">
+            <span><span class="tick">1</span> Открываешь Google или Яндекс</span>
+            <span><span class="tick">2</span> Вводишь запрос</span>
+            <span><span class="tick">3</span> Получаешь <strong>сотни ссылок</strong> — нужно открывать, читать, сравнивать</span>
+            <span><span class="tick">4</span> Это занимает <strong>много времени</strong>!</span>
+          </div>
+          <div class="note blue">💡 А что, если бы ИИ мог <strong>сам найти, собрать и пересказать</strong> нужную информацию? Именно это делают ИИ-поисковики!</div>
+          <div class="discuss blue">❓ Сколько времени ты обычно тратишь на поиск информации для школы? Что бы ты делал, если бы поиск занимал 1 минуту?</div>
+        </div>
+        <div class="illustration">
+          <div class="blob blue"></div>
+          <div style="position:relative;z-index:2;font-size:80px;">⏱️</div>
+          <div style="position:absolute;bottom:10%;right:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);">«Слишком долго!»</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Что такое ИИ-поисковик -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow blue">Определение</span>
+          <h2>Что такое ИИ-поисковик?</h2>
+          <p class="lead"><strong>ИИ-поисковик</strong> — это поисковая система, которая использует искусственный интеллект, чтобы <strong>находить, анализировать и пересказывать</strong> информацию из интернета.</p>
+          <div class="ability-grid">
+            <div class="ability blue"><span class="ico">🔍</span> Ищет в интернете</div>
+            <div class="ability blue"><span class="ico">📊</span> Анализирует источники</div>
+            <div class="ability blue"><span class="ico">📝</span> Пересказывает своими словами</div>
+            <div class="ability blue"><span class="ico">📎</span> Показывает <strong>ссылки</strong> на источники</div>
+          </div>
+          <div class="note blue">💡 Главное отличие от обычного поиска: ИИ <strong>сам собирает информацию</strong> и даёт <strong>готовый ответ</strong> со ссылками! Это экономит часы.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob blue"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🤖🔍</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Perplexity AI -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow blue">Главный герой</span>
+          <h2>Perplexity AI</h2>
+          <p class="lead"><strong>Perplexity AI</strong> — это бесплатный ИИ-поисковик, который даёт ответы с <strong>ссылками на источники</strong>.</p>
+          <div class="list">
+            <span><span class="tick blue">🌐</span> Ищет в реальном времени в интернете</span>
+            <span><span class="tick blue">📎</span> Показывает <strong>откуда</strong> взял информацию (цитирует источники)</span>
+            <span><span class="tick blue">🧠</span> Может <strong>глубоко исследовать</strong> тему (Pro Search)</span>
+            <span><span class="tick blue">📚</span> Помогает с учебой, проектами, исследованиями</span>
+          </div>
+          <div class="note purple">📌 Perplexity — это как <strong>Google + ChatGPT</strong> в одном инструменте! Точность цитирований — около 92%.</div>
+          <div class="ref-links">
+            <a href="https://www.perplexity.ai" target="_blank">🔍 Perplexity AI — официальный сайт</a>
+            <a href="https://docs.perplexity.ai" target="_blank">📘 Документация Perplexity</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob blue"></div>
+          <div style="position:relative;z-index:2;background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 28px rgba(0,0,0,.08);text-align:center;max-width:300px;border:3px solid var(--blue);">
+            <div style="font-size:56px;">🔍</div>
+            <div style="font-weight:900;font-size:20px;color:var(--blue);">Perplexity AI</div>
+            <div style="font-size:14px;color:#61715c;">Поиск + ИИ + Цитаты</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Perplexity vs ChatGPT -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Сравнение</span>
+          <h2>Perplexity vs ChatGPT</h2>
+          <div class="two-col">
+            <div class="can-card can">
+              <h3>🤖 ChatGPT</h3>
+              <ul>
+                <li>Генерирует текст <strong>по памяти</strong></li>
+                <li>Может <strong>выдумывать</strong> факты</li>
+                <li>Не показывает <strong>источники</strong></li>
+                <li>Хорош для творчества</li>
+              </ul>
+            </div>
+            <div class="can-card blue-card">
+              <h3>🔍 Perplexity</h3>
+              <ul>
+                <li>Ищет в <strong>реальном времени</strong></li>
+                <li>Показывает <strong>ссылки</strong></li>
+                <li>Точность цитирований: <strong>92%</strong></li>
+                <li>Хорош для исследований</li>
+              </ul>
+            </div>
+          </div>
+          <div class="note purple">💡 Используй <strong>ChatGPT</strong> для творчества, <strong>Perplexity</strong> — для поиска фактов! Комбинируй оба.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">⚖️</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Как работает Perplexity -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow blue">Как это работает</span>
+          <h2>Как Perplexity находит ответ?</h2>
+          <div class="steps">
+            <div class="step blue-step"><div class="step-num">1</div><div>Ты задаёшь <strong>вопрос</strong> (промпт)</div></div>
+            <div class="step blue-step"><div class="step-num">2</div><div>Perplexity <strong>ищет в интернете</strong> актуальные источники</div></div>
+            <div class="step blue-step"><div class="step-num">3</div><div>Анализирует <strong>несколько источников</strong> и находит лучший ответ</div></div>
+            <div class="step blue-step"><div class="step-num">4</div><div>Даёт <strong>ответ</strong> с <strong>ссылками</strong> на источники</div></div>
+          </div>
+          <div class="note blue">🧠 Perplexity не просто «угадывает» — он <strong>проверяет</strong> информацию в интернете! Это снижает риск галлюцинаций.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob blue"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🔍➡️📊➡️📝</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Регистрация в Perplexity -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Готовимся</span>
+          <h2>Регистрация в Perplexity</h2>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Открой <strong>perplexity.ai</strong></div></div>
+            <div class="step alt"><div class="step-num">2</div><div>Нажми <strong>«Sign Up»</strong> и зарегистрируйся</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>Используй <strong>школьную почту</strong> или почту родителя</div></div>
+            <div class="step blue-step"><div class="step-num">4</div><div>Готово! Теперь ты можешь задавать вопросы!</div></div>
+          </div>
+          <div class="note">📌 Perplexity — <strong>бесплатный</strong> сервис. Для учёбы хватает бесплатной версии.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div class="browser">
+            <div class="browser-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <div class="browser-content">
+              <div style="font-weight:900;font-size:18px;color:var(--blue);">Perplexity AI</div>
+              <div style="background:#eef3f0;border-radius:12px;padding:12px;margin-top:10px;font-weight:800;font-size:14px;">
+                <div>🔍 <strong>Задайте вопрос...</strong></div>
+                <div style="margin-top:6px;color:#61715c;">Например: «Что такое фотосинтез?»</div>
+              </div>
+              <div style="background:var(--blue);color:#fff;border-radius:30px;padding:10px 18px;font-weight:900;margin-top:14px;display:inline-block;">🔍 Поиск</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Как правильно спрашивать -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Навык</span>
+          <h2>Как правильно спрашивать Perplexity?</h2>
+          <p class="lead">Формула хорошего запроса для поиска:</p>
+          <div class="puzzle" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px;">
+            <span class="puzzle-piece" style="background:var(--blue);">🎯 Тема</span>
+            <span class="op">+</span>
+            <span class="puzzle-piece" style="background:var(--purple);">📋 Что именно нужно</span>
+            <span class="op">+</span>
+            <span class="puzzle-piece" style="background:var(--orange);color:#3E2C0B;">👤 Для кого</span>
+            <span class="op">+</span>
+            <span class="puzzle-piece" style="background:var(--green);">📊 Формат</span>
+          </div>
+          <div class="chat-bubble good" style="font-size:clamp(16px,1.4vw,20px);">✅ «Расскажи о фотосинтезе. Что это, как работает, почему это важно. Для ученика 6-го класса. 5 фактов.»</div>
+          <div class="chat-bubble bad" style="font-size:clamp(16px,1.4vw,20px);">❌ «Фотосинтез» — слишком широко!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">✍️</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Режимы поиска -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow blue">Режимы</span>
+          <h2>Режимы поиска в Perplexity</h2>
+          <div class="list">
+            <span><span class="tick blue">🌐</span> <strong>Auto</strong> — автоматический выбор лучшего режима</span>
+            <span><span class="tick blue">📚</span> <strong>Academic</strong> — поиск в <strong>научных</strong> источниках</span>
+            <span><span class="tick blue">📰</span> <strong>News</strong> — поиск в свежих новостях</span>
+            <span><span class="tick blue">💻</span> <strong>Social</strong> — поиск в соцсетях и форумах</span>
+            <span><span class="tick blue">🔬</span> <strong>Deep Research</strong> — <strong>глубокое исследование</strong> темы</span>
+          </div>
+          <div class="note blue">🧠 Для школы лучше всего подходит режим <strong>Academic</strong> или <strong>Auto</strong>! Он ищет в научных статьях, энциклопедиях и проверенных источниках.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob blue"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">⚙️</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. Другие ИИ-поисковики (новый) -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow blue">Обзор</span>
+          <h2>Другие ИИ-поисковики</h2>
+          <p class="lead">Кроме Perplexity, есть и другие инструменты, которые могут пригодиться:</p>
+          <div class="list">
+            <span><span class="tick blue">🔷</span> <strong>Microsoft Copilot (Bing)</strong> — встроен в браузер Edge, даёт ответы с цитатами и генерирует картинки</span>
+            <span><span class="tick blue">🔷</span> <strong>You.com</strong> — ИИ-поисковик с режимами «Умный», «Наука», «Код» и т.д.</span>
+            <span><span class="tick blue">🔷</span> <strong>Google SGE</strong> (экспериментальный) — встроенный ИИ-ответ в Google</span>
+            <span><span class="tick blue">🔷</span> <strong>Phind</strong> — специализированный ИИ-поисковик для разработчиков и технических вопросов</span>
+          </div>
+          <div class="note purple">💡 Каждый инструмент хорош для своих задач. Perplexity — отличный универсал для школьных исследований.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob blue"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🌐</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Этика использования ИИ-поисковиков (новый) -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Этика</span>
+          <h2>Этичное использование ИИ-поиска</h2>
+          <p class="lead">ИИ-поисковик — это помощник, а не автор твоей работы.</p>
+          <div class="list">
+            <span><span class="tick">✅</span> <strong>Цитируй источники</strong>: если используешь факт из Perplexity, укажи оригинальную статью</span>
+            <span><span class="tick">✅</span> <strong>Не копируй целиком</strong>: перескажи своими словами, добавь свои мысли</span>
+            <span><span class="tick">✅</span> <strong>Проверяй</strong>: даже ИИ-поисковик может ошибиться, сверяй с учебником</span>
+            <span><span class="tick">✅</span> <strong>Указывай ИИ</strong>: если использовал Perplexity, скажи об этом в разделе «Источники» или «Методы»</span>
+          </div>
+          <div class="note green">🧠 Честность и прозрачность — главные принципы ответственного исследователя.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">⚖️</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. Практика: исследование темы -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow orange">Практика</span>
+          <h2>Исследуй тему с Perplexity!</h2>
+          <p class="lead">Выбери одну тему и исследуй её с помощью Perplexity:</p>
+          <div class="task-cards" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px;">
+            <div class="task-card" style="border-color:var(--blue);">
+              <span class="n">🌍 Тема 1</span> «Как образуются вулканы?»
+            </div>
+            <div class="task-card" style="border-color:var(--blue);">
+              <span class="n">🚀 Тема 2</span> «Что такое чёрные дыры?»
+            </div>
+            <div class="task-card" style="border-color:var(--blue);">
+              <span class="n">🧬 Тема 3</span> «Как работает ДНК?»
+            </div>
+          </div>
+          <div class="steps" style="margin-top:14px;">
+            <div class="step blue-step"><div class="step-num">1</div><div>Задай <strong>конкретный вопрос</strong> в Perplexity</div></div>
+            <div class="step blue-step"><div class="step-num">2</div><div>Посмотри на <strong>источники</strong> — откуда взята информация</div></div>
+            <div class="step blue-step"><div class="step-num">3</div><div>Запиши <strong>3–5 ключевых фактов</strong> в тетрадь</div></div>
+          </div>
+          <div class="discuss blue">⏱ 12 минут на исследование. Потом поделимся!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14. Сбор материалов для доклада -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Структура</span>
+          <h2>Как собрать материалы для доклада?</h2>
+          <p class="lead">Используй Perplexity, чтобы собрать информацию по структуре:</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div><strong>Введение</strong> — что это? Почему это важно?</div></div>
+            <div class="step alt"><div class="step-num">2</div><div><strong>Основная часть</strong> — как это работает? Ключевые факты</div></div>
+            <div class="step warn"><div class="step-num">3</div><div><strong>Интересные факты</strong> — что удивительного?</div></div>
+            <div class="step blue-step"><div class="step-num">4</div><div><strong>Заключение</strong> — почему это важно знать?</div></div>
+          </div>
+          <div class="note purple">📋 Запиши ответы на эти вопросы — у тебя получится <strong>структурированный доклад</strong>!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">📋</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15. Как проверить источники -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow red">Важно</span>
+          <h2>Как проверить источники?</h2>
+          <p class="lead">Perplexity показывает источники — но их тоже нужно <strong>проверять</strong>!</p>
+          <div class="list">
+            <span><span class="tick red">🔍</span> <strong>Открой ссылку</strong> — проверь, существует ли она</span>
+            <span><span class="tick red">📰</span> <strong>Оцени сайт</strong>: это научный журнал, блог, новостной портал? Доверяешь ли ты ему?</span>
+            <span><span class="tick red">📅</span> <strong>Проверь дату</strong> — информация актуальная или устарела?</span>
+            <span><span class="tick red">👤</span> <strong>Кто автор</strong> — эксперт в своей области или аноним?</span>
+          </div>
+          <div class="note red">🧠 Perplexity помогает найти информацию, но <strong>ты отвечаешь</strong> за её достоверность! Примени памятку из 4-го занятия.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob red"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🔍📰</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16. Создание доклада -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow green">Твой доклад</span>
+          <h2>Структурируй свой доклад!</h2>
+          <p class="lead">Используй собранную информацию, чтобы написать <strong>короткий доклад</strong> (5–7 предложений).</p>
+          <div class="check-list">
+            <div class="check-item blue"><span class="ok">1</span> <strong>Введение</strong> — о чём доклад?</div>
+            <div class="check-item blue"><span class="ok">2</span> <strong>Основная часть</strong> — 3–4 ключевых факта</div>
+            <div class="check-item blue"><span class="ok">3</span> <strong>Интересный факт</strong> — что удивило?</div>
+            <div class="check-item blue"><span class="ok">4</span> <strong>Заключение</strong> — почему это важно?</div>
+            <div class="check-item blue"><span class="ok">5</span> <strong>Источники</strong> — откуда взята информация</div>
+          </div>
+          <div class="note purple">📌 Не забудь <strong>указать источники</strong> — это этично и правильно!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17. Презентация докладов -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow orange">Выступление</span>
+          <h2>Презентация докладов</h2>
+          <div class="list">
+            <span><span class="tick">🎤</span> Расскажи, <strong>какую тему</strong> ты исследовал</span>
+            <span><span class="tick">🔍</span> Какие <strong>запросы</strong> ты задавал Perplexity?</span>
+            <span><span class="tick">📊</span> Какие <strong>факты</strong> ты нашёл?</span>
+            <span><span class="tick">📎</span> Какие <strong>источники</strong> ты использовал?</span>
+          </div>
+          <div class="discuss">👏 Слушаем и поддерживаем друг друга!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob orange"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🎤</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18. Игра «Факт или фейк?» (новый) -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow orange">Игра</span>
+          <h2>🎯 Факт или фейк?</h2>
+          <p class="lead">Я показываю утверждение, которое якобы выдал ИИ-поисковик. Ваша задача — определить, правда это или галлюцинация, и объяснить почему. Используем сигнальные карточки (👍/✋).</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>«Столица Австралии — Сидней» → <strong style="color:var(--red);">ФЕЙК ✋</strong> (Канберра)</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>«Вода кипит при 100°C на уровне моря» → <strong style="color:var(--green);">ФАКТ 👍</strong> (но можно уточнить про давление)</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>«Первый человек на Луне — Нил Армстронг в 1969 году» → <strong style="color:var(--green);">ФАКТ 👍</strong></div></div>
+            <div class="step danger"><div class="step-num">4</div><div>«В 2020 году интернет отключали на всей планете» → <strong style="color:var(--red);">ФЕЙК ✋</strong> (галлюцинация)</div></div>
+          </div>
+          <div class="discuss blue">🧠 Вывод: даже авторитетный ИИ-поисковик может ошибаться. Всегда проверяй!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 19. Рефлексия -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Рефлексия</span>
+          <h2>Что было самым полезным?</h2>
+          <div class="list">
+            <span><span class="tick">❓</span> Что такое ИИ-поисковик и чем он отличается от обычного поиска?</span>
+            <span><span class="tick">❓</span> Какие преимущества даёт Perplexity для школьных проектов?</span>
+            <span><span class="tick">❓</span> Как проверить, что информация от ИИ-поисковика достоверна?</span>
+            <span><span class="tick">❓</span> Что ты сегодня узнал, что пригодится тебе в школе и за её пределами?</span>
+          </div>
+          <div class="discuss blue">Обсуди с соседом (2 минуты), затем послушаем 2–3 человека.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 20. Итоги занятия -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow green">Отлично!</span>
+          <h2>Итоги занятия</h2>
+          <div class="check-list">
+            <div class="check-item"><span class="ok">✔️</span> узнал, что такое <strong>ИИ-поисковики</strong></div>
+            <div class="check-item"><span class="ok">✔️</span> познакомился с <strong>Perplexity AI</strong> и его возможностями</div>
+            <div class="check-item"><span class="ok">✔️</span> научился задавать <strong>точные запросы</strong> для поиска</div>
+            <div class="check-item"><span class="ok">✔️</span> исследовал тему и собрал <strong>материалы для доклада</strong></div>
+            <div class="check-item"><span class="ok">✔️</span> освоил <strong>проверку источников</strong> и этичное использование ИИ</div>
+          </div>
+          <p style="font-weight:900;color:var(--purple);font-size:clamp(18px,1.8vw,28px);margin-top:14px;">🔍 Ты теперь умеешь искать информацию с помощью ИИ быстро, точно и ответственно! Ты молодец!</p>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div class="float-icon a">🎉</div>
+          <div class="float-icon b">⭐</div>
+          <div class="float-icon c">🏆</div>
+          <div class="float-icon d">🔍</div>
+          <div class="robot">
+            <div class="antenna"></div>
+            <div class="robot-ear left"></div><div class="robot-ear right"></div>
+            <div class="robot-head"></div>
+            <div class="robot-eye one"></div><div class="robot-eye two"></div>
+            <div class="robot-mouth"></div>
+            <div class="robot-body"><div class="robot-panel"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 21. Задание на урок (проект) -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">На уроке · проект</span>
+          <h2>Доклад с Perplexity AI</h2>
+          <p class="lead">На занятии подготовь школьный доклад с Perplexity и проверенными источниками.</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Выбери тему (планеты, Египет, роботы, акулы, вулканы, космос…).</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>Задай Perplexity <strong>5 вопросов</strong>, проверь ссылки, оформи доклад по структуре.</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>≥ <strong>3 скриншота</strong> и ≥ <strong>5 источников</strong>. При необходимости доделай и сдай.</div></div>
+          </div>
+          <div class="note">📌 Максимум 10 баллов — это проект на уроке, не домашка.</div>
+          <div class="ref-links">
+            <a href="https://classroom.google.com" target="_blank">📤 Сдать проект</a>
+            <a href="https://www.perplexity.ai" target="_blank">🔎 Perplexity</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:110px;">📄🔎</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 21b. Домашнее задание -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Google Classroom</span>
+          <h2>Домашнее задание</h2>
+          <p class="lead">Отдельно от доклада на уроке — выбери уровень:</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">⭐</div><div><strong>Лёгкое:</strong> 1 умный вопрос в Perplexity + скрин + 2 ссылки.</div></div>
+            <div class="step alt"><div class="step-num">⭐⭐</div><div><strong>Среднее:</strong> Составь 5 хороших вопросов по школьной теме (без полного доклада).</div></div>
+            <div class="step warn"><div class="step-num">⭐⭐⭐</div><div><strong>Сложное:</strong> Абзац 5–7 предложений + источники из Perplexity.</div></div>
+          </div>
+          <div class="ref-links">
+            <a href="https://classroom.google.com" target="_blank">📤 Сдать ДЗ</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:110px;">🏠💻</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 22. Ресурсы -->
+ 
+
+    <!-- 23. Анонс и напутствие -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Продолжение</span>
+          <h2>На следующем занятии</h2>
+          <div class="list">
+            <span><span class="tick">🔹</span> Подведём <strong>итоги модуля 1</strong> «Знакомство с ИИ и безопасность»</span>
+            <span><span class="tick">🔹</span> Создадим <strong>«Памятку по безопасности в ИИ»</strong> в Gamma</span>
+            <span><span class="tick">🔹</span> Повторим всё, что узнали за 5 занятий</span>
+            <span><span class="tick">🔹</span> Получим <strong>сертификат</strong> о прохождении модуля!</span>
+          </div>
+          <p style="font-weight:900;color:var(--purple);font-size:clamp(20px,2vw,32px);margin-top:16px;">🚀 Ты прошёл путь от новичка до исследователя. Дальше — только интереснее!</p>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:110px;transform:rotate(20deg);">🚀</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer-nav">
+    <nav class="nav-inner">
+      <button class="nav-btn" id="prevBtn" type="button">← Назад</button>
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="dots" id="dots"></div>
+      </div>
+      <span class="counter" id="counter">1 / 23</span>
+      <button class="nav-btn primary" id="nextBtn" type="button">Вперёд →</button>
+    </nav>
+  </footer>
+</div>
+
+
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progressFill = document.getElementById('progressFill');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let current = 0;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Слайд ' + (i + 1));
+    dot.addEventListener('click', () => showSlide(i));
+    dots.appendChild(dot);
+  });
+
+  function showSlide(index) {
+    current = Math.max(0, Math.min(index, slides.length - 1));
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+    document.querySelectorAll('.nav-dot').forEach((dot, i) => dot.classList.toggle('active', i === current));
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progressFill.style.width = ((current + 1) / slides.length * 100) + '%';
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+
+    const notes = document.querySelectorAll('#teacherNotes p');
+    notes.forEach((p, i) => {
+      p.classList.toggle('active-note', i === current);
+    });
+    const activeNote = notes[current];
+    if (activeNote) {
+      activeNote.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  }
+
+  prevBtn.addEventListener('click', () => showSlide(current - 1));
+  nextBtn.addEventListener('click', () => showSlide(current + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); showSlide(current + 1); }
+    if (e.key === 'ArrowLeft') showSlide(current - 1);
+    if (e.key === 'Home') showSlide(0);
+    if (e.key === 'End') showSlide(slides.length - 1);
+  });
+  showSlide(0);
+
+  const toggleBtn = document.getElementById('teacherToggle');
+  const panel = document.getElementById('teacherPanel');
+  toggleBtn.addEventListener('click', () => {
+    panel.classList.toggle('open');
+    toggleBtn.textContent = panel.classList.contains('open') ? '📕 Скрыть заметки' : '📘 Для учителя';
+  });
+</script>
+</body>
+</html>

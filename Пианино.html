@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7.6 Звук в игре · Светящееся пианино — РОБОВИТА</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: .84rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#4c1d95,#7c3aed); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #f5f3ff; border: 1px solid #c4b5fd;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fde68a; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.warn { background: #78350f; }
+    .info-callout.green { background: #14532d; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка Sound"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .88rem; line-height: 1.65; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .t { color: #a3e635; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .shot {
+      display: block; max-width: 100%; margin: 12px 0; border-radius: 14px;
+      border: 2px solid var(--line,#e2e8f0); background: #0f172a; box-shadow: 0 8px 24px rgba(15,23,42,.12);
+    }
+    .shot-cap { font-size: .9rem; color: #475569; margin: -4px 0 14px; padding: 0 4px; }
+    .dl-grid {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 12px; margin: 14px 0;
+    }
+    .dl-card {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 16px; padding: 14px 16px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .dl-card .note { font-size: 1.4rem; font-weight: 900; color: var(--primary-dark,#1a4a0a); }
+    .dl-card .fname { font-size: .78rem; color: #64748b; word-break: break-all; }
+    .dl-card a.dl {
+      display: inline-block; text-align: center; background: var(--primary,#61b01f); color: #fff !important;
+      font-weight: 800; padding: 8px 12px; border-radius: 99px; text-decoration: none; margin-top: 4px;
+    }
+    .dl-card a.dl:hover { filter: brightness(1.05); }
+    .swatch {
+      display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: middle; margin-right: 6px;
+      border: 1px solid rgba(0,0,0,.15);
+    }
+    .mini-game {
+      background: linear-gradient(180deg,#1e1b4b,#312e81); border-radius: 24px; padding: 20px;
+      border: 3px solid #a78bfa; margin: 24px 0; color: #f5f3ff;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #ddd6fe; }
+    .mission-box {
+      background: #312e81; border-radius: 12px; padding: 12px; border: 1px solid #a78bfa; margin-bottom: 10px;
+    }
+    .piano-keys {
+      display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin: 16px 0; min-height: 140px; align-items: flex-end;
+    }
+    .pkey {
+      width: 48px; height: 130px; border-radius: 0 0 10px 10px; border: 2px solid #e2e8f0;
+      background: #f8fafc; color: #0f172a; font-weight: 900; cursor: pointer;
+      box-shadow: 0 8px 0 #94a3b8; transition: transform .08s, box-shadow .08s, background .2s;
+    }
+    .pkey:active, .pkey.lit { transform: translateY(6px); box-shadow: 0 2px 0 #64748b; }
+    .pkey[data-note="До"].lit { background: #ef4444; color: #fff; }
+    .pkey[data-note="Ре"].lit { background: #f97316; color: #fff; }
+    .pkey[data-note="Ми"].lit { background: #eab308; color: #0f172a; }
+    .pkey[data-note="Фа"].lit { background: #22c55e; color: #fff; }
+    .pkey[data-note="Соль"].lit { background: #06b6d4; color: #fff; }
+    .pkey[data-note="Ля"].lit { background: #3b82f6; color: #fff; }
+    .pkey[data-note="Си"].lit { background: #a855f7; color: #fff; }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#f5f3ff); border: 3px solid #8b5cf6;
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: #5b21b6; margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin-top: 0; color: #5b21b6; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .phase-time {
+      font-size: .75rem; background: #ede9fe; color: #5b21b6;
+      padding: 2px 10px; border-radius: 99px; font-weight: 700;
+    }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+    .task-steps label { cursor: pointer; }
+    .progress-wrap { margin: 12px 0 4px; }
+    .progress-bar { height: 12px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg,#8b5cf6,#61b01f); transition: width .25s; }
+    .progress-label { font-size: .9rem; font-weight: 700; color: #5b21b6; margin-top: 6px; }
+    .space-note {
+      background: linear-gradient(135deg,#faf5ff,#ecfdf5); border: 2px dashed #8b5cf6;
+      border-radius: 18px; padding: 16px 18px; margin: 14px 0; font-weight: 700;
+    }
+    .teacher-tip {
+      background: #fef3c7; border: 2px solid #f59e0b; border-radius: 14px; padding: 12px 16px; margin: 12px 0;
+      font-weight: 700; color: #78350f;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · 7.6 · П2</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">7.6</div>
+      <div>
+        <div class="module-pill">Механики · Sound + проект</div>
+        <h1>🎹 Светящееся пианино</h1>
+        <p class="subtitle">Звук в игре (Sound) · 7 клавиш · PointLight · Touched</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🎵</div>
+    <div>
+      <strong>Миссия:</strong> игрок наступает на белую клавишу — играет нота и вспыхивает свет.
+      Сделаем 7 клавиш: <b>До–Ре–Ми–Фа–Соль–Ля–Си</b>, у каждой свой SoundId и цвет PointLight.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом занятии ты:</h2>
+    <ul>
+      <li>поймёшь, что такое <code>Sound</code> и <code>SoundId</code> 🔊</li>
+      <li>загрузишь ноты через Asset Manager 📂</li>
+      <li>соберёшь клавишу: Part + Sound + PointLight + Script 🎹</li>
+      <li>продублируешь 7 нот с разными цветами 🌈</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>⬇️ Скачай ноты на компьютер</h2>
+    <p>Сначала скачай mp3, потом загрузи их в игру (Asset Manager → Audio). Без сохранения игры на Roblox загрузка звуков не сработает.</p>
+    <div class="dl-grid">
+      <div class="dl-card">
+        <div class="note">До</div>
+        <div class="fname">c-note-sound.mp3</div>
+        <a class="dl" href="assets/downloads/Ноты/c-note-sound.mp3" download>⬇️ Скачать</a>
+      </div>
+      <div class="dl-card">
+        <div class="note">Ре</div>
+        <div class="fname">re-note-sound.mp3</div>
+        <a class="dl" href="assets/downloads/Ноты/re-note-sound.mp3" download>⬇️ Скачать</a>
+      </div>
+      <div class="dl-card">
+        <div class="note">Ми</div>
+        <div class="fname">the-sound-of-the-note-mi.mp3</div>
+        <a class="dl" href="assets/downloads/Ноты/the-sound-of-the-note-mi.mp3" download>⬇️ Скачать</a>
+      </div>
+      <div class="dl-card">
+        <div class="note">Фа</div>
+        <div class="fname">fa-note-sound.mp3</div>
+        <a class="dl" href="assets/downloads/Ноты/fa-note-sound.mp3" download>⬇️ Скачать</a>
+      </div>
+      <div class="dl-card">
+        <div class="note">Соль</div>
+        <div class="fname">salt-note-sound.mp3</div>
+        <a class="dl" href="assets/downloads/Ноты/salt-note-sound.mp3" download>⬇️ Скачать</a>
+      </div>
+      <div class="dl-card">
+        <div class="note">Ля</div>
+        <div class="fname">the-sound-of-the-note-la.mp3</div>
+        <a class="dl" href="assets/downloads/Ноты/the-sound-of-the-note-la.mp3" download>⬇️ Скачать</a>
+      </div>
+      <div class="dl-card">
+        <div class="note">Си</div>
+        <div class="fname">the-sound-of-the-note-do.mp3</div>
+        <a class="dl" href="assets/downloads/Ноты/the-sound-of-the-note-do.mp3" download>⬇️ Скачать</a>
+      </div>
+    </div>
+    <div class="info-callout warn">
+      <div class="bulb">⚠️</div>
+      <div>Файл для <b>Си</b> в папке назван <code>the-sound-of-the-note-do</code>. При загрузке в Asset Manager переименуй alias в <code>si-note-sound</code>, чтобы не путать с До.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📚 Теория: звук в игре (Sound)</h2>
+
+    <div class="theory-section">
+      <h3>1. Что такое Sound?</h3>
+      <p><code>Sound</code> — объект Roblox, который проигрывает аудиофайл. Его кладут внутрь Part (или Attachment), чтобы звук «жил» в мире рядом с клавишей.</p>
+      <table class="prop-table">
+        <tr><th>Свойство</th><th>Зачем</th></tr>
+        <tr><td><code>SoundId</code></td><td>ID файла: <code>rbxassetid://…</code></td></tr>
+        <tr><td><code>Volume</code></td><td>Громкость (0–1 и выше)</td></tr>
+        <tr><td><code>PlaybackSpeed</code></td><td>Скорость / высота тона</td></tr>
+        <tr><td><code>Looped</code></td><td>Зациклить звук</td></tr>
+        <tr><td><code>:Play()</code></td><td>Метод «сыграть сейчас»</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h3>2. Откуда берётся SoundId?</h3>
+      <ol>
+        <li>Игра сохранена на Roblox (<b>File → Save to Roblox</b>).</li>
+        <li>View → <b>Asset Manager</b> → папка <b>Audio</b> → Upload.</li>
+        <li>ПКМ по звуку → <b>Copy ID to Clipboard</b>.</li>
+        <li>Вставить в свойство <code>SoundId</code> у компонента Sound.</li>
+      </ol>
+      <div class="info-callout">
+        <div class="bulb">💡</div>
+        <div>Без Save to Roblox свои mp3 в игру не загрузить. Чужие звуки из Toolbox тоже можно, но сегодня работаем со своими нотами.</div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>3. PointLight + Touched</h3>
+      <p><code>PointLight</code> — точечный свет внутри Part. В начале <b>Enabled = false</b>, скрипт включает его на полсекунды.</p>
+      <p>Событие <code>Touched</code> срабатывает при касании. Проверяем <code>Humanoid</code>, чтобы реагировать только на игрока. <code>debounce</code> не даёт звуку трещать от многократных касаний.</p>
+    </div>
+
+    <div class="theory-section">
+      <h3>4. Иерархия одной клавиши</h3>
+      <div class="tree-box">
+        <span class="g">Part</span> (клавиша)<br>
+        &nbsp;&nbsp;├─ <span class="t">Sound</span> ← SoundId ноты<br>
+        &nbsp;&nbsp;├─ <span class="t">PointLight</span> ← цвет ноты, Enabled = false<br>
+        &nbsp;&nbsp;└─ <span class="t">Script</span> ← Touched → свет + Play()
+      </div>
+    </div>
+
+    <div class="cheat-sheet">
+      <div class="cheat-grid">
+        <div class="cheat-item"><div class="title">Sound</div><div class="rule">Проигрывает аудио</div></div>
+        <div class="cheat-item"><div class="title">SoundId</div><div class="rule">rbxassetid://…</div></div>
+        <div class="cheat-item"><div class="title">PointLight</div><div class="rule">Свечение клавиши</div></div>
+        <div class="cheat-item"><div class="title">Touched</div><div class="rule">Наступил игрок</div></div>
+        <div class="cheat-item"><div class="title">debounce</div><div class="rule">Анти-дребезг</div></div>
+        <div class="cheat-item"><div class="title">:Play()</div><div class="rule">Запуск звука</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="quiz1">
+    <h2>🧠 Проверка теории</h2>
+    <div class="quiz-block quiz-question" data-name="q1" data-correct="b">
+      <p><b>1.</b> Куда вставляют ID ноты?</p>
+      <label class="choice-card"><input type="radio" name="q1" value="a"> В Name у Part</label>
+      <label class="choice-card"><input type="radio" name="q1" value="b"> В SoundId у Sound</label>
+      <label class="choice-card"><input type="radio" name="q1" value="c"> В Brightness у PointLight</label>
+      <div class="q-feedback"></div>
+    </div>
+    <div class="quiz-block quiz-question" data-name="q2" data-correct="a">
+      <p><b>2.</b> Зачем нужен debounce?</p>
+      <label class="choice-card"><input type="radio" name="q2" value="a"> Чтобы звук не спамился при каждом касании</label>
+      <label class="choice-card"><input type="radio" name="q2" value="b"> Чтобы увеличить громкость</label>
+      <label class="choice-card"><input type="radio" name="q2" value="c"> Чтобы сменить цвет света</label>
+      <div class="q-feedback"></div>
+    </div>
+    <div class="quiz-block quiz-question" data-name="q3" data-correct="c">
+      <p><b>3.</b> Что сделать перед загрузкой своих mp3?</p>
+      <label class="choice-card"><input type="radio" name="q3" value="a"> Удалить Baseplate</label>
+      <label class="choice-card"><input type="radio" name="q3" value="b"> Включить Third Party Sales</label>
+      <label class="choice-card"><input type="radio" name="q3" value="c"> File → Save to Roblox</label>
+      <div class="q-feedback"></div>
+    </div>
+    <button class="btn primary" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <div class="mini-game">
+    <h2>🎮 Мини-пианино на странице</h2>
+    <div class="mission-box">Кликай по клавишам — они «загораются». В Studio то же самое через Touched.</div>
+    <div class="piano-keys" id="miniPiano">
+      <button type="button" class="pkey" data-note="До">До</button>
+      <button type="button" class="pkey" data-note="Ре">Ре</button>
+      <button type="button" class="pkey" data-note="Ми">Ми</button>
+      <button type="button" class="pkey" data-note="Фа">Фа</button>
+      <button type="button" class="pkey" data-note="Соль">Соль</button>
+      <button type="button" class="pkey" data-note="Ля">Ля</button>
+      <button type="button" class="pkey" data-note="Си">Си</button>
+    </div>
+    <div id="pianoMsg" style="text-align:center;font-weight:800;min-height:1.4em;"></div>
+  </div>
+
+  <div class="project-box" id="keyTaskBox">
+    <h2>🛠️ Проект в Roblox Studio</h2>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="projectFill"></div></div>
+      <div class="progress-label" id="projectLabel">Выполнено шагов: 0</div>
+    </div>
+
+    <div class="phase">
+      <h3>💾 Фаза 1 — Сохранить игру и загрузить звуки <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>File → <b>Save to Roblox</b> (игра должна быть в облаке).</li>
+        <li>Скачай 7 нот с этой страницы (блок выше).</li>
+        <li>View → Asset Manager → папка <b>Audio</b> → загрузи все mp3.</li>
+      </ol>
+      <img class="shot" src="assets/img/piano/01-save-to-roblox.png" alt="Save to Roblox" />
+      <p class="shot-cap">File → Save to Roblox.</p>
+      <img class="shot" src="assets/img/piano/02-audio-folder.png" alt="Audio в Asset Manager" />
+      <p class="shot-cap">Asset Manager → Audio: список загруженных нот.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">Игра сохранена на Roblox.</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">Все 7 нот видны в Audio.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>🎹 Фаза 2 — Первая клавиша (До) <span class="phase-time">15 мин</span></h3>
+      <ol>
+        <li>Создай Part-платформу (клавишу) рядом со SpawnLocation.</li>
+        <li>Внутрь Part добавь: <b>Sound</b>, <b>PointLight</b>, <b>Script</b>.</li>
+        <li>PointLight: цвет красный, Brightness ≈ 30, Range ≈ 8, <b>Enabled = выкл</b>.</li>
+        <li>В Asset Manager ПКМ по звуку До → <b>Copy ID to Clipboard</b>.</li>
+        <li>Вставь ID в свойство <b>SoundId</b> у Sound.</li>
+        <li>В Script вставь код ниже.</li>
+      </ol>
+      <img class="shot" src="assets/img/piano/03-key-part.png" alt="Клавиша Part" />
+      <p class="shot-cap">Платформа-клавиша рядом со спавном.</p>
+      <img class="shot" src="assets/img/piano/04-components.png" alt="Компоненты клавиши" />
+      <p class="shot-cap">Part → Sound, PointLight, Script.</p>
+      <img class="shot" src="assets/img/piano/05-pointlight.png" alt="PointLight красный" />
+      <p class="shot-cap">PointLight: красный цвет, Enabled выключен.</p>
+      <img class="shot" src="assets/img/piano/06-copy-id.png" alt="Copy ID" />
+      <p class="shot-cap">ПКМ → Copy ID to Clipboard.</p>
+      <img class="shot" src="assets/img/piano/07-soundid.png" alt="SoundId" />
+      <p class="shot-cap">Вставь ID в SoundId.</p>
+      <img class="shot" src="assets/img/piano/08-script-code.png" alt="Код скрипта" />
+      <p class="shot-cap">Скрипт клавиши: Touched → свет + звук.</p>
+
+<pre class="code-block"><span class="keyword">local</span> debounce = <span class="keyword">false</span>
+
+script.Parent.Touched:Connect(<span class="keyword">function</span>(hit)
+    <span class="keyword">if</span> debounce <span class="keyword">then return end</span>
+
+    <span class="keyword">local</span> character = hit.Parent
+    <span class="keyword">local</span> humanoid = character:FindFirstChild(<span class="string">"Humanoid"</span>)
+    <span class="keyword">if</span> humanoid <span class="keyword">then</span>
+        debounce = <span class="keyword">true</span>
+
+        <span class="comment">-- Включаем свет</span>
+        script.Parent.PointLight.Enabled = <span class="keyword">true</span>
+
+        <span class="comment">-- Проигрываем звук</span>
+        <span class="keyword">local</span> sound = script.Parent:FindFirstChildOfClass(<span class="string">"Sound"</span>)
+        <span class="keyword">if</span> sound <span class="keyword">then</span>
+            sound:Play()
+        <span class="keyword">end</span>
+
+        <span class="comment">-- Ждём и выключаем свет</span>
+        wait(<span class="number">0.5</span>)
+        script.Parent.PointLight.Enabled = <span class="keyword">false</span>
+
+        debounce = <span class="keyword">false</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>)</pre>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">Клавиша До играет и светится.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>🌈 Фаза 3 — Ещё 6 клавиш <span class="phase-time">20 мин</span></h3>
+      <div class="teacher-tip">🎓 Задача: продублируй Part 6 раз (всего 7 нот). У каждой — свой SoundId и цвет PointLight. Скрипт можно оставить тот же (Ctrl+D копирует и скрипт).</div>
+      <p><b>Порядок нот:</b> До → Ре → Ми → Фа → Соль → Ля → Си</p>
+      <table class="prop-table">
+        <tr><th>Нота</th><th>Файл звука</th><th>Цвет PointLight</th></tr>
+        <tr><td><span class="swatch" style="background:#ef4444"></span>До</td><td><code>c-note-sound</code></td><td>Красный <code>255, 6, 10</code></td></tr>
+        <tr><td><span class="swatch" style="background:#f97316"></span>Ре</td><td><code>re-note-sound</code></td><td>Оранжевый</td></tr>
+        <tr><td><span class="swatch" style="background:#eab308"></span>Ми</td><td><code>…-note-mi</code></td><td>Жёлтый</td></tr>
+        <tr><td><span class="swatch" style="background:#22c55e"></span>Фа</td><td><code>fa-note-sound</code></td><td>Зелёный</td></tr>
+        <tr><td><span class="swatch" style="background:#06b6d4"></span>Соль</td><td><code>salt-note-sound</code></td><td>Голубой</td></tr>
+        <tr><td><span class="swatch" style="background:#3b82f6"></span>Ля</td><td><code>…-note-la</code></td><td>Синий</td></tr>
+        <tr><td><span class="swatch" style="background:#a855f7"></span>Си</td><td><code>…-note-do</code> (переименуй в si)</td><td>Фиолетовый</td></tr>
+      </table>
+      <ol>
+        <li>Выдели готовую клавишу → Ctrl+D (Duplicate) × 6.</li>
+        <li>Расставь клавиши в ряд.</li>
+        <li>У каждой поменяй <b>SoundId</b> на нужную ноту.</li>
+        <li>У каждой поменяй <b>Color</b> у PointLight.</li>
+        <li>Проверь Play: наступай по очереди — разные ноты и цвета.</li>
+      </ol>
+      <div class="space-note">🏆 Семь клавиш, семь нот, семь цветов — пианино готово!</div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">Стоит 7 клавиш в ряд.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">У каждой свой звук и цвет света.</label></li>
+        <li><input type="checkbox" id="p3s2" onchange="updateProjectProgress()"><label for="p3s2">Все ноты До–Си проверены в Play.</label></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧯 Если не работает</h2>
+    <table class="prop-table">
+      <tr><th>Симптом</th><th>Что проверить</th></tr>
+      <tr><td>Нельзя загрузить mp3</td><td>Сделан Save to Roblox?</td></tr>
+      <tr><td>Тишина</td><td>SoundId вставлен? Volume &gt; 0? Игра не на Mute?</td></tr>
+      <tr><td>Нет света</td><td>PointLight внутри Part? Имя точное? Enabled включается скриптом?</td></tr>
+      <tr><td>Звук трещит</td><td>debounce на месте? wait(0.5) не удалили?</td></tr>
+      <tr><td>Срабатывает от всего</td><td>Есть проверка Humanoid?</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>узнал, как работает Sound и SoundId;</li>
+      <li>загрузил аудио через Asset Manager;</li>
+      <li>связал Touched → свет + звук через debounce;</li>
+      <li>собрал светящееся пианино на 7 нот.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Пианино играет!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти, чиним звук</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь педагога</label>
+    </div>
+    <textarea placeholder="Зачем Sound кладут внутрь Part? Что будет без debounce?"></textarea>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>7.6 · Звук в игре · Светящееся пианино</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function updateProjectProgress() {
+    const box = document.getElementById('keyTaskBox');
+    if (!box) return;
+    const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+    const checked = box.querySelectorAll('input[type="checkbox"]:checked').length;
+    const total = checkboxes.length;
+    const pct = total ? Math.round((checked / total) * 100) : 0;
+    const fill = document.getElementById('projectFill');
+    const label = document.getElementById('projectLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) {
+      label.textContent =
+        'Выполнено шагов: ' + checked + ' из ' + total +
+        (checked === total && total > 0 ? ' 🎉 Проект выполнен!' : '');
+    }
+  }
+
+  document.querySelectorAll('#miniPiano .pkey').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      btn.classList.add('lit');
+      document.getElementById('pianoMsg').textContent = '♪ ' + btn.dataset.note;
+      setTimeout(function () { btn.classList.remove('lit'); }, 400);
+    });
+  });
+
+  updateProjectProgress();
+</script>
+</body>
+</html>

@@ -1,162 +1,312 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Карта курса — Учебный центр «РОБОВИТА»</title>
-<link rel="stylesheet" href="assets/css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>РОБОВИТА · курсы для детей</title>
+    <style>
+        :root {
+            --primary: #61B01F;
+            --primary-light: #E8F5E0;
+            --primary-dark: #1A4A0A;
+            --accent: #6E0091;
+            --accent-light: #F0E6F5;
+            --accent-ink: #4A1A5A;
+            --line: #E2EED6;
+            --ink: #1E293B;
+            --gold: #F59E0B;
+            --radius: 22px;
+            --shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #F8FAFC;
+            color: var(--ink);
+            font-size: 1.05rem;
+            line-height: 1.55;
+        }
+        .wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        /* шапка */
+        .site-header {
+            background: linear-gradient(135deg, #E8F5E0, #F2FCE9);
+            border-bottom: 4px solid var(--primary);
+            margin-bottom: 20px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .brand img {
+            height: 46px;
+            border-radius: 14px;
+        }
+        .brand-name {
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.3px;
+        }
+        .brand-tag {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        .hero {
+            padding: 10px 0 24px;
+        }
+        .hero h1 {
+            margin: 0 0 6px;
+            font-size: 2rem;
+            color: var(--primary-dark);
+        }
+        .hero .subtitle {
+            margin: 0;
+            color: #475569;
+            font-size: 1.05rem;
+        }
+
+        /* карточки курсов */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 24px 0;
+        }
+        @media (max-width: 700px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .course-card {
+            background: #fff;
+            border-radius: var(--radius);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            padding: 26px 24px 22px;
+            display: flex;
+            flex-direction: column;
+            transition: 0.2s;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+            border-color: var(--primary);
+        }
+        .course-card.ai {
+            border-top: 6px solid var(--accent);
+        }
+        .course-card.roblox {
+            border-top: 6px solid #3B82F6;
+        }
+        .course-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+        .course-card.ai .course-badge {
+            background: var(--accent-light);
+            color: var(--accent-ink);
+        }
+        .course-card.roblox .course-badge {
+            background: #DBEAFE;
+            color: #1E3A8A;
+        }
+        .course-card h2 {
+            margin: 0 0 8px;
+            font-size: 1.5rem;
+            color: #0f172a;
+        }
+        .course-card .course-desc {
+            margin: 0 0 16px;
+            color: #475569;
+            flex: 1;
+        }
+        .course-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .course-features li {
+            background: #f1f5f9;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .course-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            padding: 12px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 0 #2E4A17;
+            transition: 0.15s;
+            width: fit-content;
+            margin-top: auto;
+        }
+        .course-link:hover {
+            background: #4C8C18;
+            transform: translateY(-1px);
+        }
+        .course-link.ai-link {
+            background: var(--accent);
+            box-shadow: 0 4px 0 #3b0764;
+        }
+        .course-link.ai-link:hover {
+            background: #5b0080;
+        }
+
+        /* информационный блок */
+        .info-card {
+            background: linear-gradient(135deg, #FEF9C3, #E8F5E0);
+            border-radius: var(--radius);
+            padding: 22px 24px;
+            margin: 24px 0;
+            border: 2px solid var(--gold);
+            text-align: center;
+        }
+        .info-card h2 {
+            margin: 0 0 8px;
+            color: #92400E;
+        }
+
+        /* футер */
+        .site-footer {
+            background: #1e293b;
+            color: #cbd5e1;
+            padding: 18px 0;
+            margin-top: 30px;
+        }
+        .site-footer .wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            padding-bottom: 0;
+        }
+        .foot-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+        .foot-brand img {
+            height: 30px;
+            border-radius: 8px;
+        }
+    </style>
 </head>
-<body class="course-map">
-<!-- ===== ШАПКА (светло-зелёная) ===== -->
-<header class="site-header">
-  <div class="wrap">
-    <div class="top-bar">
-      <a class="brand" href="Карта_курса.html">
-        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
-        <div>
-          <div class="brand-name">РОБОВИТА</div>
-          <div class="brand-tag">учимся программировать роботов и игры</div>
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <div class="top-bar">
+                <a class="brand" href="index.html">
+                    <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                    <div>
+                        <div class="brand-name">РОБОВИТА</div>
+                        <div class="brand-tag">учебный центр для детей</div>
+                    </div>
+                </a>
+            </div>
+            <div class="hero">
+                <h1>🚀 Выбери свой курс</h1>
+                <p class="subtitle">Два направления: искусственный интеллект и создание игр в Roblox Studio</p>
+            </div>
         </div>
-      </a>
-    </div>
-    <div class="hero">
-      <div>
-        <div class="module-pill">Курс · Roblox Studio + Lua</div>
-        <h1>Карта курса</h1>
-        <p class="subtitle">Полная программа обучения — 40 занятий</p>
-      </div>
-    </div>
-  </div>
-</header>
+    </header>
 
-<main class="wrap">
-  <!-- Приветственный блок -->
-  <div class="card" style="background:linear-gradient(135deg,var(--primary-light),#F2FCE9);border:none;">
-    <h2 style="color:var(--primary-dark);">👋 Привет! Это карта курса РОБОВИТА</h2>
-    <p>Здесь собраны все занятия программы по порядку. Нажимайте на готовые занятия (отмечены ✅), чтобы открыть страницу. Занятия со статусом 🔜 ещё в разработке — как только они будут готовы, они тоже станут ссылками.</p>
-    <p>Для новых материалов используйте <a href="index.html"><b>интерактивный шаблон занятия</b></a> — в нём уже есть все блоки (теория, фото/видео, таблица, код, ИИ-помощник, задание, опрос), просто впишите свой текст.</p>
-  </div>
+    <main class="wrap">
+        <!-- две карточки курсов -->
+        <div class="courses-grid">
+            <!-- ИИ -->
+            <a class="course-card ai" href="AI/Карта.html">
+                <span class="course-badge">🧠 Искусственный интеллект</span>
+                <h2>Курс «ИИ-творец»</h2>
+                <p class="course-desc">
+                    От первых шагов в мире ИИ до безопасного поиска, проверки фактов и создания собственного интеллектуального помощника. 
+                    6 занятий, которые научат ребёнка осознанно и безопасно пользоваться нейросетями.
+                </p>
+                <ul class="course-features">
+                    <li>🤖 Промпты и диалог</li>
+                    <li>🔐 Кибербезопасность</li>
+                    <li>🔍 Умный поиск</li>
+                    <li>🏅 Финальный проект</li>
+                </ul>
+                <span class="course-link ai-link">📋 Смотреть траекторию</span>
+            </a>
 
-  <!-- Раздел 1 -->
-  <div class="card module-card">
-    <h2>Раздел 1 · Введение <span class="mod-count">3/3 готово</span></h2>
-    <div class="lrows">
-      <a class="lrow" href="Занятие_1.1_Знакомство_с_компьютером.html"><span class="code">1.1</span><span class="ttl">Знакомство с компьютером</span><span class="st done">✅ Готово</span></a>
-      <a class="lrow" href="Занятие_1.2_Первый_урок_в_Roblox.html"><span class="code">1.2</span><span class="ttl">Первый урок в Roblox, мышь и клавиатура</span><span class="st done">✅ Готово</span></a>
-      <a class="lrow" href="Занятие_1.3_Инструменты_моделирования.html"><span class="code">1.3</span><span class="ttl">Инструменты моделирования, закрепление</span><span class="st done">✅ Готово</span></a>
-    </div>
-  </div>
+            <!-- Roblox -->
+            <a class="course-card roblox" href="Карта_курса.html">
+                <span class="course-badge">🎮 Roblox Studio + Lua</span>
+                <h2>Курс по созданию игр</h2>
+                <p class="course-desc">
+                    От знакомства с компьютером и Roblox Studio до полноценных игровых проектов: кликеры, квесты, лабиринты, хорроры и симуляторы. 
+                    Более 40 занятий с увлекательной практикой и программированием на Lua.
+                </p>
+                <ul class="course-features">
+                    <li>🏗️ Моделирование</li>
+                    <li>📜 Скрипты Lua</li>
+                    <li>🖥️ Интерфейсы</li>
+                    <li>📦 13 проектов</li>
+                </ul>
+                <span class="course-link">📋 Смотреть карту курса</span>
+            </a>
+        </div>
 
-  <!-- Раздел 2 -->
-  <div class="card module-card">
-    <h2>Раздел 2 · Моделирование, ландшафт и карты <span class="mod-count">0/7 готово</span></h2>
-    <div class="lrows">
-      <div class="lrow disabled"><span class="code">2.1</span><span class="ttl">Строим дерево</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">2.2</span><span class="ttl">Строим карту деревни</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">2.3</span><span class="ttl">Челлендж №1 — повтори</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">2.4</span><span class="ttl">Дом</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">2.5</span><span class="ttl">Волшебный лес</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">2.6</span><span class="ttl">Новогодний фейерверк</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">2.7</span><span class="ttl">Челлендж №2 — Поколдуем?</span><span class="st soon">🔜 В разработке</span></div>
-    </div>
-  </div>
+        <!-- дополнительная информация -->
+        <div class="info-card">
+            <h2>🎓 Как проходят занятия?</h2>
+            <p style="margin:6px 0;">
+                Все уроки — интерактивные, с историями, мини-играми, практическими заданиями и наградами (чипы, бейджи).
+                Ребёнок учится в своём темпе, а преподаватель помогает на каждом этапе.
+            </p>
+            <p style="margin:6px 0; font-weight:700;">📍 Учебный центр «РОБОВИТА» — офлайн-занятия в Витебске.</p>
+        </div>
+    </main>
 
-  <!-- Раздел 3 -->
-  <div class="card module-card">
-    <h2>Раздел 3 · Создание игр по шаблону <span class="mod-count">0/1 готово</span></h2>
-    <div class="lrows">
-      <div class="lrow disabled"><span class="code">3.1</span><span class="ttl">Создание игры по готовому шаблону Roblox</span><span class="st soon">🔜 В разработке</span></div>
-    </div>
-  </div>
-
-  <!-- Раздел 4.1 -->
-  <div class="card module-card">
-    <h2>Раздел 4.1 · Базовые конструкции программирования <span class="mod-count">0/13 готово</span></h2>
-    <div class="lrows">
-      <div class="lrow disabled"><span class="code">4.1.1</span><span class="ttl">Пещера кристаллов — Boolean</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.1.2</span><span class="ttl">Поместье — Vector3</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.1.3</span><span class="ttl">Фонтан блоков — текст, числа и цвет</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.1.4</span><span class="ttl">Объекты и свойства</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.1.5</span><span class="ttl">Первый скрипт, наследование объектов</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.1.6</span><span class="ttl">Переменные</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.1.7</span><span class="ttl">Цикл For</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.1.8</span><span class="ttl">Операторы</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.1.9</span><span class="ttl">Калькулятор</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.1.10</span><span class="ttl">Условия</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.1.11</span><span class="ttl">Цикл с условием — While</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.1.12</span><span class="ttl">Функции</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.1.13</span><span class="ttl">Аргументы функций — return и print</span><span class="st soon">🔜 В разработке</span></div>
-    </div>
-  </div>
-
-  <!-- Раздел 4.2 -->
-  <div class="card module-card">
-    <h2>Раздел 4.2 · Продвинутые конструкции программирования <span class="mod-count">0/4 готово</span></h2>
-    <div class="lrows">
-      <div class="lrow disabled"><span class="code">4.2.1</span><span class="ttl">Локальные переменные</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.2.3</span><span class="ttl">Обработка событий и кликов мыши</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.2.4</span><span class="ttl">GetChildren</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">4.2.5</span><span class="ttl">FindFirstChild</span><span class="st soon">🔜 В разработке</span></div>
-    </div>
-  </div>
-
-  <!-- Раздел 5.1 -->
-  <div class="card module-card">
-    <h2>Раздел 5.1 · Игровая разработка — работа с GUI <span class="mod-count">0/6 готово</span></h2>
-    <div class="lrows">
-      <div class="lrow disabled"><span class="code">5.1.1</span><span class="ttl">GUI: введение + TextButton</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.1.2</span><span class="ttl">GUI: TextBox, ImageLabel, ImageButton</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.1.3</span><span class="ttl">GUI: SurfaceGui</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.1.4</span><span class="ttl">GUI: BillboardGui</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.1.5</span><span class="ttl">TweenGUI (анимация интерфейса)</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.1.6</span><span class="ttl">Загрузочный экран</span><span class="st soon">🔜 В разработке</span></div>
-    </div>
-  </div>
-
-  <!-- Раздел 5.2 -->
-  <div class="card module-card">
-    <h2>Раздел 5.2 · Игровая механика <span class="mod-count">0/7 готово</span></h2>
-    <div class="lrows">
-      <div class="lrow disabled"><span class="code">5.2.1</span><span class="ttl">Удалённые события и функции (RemoteEvent/RemoteFunction)</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.2.2</span><span class="ttl">Кликер</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.2.3</span><span class="ttl">Модульные скрипты (ModuleScript)</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.2.4</span><span class="ttl">Bindable функции и события</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.2.5</span><span class="ttl">Создание инвентаря</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.2.6</span><span class="ttl">Ачивки (достижения)</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.2.7</span><span class="ttl">Звуки игры</span><span class="st soon">🔜 В разработке</span></div>
-    </div>
-  </div>
-
-  <!-- Раздел 5.3 -->
-  <div class="card module-card">
-    <h2>Раздел 5.3 · Продвинутый Lua <span class="mod-count">0/4 готово</span></h2>
-    <div class="lrows">
-      <div class="lrow disabled"><span class="code">5.3.1</span><span class="ttl">Облачное хранилище данных (DataStore)</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.3.2</span><span class="ttl">Магазин доната</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.3.3</span><span class="ttl">Музыкальный плеер</span><span class="st soon">🔜 В разработке</span></div>
-      <div class="lrow disabled"><span class="code">5.3.4</span><span class="ttl">Движение NPC</span><span class="st soon">🔜 В разработке</span></div>
-    </div>
-  </div>
-
-  <!-- Раздел 5.4 -->
-  <div class="card module-card">
-    <h2>Раздел 5.4 · Создание игр (итоговые проекты) <span class="mod-count">0/1 готово</span></h2>
-    <div class="lrows">
-      <div class="lrow disabled"><span class="code">5.4.1</span><span class="ttl">Итоговый проект — своя игра</span><span class="st soon">🔜 В разработке</span></div>
-    </div>
-  </div>
-</main>
-
-<!-- ===== ФУТЕР (светло-зелёный) ===== -->
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="foot-brand">
-      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
-      Учебный центр «РОБОВИТА»
-    </div>
-    <div>Офлайн-курс по Roblox Studio и Lua для детей</div>
-  </div>
-</footer>
-<script src="assets/js/lesson.js"></script>
+    <footer class="site-footer">
+        <div class="wrap">
+            <div class="foot-brand">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+                Учебный центр «РОБОВИТА»
+            </div>
+            <div>Курсы для детей · ИИ и Roblox</div>
+        </div>
+    </footer>
 </body>
 </html>

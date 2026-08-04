@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.6. Условия if / else — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: 1rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .code-block .op { color: #fde047; font-weight: 700; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#1e3a5f,#0c4a6e); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #38bdf8;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .info-callout.warn { background: #78350f; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка if / else"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .82rem; }
+    .flow-box {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; font-weight: 800;
+    }
+    .flow-box span {
+      background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px;
+    }
+    .flow-box .yes { border-color: #22c55e; background: #f0fdf4; }
+    .flow-box .no { border-color: #ef4444; background: #fef2f2; }
+    .flow-box .ask { border-color: #38bdf8; background: #f0f9ff; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.selected { border-color: var(--accent)!important; background: var(--accent-light)!important; }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .mini-game {
+      background: linear-gradient(180deg,#0c4a6e,#1e3a5f); border-radius: 24px; padding: 20px;
+      border: 3px solid #38bdf8; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #7dd3fc; }
+    .gate-stage {
+      display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 14px;
+    }
+    @media (max-width:900px) { .gate-stage { grid-template-columns: 1fr; } }
+    .gate-panel {
+      background: #0f172a; border-radius: 16px; padding: 16px; border: 2px solid #38bdf8; text-align: center;
+      min-height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+    }
+    .gate-visual {
+      width: 120px; height: 160px; border-radius: 12px 12px 4px 4px; border: 4px solid #94a3b8;
+      background: #7f1d1d; transition: transform .4s, background .3s, opacity .3s;
+      display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 900;
+    }
+    .gate-visual.open {
+      transform: translateX(70px) rotateY(-25deg); background: #14532d; opacity: .85;
+    }
+    .gate-visual.half { background: #a16207; }
+    .coins-row { font-size: 1.4rem; font-weight: 900; color: #fbbf24; }
+    .ctrl-panel {
+      background: #1e293b; border-radius: 16px; padding: 14px; border: 2px solid #64748b;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .ctrl-panel button {
+      padding: 12px 14px; border-radius: 12px; border: 2px solid #38bdf8;
+      background: #0f172a; color: #f8fafc; font-weight: 800; cursor: pointer; text-align: left;
+    }
+    .ctrl-panel button:hover { background: #164e63; }
+    .ctrl-panel .msg {
+      min-height: 3em; background: rgba(0,0,0,.35); border-radius: 10px; padding: 10px; font-size: .92rem;
+    }
+    .mission-box {
+      background: #082f49; border-radius: 12px; padding: 12px; border: 1px solid #38bdf8; margin-bottom: 10px;
+    }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .phase-time {
+      font-size: .75rem; background: var(--primary-light,#e8f5e0); color: var(--primary-dark);
+      padding: 2px 10px; border-radius: 99px; font-weight: 700;
+    }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+    .task-steps label { cursor: pointer; }
+    .progress-wrap { margin: 12px 0 4px; }
+    .progress-bar { height: 12px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg,var(--primary,#61b01f),#84cc16); transition: width .25s; }
+    .progress-label { font-size: .9rem; font-weight: 700; color: var(--primary-dark); margin-top: 6px; }
+    .space-note {
+      background: linear-gradient(135deg,#fefce8,#ecfdf5); border: 2px dashed #65a30d;
+      border-radius: 18px; padding: 16px 18px; margin: 14px 0; font-weight: 700;
+    }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .95rem; line-height: 1.7; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .b { color: #f472b6; }
+    .tree-box .t { color: #a3e635; }
+    .compare-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0;
+    }
+    @media (max-width:700px) { .compare-row { grid-template-columns: 1fr; } }
+    .compare-mini {
+      background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 14px;
+    }
+    .compare-mini h4 { margin: 0 0 6px; color: var(--primary-dark); }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 4.6</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">4.6</div>
+      <div>
+        <div class="module-pill">Раздел 4 · Основы Lua</div>
+        <h1>🔀 Условия if / else</h1>
+        <p class="subtitle">Игра принимает решения: если… то… иначе…</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🚪</div>
+    <div>
+      <strong>Сегодня как охранник ворот:</strong> смотришь на число монет и решаешь —
+      впустить игрока, дать подсказку или отказать.
+      В коде это конструкция <b>if / elseif / else</b>.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом уроке ты:</h2>
+    <ul>
+      <li>поймёшь, что такое <b>условие</b> (истина / ложь) ✅</li>
+      <li>научишься писать <code>if</code>, <code>else</code>, <code>elseif</code> 🔀</li>
+      <li>свяжешь условия с операторами <code>==</code>, <code>&gt;=</code>, <code>and</code> 🧮</li>
+      <li>соберёшь проект «Волшебные ворота» в Studio 🏰</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Теория</td><td>20 мин</td><td>if / else / elseif + квизы</td></tr>
+      <tr><td>Мини-игра</td><td>10 мин</td><td>«Страж ворот» на сайте</td></tr>
+      <tr><td>Проект Studio</td><td>45 мин</td><td>Монеты + ворота + условия</td></tr>
+      <tr><td>Доп. задания</td><td>по желанию</td><td>VIP-цвет, звук, табличка</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Рефлексия</td></tr>
+      <tr><td>Итого</td><td>~80 мин + доп.</td><td>—</td></tr>
+    </table>
+    <p style="margin:10px 0 0;font-size:.95rem;color:#475569;">
+      <b>Нужно заранее:</b> переменные, операторы сравнения (<code>==</code>, <code>&gt;</code>…) из урока 4.5.
+    </p>
+  </div>
+
+  <!-- ТЕОРИЯ -->
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: ветвления</h2>
+
+    <div class="theory-section">
+      <h3>🤔 Зачем нужны условия?</h3>
+      <p>Без <code>if</code> скрипт всегда делает одно и то же. С условием он <b>выбирает путь</b>:</p>
+      <div class="flow-box">
+        <span class="ask">Монет ≥ 5?</span>
+        <span>→</span>
+        <span class="yes">ДА → открыть дверь</span>
+        <span>→</span>
+        <span class="no">НЕТ → сказать «мало монет»</span>
+      </div>
+      <p>В жизни то же самое: «если дождь — зонт, иначе — кепка».</p>
+    </div>
+      <img src="assets/images/lesson-4.1.14/2.png" alt="Летающая стрела" />
+    <div class="theory-section">
+      <h3>📐 Синтаксис if</h3>
+      <div class="code-block">
+<span class="keyword">local</span> coins = <span class="number">7</span><br><br>
+<span class="keyword">if</span> coins &gt;= <span class="number">5</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Ворота открыты!"</span>)<br>
+<span class="keyword">end</span>
+      </div>
+      <table class="prop-table">
+        <tr><th>Слово</th><th>Значение</th></tr>
+        <tr><td><code>if</code></td><td>если</td></tr>
+        <tr><td><code>then</code></td><td>тогда (делай блок ниже)</td></tr>
+        <tr><td><code>end</code></td><td>конец блока — обязателен!</td></tr>
+      </table>
+      <div class="info-callout warn">
+        <span class="bulb">⚠️</span>
+        <div>
+          Условие должно быть <b>истиной или ложью</b> (boolean).
+          Обычно это сравнение: <code>coins &gt;= 5</code>, <code>name == "Ключ"</code>, <code>hasKey == true</code>.
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🔁 if + else — два пути</h3>
+      <p><code>else</code> = «иначе» — сработает, только если условие <b>ложно</b>.</p>
+      <div class="code-block">
+<span class="keyword">if</span> coins &gt;= <span class="number">5</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Проходи!"</span>)<br>
+<span class="keyword">else</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Мало монет"</span>)<br>
+<span class="keyword">end</span>
+      </div>
+      <div class="compare-row">
+        <div class="compare-mini">
+          <h4>Только if</h4>
+          <p>Либо сделали действие, либо <b>ничего</b>.</p>
+        </div>
+        <div class="compare-mini">
+          <h4>if + else</h4>
+          <p>Всегда один из двух путей.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>📚 elseif — несколько проверок</h3>
+      <p>Когда вариантов больше двух — ставим <code>elseif</code> (сколько угодно) и в конце <code>else</code>.</p>
+      <div class="code-block">
+<span class="keyword">if</span> coins &gt;= <span class="number">10</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"VIP-проход!"</span>)<br>
+<span class="keyword">elseif</span> coins &gt;= <span class="number">5</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Обычный проход"</span>)<br>
+<span class="keyword">else</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Недостаточно"</span>)<br>
+<span class="keyword">end</span>
+      </div>
+      <div class="info-callout green">
+        <span class="bulb">🔑</span>
+        <div>
+          Порядок важен! Сначала проверяй <b>более строгое</b> условие (<code>&gt;= 10</code>), потом мягкое (<code>&gt;= 5</code>).
+          Иначе «VIP» никогда не сработает.
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🧮 Условия из операторов (повтор 4.5)</h3>
+      <table class="prop-table">
+        <tr><th>Оператор</th><th>Смысл</th><th>Пример</th></tr>
+        <tr><td><code>==</code></td><td>равно</td><td><code>color == "Red"</code></td></tr>
+        <tr><td><code>~=</code></td><td>не равно</td><td><code>name ~= "Door"</code></td></tr>
+        <tr><td><code>&gt;</code> <code>&lt;</code></td><td>больше / меньше</td><td><code>score &gt; 0</code></td></tr>
+        <tr><td><code>&gt;=</code> <code>&lt;=</code></td><td>больше или равно…</td><td><code>coins &gt;= 5</code></td></tr>
+        <tr><td><code>and</code></td><td>и то, и то</td><td><code>coins &gt;= 5 and hasKey</code></td></tr>
+        <tr><td><code>or</code></td><td>хотя бы одно</td><td><code>isVip or coins &gt;= 20</code></td></tr>
+        <tr><td><code>not</code></td><td>наоборот</td><td><code>not locked</code></td></tr>
+      </table>
+      <div class="code-block">
+<span class="keyword">if</span> coins &gt;= <span class="number">5</span> <span class="keyword">and</span> hasKey == <span class="keyword">true</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Монеты есть И ключ есть — открываем"</span>)<br>
+<span class="keyword">end</span>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🧠 Типичные ошибки</h3>
+      <ul>
+        <li>Написали <code>if coins = 5</code> вместо <code>==</code> (одно <code>=</code> — присваивание!).</li>
+        <li>Забыли <code>then</code> или <code>end</code>.</li>
+        <li>Сравнивают Part с числом: <code>door == 5</code> — бессмыслица. Сравнивай <b>свойства</b>: <code>coins.Value &gt;= 5</code>.</li>
+      </ul>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz1">
+      <h3>🧠 Квиз: что напечатается? coins = 3</h3>
+      <div class="code-block" style="font-size:.9rem;">
+<span class="keyword">if</span> coins &gt;= <span class="number">5</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Ок"</span>)<br>
+<span class="keyword">else</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Мало"</span>)<br>
+<span class="keyword">end</span>
+      </div>
+      <div class="choice-card" data-correct-choice="false">Ок</div>
+      <div class="choice-card" data-correct-choice="true">Мало</div>
+      <div class="choice-card" data-correct-choice="false">Ничего</div>
+      <button class="action-btn" onclick="checkChoices('quiz1')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz2">
+      <h3>🧠 Квиз: coins = 12. Какая ветка?</h3>
+      <div class="choice-card" data-correct-choice="true">if coins &gt;= 10 → «VIP»</div>
+      <div class="choice-card" data-correct-choice="false">elseif coins &gt;= 5 → «обычный» (VIP пропущен)</div>
+      <div class="choice-card" data-correct-choice="false">else → «мало»</div>
+      <button class="action-btn" onclick="checkChoices('quiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz3">
+      <h3>🧠 Квиз: чем отличается = от == ?</h3>
+      <div class="choice-card" data-correct-choice="true">= записать значение, == сравнить</div>
+      <div class="choice-card" data-correct-choice="false">Они одинаковые</div>
+      <div class="choice-card" data-correct-choice="false">== только для текста</div>
+      <button class="action-btn" onclick="checkChoices('quiz3')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="cheat-sheet">
+    <div class="cheat-grid">
+      <div class="cheat-item"><div class="title">if</div><div class="rule">если условие истинно</div></div>
+      <div class="cheat-item"><div class="title">then … end</div><div class="rule">блок действий</div></div>
+      <div class="cheat-item"><div class="title">else</div><div class="rule">иначе</div></div>
+      <div class="cheat-item"><div class="title">elseif</div><div class="rule">ещё одна проверка</div></div>
+      <div class="cheat-item"><div class="title">==</div><div class="rule">сравнить (не путать с =)</div></div>
+      <div class="cheat-item"><div class="title">and / or</div><div class="rule">несколько условий</div></div>
+    </div>
+  </div>
+
+  <!-- МИНИ-ИГРА -->
+  <div class="mini-game" id="miniGame">
+    <h2>🕹️ Мини-игра «Страж ворот»</h2>
+    <p style="opacity:.9;margin:0 0 8px;">Собирай монеты и пробуй открыть ворота — как в коде с if / elseif / else.</p>
+    <div class="mission-box">
+      <b>Правила стража:</b> меньше 5 — отказ · 5–9 — обычный проход · 10+ — VIP.
+      Открой VIP-ворота хотя бы раз.
+    </div>
+    <div class="gate-stage">
+      <div class="gate-panel">
+        <div class="coins-row">🪙 Монеты: <span id="mgCoins">0</span></div>
+        <div class="gate-visual" id="mgGate">🔒</div>
+        <div style="font-size:.85rem;opacity:.8;">Статус: <span id="mgStatus">закрыто</span></div>
+      </div>
+      <div class="ctrl-panel">
+        <button type="button" id="mgAdd1">➕ Взять 1 монету</button>
+        <button type="button" id="mgAdd3">💎 Взять 3 монеты</button>
+        <button type="button" id="mgTry">🚪 Попробовать войти</button>
+        <button type="button" id="mgReset">Сброс</button>
+        <div class="msg" id="mgMsg">Страж ждёт…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПРОЕКТ -->
+  <div class="project-box" id="keyTaskBox">
+    <h2>🛠️ Проект в Studio: «Волшебные ворота»</h2>
+    <p>Собери лагерь ворот: монеты поднимают счётчик, клик по воротам проверяет условия и открывает проход.</p>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="projectFill"></div></div>
+      <div class="progress-label" id="projectLabel">Выполнено шагов: 0</div>
+    </div>
+
+    <div class="phase" id="phase0">
+      <h3>🏗️ Фаза 0 — Строим сцену <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>Создай папку <code>GateSystem</code> в Workspace.</li>
+        <li>Внутри:
+          <ul>
+            <li><b>Gate</b> — высокая дверь (Part), Anchored, тёмный цвет</li>
+            <li><b>CoinPad</b> — жёлтый Part «взять монету»</li>
+            <li><b>StatusLamp</b> — маленький Part-индикатор (сначала красный)</li>
+            <li><b>Coins</b> — IntValue, Value = 0</li>
+          </ul>
+        </li>
+        <li>В Gate и CoinPad добавь по <b>ClickDetector</b>.</li>
+        <li>SpawnLocation перед воротами.</li>
+      </ol>
+      <div class="tree-box">
+        <span class="g">GateSystem</span><br>
+        &nbsp;&nbsp;<span class="b">Gate</span> → ClickDetector<br>
+        &nbsp;&nbsp;<span class="b">CoinPad</span> → ClickDetector<br>
+        &nbsp;&nbsp;<span class="b">StatusLamp</span><br>
+        &nbsp;&nbsp;<span class="t">Coins</span> (IntValue = 0)
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p0s0" onchange="updateProjectProgress()"><label for="p0s0">Папка GateSystem со всеми объектами.</label></li>
+        <li><input type="checkbox" id="p0s1" onchange="updateProjectProgress()"><label for="p0s1">ClickDetector у Gate и CoinPad.</label></li>
+        <li><input type="checkbox" id="p0s2" onchange="updateProjectProgress()"><label for="p0s2">Coins.Value = 0, всё Anchored.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase1">
+      <h3>🪙 Фаза 1 — Скрипт монет (CoinPad) <span class="phase-time">10 мин</span></h3>
+      <p>Script внутри <b>CoinPad</b>:</p>
+      <div class="code-block">
+<span class="keyword">local</span> pad = script.Parent<br>
+<span class="keyword">local</span> click = pad:<span class="func">WaitForChild</span>(<span class="string">"ClickDetector"</span>)<br>
+<span class="keyword">local</span> coins = pad.Parent:<span class="func">WaitForChild</span>(<span class="string">"Coins"</span>)<br>
+<span class="keyword">local</span> lamp = pad.Parent:<span class="func">WaitForChild</span>(<span class="string">"StatusLamp"</span>)<br><br>
+click.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>(player)<br>
+&nbsp;&nbsp;coins.Value = coins.Value + <span class="number">1</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(player.Name .. <span class="string">" монет: "</span> .. coins.Value)<br><br>
+&nbsp;&nbsp;<span class="comment">-- цвет лампы по правилам if / elseif / else</span><br>
+&nbsp;&nbsp;<span class="keyword">if</span> coins.Value &gt;= <span class="number">10</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;lamp.BrickColor = BrickColor.new(<span class="string">"Lime green"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">elseif</span> coins.Value &gt;= <span class="number">5</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;lamp.BrickColor = BrickColor.new(<span class="string">"New Yeller"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;lamp.BrickColor = BrickColor.new(<span class="string">"Really red"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span>)
+      </div>
+      <div class="info-callout">
+        <span class="bulb">💡</span>
+        <div>Здесь условие уже работает: лампа показывает уровень «готовности» ещё до клика по воротам.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">Script в CoinPad создан.</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">Клик добавляет монету, в Output растёт число.</label></li>
+        <li><input type="checkbox" id="p1s2" onchange="updateProjectProgress()"><label for="p1s2">Лампа меняет цвет: красный → жёлтый → зелёный.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase2">
+      <h3>🚪 Фаза 2 — Скрипт ворот (Gate) <span class="phase-time">14 мин</span></h3>
+      <p>Script внутри <b>Gate</b>:</p>
+      <div class="code-block">
+<span class="keyword">local</span> gate = script.Parent<br>
+<span class="keyword">local</span> click = gate:<span class="func">WaitForChild</span>(<span class="string">"ClickDetector"</span>)<br>
+<span class="keyword">local</span> coins = gate.Parent:<span class="func">WaitForChild</span>(<span class="string">"Coins"</span>)<br>
+<span class="keyword">local</span> closedPos = gate.Position<br>
+<span class="keyword">local</span> openPos = closedPos + Vector3.new(<span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>) <span class="comment">-- сдвинь под свою карту</span><br>
+<span class="keyword">local</span> isOpen = <span class="keyword">false</span><br><br>
+click.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>(player)<br>
+&nbsp;&nbsp;<span class="keyword">if</span> isOpen <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Уже открыто"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br><br>
+&nbsp;&nbsp;<span class="keyword">if</span> coins.Value &gt;= <span class="number">10</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(player.Name .. <span class="string">" — VIP-проход!"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;gate.Position = openPos<br>
+&nbsp;&nbsp;&nbsp;&nbsp;gate.BrickColor = BrickColor.new(<span class="string">"Lime green"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;isOpen = <span class="keyword">true</span><br>
+&nbsp;&nbsp;<span class="keyword">elseif</span> coins.Value &gt;= <span class="number">5</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(player.Name .. <span class="string">" — обычный проход"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;gate.Position = openPos<br>
+&nbsp;&nbsp;&nbsp;&nbsp;gate.BrickColor = BrickColor.new(<span class="string">"New Yeller"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;isOpen = <span class="keyword">true</span><br>
+&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(player.Name .. <span class="string">" — мало монет! Нужно 5"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;gate.BrickColor = BrickColor.new(<span class="string">"Really red"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span>)
+      </div>
+      <div class="info-callout purple">
+        <span class="bulb">🎯</span>
+        <div>
+          Это сердце урока: три ветки <code>if / elseif / else</code>.
+          Попробуй сначала с 3 монетами, потом с 5, потом с 10 — смотри Output.
+        </div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">Script в Gate создан.</label></li>
+        <li><input type="checkbox" id="p2s1" onchange="updateProjectProgress()"><label for="p2s1">&lt; 5 монет → отказ, ворота на месте.</label></li>
+        <li><input type="checkbox" id="p2s2" onchange="updateProjectProgress()"><label for="p2s2">≥ 5 → ворота сдвигаются.</label></li>
+        <li><input type="checkbox" id="p2s3" onchange="updateProjectProgress()"><label for="p2s3">≥ 10 → VIP-сообщение в Output.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase3">
+      <h3>🧪 Фаза 3 — Полный тест <span class="phase-time">8 мин</span></h3>
+      <ol>
+        <li>Play → кликай CoinPad, смотри лампу и Output.</li>
+        <li>На 4 монетах жми Gate — должен отказать.</li>
+        <li>Добери до 5 — проход. Stop → Play снова → добери до 10 — VIP.</li>
+      </ol>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">Все три ветки условия проверены вручную.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">Нет красных ошибок в Output.</label></li>
+      </ul>
+      <div class="space-note">🎉 Базовые волшебные ворота готовы!</div>
+    </div>
+
+    <div class="phase" id="phase4" style="border-color:#38bdf8;">
+      <h3>🔑 Фаза 4 (доп) — Монеты И ключ <span class="phase-time">12 мин</span></h3>
+      <p>Добавь Part <b>Key</b> с ClickDetector и BoolValue <b>HasKey</b> = false в GateSystem.
+        Клик по ключу → <code>HasKey.Value = true</code>.
+        В Gate измени условие открытия:</p>
+      <div class="code-block">
+<span class="keyword">if</span> coins.Value &gt;= <span class="number">5</span> <span class="keyword">and</span> hasKey.Value == <span class="keyword">true</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="comment">-- открыть</span><br>
+<span class="keyword">elseif</span> coins.Value &gt;= <span class="number">5</span> <span class="keyword">and</span> hasKey.Value == <span class="keyword">false</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Монеты есть, но нужен ключ!"</span>)<br>
+<span class="keyword">else</span><br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Мало монет"</span>)<br>
+<span class="keyword">end</span>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">Key и HasKey добавлены.</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">Без ключа ворота не открываются даже при 5+ монетах.</label></li>
+        <li><input type="checkbox" id="p4s2" onchange="updateProjectProgress()"><label for="p4s2">С ключом и монетами — открываются.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase5" style="border-color:#fbbf24;">
+      <h3>🪧 Фаза 5 (доп) — Подсказка на Part <span class="phase-time">8 мин</span></h3>
+      <p>Part <b>HintBoard</b> + SurfaceGui + TextLabel. В скрипте монет после if обновляй текст:
+        «Монет: N / нужно 5».</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">Табличка показывает число монет.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase6" style="border-color:#a78bfa;">
+      <h3>🎨 Фаза 6 (доп) — Оформить двор <span class="phase-time">10 мин</span></h3>
+      <ul>
+        <li>Стены, арка, фонари у ворот.</li>
+        <li>Всё декор в GateSystem, Anchored = true.</li>
+      </ul>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6s0" onchange="updateProjectProgress()"><label for="p6s0">Двор выглядит как «вход в крепость».</label></li>
+        <li><input type="checkbox" id="p6s1" onchange="updateProjectProgress()"><label for="p6s1">После декора условия всё ещё работают.</label></li>
+      </ul>
+      <div class="space-note">🏆 Ворота с ветвлениями — фундамент квестов, магазинов и дверей во всех играх!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧯 Если не работает</h2>
+    <table class="prop-table">
+      <tr><th>Симптом</th><th>Что проверить</th></tr>
+      <tr><td>Монеты не растут</td><td>Script в CoinPad? IntValue называется Coins? Parent = GateSystem?</td></tr>
+      <tr><td>Всегда «мало монет»</td><td>Сравниваешь <code>coins.Value</code>, а не сам объект Coins?</td></tr>
+      <tr><td>VIP не срабатывает</td><td>Сначала проверка <code>&gt;= 10</code>, потом <code>&gt;= 5</code>?</td></tr>
+      <tr><td>Красный Output</td><td>Есть <code>then</code> и <code>end</code>? Нет <code>if x = 5</code>?</td></tr>
+      <tr><td>Ворота уехали не туда</td><td>Поправь Vector3 сдвига openPos под свою карту</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>написал условия if / else / elseif;</li>
+      <li>связал их с сравнениями и (опционально) and;</li>
+      <li>собрал ворота, которые сами решают: впустить или нет;</li>
+      <li>проверил все ветки на практике.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Условия понятны!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти разобрался</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь</label>
+    </div>
+    <textarea placeholder="Чем else отличается от elseif? Почему VIP-проверку ставят раньше обычной?"></textarea>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="Занятие_2.7_Операторы.html">
+      <div class="lbl">← Назад</div>
+      <div class="ttl">4.5 Операторы</div>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 4.6 · Условия if / else</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function updateProjectProgress() {
+    const box = document.getElementById('keyTaskBox');
+    if (!box) return;
+    const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+    const checked = box.querySelectorAll('input[type="checkbox"]:checked').length;
+    const total = checkboxes.length;
+    const pct = total ? Math.round((checked / total) * 100) : 0;
+    const fill = document.getElementById('projectFill');
+    const label = document.getElementById('projectLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) {
+      label.textContent =
+        'Выполнено шагов: ' + checked + ' из ' + total +
+        (checked === total && total > 0 ? ' 🎉 Занятие выполнено!' : '');
+    }
+  }
+
+  let coins = 0;
+  let opened = false;
+  let vipDone = false;
+
+  function renderGate() {
+    document.getElementById('mgCoins').textContent = coins;
+    const gate = document.getElementById('mgGate');
+    gate.classList.remove('open', 'half');
+    if (opened) {
+      gate.classList.add('open');
+      gate.textContent = '✅';
+      document.getElementById('mgStatus').textContent = 'открыто';
+    } else {
+      gate.textContent = '🔒';
+      document.getElementById('mgStatus').textContent = 'закрыто';
+    }
+  }
+
+  document.getElementById('mgAdd1').addEventListener('click', function () {
+    coins += 1;
+    document.getElementById('mgMsg').textContent = 'Монет: ' + coins;
+    renderGate();
+  });
+  document.getElementById('mgAdd3').addEventListener('click', function () {
+    coins += 3;
+    document.getElementById('mgMsg').textContent = 'Монет: ' + coins;
+    renderGate();
+  });
+  document.getElementById('mgTry').addEventListener('click', function () {
+    if (opened) {
+      document.getElementById('mgMsg').textContent = 'Уже открыто';
+      return;
+    }
+    // if / elseif / else — как в уроке
+    if (coins >= 10) {
+      opened = true;
+      vipDone = true;
+      document.getElementById('mgMsg').textContent = 'VIP-проход! 🎉 Миссия мини-игры выполнена.';
+      document.getElementById('mgGate').classList.add('open');
+    } else if (coins >= 5) {
+      opened = true;
+      document.getElementById('mgMsg').textContent = 'Обычный проход. Попробуй набрать 10 для VIP!';
+      document.getElementById('mgGate').classList.add('half');
+    } else {
+      document.getElementById('mgMsg').textContent = 'Мало монет! Нужно хотя бы 5.';
+    }
+    renderGate();
+  });
+  document.getElementById('mgReset').addEventListener('click', function () {
+    coins = 0;
+    opened = false;
+    document.getElementById('mgMsg').textContent = vipDone
+      ? 'Сброс. VIP уже был — можно тренироваться ещё!'
+      : 'Страж ждёт…';
+    renderGate();
+  });
+
+  renderGate();
+  updateProjectProgress();
+</script>
+</body>
+</html>

@@ -453,7 +453,41 @@ end</code></pre>
         </div>
       </div>
     </div>
+    <!-- ===== ПАМЯТКА: СКРИПТЫ И КОМАНДЫ ===== -->
+    <div class="card" style="margin-top: 30px;">
+      <h2>📘 Памятка: скрипты, Group и wait</h2>
+      <p>Повтори то, что понадобится для ответов на вопросы о программировании в Roblox.</p>
 
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <tr>
+            <th>Понятие</th>
+            <th>Краткое объяснение</th>
+            <th>Пример / Клавиша</th>
+          </tr>
+          <tr>
+            <td><b>Скрипт (Script)</b></td>
+            <td>Программа на языке <b>Lua</b>, которая управляет поведением объектов. Вставляется в деталь через <b>+</b> → <b>Script</b>.</td>
+            <td><code>print("Hello")</code></td>
+          </tr>
+          <tr>
+            <td><b>Explorer</b></td>
+            <td>Окно со списком <b>всех объектов</b> в игре. Если не видно, включи через меню <b>View → Explorer</b>.</td>
+            <td><kbd>Ctrl+Shift+E</kbd></td>
+          </tr>
+          <tr>
+            <td><b>Group (объединение)</b></td>
+            <td>Команда, которая <b>соединяет несколько деталей в одну модель</b>. Удобно, чтобы двигать и копировать целую конструкцию.</td>
+            <td><kbd>Ctrl+G</kbd> (сгруппировать)</td>
+          </tr>
+          <tr>
+            <td><b>wait(2)</b></td>
+            <td>Функция Lua, которая <b>приостанавливает выполнение скрипта на 2 секунды</b>. После паузы код продолжается.</td>
+            <td><code>wait(2)<br>print("Прошло 2 секунды")</code></td>
+          </tr>
+        </table>
+      </div>
+    </div>
     <!-- ===== РЕФЛЕКСИЯ ===== -->
     <div class="reflection-box">
       <h2>💭 Ты доволен своей работой?</h2>
@@ -469,7 +503,9 @@ end</code></pre>
           <input type="radio" name="satisfaction" value="no"> 🌿 Нет, получается криво!
         </label>
       </div>
-      <textarea placeholder="Что было самым сложным? Что понравилось больше всего? Что нового узнал про скрипты?"></textarea>
+   <textarea id="reflectionText" placeholder="Что было самым сложным? Что понравилось больше всего?"></textarea>
+  <button class="action-btn" onclick="submitReflection()">Отправить</button>
+  <div id="reflectionResult" style="margin-top:10px; font-weight:700;"></div>
     </div>
 
     <!-- ===== ИНТЕРАКТИВ: ВОПРОСЫ НА ЗАКРЕПЛЕНИЕ ===== -->
@@ -493,7 +529,15 @@ end</code></pre>
     </div>
 
     <!-- ===== ИТОГОВЫЙ ОПРОС ===== -->
-    <div class="quiz-wrap" id="quiz1">
+    
+    <!-- ===== МИНИ-ИГРА ===== -->
+    <div id="lessonMiniGame" class="rmg"></div>
+    <script src="assets/js/mini-games.js"></script>
+    <script>
+      RoboMiniGame.mount(document.getElementById("lessonMiniGame"), {"type":"sortSlots","title":"Собери дерево по порядку","hint":"Перетащи части под номера — от корня к кроне.","items":["🌳 Ствол (Part)","🌿 Ветки (Part)","🍃 Крона / листья","🍎 Декор (фрукты)","📦 Group → Model"]});
+    </script>
+
+<div class="quiz-wrap" id="quiz1">
       <h2>📝 Проверь себя</h2>
 
       <div class="quiz-question" data-name="quiz1q0" data-correct="b">
@@ -570,10 +614,6 @@ end</code></pre>
         <div class="lbl">← Назад</div>
         <div class="ttl">1.3 Инструменты моделирования</div>
       </a>
-      <a class="nav-btn next" href="Занятие_1.5_Первый_скрипт.html">
-        <div class="lbl">Далее →</div>
-        <div class="ttl">1.5 Первый скрипт</div>
-      </a>
     </div>
 
   </main>
@@ -592,6 +632,19 @@ end</code></pre>
   <!-- ===== СКРИПТЫ ===== -->
   <!-- Только стандартный lesson.js, без переопределений -->
   <script src="assets/js/lesson.js"></script>
-
+<script>   function submitReflection() {
+  const textarea = document.getElementById('reflectionText');
+  const resultDiv = document.getElementById('reflectionResult');
+  if (textarea.value.trim() === '') {
+    resultDiv.textContent = 'Пожалуйста, напишите хотя бы несколько слов.';
+    resultDiv.style.color = '#C0392B';
+    return;
+  }
+  resultDiv.textContent = '✅ Спасибо! Твой ответ записан.';
+  resultDiv.style.color = '#2E7D32';
+  textarea.disabled = true;
+  const btn = document.querySelector('#reflectionBlock .action-btn');
+  if (btn) btn.disabled = true;
+}</script>
 </body>
 </html>

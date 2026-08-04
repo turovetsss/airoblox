@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.1.11. Цикл while — Pac-Man — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .choice-card {
+      cursor: pointer; transition: all 0.15s; user-select: none;
+      padding: 10px 14px; background: #fff; border: 2px solid #e2e8f0;
+      border-radius: 14px; display: block; margin: 8px 0;
+      font-family: 'Courier New', monospace; font-size: 0.95rem;
+    }
+    .choice-card:hover { border-color: var(--primary); transform: translateY(-1px); }
+    .choice-card.selected { border-color: var(--accent) !important; background: var(--accent-light) !important; }
+    .choice-card.correct { border-color: var(--primary) !important; background: var(--primary-light) !important; }
+    .choice-card.incorrect { border-color: var(--danger) !important; background: var(--danger-light) !important; }
+    .choice-card.text-opt { font-family: inherit; font-weight: 700; }
+    .choice-card .kw { color: #1d4ed8; font-weight: 700; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 16px 20px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: 1.02rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .hint-btn {
+      background: var(--accent-light,#f0e6f5); border: none; padding: 6px 16px; border-radius: 30px;
+      font-weight: 600; color: var(--accent-ink,#4a1a5a); cursor: pointer; margin-top: 6px;
+    }
+    .hint-btn:hover { background: var(--accent,#b47cdb); color: #fff; }
+    .hint-box { display: none; background: #f1f5f9; border-radius: 12px; padding: 12px; margin-top: 8px; border-left: 4px solid var(--accent,#6e0091); }
+    .hint-box.show { display: block; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-child { border-bottom: none; }
+    .theory-section h3 { margin-top: 10px; color: var(--primary-dark,#1a4a0a); }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .scenario-box {
+      background: linear-gradient(135deg,#1a1030,#2d1b4e); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #6C3F9B;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка: while и Pac-Man"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 14px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 14px 16px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 700; color: var(--primary-dark,#1a4a0a); border-bottom: 2px solid var(--primary-light,#e8f5e0); padding-bottom: 4px; margin-bottom: 6px; }
+    .cheat-item .rule { font-size: .92rem; margin: 4px 0; }
+    .cheat-item .rule code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .85rem; }
+    .num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.6em; height: 1.6em; border-radius: 50%; margin-right: 6px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); font-weight: 800;
+    }
+    .space-note { background: #1a1a4a; color: #fbbf24; border-left: 4px solid #fbbf24; padding: 12px 16px; border-radius: 12px; margin: 12px 0; font-weight: 500; }
+    .build-card {
+      background: linear-gradient(135deg,#E8F5E0,#e0f2fe); border: 2px solid var(--primary,#61b01f);
+      border-radius: 20px; padding: 20px 24px; margin: 20px 0;
+    }
+    .path-flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-weight: 800; margin: 10px 0; }
+    .path-flow span { background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 6px 10px; }
+    .build-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: 10px; margin: 12px 0; }
+    .build-grid .bc { background: #fff; border-radius: 14px; padding: 12px; border: 1px solid var(--line); text-align: center; }
+    .build-grid .ico { font-size: 1.8rem; }
+    .build-grid .nm { font-weight: 800; margin-top: 4px; }
+    .build-grid .props { font-size: .8rem; color: #64748b; }
+    .phase { margin: 18px 0; padding: 16px; background: #f8fafc; border-radius: 16px; border: 1px solid var(--line); }
+    .phase h3 { margin-top: 0; color: var(--primary-dark); }
+    .phase-time { font-size: .85rem; color: #64748b; font-weight: 700; }
+    .task-steps { list-style: none; padding: 0; }
+    .task-steps li { display: flex; align-items: baseline; gap: 8px; margin: 6px 0; }
+    .progress-track { background: #e2e8f0; height: 8px; border-radius: 10px; margin: 12px 0; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: var(--primary,#61b01f); transition: width .3s; }
+    .mini-game {
+      background: linear-gradient(145deg,#0f172a,#1e1b4b); color: #e2e8f0;
+      border-radius: 20px; padding: 18px 20px; margin: 20px 0; border: 1px solid #334155;
+    }
+    .mini-game h2 { color: #fde047; margin: 0 0 8px; }
+    .mission-box { background: rgba(255,255,255,.08); border-radius: 12px; padding: 12px; margin: 10px 0; border: 1px solid #475569; }
+    .pac-board {
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; max-width: 360px; margin: 12px auto;
+    }
+    .pac-cell {
+      aspect-ratio: 1; border-radius: 10px; background: #1e293b; border: 2px solid #334155;
+      display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer;
+    }
+    .pac-cell.dot { background: #312e81; }
+    .pac-cell.eaten { opacity: .35; pointer-events: none; }
+    .pac-cell.wall { background: #0ea5e9; cursor: default; opacity: .5; }
+    .fav-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: 10px; }
+    .fav-card {
+      border: 2px solid #e2e8f0; border-radius: 14px; padding: 14px; text-align: center;
+      cursor: pointer; font-weight: 800; background: #fff;
+    }
+    .fav-card.selected { border-color: var(--accent); background: var(--accent-light); }
+    .reflection-box textarea {
+      width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--line,#e2e8f0);
+      font-family: inherit; min-height: 80px;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 4.1.11</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">4.1.11</div>
+      <div>
+        <div class="module-pill">Раздел 4 · Циклы</div>
+        <h1>🟡 Pac-Man и цикл while</h1>
+        <p class="subtitle">Строим мини-игру с нуля: while, стены, ловушки и экран победы</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">👻</div>
+    <div>
+      <strong>Операция «Жёлтый герой»</strong><br>
+      Готовый файл карты <b>не нужен</b> — ты сам строишь лабиринт Pac-Man на Baseplate.
+      Цикл <code>while</code> оживит двери, стены и ловушки. Цель: пройти лабиринт и увидеть экран победы.
+    </div>
+  </div>
+
+  <div class="card" id="story">
+    <h2>📖 История миссии</h2>
+    <div class="theory-section">
+      <h3>Глава 1. Лабиринт ожил</h3>
+      <p>Стены крутятся и ездят. Пока условие верно — движение продолжается. Это и есть <b>while</b>.</p>
+    </div>
+    <div class="theory-section">
+      <h3>Глава 2. Секретный проход</h3>
+      <p>Жёлтый бокс опускается по клику — открывается тайный коридор к финишу.</p>
+    </div>
+    <div class="theory-section">
+      <h3>Глава 3. Стрела-призрак</h3>
+      <p>Стрела летит по коридору, пока не уедет далеко, потом исчезает (<code>Destroy</code>).</p>
+    </div>
+    <div class="theory-section">
+      <h3>Глава 4. Победа Pac-Man</h3>
+      <p>Дошёл до флага Finish — на экране «YOU WIN!». Мини-игра готова.</p>
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом уроке ты сделаешь</h2>
+    <ul>
+      <li>лабиринт Pac-Man с нуля на Baseplate;</li>
+      <li>вращающиеся и движущиеся стены;</li>
+      <li>секретный бокс и летящую стрелу;</li>
+      <li>платформу-ловушку и экран победы.</li>
+    </ul>
+    <h3 style="margin-top:1rem;">Ты узнаешь</h3>
+    <ul>
+      <li>что такое цикл <code>while … do</code>;</li>
+      <li>чем отличается <code>repeat … until</code>;</li>
+      <li>зачем нужен <code>while true</code>.</li>
+    </ul>
+    <h3 style="margin-top:1rem;">Ты научишься</h3>
+    <ul>
+      <li>писать циклы с условием;</li>
+      <li>вращать и двигать Part через <code>CFrame</code>;</li>
+      <li>клонировать объекты и показывать GUI победы.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Теория while + квиз</td><td>12 мин</td><td>Условие, синтаксис, примеры</td></tr>
+      <tr><td>Мини-игра на странице</td><td>8 мин</td><td>«Съешь точки»</td></tr>
+      <tr><td>Теория repeat</td><td>8 мин</td><td>Сравнение с while</td></tr>
+      <tr><td>Фаза 0 — Лабиринт</td><td>12 мин</td><td>Строим стены и имена</td></tr>
+      <tr><td>Фазы 1–3 — Двери и стены</td><td>22 мин</td><td>while + CFrame</td></tr>
+      <tr><td>Фазы 4–5 — Бокс и стрела</td><td>14 мин</td><td>Клик и полёт</td></tr>
+      <tr><td>Фазы 6–7 — Ловушка и победа</td><td>14 мин</td><td>repeat + GUI</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Рефлексия</td></tr>
+      <tr><td>Итого</td><td>~95 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="build-card">
+    <h2 style="margin:0 0 .4rem;color:var(--primary-dark);">🗺️ С чего начать</h2>
+    <p style="margin:0;">Готовой карты нет. Открой <b>Roblox Studio → Baseplate</b> (или пустой шаблон). Всё собираешь сам в Workspace.</p>
+    <p style="margin:.6rem 0 0;"><b>Сохрани игру:</b> File → Save to File / Save to Roblox — имя <code>PacMan_While</code>.</p>
+  </div>
+
+  <!-- ТЕОРИЯ WHILE -->
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: цикл while</h2>
+
+    <div class="theory-section">
+      <h3>🔄 Что такое while?</h3>
+      <p><b>while</b> значит «пока». Тело цикла повторяется, <b>пока условие истинно (true)</b>. Когда условие стало false — цикл останавливается.</p>
+      <div class="code-block">
+        <span class="keyword">local</span> dots = <span class="number">3</span><br>
+        <span class="keyword">while</span> dots &gt; <span class="number">0</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Ещё есть точки!"</span>)<br>
+        &nbsp;&nbsp;dots = dots - <span class="number">1</span><br>
+        <span class="keyword">end</span><br>
+        <span class="func">print</span>(<span class="string">"Точек не осталось"</span>)
+      </div>
+      <table class="prop-table">
+        <tr><th>Часть</th><th>Зачем</th></tr>
+        <tr><td><code>while условие do</code></td><td>Проверка перед каждым кругом</td></tr>
+        <tr><td><code>end</code></td><td>Конец тела цикла</td></tr>
+        <tr><td><code>while true do</code></td><td>«Двигатель» уровня — крутится всегда (стены Pac-Man)</td></tr>
+      </table>
+      <div class="space-note">💡 Внутри долгого while почти всегда нужен <code>wait()</code> или <code>task.wait()</code> — иначе Studio зависнет.</div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🚪 while в лабиринте</h3>
+      <p>Дверь крутится, <b>пока</b> угол меньше нужного. Стена едет, <b>пока</b> не дошла до края. Стрела летит, <b>пока</b> Z меньше лимита.</p>
+      <div class="code-block">
+        <span class="keyword">while</span> wall.Orientation.Y &lt; <span class="number">0</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;wall.CFrame = wall.CFrame * CFrame.Angles(<span class="number">0</span>, math.rad(<span class="number">2</span>), <span class="number">0</span>)<br>
+        &nbsp;&nbsp;<span class="func">wait</span>()<br>
+        <span class="keyword">end</span>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🔁 repeat … until</h3>
+      <p>Похож на while, но проверка в конце: тело выполнится <b>хотя бы один раз</b>, потом «пока не выполнится условие».</p>
+      <div class="code-block">
+        <span class="keyword">local</span> t = <span class="number">0</span><br>
+        <span class="keyword">repeat</span><br>
+        &nbsp;&nbsp;t = t + <span class="number">0.1</span><br>
+        &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.1</span>)<br>
+        <span class="keyword">until</span> t &gt;= <span class="number">2</span>
+      </div>
+    </div>
+
+    <div class="interactive-box" id="quiz1">
+      <h3>⚡ Какие значения у условия while?</h3>
+      <div class="choice-card text-opt" data-correct-choice="true">true или false</div>
+      <div class="choice-card text-opt" data-correct-choice="false">Только числа</div>
+      <div class="choice-card text-opt" data-correct-choice="false">Только строки</div>
+      <button class="action-btn" onclick="checkChoices('quiz1')">Проверить</button>
+      <button class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetQuiz('quiz1')">Ещё раз</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="quiz2" style="margin-top:1.2rem;">
+      <h3>⚡ Где синтаксис верный?</h3>
+      <div class="choice-card" data-correct-choice="true"><span class="kw">while</span> true <span class="kw">do</span><br>&nbsp;&nbsp;<span class="kw">end</span></div>
+      <div class="choice-card" data-correct-choice="false"><span class="kw">while</span> true <span class="kw">then</span><br>&nbsp;&nbsp;<span class="kw">end</span></div>
+      <div class="choice-card" data-correct-choice="false"><span class="kw">while</span> true<br>&nbsp;&nbsp;<span class="kw">end</span></div>
+      <button class="action-btn" onclick="checkChoices('quiz2')">Проверить</button>
+      <button class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetQuiz('quiz2')">Ещё раз</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="quiz3" style="margin-top:1.2rem;">
+      <h3>⚡ Зачем wait внутри while true?</h3>
+      <div class="choice-card text-opt" data-correct-choice="true">Чтобы Studio не зависла и кадры успевали рисоваться</div>
+      <div class="choice-card text-opt" data-correct-choice="false">Чтобы удалить Part</div>
+      <div class="choice-card text-opt" data-correct-choice="false">Чтобы выключить свет</div>
+      <button class="action-btn" onclick="checkChoices('quiz3')">Проверить</button>
+      <button class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetQuiz('quiz3')">Ещё раз</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- МИНИ-ИГРА -->
+  <div class="mini-game" id="miniPac">
+    <h2>🎮 Мини-игра: съешь точки (while на странице)</h2>
+    <div class="mission-box">
+      <b>📖 История.</b> Пак голоден! Цикл партии идёт, <b>пока</b> есть точки и жизни.
+      Кликай по жёлтым точкам 🟡. Стены 🟦 не ешь. Собери все 6 точек.
+    </div>
+    <div style="text-align:center;font-weight:800;">Точек: <span id="dotLeft">6</span> · Жизни: <span id="pacLives">3</span></div>
+    <div class="pac-board" id="pacBoard"></div>
+    <div style="text-align:center;">
+      <button type="button" class="action-btn" id="pacStart">🚀 Старт</button>
+      <button type="button" class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" id="pacReset">Сброс</button>
+    </div>
+    <p id="pacMsg" style="text-align:center;font-weight:800;min-height:1.4em;"></p>
+  </div>
+
+  <!-- ШПАРГАЛКА -->
+  <div class="cheat-sheet">
+    <div class="cheat-grid">
+      <div class="cheat-item">
+        <div class="title">while … do</div>
+        <div class="rule"><code>while условие do … end</code></div>
+        <div class="rule">Проверка <b>до</b> круга</div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">while true</div>
+        <div class="rule">Бесконечный двигатель стен</div>
+        <div class="rule">Всегда + <code>wait()</code></div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">repeat … until</div>
+        <div class="rule">Хотя бы 1 раз, проверка в конце</div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">CFrame</div>
+        <div class="rule"><code>part.CFrame = part.CFrame * …</code></div>
+        <div class="rule">Поворот и сдвиг</div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">Имена объектов</div>
+        <div class="rule"><code>WallDoor</code>, <code>WallSlide</code>, <code>SecretBox</code></div>
+        <div class="rule"><code>ArrowTemplate</code>, <code>Trap</code>, <code>Finish</code></div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">Победа</div>
+        <div class="rule">Touched → показать ScreenGui</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПРОЕКТ -->
+  <div class="card" id="project">
+    <h2>🛠️ Мини-проект: Pac-Man Labyrinth</h2>
+    <p>Один проект из фаз. В конце у тебя играбельный лабиринт.</p>
+    <div class="path-flow">
+      <span>🧱 Лабиринт</span> →
+      <span>🚪 Двери</span> →
+      <span>📦 Секрет</span> →
+      <span>🏹 Стрела</span> →
+      <span>💀 Ловушка</span> →
+      <span>🏆 Finish</span>
+    </div>
+    <div class="build-grid">
+      <div class="bc"><div class="ico">🧱</div><div class="nm">Wall*</div><div class="props">Anchored</div></div>
+      <div class="bc"><div class="ico">🚪</div><div class="nm">WallDoor</div><div class="props">крутится</div></div>
+      <div class="bc"><div class="ico">↔️</div><div class="nm">WallSlide</div><div class="props">ездит</div></div>
+      <div class="bc"><div class="ico">📦</div><div class="nm">SecretBox</div><div class="props">ClickDetector</div></div>
+      <div class="bc"><div class="ico">🏹</div><div class="nm">ArrowTemplate</div><div class="props">Clone</div></div>
+      <div class="bc"><div class="ico">☠️</div><div class="nm">Trap</div><div class="props">repeat</div></div>
+      <div class="bc"><div class="ico">🏁</div><div class="nm">Finish</div><div class="props">Touched</div></div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="projectProgress"></div></div>
+    <span class="progress-label" id="projectLabel">Выполнено шагов: 0</span>
+
+    <!-- ФАЗА 0 -->
+    <div class="phase" id="phase0">
+      <h3>🧱 Фаза 0 — Лабиринт и имена <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>Baseplate. Поставь <b>SpawnLocation</b>.</li>
+        <li>Собери простой лабиринт из Part (стены Anchored = true, цвет синий).</li>
+        <li>Оставь 2–3 коридора. В конце коридора Part имени <code>Finish</code> (зелёный).</li>
+        <li>Создай Part <code>WallDoor</code> — «дверь» в проходе (жёлтый).</li>
+        <li>Part <code>WallSlide</code> — узкая стена, которая будет ездить.</li>
+        <li>Part <code>SecretBox</code> (оранжевый) + внутри <b>ClickDetector</b>.</li>
+        <li>Part <code>ArrowTemplate</code> (красный, маленький) — шаблон стрелы. <b>Anchored</b>.</li>
+        <li>Part <code>Trap</code> — платформа в полу коридора.</li>
+        <li>Папка в Workspace: <code>PacMan</code> — положи туда все эти объекты (по желанию).</li>
+      </ol>
+      <div class="space-note">⚠️ Имена должны совпасть с кодом: WallDoor, WallSlide, SecretBox, ArrowTemplate, Trap, Finish.</div>
+      <ul class="task-steps">
+        <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label>Лабиринт и Spawn есть</label></li>
+        <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label>Все 6 объектов названы правильно</label></li>
+        <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label>У SecretBox есть ClickDetector</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 1 -->
+    <div class="phase" id="phase1">
+      <h3>🚪 Фаза 1 — Дверь WallDoor (while) <span class="phase-time">10 мин</span></h3>
+      <p>Script внутри <code>WallDoor</code> (или в ServerScriptService, но тогда путь к Part пропиши сам).</p>
+      <div class="code-block">
+        <span class="keyword">local</span> wall = script.Parent<br><br>
+        <span class="keyword">while</span> <span class="keyword">true</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;<span class="comment">-- открываем (крутим в одну сторону)</span><br>
+        &nbsp;&nbsp;<span class="keyword">while</span> wall.Orientation.Y &gt; -<span class="number">90</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;wall.CFrame = wall.CFrame * CFrame.Angles(<span class="number">0</span>, math.rad(-<span class="number">2</span>), <span class="number">0</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">1</span>)<br>
+        &nbsp;&nbsp;<span class="comment">-- закрываем</span><br>
+        &nbsp;&nbsp;<span class="keyword">while</span> wall.Orientation.Y &lt; <span class="number">0</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;wall.CFrame = wall.CFrame * CFrame.Angles(<span class="number">0</span>, math.rad(<span class="number">2</span>), <span class="number">0</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">1</span>)<br>
+        <span class="keyword">end</span>
+      </div>
+      <button class="hint-btn" onclick="toggleHint('h1')">📖 Подсказка</button>
+      <div class="hint-box" id="h1">Если дверь крутится не туда — поменяй знаки у math.rad(+2) / (-2). Pivot двери лучше по краю (Edit Pivot).</div>
+      <ul class="task-steps">
+        <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label>Дверь открывается и закрывается в Play</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 2 -->
+    <div class="phase" id="phase2">
+      <h3>↔️ Фаза 2 — Едущая стена WallSlide <span class="phase-time">10 мин</span></h3>
+      <p>Script в <code>WallSlide</code>. Подгони числа X под свою карту (посмотри Position в Properties).</p>
+      <div class="code-block">
+        <span class="keyword">local</span> part = script.Parent<br>
+        <span class="keyword">local</span> minX = part.Position.X - <span class="number">8</span><br>
+        <span class="keyword">local</span> maxX = part.Position.X<br><br>
+        <span class="keyword">while</span> <span class="keyword">true</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;<span class="keyword">while</span> part.Position.X &gt; minX <span class="keyword">do</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;part.CFrame = part.CFrame * CFrame.new(-<span class="number">0.2</span>, <span class="number">0</span>, <span class="number">0</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        &nbsp;&nbsp;<span class="keyword">while</span> part.Position.X &lt; maxX <span class="keyword">do</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;part.CFrame = part.CFrame * CFrame.new(<span class="number">0.2</span>, <span class="number">0</span>, <span class="number">0</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label>Стена ездит туда-сюда и не улетает в небо</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 3 -->
+    <div class="phase" id="phase3">
+      <h3>📦 Фаза 3 — Секретный бокс <span class="phase-time">8 мин</span></h3>
+      <div class="code-block">
+        <span class="keyword">local</span> box = script.Parent<br>
+        <span class="keyword">local</span> click = box:WaitForChild(<span class="string">"ClickDetector"</span>)<br><br>
+        click.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">while</span> box.Position.Y &gt; box.Position.Y - <span class="number">6</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">-- лучше зафиксировать цель один раз:</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span> <span class="comment">-- см. надёжный вариант ниже</span><br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <p><b>Надёжный скрипт</b> (скопируй этот):</p>
+      <div class="code-block">
+        <span class="keyword">local</span> box = script.Parent<br>
+        <span class="keyword">local</span> click = box:WaitForChild(<span class="string">"ClickDetector"</span>)<br>
+        <span class="keyword">local</span> busy = <span class="keyword">false</span><br><br>
+        click.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> busy <span class="keyword">then</span> <span class="keyword">return</span> <span class="keyword">end</span><br>
+        &nbsp;&nbsp;busy = <span class="keyword">true</span><br>
+        &nbsp;&nbsp;<span class="keyword">local</span> targetY = box.Position.Y - <span class="number">6</span><br>
+        &nbsp;&nbsp;<span class="keyword">while</span> box.Position.Y &gt; targetY <span class="keyword">do</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;box.CFrame = box.CFrame * CFrame.new(<span class="number">0</span>, -<span class="number">0.2</span>, <span class="number">0</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label>По клику бокс опускается и открывает проход</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 4 -->
+    <div class="phase" id="phase4">
+      <h3>🏹 Фаза 4 — Стрела-призрак <span class="phase-time">8 мин</span></h3>
+      <p>Script рядом с шаблоном (например в ServerScriptService) или в Part-спавнере. Шаблон <code>ArrowTemplate</code> лучше сделать прозрачным или спрятать в стороне.</p>
+      <div class="code-block">
+        <span class="keyword">local</span> template = workspace:WaitForChild(<span class="string">"ArrowTemplate"</span>)<br>
+        template.Transparency = <span class="number">1</span><br>
+        template.CanCollide = <span class="keyword">false</span><br><br>
+        <span class="keyword">while</span> <span class="keyword">true</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;<span class="keyword">local</span> arrow = template:<span class="func">Clone</span>()<br>
+        &nbsp;&nbsp;arrow.Transparency = <span class="number">0</span><br>
+        &nbsp;&nbsp;arrow.CanCollide = <span class="keyword">true</span><br>
+        &nbsp;&nbsp;arrow.Parent = workspace<br>
+        &nbsp;&nbsp;arrow.CFrame = template.CFrame<br>
+        &nbsp;&nbsp;<span class="keyword">local</span> startZ = arrow.Position.Z<br>
+        &nbsp;&nbsp;<span class="keyword">while</span> math.abs(arrow.Position.Z - startZ) &lt; <span class="number">40</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;arrow.CFrame = arrow.CFrame * CFrame.new(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">0.8</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        &nbsp;&nbsp;arrow:<span class="func">Destroy</span>()<br>
+        &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">2</span>)<br>
+        <span class="keyword">end</span>
+      </div>
+      <div class="space-note">💡 Направление полёта: если стрела летит не в коридор — смени ось (X вместо Z) или знак.</div>
+      <ul class="task-steps">
+        <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label>Стрела периодически летит и уничтожается</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 5 -->
+    <div class="phase" id="phase5">
+      <h3>☠️ Фаза 5 — Ловушка Trap (repeat) <span class="phase-time">8 мин</span></h3>
+      <div class="code-block">
+        <span class="keyword">local</span> trap = script.Parent<br>
+        <span class="keyword">local</span> startY = trap.Position.Y<br><br>
+        <span class="keyword">while</span> <span class="keyword">true</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">3</span>) <span class="comment">-- стоит спокойно</span><br>
+        &nbsp;&nbsp;<span class="keyword">local</span> t = <span class="number">0</span><br>
+        &nbsp;&nbsp;<span class="keyword">repeat</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;trap.CFrame = trap.CFrame * CFrame.new(<span class="number">0</span>, -<span class="number">0.25</span>, <span class="number">0</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;t = t + <span class="number">0.1</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.1</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">until</span> t &gt;= <span class="number">2</span><br>
+        &nbsp;&nbsp;<span class="func">wait</span>(<span class="number">1</span>)<br>
+        &nbsp;&nbsp;<span class="comment">-- вернуть наверх</span><br>
+        &nbsp;&nbsp;<span class="keyword">while</span> trap.Position.Y &lt; startY <span class="keyword">do</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;trap.CFrame = trap.CFrame * CFrame.new(<span class="number">0</span>, <span class="number">0.25</span>, <span class="number">0</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label>Платформа проваливается и возвращается</label></li>
+      </ul>
+    </div>
+
+    <!-- ФАЗА 6 -->
+    <div class="phase" id="phase6">
+      <h3>🏆 Фаза 6 — Экран победы <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>StarterGui → ScreenGui имя <code>WinGui</code>.</li>
+        <li>Внутри TextLabel на весь экран: текст <b>YOU WIN! PAC-MAN</b>, фон тёмный, Enabled у Gui пока <b>false</b> (или Visible = false у Frame).</li>
+        <li>Удобнее: Frame <code>WinFrame</code> Visible = false, TextLabel внутри.</li>
+      </ol>
+      <p>Script в ServerScriptService (или в Finish):</p>
+      <div class="code-block">
+        <span class="keyword">local</span> finish = workspace:WaitForChild(<span class="string">"Finish"</span>)<br><br>
+        finish.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+        &nbsp;&nbsp;<span class="keyword">local</span> player = game.Players:<span class="func">GetPlayerFromCharacter</span>(hit.Parent)<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> <span class="keyword">not</span> player <span class="keyword">then</span> <span class="keyword">return</span> <span class="keyword">end</span><br>
+        &nbsp;&nbsp;<span class="keyword">local</span> gui = player.PlayerGui:<span class="func">FindFirstChild</span>(<span class="string">"WinGui"</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> gui <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> frame = gui:<span class="func">FindFirstChild</span>(<span class="string">"WinFrame"</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> frame <span class="keyword">then</span> frame.Visible = <span class="keyword">true</span> <span class="keyword">end</span><br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <p class="note">Если GUI не находится с сервера — сделай LocalScript в WinGui, который слушает RemoteEvent. Для урока достаточно простого варианта: Script в Finish + Frame в StarterGui с Visible.</p>
+      <p><b>Простой учебный вариант</b> (LocalScript в WinGui):</p>
+      <div class="code-block">
+        <span class="keyword">local</span> finish = workspace:WaitForChild(<span class="string">"Finish"</span>)<br>
+        <span class="keyword">local</span> frame = script.Parent:WaitForChild(<span class="string">"WinFrame"</span>)<br>
+        frame.Visible = <span class="keyword">false</span><br><br>
+        finish.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+        &nbsp;&nbsp;<span class="keyword">local</span> char = game.Players.LocalPlayer.Character<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> hit.Parent == char <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;frame.Visible = <span class="keyword">true</span><br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label>Дошёл до Finish — виден YOU WIN</label></li>
+        <li><input type="checkbox" class="pstep" onchange="updateProjectProgress()"><label>Прошёл весь маршрут: дверь → секрет → мимо стрелы/ловушки → финиш</label></li>
+      </ul>
+    </div>
+
+    <div class="space-note">🏁 Мини-игра считается готовой, когда в Play ты сам проходишь лабиринт и видишь победу.</div>
+  </div>
+
+  <!-- ИТОГИ -->
+  <div class="card">
+    <h2>✅ Что получилось</h2>
+    <p><strong>Ты собрал Pac-Man лабиринт с нуля и оживил его циклами while / repeat.</strong></p>
+    <ul>
+      <li><code>while условие</code> — пока дверь/стена/стрела не дошли до цели;</li>
+      <li><code>while true</code> — вечный двигатель уровня;</li>
+      <li><code>repeat until</code> — ловушка с таймером;</li>
+      <li>Touched + GUI — победа.</li>
+    </ul>
+  </div>
+
+  <div class="card reflection-box">
+    <h2>💬 Рефлексия</h2>
+    <div class="fav-grid">
+      <div class="fav-card" onclick="pickFav(this)">🚪 Дверь</div>
+      <div class="fav-card" onclick="pickFav(this)">↔️ Стена</div>
+      <div class="fav-card" onclick="pickFav(this)">📦 Секрет</div>
+      <div class="fav-card" onclick="pickFav(this)">🏹 Стрела</div>
+      <div class="fav-card" onclick="pickFav(this)">🏆 Победа</div>
+    </div>
+    <textarea id="reflectionText" placeholder="Где ещё в играх пригодится while?"></textarea>
+    <button class="action-btn" onclick="submitReflection()">Отправить</button>
+    <div id="reflectionResult" style="margin-top:8px;font-weight:700;"></div>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="Занятие_2.6_Циклы.html">
+      <div class="lbl">← Назад</div>
+      <div class="ttl">Цикл for</div>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="" />
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 4.1.11 · while · Pac-Man с нуля</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function toggleHint(id) {
+    const box = document.getElementById(id);
+    box.classList.toggle('show');
+  }
+
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    let any = false;
+    let ok = false;
+    cards.forEach(card => {
+      card.classList.remove('correct', 'incorrect');
+      if (card.classList.contains('selected')) {
+        any = true;
+        if (card.dataset.correctChoice === 'true') {
+          card.classList.add('correct');
+          ok = true;
+        } else {
+          card.classList.add('incorrect');
+        }
+      }
+    });
+    const result = container.querySelector('.activity-result');
+    if (!any) {
+      result.textContent = '⚠️ Выбери ответ!';
+      result.className = 'activity-result neutral';
+      return;
+    }
+    const selected = container.querySelectorAll('.choice-card.selected');
+    if (selected.length === 1 && selected[0].dataset.correctChoice === 'true') {
+      result.textContent = '✅ Верно!';
+      result.className = 'activity-result done';
+    } else {
+      result.textContent = '❌ Попробуй ещё раз.';
+      result.className = 'activity-result neutral';
+    }
+  }
+
+  function resetQuiz(id) {
+    const c = document.getElementById(id);
+    c.querySelectorAll('.choice-card').forEach(x => x.classList.remove('selected', 'correct', 'incorrect'));
+    const r = c.querySelector('.activity-result');
+    r.textContent = '';
+    r.className = 'activity-result';
+  }
+
+  document.addEventListener('click', function (e) {
+    const card = e.target.closest('.choice-card');
+    if (!card) return;
+    const box = card.closest('.interactive-box');
+    if (!box) return;
+    box.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+  });
+
+  function updateProjectProgress() {
+    const all = document.querySelectorAll('.pstep');
+    let done = 0;
+    all.forEach(cb => { if (cb.checked) done++; });
+    const pct = all.length ? Math.round(done / all.length * 100) : 0;
+    document.getElementById('projectProgress').style.width = pct + '%';
+    document.getElementById('projectLabel').textContent = 'Выполнено шагов: ' + done + ' из ' + all.length;
+  }
+
+  function pickFav(el) {
+    document.querySelectorAll('.fav-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function submitReflection() {
+    const t = document.getElementById('reflectionText');
+    const r = document.getElementById('reflectionResult');
+    const fav = document.querySelector('.fav-card.selected');
+    if (!fav && !t.value.trim()) {
+      r.textContent = 'Выбери любимую фазу или напиши отзыв.';
+      r.style.color = '#b91c1c';
+      return;
+    }
+    r.textContent = '✅ Спасибо!' + (fav ? ' Любимое: ' + fav.textContent : '');
+    r.style.color = '#166534';
+    t.disabled = true;
+  }
+
+  /* —— мини-игра Pac на странице —— */
+  const board = document.getElementById('pacBoard');
+  let dots = 0, lives = 3, playing = false;
+  const layout = [
+    1,1,0,1,1,1,
+    1,2,2,2,2,1,
+    1,2,1,1,2,1,
+    1,2,2,2,2,1,
+    1,1,1,1,1,1
+  ];
+  // 0 path empty visually as wall edge, 1 wall, 2 dot — simplify to 6 dots on open cells
+  function buildPac() {
+    board.innerHTML = '';
+    dots = 0;
+    const cells = [
+      'w','d','d','w','d','w',
+      'w','d','w','w','d','w',
+      'w','d','d','d','w','w'
+    ];
+    cells.forEach(type => {
+      const c = document.createElement('div');
+      c.className = 'pac-cell';
+      if (type === 'w') { c.classList.add('wall'); c.textContent = '🟦'; }
+      else { c.classList.add('dot'); c.textContent = '🟡'; dots++; c.onclick = () => eat(c); }
+      board.appendChild(c);
+    });
+    document.getElementById('dotLeft').textContent = dots;
+  }
+  function eat(cell) {
+    if (!playing || cell.classList.contains('eaten')) return;
+    cell.classList.add('eaten');
+    cell.textContent = '·';
+    dots--;
+    document.getElementById('dotLeft').textContent = dots;
+    if (dots <= 0) {
+      playing = false;
+      document.getElementById('pacMsg').textContent = '🏆 while закончился: точек не осталось! YOU WIN';
+    }
+  }
+  document.getElementById('pacStart').onclick = () => {
+    playing = true; lives = 3;
+    document.getElementById('pacLives').textContent = lives;
+    document.getElementById('pacMsg').textContent = 'while (точки > 0) — кликай 🟡!';
+    buildPac();
+  };
+  document.getElementById('pacReset').onclick = () => {
+    playing = false;
+    document.getElementById('pacMsg').textContent = '';
+    buildPac();
+  };
+  buildPac();
+</script>
+</body>
+</html>

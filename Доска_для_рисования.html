@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>П3. Доска для рисования — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: .88rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#4c1d95,#1e1b4b); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #c4b5fd;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .info-callout.warn { background: #78350f; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка доски"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(170px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .82rem; }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .92rem; line-height: 1.7; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .b { color: #f472b6; }
+    .tree-box .t { color: #a3e635; }
+    .tree-box .r { color: #fbbf24; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.selected { border-color: var(--accent)!important; background: var(--accent-light)!important; }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .shot {
+      display: block; max-width: 100%; margin: 12px 0; border-radius: 14px;
+      border: 2px solid var(--line,#e2e8f0); background: #0f172a; box-shadow: 0 8px 24px rgba(15,23,42,.12);
+    }
+    .shot-cap { font-size: .9rem; color: #475569; margin: -4px 0 14px; padding: 0 4px; }
+    .mini-game {
+      background: linear-gradient(180deg,#1e1b4b,#4c1d95); border-radius: 24px; padding: 20px;
+      border: 3px solid #c4b5fd; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #ddd6fe; }
+    .draw-stage { display: grid; grid-template-columns: 1fr auto; gap: 16px; margin-top: 14px; align-items: start; }
+    @media (max-width:800px) { .draw-stage { grid-template-columns: 1fr; } }
+    .draw-hud {
+      display: flex; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap;
+    }
+    .draw-hud span {
+      background: #fff; color: #1e1b4b; padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size: .9rem;
+    }
+    .pixel-grid {
+      display: grid; grid-template-columns: repeat(12, 22px); gap: 2px;
+      background: #0f172a; padding: 10px; border-radius: 14px; border: 2px solid #a78bfa;
+      user-select: none; touch-action: none;
+    }
+    .pixel-cell {
+      width: 22px; height: 22px; background: #fff; border-radius: 3px; cursor: crosshair;
+    }
+    .palette {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .swatch {
+      width: 48px; height: 48px; border-radius: 12px; border: 3px solid #fff;
+      cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,.25);
+    }
+    .swatch.active { outline: 3px solid #fbbf24; outline-offset: 2px; }
+    .mission-box {
+      background: #2e1065; border-radius: 12px; padding: 12px; border: 1px solid #c4b5fd; margin-bottom: 10px;
+    }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .phase-time {
+      font-size: .75rem; background: var(--primary-light,#e8f5e0); color: var(--primary-dark);
+      padding: 2px 10px; border-radius: 99px; font-weight: 700;
+    }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+    .task-steps label { cursor: pointer; }
+    .progress-wrap { margin: 12px 0 4px; }
+    .progress-bar { height: 12px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg,var(--primary,#61b01f),#84cc16); transition: width .25s; }
+    .progress-label { font-size: .9rem; font-weight: 700; color: var(--primary-dark); margin-top: 6px; }
+    .space-note {
+      background: linear-gradient(135deg,#fefce8,#ecfdf5); border: 2px dashed #65a30d;
+      border-radius: 18px; padding: 16px 18px; margin: 14px 0; font-weight: 700;
+    }
+    .coin-badge {
+      display: inline-block; background: #fef3c7; color: #92400e; font-size: .75rem;
+      padding: 2px 10px; border-radius: 99px; font-weight: 800; margin-left: 6px;
+    }
+    .details-code summary {
+      cursor: pointer; font-weight: 800; color: var(--primary-dark); padding: 8px 0;
+    }
+    .arch-grid {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 12px; margin: 12px 0;
+    }
+    .arch-card {
+      background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 14px;
+    }
+    .arch-card h4 { margin: 0 0 6px; color: var(--primary-dark); }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Проект П3</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">П3</div>
+      <div>
+        <div class="module-pill">Проектная деятельность · средний</div>
+        <h1>🎨 Доска для рисования</h1>
+        <p class="subtitle">Пиксели · палитра · тема раунда · таймер · очистка доски</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🖌️</div>
+    <div>
+      <strong>Миссия проекта:</strong> сделать пиксельную доску, как в «угадай рисунок».
+      Сервер выдаёт <b>тему</b> и <b>таймер</b>, банки краски выбирают цвет,
+      мышь красит «пиксели» на доске. В конце раунда доска вспыхивает и очищается.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом проекте ты:</h2>
+    <ul>
+      <li>сгенерируешь сетку пикселей скриптом (двойной <code>for</code>) 🧱</li>
+      <li>сделаешь палитру с <code>ClickDetector</code> и RemoteEvent 🎨</li>
+      <li>запустишь цикл тем и таймера в <code>GameManager</code> ⏱️</li>
+      <li>покажешь тему и время в GUI, покрасишь пиксели мышью ✏️</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Теория</td><td>12 мин</td><td>Пиксели, палитра, раунды</td></tr>
+      <tr><td>Мини-игра</td><td>8 мин</td><td>Рисуем на сайте</td></tr>
+      <tr><td>Доска + палитра</td><td>25 мин</td><td>DrawingBoard, 6+ красок</td></tr>
+      <tr><td>События + GameManager</td><td>15 мин</td><td>RemoteEvent, темы, таймер</td></tr>
+      <tr><td>GUI + LocalScripts</td><td>20 мин</td><td>Тема, таймер, рисование</td></tr>
+      <tr><td>Тест + робокоины</td><td>10 мин+</td><td>100 пикселей / 30 сек</td></tr>
+      <tr><td>Итого</td><td>~90 мин</td><td>—</td></tr>
+    </table>
+    <p style="margin:10px 0 0;font-size:.95rem;color:#475569;">
+      <b>Нужно заранее:</b> циклы, ClickDetector, GUI TextLabel, RemoteEvent. Удобно после раздела GUI и кликера (П1).
+    </p>
+  </div>
+
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: как устроена «рисовалка»</h2>
+
+    <div class="theory-section">
+      <h3>🧩 Три части игры</h3>
+      <div class="arch-grid">
+        <div class="arch-card">
+          <h4>Доска</h4>
+          <p>Скрипт создаёт много Parts с именем <code>Pixel</code> — это клетки для краски.</p>
+        </div>
+        <div class="arch-card">
+          <h4>Палитра</h4>
+          <p>Клик по банке → сервер шлёт игроку цвет через <code>ChangeColorEvent</code>.</p>
+        </div>
+        <div class="arch-card">
+          <h4>Раунд</h4>
+          <p><code>GameManager</code> выбирает тему, считает секунды, чистит доску.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🔁 Двойной цикл = сетка</h3>
+      <p>Один <code>for</code> по X, второй по Z — получаем квадрат из клеток. При <code>boardSize = 50</code> будет <b>2500</b> пикселей. Studio может чуть «подумать» при Play — это нормально.</p>
+      <div class="code-block">
+<span class="keyword">for</span> x = <span class="number">0</span>, boardSize-<span class="number">1</span> <span class="keyword">do</span><br>
+&nbsp;&nbsp;<span class="keyword">for</span> z = <span class="number">0</span>, boardSize-<span class="number">1</span> <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">-- создать Pixel</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>📦 Целевая структура</h3>
+      <div class="tree-box">
+        <span class="g">Workspace</span><br>
+        &nbsp;&nbsp;<span class="b">DrawingBoard</span> + Script → куча <span class="t">Pixel</span><br>
+        &nbsp;&nbsp;<span class="b">PinkPaint</span> … <span class="b">GreenPaint</span> (+ ClickDetector + Script)<br><br>
+        <span class="g">ReplicatedStorage</span><br>
+        &nbsp;&nbsp;<span class="r">ChangeColorEvent</span> · <span class="r">GameInfoEvent</span><br><br>
+        <span class="g">ServerScriptService</span> → <span class="t">GameManager</span><br>
+        <span class="g">StarterGui</span> → <span class="b">DrawingGUI</span> → ThemeLabel, TimerLabel<br>
+        <span class="g">StarterPlayerScripts</span> → 2 LocalScript
+      </div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz1">
+      <h3>🧠 Квиз: зачем пикселям одинаковое имя Pixel?</h3>
+      <div class="choice-card" data-correct-choice="true">Чтобы GameManager нашёл их все и очистил доску</div>
+      <div class="choice-card" data-correct-choice="false">Чтобы они летали</div>
+      <div class="choice-card" data-correct-choice="false">Имя не важно</div>
+      <button class="action-btn" onclick="checkChoices('quiz1')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz2">
+      <h3>🧠 Квиз: куда кладём скрипты рисования мышью?</h3>
+      <div class="choice-card" data-correct-choice="true">StarterPlayer → StarterPlayerScripts (LocalScript)</div>
+      <div class="choice-card" data-correct-choice="false">В Lighting</div>
+      <div class="choice-card" data-correct-choice="false">Только в ServerScriptService</div>
+      <button class="action-btn" onclick="checkChoices('quiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz3">
+      <h3>🧠 Квиз: GameInfoEvent зачем?</h3>
+      <div class="choice-card" data-correct-choice="true">Сервер сообщает клиенту тему и оставшееся время</div>
+      <div class="choice-card" data-correct-choice="false">Создаёт Parts на доске</div>
+      <div class="choice-card" data-correct-choice="false">Меняет цвет палитры</div>
+      <button class="action-btn" onclick="checkChoices('quiz3')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="cheat-sheet">
+    <div class="cheat-grid">
+      <div class="cheat-item"><div class="title">Доска</div><div class="rule"><code>DrawingBoard</code> + цикл</div></div>
+      <div class="cheat-item"><div class="title">Пиксель</div><div class="rule">Name = <code>Pixel</code></div></div>
+      <div class="cheat-item"><div class="title">Краска</div><div class="rule">Click → FireClient</div></div>
+      <div class="cheat-item"><div class="title">Рисование</div><div class="rule">mouse.Target = Pixel</div></div>
+      <div class="cheat-item"><div class="title">Раунд</div><div class="rule">тема + таймер 60</div></div>
+      <div class="cheat-item"><div class="title">Очистка</div><div class="rule">все Pixel → White</div></div>
+    </div>
+  </div>
+
+  <!-- МИНИ-ИГРА -->
+  <div class="mini-game" id="miniGame">
+    <h2>🕹️ Мини-игра «Нарисуй тему»</h2>
+    <div class="mission-box">
+      <b>Миссия:</b> выбери цвет и нарисуй что-нибудь по теме.
+      Тема меняется каждые 30 секунд (как ускоренный раунд).
+    </div>
+    <div class="draw-hud">
+      <span id="mgTheme">Тема: Котик</span>
+      <span id="mgTimer">30</span>
+    </div>
+    <div class="draw-stage">
+      <div>
+        <div class="pixel-grid" id="pixelGrid"></div>
+        <p id="mgMsg" style="margin:10px 0 0;font-size:.9rem;opacity:.9;"></p>
+        <button type="button" class="action-btn" style="margin-top:8px;" onclick="clearMiniBoard()">Очистить доску</button>
+      </div>
+      <div class="palette" id="mgPalette"></div>
+    </div>
+  </div>
+
+  <!-- ПРОЕКТ -->
+  <div class="project-box" id="keyTaskBox">
+    <h2>🛠️ Проект в Studio: «Доска для рисования»</h2>
+    <p>Имена объектов должны совпадать с кодом. За доп. задания — <span class="coin-badge">🤖 робокоины</span>.</p>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="projectFill"></div></div>
+      <div class="progress-label" id="projectLabel">Выполнено шагов: 0</div>
+    </div>
+
+    <div class="phase" id="phase1">
+      <h3>🧱 Фаза 1 — DrawingBoard и пиксели <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>Создай Part, назови <code>DrawingBoard</code>. Сделай широкую плоскую «доску», Anchored = true.</li>
+        <li>Внутрь добавь <b>Script</b> и вставь код генерации пикселей.</li>
+        <li>Нажми Play один раз — на доске должна появиться белая сетка. Stop.</li>
+      </ol>
+      <img class="shot" src="assets/img/drawing/01-board.png" alt="Part DrawingBoard" />
+      <p class="shot-cap">Базовая доска — большой плоский Part.</p>
+      <img class="shot" src="assets/img/drawing/02-board-script.png" alt="Script внутри DrawingBoard" />
+      <p class="shot-cap">DrawingBoard → Script.</p>
+      <div class="info-callout warn">
+        <span class="bulb">⚠️</span>
+        <div>
+          Пиксели создаются при каждом запуске скрипта. Если запускал Play несколько раз и на доске «двойной слой» —
+          удали лишние Pixel в Explorer (или очисти дочерние Parts доски) и запусти снова.
+        </div>
+      </div>
+      <details open>
+        <summary class="details-code">📄 Код Script в DrawingBoard</summary>
+        <div class="code-block">
+<span class="keyword">local</span> board = script.Parent<br>
+<span class="keyword">local</span> boardSize = <span class="number">50</span> <span class="comment">-- пикселей по стороне</span><br>
+<span class="keyword">local</span> pixelSize = <span class="number">1</span><br>
+<span class="keyword">local</span> startX = -boardSize/<span class="number">2</span> + <span class="number">0.5</span><br>
+<span class="keyword">local</span> startZ = -boardSize/<span class="number">2</span> + <span class="number">0.5</span><br><br>
+<span class="keyword">for</span> x = <span class="number">0</span>, boardSize-<span class="number">1</span> <span class="keyword">do</span><br>
+&nbsp;&nbsp;<span class="keyword">for</span> z = <span class="number">0</span>, boardSize-<span class="number">1</span> <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> pixel = Instance.new(<span class="string">"Part"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pixel.Name = <span class="string">"Pixel"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;pixel.Size = Vector3.new(<span class="number">0.9</span>, <span class="number">0.2</span>, <span class="number">0.9</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pixel.Position = board.Position + Vector3.new(startX + x, <span class="number">0.2</span>, startZ + z)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pixel.Anchored = <span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;pixel.BrickColor = BrickColor.White()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pixel.Material = Enum.Material.SmoothPlastic<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pixel.Parent = board<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span>
+        </div>
+      </details>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">DrawingBoard создан, Anchored.</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">Script вставлен, при Play видна сетка пикселей.</label></li>
+        <li><input type="checkbox" id="p1s2" onchange="updateProjectProgress()"><label for="p1s2">Пиксели называются Pixel.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase2">
+      <h3>🎨 Фаза 2 — Палитра красок <span class="phase-time">14 мин</span> <span class="coin-badge">+робокоины за доп. цвета</span></h3>
+      <ol>
+        <li>Поставь <b>6 Parts</b> в ряд рядом с доской.</li>
+        <li>Переименуй и покрась:
+          <ul>
+            <li>Розовый → <code>PinkPaint</code></li>
+            <li>Жёлтый → <code>YellowPaint</code></li>
+            <li>Чёрный → <code>BlackPaint</code></li>
+            <li>Красный → <code>RedPaint</code></li>
+            <li>Голубой → <code>BluePaint</code></li>
+            <li>Зелёный → <code>GreenPaint</code></li>
+          </ul>
+        </li>
+        <li>В <b>каждый</b> добавь ClickDetector и одинаковый Script (ниже).</li>
+        <li><b>Бонус:</b> добавь ещё цвета (оранжевый, фиолетовый…) — больше робокоинов!</li>
+      </ol>
+      <img class="shot" src="assets/img/drawing/03-palette.png" alt="Шесть цветных партов палитры" />
+      <p class="shot-cap">Палитра — ряд цветных «банок».</p>
+      <img class="shot" src="assets/img/drawing/04-paint-clickdetector.png" alt="ClickDetector в RedPaint" />
+      <p class="shot-cap">В каждой банке: ClickDetector + Script.</p>
+      <div class="info-callout">
+        <span class="bulb">💡</span>
+        <div>
+          RemoteEvent <code>ChangeColorEvent</code> создадим в следующей фазе.
+          Скрипт краски можно вставить уже сейчас — при Play без события будет ошибка, пока не сделаешь шаг 3.
+        </div>
+      </div>
+      <details open>
+        <summary class="details-code">📄 Script в каждой банке краски</summary>
+        <div class="code-block">
+<span class="keyword">local</span> remoteEvent =<br>
+&nbsp;&nbsp;game:<span class="func">GetService</span>(<span class="string">"ReplicatedStorage"</span>):<span class="func">FindFirstChild</span>(<span class="string">"ChangeColorEvent"</span>)<br>
+<span class="keyword">local</span> paintCan = script.Parent<br>
+<span class="keyword">local</span> clickDetector = paintCan:<span class="func">FindFirstChild</span>(<span class="string">"ClickDetector"</span>)<br>
+<span class="keyword">if</span> clickDetector <span class="keyword">then</span><br>
+&nbsp;&nbsp;clickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>(player)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;remoteEvent:<span class="func">FireClient</span>(player, paintCan.BrickColor)<br>
+&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+<span class="keyword">end</span>
+        </div>
+      </details>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">6 банок с правильными именами и цветами.</label></li>
+        <li><input type="checkbox" id="p2s1" onchange="updateProjectProgress()"><label for="p2s1">В каждой — ClickDetector и Script.</label></li>
+        <li><input type="checkbox" id="p2s2" onchange="updateProjectProgress()"><label for="p2s2">(Бонус) Добавил 1+ свой цвет.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase3">
+      <h3>⚡ Фаза 3 — RemoteEvent <span class="phase-time">5 мин</span></h3>
+      <ol>
+        <li>ReplicatedStorage → два RemoteEvent:</li>
+        <ul>
+          <li><code>ChangeColorEvent</code> — смена цвета кисти</li>
+          <li><code>GameInfoEvent</code> — тема и таймер</li>
+        </ul>
+      </ol>
+      <img class="shot" src="assets/img/drawing/05-remoteevents.png" alt="Два RemoteEvent в ReplicatedStorage" />
+      <p class="shot-cap">ChangeColorEvent и GameInfoEvent.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">Оба события созданы с точными именами.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase4">
+      <h3>🎮 Фаза 4 — GameManager <span class="phase-time">12 мин</span> <span class="coin-badge">+робокоины за темы</span></h3>
+      <ol>
+        <li>ServerScriptService → Script <code>GameManager</code>.</li>
+        <li>Вставь код. В таблице <code>themes</code> добавь свои идеи!</li>
+      </ol>
+      <details open>
+        <summary class="details-code">📄 GameManager</summary>
+        <div class="code-block">
+<span class="keyword">local</span> Players = game:<span class="func">GetService</span>(<span class="string">"Players"</span>)<br>
+<span class="keyword">local</span> replicatedStorage = game:<span class="func">GetService</span>(<span class="string">"ReplicatedStorage"</span>)<br>
+<span class="keyword">local</span> gameInfoEvent = replicatedStorage:<span class="func">FindFirstChild</span>(<span class="string">"GameInfoEvent"</span>)<br><br>
+<span class="keyword">local</span> themes = {<br>
+&nbsp;&nbsp;<span class="string">" Котик"</span>,<br>
+&nbsp;&nbsp;<span class="string">" Собачка"</span>,<br>
+&nbsp;&nbsp;<span class="string">" Домик"</span>,<br>
+&nbsp;&nbsp;<span class="string">" Солнышко"</span>,<br>
+&nbsp;&nbsp;<span class="string">" Цветочек"</span>,<br>
+&nbsp;&nbsp;<span class="string">" Машинка"</span>,<br>
+&nbsp;&nbsp;<span class="string">" Пицца"</span>,<br>
+&nbsp;&nbsp;<span class="string">" Инопланетянин"</span><br>
+&nbsp;&nbsp;<span class="comment">-- добавь свои темы!</span><br>
+}<br><br>
+<span class="keyword">local function</span> <span class="func">clearBoard</span>()<br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Очищаем доску!"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> pixels = {}<br>
+&nbsp;&nbsp;<span class="keyword">for</span> _, part <span class="keyword">in</span> ipairs(workspace:<span class="func">GetDescendants</span>()) <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> part:<span class="func">IsA</span>(<span class="string">"BasePart"</span>) <span class="keyword">and</span> part.Name == <span class="string">"Pixel"</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;table.insert(pixels, part)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">for</span> _, pixel <span class="keyword">in</span> ipairs(pixels) <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;pixel.BrickColor = BrickColor.new(<span class="string">"Hot pink"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.3</span>)<br>
+&nbsp;&nbsp;<span class="keyword">for</span> _, pixel <span class="keyword">in</span> ipairs(pixels) <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;pixel.BrickColor = BrickColor.White()<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local function</span> <span class="func">broadcastInfo</span>(theme, timeLeft)<br>
+&nbsp;&nbsp;<span class="keyword">for</span> _, player <span class="keyword">in</span> ipairs(Players:<span class="func">GetPlayers</span>()) <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;gameInfoEvent:<span class="func">FireClient</span>(player, theme, timeLeft)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">while true do</span><br>
+&nbsp;&nbsp;<span class="keyword">local</span> theme = themes[math.random(<span class="number">1</span>, #themes)]<br>
+&nbsp;&nbsp;<span class="keyword">for</span> timer = <span class="number">60</span>, <span class="number">0</span>, <span class="number">-1</span> <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">broadcastInfo</span>(theme, timer)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">1</span>)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="func">clearBoard</span>()<br>
+&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">1</span>)<br>
+<span class="keyword">end</span>
+        </div>
+      </details>
+      <div class="info-callout green">
+        <span class="bulb">🔑</span>
+        <div>В конце раунда доска на миг становится розовой — так видно, что очистка сработала — и снова белой.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">GameManager создан в ServerScriptService.</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">В themes есть базовые темы.</label></li>
+        <li><input type="checkbox" id="p4s2" onchange="updateProjectProgress()"><label for="p4s2">(Бонус) Добавил 2+ свои темы.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase5">
+      <h3>🖥️ Фаза 5 — DrawingGUI <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>StarterGui → ScreenGui <code>DrawingGUI</code>.</li>
+        <li>Внутри два TextLabel:
+          <ul>
+            <li><code>ThemeLabel</code> — тема («Тема: …»)</li>
+            <li><code>TimerLabel</code> — секунды</li>
+          </ul>
+        </li>
+        <li>Расположи сверху экрана, сделай крупный читаемый текст.</li>
+      </ol>
+      <img class="shot" src="assets/img/drawing/06-drawinggui.png" alt="DrawingGUI в StarterGui" />
+      <p class="shot-cap">ScreenGui DrawingGUI.</p>
+      <img class="shot" src="assets/img/drawing/07-labels.png" alt="ThemeLabel и TimerLabel" />
+      <p class="shot-cap">Два TextLabel с точными именами.</p>
+      <img class="shot" src="assets/img/drawing/08-gui-layout.png" alt="Раскладка UI сверху" />
+      <p class="shot-cap">Сверху: тема слева, таймер справа (или рядом).</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">DrawingGUI создан.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">Есть ThemeLabel и TimerLabel наверху экрана.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase6">
+      <h3>🖱️ Фаза 6 — LocalScripts в StarterPlayerScripts <span class="phase-time">14 мин</span></h3>
+      <ol>
+        <li>StarterPlayer → StarterPlayerScripts.</li>
+        <li>Создай <b>два LocalScript</b>: один для цвета/рисования, второй для GUI темы и таймера.</li>
+      </ol>
+      <img class="shot" src="assets/img/drawing/09-player-scripts.png" alt="Два LocalScript в StarterPlayerScripts" />
+      <p class="shot-cap">Оба скрипта — LocalScript в StarterPlayerScripts.</p>
+
+      <details open>
+        <summary class="details-code">📄 LocalScript 1 — цвет и рисование</summary>
+        <div class="code-block">
+<span class="keyword">local</span> Players = game:<span class="func">GetService</span>(<span class="string">"Players"</span>)<br>
+<span class="keyword">local</span> player = Players.LocalPlayer<br>
+<span class="keyword">local</span> mouse = player:<span class="func">GetMouse</span>()<br>
+<span class="keyword">local</span> replicatedStorage = game:<span class="func">GetService</span>(<span class="string">"ReplicatedStorage"</span>)<br>
+<span class="keyword">local</span> changeColorEvent = replicatedStorage:<span class="func">FindFirstChild</span>(<span class="string">"ChangeColorEvent"</span>)<br>
+<span class="keyword">local</span> currentColor = BrickColor.Red()<br><br>
+changeColorEvent.OnClientEvent:<span class="func">Connect</span>(<span class="keyword">function</span>(newColor)<br>
+&nbsp;&nbsp;currentColor = newColor<br>
+&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Текущий цвет:"</span>, newColor.Name)<br>
+<span class="keyword">end</span>)<br><br>
+<span class="keyword">local function</span> <span class="func">onPixelClick</span>(pixel)<br>
+&nbsp;&nbsp;<span class="keyword">if</span> pixel.BrickColor ~= currentColor <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;pixel.BrickColor = currentColor<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span><br><br>
+mouse.Button1Down:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;<span class="keyword">local</span> target = mouse.Target<br>
+&nbsp;&nbsp;<span class="keyword">if</span> target <span class="keyword">and</span> target.Name == <span class="string">"Pixel"</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">onPixelClick</span>(target)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span>)
+        </div>
+      </details>
+
+      <details open>
+        <summary class="details-code">📄 LocalScript 2 — тема и таймер</summary>
+        <div class="code-block">
+<span class="keyword">local</span> replicatedStorage = game:<span class="func">GetService</span>(<span class="string">"ReplicatedStorage"</span>)<br>
+<span class="keyword">local</span> gameInfoEvent = replicatedStorage:<span class="func">FindFirstChild</span>(<span class="string">"GameInfoEvent"</span>)<br>
+<span class="keyword">local</span> player = game.Players.LocalPlayer<br>
+<span class="keyword">local</span> gui = player:<span class="func">WaitForChild</span>(<span class="string">"PlayerGui"</span>):<span class="func">WaitForChild</span>(<span class="string">"DrawingGUI"</span>)<br>
+<span class="keyword">local</span> themeLabel = gui:<span class="func">FindFirstChild</span>(<span class="string">"ThemeLabel"</span>)<br>
+<span class="keyword">local</span> timerLabel = gui:<span class="func">FindFirstChild</span>(<span class="string">"TimerLabel"</span>)<br><br>
+gameInfoEvent.OnClientEvent:<span class="func">Connect</span>(<span class="keyword">function</span>(theme, timeLeft)<br>
+&nbsp;&nbsp;<span class="keyword">if</span> themeLabel <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;themeLabel.Text = <span class="string">"Тема: "</span> .. theme<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">if</span> timerLabel <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;timerLabel.Text = tostring(timeLeft)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span>)
+        </div>
+      </details>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6s0" onchange="updateProjectProgress()"><label for="p6s0">Два LocalScript в StarterPlayerScripts.</label></li>
+        <li><input type="checkbox" id="p6s1" onchange="updateProjectProgress()"><label for="p6s1">Понимаю: сначала клик по банке, потом клик по Pixel.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase7">
+      <h3>🧪 Фаза 7 — Проверка в Play <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>Play → сверху тема и таймер тикают.</li>
+        <li>Кликни банку краски → в Output «Текущий цвет: …».</li>
+        <li>Кликай по белым пикселям — они красятся.</li>
+        <li>Дождись конца раунда (или временно поставь таймер 10) — розовая вспышка и очистка.</li>
+      </ol>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p7s0" onchange="updateProjectProgress()"><label for="p7s0">Тема и таймер обновляются.</label></li>
+        <li><input type="checkbox" id="p7s1" onchange="updateProjectProgress()"><label for="p7s1">Палитра меняет цвет кисти.</label></li>
+        <li><input type="checkbox" id="p7s2" onchange="updateProjectProgress()"><label for="p7s2">Пиксели красятся мышью.</label></li>
+        <li><input type="checkbox" id="p7s3" onchange="updateProjectProgress()"><label for="p7s3">В конце раунда доска очищается.</label></li>
+      </ul>
+      <div class="space-note">🎉 Базовая доска готова! Дальше — задания на робокоины.</div>
+    </div>
+
+    <div class="phase" id="phase8" style="border-color:#fbbf24;">
+      <h3>🤖 Фаза 8 — Робокоины <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li><b>Размер доски 100:</b> в скрипте DrawingBoard поставь <code>boardSize = 100</code>.
+          (Будет 10&nbsp;000 пикселей — ПК может подтормаживать. Можно 70–80.)</li>
+        <li><b>Таймер 30 сек:</b> в GameManager замени цикл на <code>for timer = 30, 0, -1 do</code>.</li>
+      </ol>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p8s0" onchange="updateProjectProgress()"><label for="p8s0">Увеличил boardSize (или согласованный больший размер).</label></li>
+        <li><input type="checkbox" id="p8s1" onchange="updateProjectProgress()"><label for="p8s1">Таймер раунда = 30 секунд.</label></li>
+        <li><input type="checkbox" id="p8s2" onchange="updateProjectProgress()"><label for="p8s2">После изменений всё ещё работает.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase9" style="border-color:#a78bfa;">
+      <h3>✨ Фаза 9 (доп) — Удобство рисования <span class="phase-time">10 мин</span></h3>
+      <p>Сейчас красится один пиксель за клик. Попробуй: пока зажата ЛКМ, красить <code>mouse.Target</code> в цикле
+        (или на <code>mouse.Move</code>, если кнопка зажата) — получится «кисть».</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p9s0" onchange="updateProjectProgress()"><label for="p9s0">Можно водить мышью и красить несколько клеток подряд.</label></li>
+      </ul>
+      <div class="space-note">🏆 Доска с раундами — готовый мини-режим для портфолио!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧯 Если не работает</h2>
+    <table class="prop-table">
+      <tr><th>Симптом</th><th>Что проверить</th></tr>
+      <tr><td>Нет пикселей</td><td>Script в DrawingBoard? Play? Ошибки в Output?</td></tr>
+      <tr><td>Краска не выбирается</td><td>Есть ChangeColorEvent? Script в банке? ClickDetector?</td></tr>
+      <tr><td>Не красятся клетки</td><td>LocalScript в StarterPlayerScripts? Имя цели = Pixel? Сначала выбрал цвет?</td></tr>
+      <tr><td>GUI пустой</td><td>Имена ThemeLabel / TimerLabel? DrawingGUI в StarterGui?</td></tr>
+      <tr><td>Доска не чистится</td><td>GameManager запущен? Пиксели называются Pixel?</td></tr>
+      <tr><td>Лагает</td><td>Уменьши boardSize (например 30–40)</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>сгенерировал пиксельную доску двойным циклом;</li>
+      <li>сделал палитру через ClickDetector + RemoteEvent;</li>
+      <li>запустил раунды с темой и таймером;</li>
+      <li>связал GUI и рисование мышью на клиенте.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Рисую на доске!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти, чиним баги</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь педагога</label>
+    </div>
+    <textarea placeholder="Зачем пикселям одно имя Pixel? Чем ChangeColorEvent отличается от GameInfoEvent?"></textarea>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Проект П3 · Доска для рисования</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function updateProjectProgress() {
+    const box = document.getElementById('keyTaskBox');
+    if (!box) return;
+    const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+    const checked = box.querySelectorAll('input[type="checkbox"]:checked').length;
+    const total = checkboxes.length;
+    const pct = total ? Math.round((checked / total) * 100) : 0;
+    const fill = document.getElementById('projectFill');
+    const label = document.getElementById('projectLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) {
+      label.textContent =
+        'Выполнено шагов: ' + checked + ' из ' + total +
+        (checked === total && total > 0 ? ' 🎉 Проект выполнен!' : '');
+    }
+  }
+
+  const themes = ['Котик', 'Собачка', 'Домик', 'Солнышко', 'Цветочек', 'Машинка', 'Пицца', 'Инопланетянин'];
+  const colors = [
+    { name: 'Pink', hex: '#ff69b4' },
+    { name: 'Yellow', hex: '#facc15' },
+    { name: 'Black', hex: '#1e293b' },
+    { name: 'Red', hex: '#ef4444' },
+    { name: 'Blue', hex: '#22d3ee' },
+    { name: 'Green', hex: '#84cc16' }
+  ];
+  let brush = colors[3].hex;
+  let timeLeft = 30;
+  let themeIdx = 0;
+  let painting = false;
+
+  const grid = document.getElementById('pixelGrid');
+  for (let i = 0; i < 12 * 12; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'pixel-cell';
+    cell.addEventListener('mousedown', function (e) {
+      painting = true;
+      cell.style.background = brush;
+      e.preventDefault();
+    });
+    cell.addEventListener('mouseenter', function () {
+      if (painting) cell.style.background = brush;
+    });
+    grid.appendChild(cell);
+  }
+  document.addEventListener('mouseup', function () { painting = false; });
+
+  const pal = document.getElementById('mgPalette');
+  colors.forEach(function (c, i) {
+    const s = document.createElement('button');
+    s.type = 'button';
+    s.className = 'swatch' + (i === 3 ? ' active' : '');
+    s.style.background = c.hex;
+    s.title = c.name;
+    s.addEventListener('click', function () {
+      brush = c.hex;
+      pal.querySelectorAll('.swatch').forEach(function (el) { el.classList.remove('active'); });
+      s.classList.add('active');
+      document.getElementById('mgMsg').textContent = 'Текущий цвет: ' + c.name;
+    });
+    pal.appendChild(s);
+  });
+
+  function setTheme() {
+    themeIdx = Math.floor(Math.random() * themes.length);
+    document.getElementById('mgTheme').textContent = 'Тема: ' + themes[themeIdx];
+    timeLeft = 30;
+  }
+
+  function clearMiniBoard() {
+    grid.querySelectorAll('.pixel-cell').forEach(function (c) {
+      c.style.background = '#ff69b4';
+    });
+    setTimeout(function () {
+      grid.querySelectorAll('.pixel-cell').forEach(function (c) {
+        c.style.background = '#fff';
+      });
+      document.getElementById('mgMsg').textContent = 'Доска очищена! Новая тема.';
+      setTheme();
+    }, 300);
+  }
+
+  setInterval(function () {
+    timeLeft -= 1;
+    document.getElementById('mgTimer').textContent = String(Math.max(0, timeLeft));
+    if (timeLeft <= 0) clearMiniBoard();
+  }, 1000);
+
+  setTheme();
+  updateProjectProgress();
+</script>
+</body>
+</html>

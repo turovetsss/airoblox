@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2.6. Таблицы в Lua — Строим мир — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    /* стили сохранены без изменений */
+    .choice-card { cursor: pointer; transition: 0.15s; user-select: none; padding: 8px 16px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 30px; display: inline-block; margin: 4px 6px; }
+    .choice-card:hover { border-color: var(--primary); transform: translateY(-2px); background: #f1f5f9; }
+    .choice-card.selected { border-color: var(--accent) !important; background: var(--accent-light) !important; box-shadow: 0 0 0 3px rgba(110, 0, 145, 0.2); }
+    .choice-card.correct { border-color: var(--primary) !important; background: var(--primary-light) !important; }
+    .choice-card.incorrect { border-color: var(--danger) !important; background: var(--danger-light) !important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .choice-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 16px; }
+    .code-block { background: #2a2f3a; color: #e2e8f0; padding: 16px 20px; border-radius: 12px; font-family: 'Courier New', monospace; font-size: 1.2rem; overflow-x: auto; margin: 12px 0; line-height: 1.6; }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .code-block .hl { background: #fde047; color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 700; display: inline-block; }
+    .hint-btn { background: var(--accent-light); border: none; padding: 6px 16px; border-radius: 30px; font-weight: 600; color: var(--accent-ink); cursor: pointer; transition: 0.15s; margin-top: 6px; }
+    .hint-btn:hover { background: var(--accent); color: white; }
+    .hint-box { display: none; background: #f1f5f9; border-radius: 12px; padding: 12px; margin-top: 8px; border-left: 4px solid var(--accent); }
+    .hint-box.show { display: block; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+    .theory-section:last-child { border-bottom: none; }
+    .theory-section h3 { margin-top: 10px; color: var(--primary-dark); }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; }
+    .prop-table th { background: var(--primary-light); color: var(--primary-dark); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+    .scenario-box { background: linear-gradient(135deg, #2a1e5c, #1e3a5f); border-radius: 20px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #5a6ea8; }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .cheat-sheet { background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary); margin: 24px 0; position: relative; }
+    .cheat-sheet::before { content: "📘 Шпаргалка по таблицам"; position: absolute; top: -14px; left: 20px; background: var(--primary-light); color: var(--primary-dark); padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: 0.9rem; border: 1px solid var(--primary); }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 14px 16px; border: 1px solid var(--line); }
+    .cheat-item .title { font-weight: 700; color: var(--primary-dark); border-bottom: 2px solid var(--primary-light); padding-bottom: 4px; margin-bottom: 6px; }
+    .cheat-item .rule { font-size: 0.92rem; margin: 4px 0; }
+    .cheat-item .rule code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
+    .screenshot-placeholder { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 20px; text-align: center; margin: 12px 0; color: #64748b; font-style: italic; }
+    .screenshot-placeholder img { max-width: 100%; border-radius: 8px; border: 1px solid var(--line); }
+    .map-card { background: linear-gradient(135deg,#E8F5E0,#F4EAFA); border: 2px solid var(--primary); border-radius: 20px; padding: 20px 24px; margin: 20px 0; }
+    .map-card .dl { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; background: var(--primary); color: #fff; padding: 12px 22px; border-radius: 30px; font-weight: 800; text-decoration: none; box-shadow: 0 4px 0 #2E4A17; }
+    .map-card .dl:hover { background: #4C8C18; }
+  </style>
+</head>
+<body class="lesson-page">
+
+  <header class="site-header">
+    <div class="wrap">
+      <div class="top-bar">
+        <a class="brand" href="Карта_курса.html">
+          <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+          <div>
+            <div class="brand-name">РОБОВИТА</div>
+            <div class="brand-tag">учимся программировать роботов и игры</div>
+          </div>
+        </a>
+        <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 2.6</div>
+      </div>
+      <div class="hero">
+        <div class="hex-badge">2.6</div>
+        <div>
+          <div class="module-pill">Раздел 2 · Программирование</div>
+          <h1>🗂️ Таблицы в Lua — Строим мир</h1>
+          <p class="subtitle">Храним детали в таблицах и управляем ими одной командой: мосты, башни, лестницы и целые замки</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <div class="scenario-box">
+      <div class="scenario-avatar">🏗️</div>
+      <div>
+        <strong>Строим настоящие конструкции!</strong> Чтобы управлять десятками блоков в игре, нам нужны таблицы.
+        Сегодня ты создашь мост, заставишь его менять цвет, расти и даже исчезать — и всё это одной строчкой кода!
+      </div>
+    </div>
+
+    <div class="objectives">
+      <h2>🎯 На этом уроке ты:</h2>
+      <ul>
+        <li>📦 создашь модель из 5 деталей и сохранишь их в таблицу</li>
+        <li>🟩 изменишь цвет всех блоков одной командой</li>
+        <li>📈 заставишь башню расти через цикл</li>
+        <li>👻 сделаешь платформы невидимыми или призрачными</li>
+        <li>🌈 раскрасишь башню в цвета радуги из второй таблицы</li>
+        <li>🪜 оживишь лестницу — ступеньки поднимутся по очереди</li>
+        <li>🏰 создашь собственный замок (или робота) и запрограммируешь его</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <table class="timetable">
+        <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+        <tr><td>Теория: таблицы для объектов</td><td>10 мин</td><td>Таблица — коробка с деталями</td></tr>
+        <tr><td>Задание 1 — Строим башню</td><td>8 мин</td><td>Модель Bridge из 5 частей, таблица</td></tr>
+        <tr><td>Задание 2 — Волшебная кнопка</td><td>8 мин</td><td>Все блоки становятся зелёными</td></tr>
+        <tr><td>Задание 3 — Башня растёт</td><td>8 мин</td><td>Увеличение размера через цикл</td></tr>
+        <tr><td>Задание 4 — Исчезающие платформы</td><td>8 мин</td><td>Прозрачность и CanCollide</td></tr>
+        <tr><td>Задание 5 — Радуга</td><td>8 мин</td><td>Таблица цветов и покраска</td></tr>
+        <tr><td>Задание 6 — Живая лестница</td><td>10 мин</td><td>Анимация подъёма ступенек</td></tr>
+        <tr><td>Задание 7 — Неоновое сияние</td><td>8 мин</td><td>Все блоки становятся Neon</td></tr>
+        <tr><td>Задание 8 — Вращение</td><td>8 мин</td><td>Поворот всех блоков на 90°</td></tr>
+        <tr><td>Задание 9 — Прыжок в небо</td><td>8 мин</td><td>Подъём всех блоков вверх</td></tr>
+        <tr><td>Задание 10 — Мини-проект</td><td>12 мин</td><td>Своя модель и три действия</td></tr>
+        <tr><td>Опрос и итоги</td><td>5 мин</td><td>Проверяем знания</td></tr>
+        <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+      </table>
+    </div>
+
+    <!-- ТЕОРИЯ -->
+    <div class="card" id="theory-tables">
+      <h2><span class="num">0</span> Теория: таблицы — контейнеры для объектов</h2>
+      <div class="theory-section">
+        <h3>📦 Зачем нужны таблицы?</h3>
+        <p>Представь, что ты построил мост из 20 деталей и хочешь перекрасить их все в зелёный. Без таблиц тебе пришлось бы писать 20 строк кода. А с таблицей — всего 3 строки!</p>
+        <p>Таблица в Lua — это как коробка, в которую можно сложить любые объекты: детали, цвета, числа. Все элементы можно перебирать с помощью цикла <code>for</code>.</p>
+      </div>
+       <img src="assets/images/lesson-3.2/12.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          
+      <div class="theory-section">
+        <h3>🧩 Таблица из деталей</h3>
+        <div class="code-block">
+          <span class="keyword">local</span> Bridge = {<br>
+          &nbsp;&nbsp;workspace.Bridge.Block1,<br>
+          &nbsp;&nbsp;workspace.Bridge.Block2,<br>
+          &nbsp;&nbsp;workspace.Bridge.Block3,<br>
+          &nbsp;&nbsp;workspace.Bridge.Block4,<br>
+          &nbsp;&nbsp;workspace.Bridge.Block5<br>
+          }
+        </div>
+        <p>Теперь <code>Bridge[1]</code> — первый блок, <code>Bridge[2]</code> — второй и так далее.</p>
+      </div>
+       <div class="theory-section">
+        <h3>🧩 Типы таблиц: какими они бывают</h3>
+        <table class="prop-table">
+          <tr><th>Тип таблицы</th><th>Как выглядит в коде</th><th>Пример для ребёнка</th><th>Что это значит</th></tr>
+          <tr>
+            <td>Массив (список по порядку)</td>
+            <td><code>t = {"яблоко", "банан", "груша"}</code></td>
+            <td>Плитки 1, 2, 3 в игре</td>
+            <td>Элементы идут по номерам, начинаем с 1</td>
+          </tr>
+          <tr>
+            <td>Словарь (ключ → значение)</td>
+            <td><code>t = {name = "Алекс", level = 5}</code></td>
+            <td>Ключ от двери открывает конкретную комнату</td>
+            <td>Вместо номера — имя (ключ), чтобы сразу найти нужное</td>
+          </tr>
+          <tr>
+            <td>Смешанная (и то, и другое)</td>
+            <td><code>t = {"старт", "финиш", speed = 10}</code></td>
+            <td>В рюкзаке и предметы по порядку, и особые вещи</td>
+            <td>Можно хранить и по номерам, и по именам сразу</td>
+          </tr>
+          <tr>
+            <td>Пустая (заготовка)</td>
+            <td><code>local t = {}</code></td>
+            <td>Пустой рюкзак перед походом</td>
+            <td>Создаём таблицу, чтобы потом положить туда данные</td>
+          </tr>
+          <tr>
+            <td>Длина таблицы</td>
+            <td><code>#t</code></td>
+            <td>Считаем, сколько плиток в коридоре</td>
+            <td>Узнаём, сколько элементов в списке (работает только для порядковых)</td>
+          </tr>
+        </table>
+
+        <h3>💡 Мини‑примеры с пояснениями</h3>
+        <ul style="line-height:1.8;">
+          <li><code>local t = {}</code> — создали пустую таблицу (как пустой инвентарь).</li>
+          <li><code>t[1] = "меч"</code> — положили предмет на место №1 (как поставили на полку).</li>
+          <li><code>t.name = "Алекс"</code> — дали таблице имя «Алекс» (как повесили бирку).</li>
+          <li><code>#t</code> — узнали, сколько всего предметов (как пересчитали всё в рюкзаке).</li>
+        </ul>
+      </div>
+      <div class="theory-section">
+        <h3>🔄 Цикл <code>for</code> по таблице</h3>
+        <div class="code-block">
+          <span class="keyword">for</span> i = <span class="number">1</span>, #Bridge <span class="keyword">do</span><br>
+          &nbsp;&nbsp;Bridge[i].BrickColor = BrickColor.new(<span class="string">"Bright green"</span>)<br>
+          <span class="keyword">end</span>
+        </div>
+        <p><code>#Bridge</code> — это количество деталей в таблице. Цикл проходит по всем и меняет цвет.</p>
+      </div>
+    </div>
+
+    <div class="ai-helper">
+      <div class="ai-head"><span style="font-size:32px;">🤖</span> <div class="t">Спроси Алису</div></div>
+      <div class="ai-buttons">
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D1%82%D1%8C%20%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D1%83%20%D0%B8%D0%B7%20%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82%D0%BE%D0%B2%20Roblox%3F%22%7D" target="_blank" class="alice-q-btn">Как создать таблицу из объектов?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%86%D0%B8%D0%BA%D0%BB%D0%BE%D0%BC%20%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D1%8C%20%D1%86%D0%B2%D0%B5%D1%82%20%D0%B2%D1%81%D0%B5%D1%85%20%D0%B4%D0%B5%D1%82%D0%B0%D0%BB%D0%B5%D0%B9%3F%22%7D" target="_blank" class="alice-q-btn">Как циклом изменить цвет всех деталей?</a>
+      </div>
+    </div>
+
+    <div class="cheat-sheet">
+      <div class="cheat-grid">
+        <div class="cheat-item"><div class="title">📦 Создать таблицу</div><div class="rule"><code>local Bridge = {workspace.Bridge.Block1, ...}</code></div></div>
+        <div class="cheat-item"><div class="title">🔢 Длина таблицы</div><div class="rule"><code>#Bridge</code> — количество элементов</div></div>
+        <div class="cheat-item"><div class="title">🔄 Цикл for</div><div class="rule"><code>for i = 1, #Bridge do ... end</code></div></div>
+        <div class="cheat-item"><div class="title">🎨 Изменить цвет</div><div class="rule"><code>Bridge[i].BrickColor = BrickColor.new("Bright green")</code></div></div>
+        <div class="cheat-item"><div class="title">📏 Изменить размер</div><div class="rule"><code>Bridge[i].Size = Bridge[i].Size + Vector3.new(0,2,0)</code></div></div>
+        <div class="cheat-item"><div class="title">👻 Прозрачность</div><div class="rule"><code>Bridge[i].Transparency = 0.7</code></div></div>
+        <div class="cheat-item"><div class="title">💡 Материал Neon</div><div class="rule"><code>Bridge[i].Material = Enum.Material.Neon</code></div></div>
+        <div class="cheat-item"><div class="title">🔄 Поворот</div><div class="rule"><code>Bridge[i].Orientation += Vector3.new(0,90,0)</code></div></div>
+        <div class="cheat-item"><div class="title">⬆️ Поднять</div><div class="rule"><code>Bridge[i].Position += Vector3.new(0,5,0)</code></div></div>
+      </div>
+    </div>
+
+    <!-- ЗАДАНИЕ 1: МОСТ -->
+    <div class="task-box" id="task1">
+      <h2>🌉 Задание 1 — Строим башню</h2>
+      <p>Построй модель из 5 блоков и сохрани их в таблицу.</p>
+      <ol>
+        <li>В Workspace создай папку (Folder) с именем <b>Bridge</b>.</li>
+        <li>Внутри создай 5 блоков друг на друге (Part) с именами <b>Block1</b>, <b>Block2</b>, ..., <b>Block5</b>.</li>
+        <li>У всех поставь Anchored = true.</li>
+        <li>Создай Script в <b>ServerScriptService</b> и напиши таблицу <code>Bridge</code>.</li>
+      </ol>
+       <img src="assets/images/lesson-3.2/1.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+       <img src="assets/images/lesson-3.2/2.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          
+      <div class="progress-track"><div class="progress-fill" id="task1Progress"></div></div>
+      <span class="progress-label" id="task1Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t1s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t1s0">Папка Bridge создана, внутри 5 блоков</label></li>
+        <li><input type="checkbox" id="t1s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t1s1">Script в ServerScriptService создан</label>
+          <button class="hint-btn" onclick="toggleHint('hint1')">📖 Подсказка</button>
+          <div id="hint1" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> Bridge = {<br>
+              &nbsp;&nbsp;workspace.Bridge.Block1,<br>
+              &nbsp;&nbsp;workspace.Bridge.Block2,<br>
+              &nbsp;&nbsp;workspace.Bridge.Block3,<br>
+              &nbsp;&nbsp;workspace.Bridge.Block4,<br>
+              &nbsp;&nbsp;workspace.Bridge.Block5<br>
+              }
+            </div>
+          </div>
+        </li>
+        <li><input type="checkbox" id="t1s2" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t1s2">Запусти игру — ошибок нет, таблица готова</label></li>
+      </ul>
+    </div>
+
+    <!-- ЗАДАНИЕ 2: КНОПКА -->
+    <div class="task-box" id="task2">
+      <h2>🟩 Задание 2 — Волшебная кнопка</h2>
+      <p>Добавь кнопку (Part + ClickDetector), при клике на которую все блоки моста станут зелёными.</p>
+      <ol>
+        <li>Создай кнопку <b>GreenButton</b> с ClickDetector.</li>
+        <li>Добавь в неё Script.</li>
+        <li>В скрипте используй таблицу Bridge и цикл for.</li>
+      </ol>
+       <img src="assets/images/lesson-3.2/3.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+       <img src="assets/images/lesson-3.2/4.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+         
+      <div class="progress-track"><div class="progress-fill" id="task2Progress"></div></div>
+      <span class="progress-label" id="task2Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t2s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t2s0">Кнопка GreenButton с ClickDetector создана</label></li>
+        <li><input type="checkbox" id="t2s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t2s1">Скрипт внутри кнопки написан</label>
+          <button class="hint-btn" onclick="toggleHint('hint2')">📖 Подсказка</button>
+          <div id="hint2" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> button = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> Bridge = {<br>
+              &nbsp;&nbsp;workspace.Bridge.Block1,<br>
+              &nbsp;&nbsp;workspace.Bridge.Block2,<br>
+              &nbsp;&nbsp;workspace.Bridge.Block3,<br>
+              &nbsp;&nbsp;workspace.Bridge.Block4,<br>
+              &nbsp;&nbsp;workspace.Bridge.Block5<br>
+              }<br>
+              button.ClickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+              &nbsp;&nbsp;<span class="keyword">for</span> i = <span class="number">1</span>, #Bridge <span class="keyword">do</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;Bridge[i].BrickColor = BrickColor.new(<span class="string">"Bright green"</span>)<br>
+              &nbsp;&nbsp;<span class="keyword">end</span><br>
+              <span class="keyword">end</span>)
+            </div>
+          </div>
+        </li>
+        <li><input type="checkbox" id="t2s2" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t2s2">При клике все блоки стали зелёными</label></li>
+      </ul>
+    </div>
+
+    <!-- ЗАДАНИЕ 3: БАШНЯ -->
+    <div class="task-box" id="task3">
+      <h2>📈 Задание 3 — Башня растёт</h2>
+      <p>Создай еще одну кнопку с названием ScaleButton, при клике на которую все блоки моста увеличиваются в высоту на 2.</p>
+      <img src="assets/images/lesson-3.2/5.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+         
+      <div class="progress-track"><div class="progress-fill" id="task3Progress"></div></div>
+      <span class="progress-label" id="task3Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t3s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t3s0">Кнопка GrowButton создана</label></li>
+        <li><input type="checkbox" id="t3s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t3s1">Код увеличивает Size.Y на 2 у всех блоков</label>
+          <button class="hint-btn" onclick="toggleHint('hint3')">📖 Подсказка</button>
+          <div id="hint3" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">for</span> i = <span class="number">1</span>, #Bridge <span class="keyword">do</span><br>
+              &nbsp;&nbsp;Bridge[i].Size = Bridge[i].Size + Vector3.new(<span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>)<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ЗАДАНИЕ 4: ПРИЗРАКИ -->
+    <div class="task-box" id="task4">
+      <h2>👻 Задание 4 — Исчезающие платформы</h2>
+      <p>Сделай кнопку GhostButton, которая превращает все блоки в полупрозрачные призраки (Transparency = 0.7, CanCollide = false).</p>
+        <img src="assets/images/lesson-3.2/6.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+         
+      <div class="progress-track"><div class="progress-fill" id="task4Progress"></div></div>
+      <span class="progress-label" id="task4Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t4s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t4s0">Кнопка GhostButton создана</label></li>
+        <li><input type="checkbox" id="t4s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t4s1">При клике все блоки становятся призрачными</label>
+          <button class="hint-btn" onclick="toggleHint('hint4')">📖 Подсказка</button>
+          <div id="hint4" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">for</span> i = <span class="number">1</span>, #Bridge <span class="keyword">do</span><br>
+              &nbsp;&nbsp;Bridge[i].Transparency = <span class="number">0.7</span><br>
+              &nbsp;&nbsp;Bridge[i].CanCollide = <span class="keyword">false</span><br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ЗАДАНИЕ 5: РАДУГА -->
+    <div class="task-box" id="task5">
+      <h2>🌈 Задание 5 — Радуга</h2>
+      <p>Создай в скрипте ServerScriptService таблицу <code>Colors</code> из 5 цветов и раскрась каждый блок моста в свой цвет.</p>
+      <div class="progress-track"><div class="progress-fill" id="task5Progress"></div></div>
+      <span class="progress-label" id="task5Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t5s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t5s0">Таблица Colors объявлена</label></li>
+        <li><input type="checkbox" id="t5s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t5s1">Каждый блок получил свой цвет через <code>Colors[i]</code></label>
+          <button class="hint-btn" onclick="toggleHint('hint5')">📖 Подсказка</button>
+          <div id="hint5" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> Colors = {<br>
+              &nbsp;&nbsp;BrickColor.new(<span class="string">"Bright red"</span>),<br>
+              &nbsp;&nbsp;BrickColor.new(<span class="string">"Bright orange"</span>),<br>
+              &nbsp;&nbsp;BrickColor.new(<span class="string">"Bright yellow"</span>),<br>
+              &nbsp;&nbsp;BrickColor.new(<span class="string">"Bright green"</span>),<br>
+              &nbsp;&nbsp;BrickColor.new(<span class="string">"Bright blue"</span>)<br>
+              }<br>
+              <span class="keyword">for</span> i = <span class="number">1</span>, #Bridge <span class="keyword">do</span><br>
+              &nbsp;&nbsp;Bridge[i].BrickColor = Colors[i]<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+   <!-- ЗАДАНИЕ 6: РАДУЖНАЯ ЛЕСТНИЦА -->
+<div class="task-box" id="task6">
+  <h2>🌈 Задание 6 — Радужная лестница</h2>
+  <p>
+    Создай лестницу из <b>7</b> ступенек (Step1...Step7) в папке <code>Stairs</code> и заставь её постоянно переливаться 
+    разными цветами, как бегущая радуга. Скрипт в ServerScriptService. Используй две таблицы: одну для ступенек, другую для цветов.
+  </p>
+  <img src="assets/images/lesson-3.2/7.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+         <img src="assets/images/lesson-3.2/8.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+       
+  <div class="progress-track"><div class="progress-fill" id="task6Progress"></div></div>
+  <span class="progress-label" id="task6Label">Выполнено шагов: 0 из 4</span>
+
+  <ul class="task-steps">
+    <li>
+      <input type="checkbox" id="t6s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t6s0">Модель <b>Stairs</b> с 7 ступеньками (Step1…Step7) создана в Workspace</label>
+    </li>
+    <li>
+      <input type="checkbox" id="t6s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t6s1">Таблицы <code>Steps</code> и <code>Colors</code> объявлены в скрипте</label>
+    </li>
+    <li>
+      <input type="checkbox" id="t6s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t6s2">Написан бесконечный цикл, который перекрашивает ступеньки и сдвигает цвета</label>
+    </li>
+    <li>
+      <input type="checkbox" id="t6s3" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t6s3">При запуске игры лестница постоянно меняет цвета (эффект бегущей радуги)</label>
+    <button class="hint-btn" onclick="toggleHint('hint6')">📖 Показать подсказку (с объяснением)</button>
+<div id="hint6" class="hint-box">
+  <div class="code-block">
+    <span class="comment">-- 1. Таблица всех ступенек лестницы</span><br>
+    <span class="keyword">local</span> Steps = {<br>
+    &nbsp;&nbsp;workspace.Stairs.Step1,<br>
+    &nbsp;&nbsp;workspace.Stairs.Step2,<br>
+    &nbsp;&nbsp;workspace.Stairs.Step3,<br>
+    &nbsp;&nbsp;workspace.Stairs.Step4,<br>
+    &nbsp;&nbsp;workspace.Stairs.Step5,<br>
+    &nbsp;&nbsp;workspace.Stairs.Step6,<br>
+    &nbsp;&nbsp;workspace.Stairs.Step7,<br>
+    }<br><br>
+    <span class="comment">-- 2. Таблица цветов радуги (каждый цвет — отдельный элемент)</span><br>
+    <span class="keyword">local</span> Colors = {<br>
+    &nbsp;&nbsp;BrickColor.new(<span class="string">"Bright red"</span>),<br>
+    &nbsp;&nbsp;BrickColor.new(<span class="string">"Bright orange"</span>),<br>
+    &nbsp;&nbsp;BrickColor.new(<span class="string">"Bright yellow"</span>),<br>
+    &nbsp;&nbsp;BrickColor.new(<span class="string">"Bright green"</span>),<br>
+    &nbsp;&nbsp;BrickColor.new(<span class="string">"Bright blue"</span>),<br>
+    &nbsp;&nbsp;BrickColor.new(<span class="string">"Bright violet"</span>),<br>
+    &nbsp;&nbsp;BrickColor.new(<span class="string">"White"</span>)<br>
+    }<br><br>
+    <span class="comment">-- 3. Бесконечный цикл: будет повторяться, пока игра работает</span><br>
+    <span class="keyword">while</span> <span class="keyword">true</span> <span class="keyword">do</span><br>
+    &nbsp;&nbsp;<span class="comment">-- 4. Проходим по всем ступенькам и красим каждую в свой цвет</span><br>
+    &nbsp;&nbsp;<span class="keyword">for</span> i = <span class="number">1</span>, #Steps <span class="keyword">do</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;Steps[i].BrickColor = Colors[i]<br>
+    &nbsp;&nbsp;<span class="keyword">end</span><br>
+    &nbsp;&nbsp;<span class="comment">-- 5. Ждём 0.8 секунды, чтобы увидеть смену цветов</span><br>
+    &nbsp;&nbsp;<span class="func">task.wait</span>(<span class="number">0.8</span>)<br><br>
+    &nbsp;&nbsp;<span class="comment">-- 6. Сдвигаем таблицу цветов:</span><br>
+    &nbsp;&nbsp;<span class="comment">--    удаляем первый цвет (красный) и добавляем его в конец</span><br>
+    &nbsp;&nbsp;<span class="keyword">local</span> first = <span class="func">table.remove</span>(Colors, <span class="number">1</span>)<br>
+    &nbsp;&nbsp;<span class="func">table.insert</span>(Colors, first)<br>
+    <span class="keyword">end</span>
+  </div>
+
+  <p style="margin-top:12px; font-weight:600; color:var(--accent-ink)">🧠 Как это работает простыми словами:</p>
+  <ul style="padding-left:18px; line-height:1.6;">
+    <li><b>Строки 1–9:</b> собираем все ступеньки в одну «коробку» с именем <code>Steps</code>. Теперь мы можем обращаться к любой ступеньке по номеру: <code>Steps[1]</code> — первая, <code>Steps[2]</code> — вторая и т.д.</li>
+    <li><b>Строки 11–19:</b> создаём ещё одну «коробку» <code>Colors</code> для семи цветов радуги. Каждый цвет — это как краска в баночке.</li>
+    <li><b>Строки 21–30:</b> бесконечный цикл (<code>while true do</code>) будет повторяться без остановки.</li>
+    <li><b>Строки 23–25:</b> внутри цикла мы идём по всем ступенькам (<code>for i = 1, #Steps do</code>) и красим каждую в цвет с тем же номером из таблицы <code>Colors</code>. Например, первая ступенька станет красной, вторая — оранжевой.</li>
+    <li><b>Строка 27:</b> команда <code>task.wait(0.8)</code> говорит игре: «Подожди 0.8 секунды». За это время мы видим результат.</li>
+    <li><b>Строки 29–30:</b> самое интересное! Мы берём первый цвет (красный), удаляем его из таблицы и тут же вставляем обратно, но уже в конец. Теперь порядок цветов сдвинулся: оранжевый стал первым, красный — последним. При следующем повторении цикла ступеньки окрасятся уже по-новому. Получается эффект бегущей радуги!</li>
+  </ul>
+</div>
+    </li>
+  </ul>
+</div>
+
+<div class="task-box" id="task7">
+  <h2>💡 Задание 7 — Неоновое сияние с PointLight</h2>
+  <p>
+    Создай кнопку <b>NeonButton</b>, при клике на которую все блоки моста загорятся неоном, а внутрь каждого блока добавится 
+    <b>источник света (PointLight)</b>. С каждым новым кликом яркость будет расти, потому что источников становится больше!
+  </p>
+  <img src="assets/images/lesson-3.2/9.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+       
+  <div class="progress-track"><div class="progress-fill" id="task7Progress"></div></div>
+  <span class="progress-label" id="task7Label">Выполнено шагов: 0 из 3</span>
+  <ul class="task-steps">
+    <li>
+      <input type="checkbox" id="t7s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t7s0">Кнопка <b>NeonButton</b> с ClickDetector создана</label>
+    </li>
+    <li>
+      <input type="checkbox" id="t7s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t7s1">В скрипте кнопки объявлена таблица <code>Bridge</code> (5 блоков)</label>
+    </li>
+    <li>
+      <input type="checkbox" id="t7s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t7s2">При каждом клике блоки становятся Neon, и в них добавляется новый PointLight (яркость растёт)</label>
+      <button class="hint-btn" onclick="toggleHint('hint7')">📖 Показать подсказку (код с пояснением)</button>
+      <div id="hint7" class="hint-box">
+        <div class="code-block">
+          <span class="keyword">local</span> button = <span class="keyword">script</span>.Parent<br>
+          <span class="keyword">local</span> Bridge = {<br>
+          &nbsp;&nbsp;workspace.Bridge.Block1,<br>
+          &nbsp;&nbsp;workspace.Bridge.Block2,<br>
+          &nbsp;&nbsp;workspace.Bridge.Block3,<br>
+          &nbsp;&nbsp;workspace.Bridge.Block4,<br>
+          &nbsp;&nbsp;workspace.Bridge.Block5<br>
+          }<br><br>
+          button.ClickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+          &nbsp;&nbsp;<span class="keyword">for</span> i = <span class="number">1</span>, #Bridge <span class="keyword">do</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">-- 1. Включаем неоновый материал</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;Bridge[i].Material = Enum.Material.Neon<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">-- 2. Создаём новый источник света</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> light = Instance.new(<span class="string">"PointLight"</span>)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;light.Brightness = <span class="number">1</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;light.Range = <span class="number">5</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;light.Color = Color3.fromRGB(<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;light.Parent = Bridge[i]<br>
+          &nbsp;&nbsp;<span class="keyword">end</span><br>
+          <span class="keyword">end</span>)
+        </div>
+
+        <p style="margin-top:12px; font-weight:600;">🧠 Что происходит:</p>
+        <ul style="padding-left:18px; line-height:1.6;">
+          <li>При первом клике все блоки становятся неоновыми, и внутри каждого загорается лампочка (PointLight).</li>
+          <li>При втором клике в каждый блок добавляется <b>ещё одна</b> лампочка, поэтому свет становится ярче.</li>
+          <li>Чем больше кликов — тем больше лампочек и ярче сияние!</li>
+          <li>Если хочешь, можешь менять цвет лампочек (<code>Color3.fromRGB(255,0,0)</code> — красный и т.д.).</li>
+        </ul>
+
+        <p style="margin-top:16px; font-weight:600;">📘 Что означают настройки лампочки:</p>
+        <ul style="padding-left:18px; line-height:1.6;">
+          <li><b>Brightness = 1</b> — яркость лампочки. 1 — нормальная, 2 — вдвое ярче, 0.5 — тусклее. С каждой новой лампочкой свет становится сильнее.</li>
+          <li><b>Range = 5</b> — на сколько кубиков (ступенек) вокруг распространяется свет. 5 — среднее расстояние. Увеличь до 10 — будет светить далеко.</li>
+          <li><b>Color = Color3.fromRGB(255, 255, 255)</b> — цвет света. Три числа: красный, зелёный, синий. Все 255 — белый. Поменяй на (255,200,0) — станет оранжевым.</li>
+          <li><b>Parent = Bridge[i]</b> — помещает лампочку внутрь блока. Без этой строчки свет просто висел бы в воздухе и не освещал бы мост.</li>
+        </ul>
+        <p style="margin-top:12px;">💡 <b>Поэкспериментируй:</b> попробуй менять числа и цвета, чтобы создать разноцветное сияние!</p>
+      </div>
+    </li>
+  </ul>
+</div>
+
+    <!-- ЗАДАНИЕ 8: ВРАЩЕНИЕ -->
+    <div class="task-box" id="task8">
+      <h2>🔄 Задание 8 — Вращение</h2>
+      <p>Создай кнопку <b>RotateButton</b>, которая поворачивает все блоки на 90 градусов вокруг вертикальной оси (Y).</p>
+        <img src="assets/images/lesson-3.2/10.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+       
+      <div class="progress-track"><div class="progress-fill" id="task8Progress"></div></div>
+      <span class="progress-label" id="task8Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t8s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t8s0">Кнопка RotateButton создана</label></li>
+        <li><input type="checkbox" id="t8s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t8s1">Все блоки повернулись на 90°</label>
+          <button class="hint-btn" onclick="toggleHint('hint8')">📖 Подсказка</button>
+          <div id="hint8" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">for</span> i = <span class="number">1</span>, #Bridge <span class="keyword">do</span><br>
+              &nbsp;&nbsp;Bridge[i].Orientation += Vector3.new(<span class="number">0</span>, <span class="number">90</span>, <span class="number">0</span>)<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ЗАДАНИЕ 9: ПРЫЖОК -->
+    <div class="task-box" id="task9">
+      <h2>⬆️ Задание 9 — Прыжок в небо</h2>
+      <p>Создай кнопку <b>JumpButton</b>, которая поднимает все блоки башни на 5 единиц вверх с анимацией (пауза 0.1 сек между блоками).</p>
+         <img src="assets/images/lesson-3.2/11.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+       
+      <div class="progress-track"><div class="progress-fill" id="task9Progress"></div></div>
+      <span class="progress-label" id="task9Label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t9s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t9s0">Кнопка JumpButton создана</label></li>
+        <li><input type="checkbox" id="t9s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t9s1">Блоки поднимаются по очереди</label>
+          <button class="hint-btn" onclick="toggleHint('hint9')">📖 Подсказка</button>
+          <div id="hint9" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">for</span> i = <span class="number">1</span>, #Bridge <span class="keyword">do</span><br>
+              &nbsp;&nbsp;Bridge[i].Position += Vector3.new(<span class="number">0</span>, <span class="number">5</span>, <span class="number">0</span>)<br>
+              &nbsp;&nbsp;<span class="func">task.wait</span>(<span class="number">0.1</span>)<br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ЗАДАНИЕ 10: ТВОРЧЕСКОЕ -->
+    <div class="task-box" id="task10">
+      <h2>🏰 Задание 10 — Мини-проект «Замок»</h2>
+      <p>Построй свою модель (замок, ракету, робота, машину, дерево) минимум из 8–10 деталей. Сохрани все детали в таблицу. Через цикл выполни минимум три действия: измени цвет, увеличь размер, подними вверх, сделай прозрачными, поверни, включи Neon и т.д.</p>
+      <div class="progress-track"><div class="progress-fill" id="task10Progress"></div></div>
+      <span class="progress-label" id="task10Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="t10s0" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t10s0">Модель из 8+ деталей построена</label></li>
+        <li><input type="checkbox" id="t10s1" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t10s1">Таблица с деталями создана</label></li>
+        <li><input type="checkbox" id="t10s2" onchange="updateTaskProgress(this.closest('.task-box'))"> <label for="t10s2">Три разных действия через цикл реализованы</label></li>
+      </ul>
+      <div class="note-box">🏗️ Пример: <code>for i, part in ipairs(MyModel) do part.Material = Enum.Material.Neon; part.Size = part.Size * 1.2; part.BrickColor = BrickColor.Random() end</code></div>
+    </div>
+
+    <!-- БЫСТРАЯ ПРОВЕРКА -->
+    <div class="interactive-box" id="toolQuiz">
+      <h2>🧩 Быстрая проверка</h2>
+      <p><b>1. Что такое таблица?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Контейнер для хранения нескольких объектов</div>
+        <div class="choice-card" data-correct-choice="false">Функция для изменения цвета</div>
+        <div class="choice-card" data-correct-choice="false">Особый вид цикла</div>
+      </div>
+      <p><b>2. Как получить количество элементов в таблице?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">#table</div>
+        <div class="choice-card" data-correct-choice="false">table.length</div>
+        <div class="choice-card" data-correct-choice="false">table.Count</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('toolQuiz')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <!-- РЕФЛЕКСИЯ -->
+    <div class="reflection-box" id="reflectionBlock">
+      <h2>💭 Твой опыт</h2>
+      <p>Оцени занятие:</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Всё получилось!</label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти всё понял</label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Сложно</label>
+      </div>
+      <textarea id="reflectionText" placeholder="Что ты построил? Какое действие с таблицей понравилось больше всего?"></textarea>
+      <button class="action-btn" onclick="submitReflection()">Отправить</button>
+      <div id="reflectionResult"></div>
+    </div>
+
+    <div class="lesson-nav">
+      <a class="nav-btn prev" href="Занятие_2.5_События.html">← 2.5 События</a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt=""> Учебный центр «РОБОВИТА»</div>
+      <div>Занятие 2.6 · Таблицы — Строим мир</div>
+    </div>
+  </footer>
+
+  <script src="assets/js/lesson.js"></script>
+  <script>
+    function toggleHint(id){const b=document.getElementById(id);b.classList.toggle('show');const btn=b.previousElementSibling;btn.textContent=b.classList.contains('show')?'🙈 Скрыть':'📖 Подсказка';}
+    function updateTaskProgress(box){const cbs=box.querySelectorAll('.task-steps input[type=checkbox]');const done=Array.from(cbs).filter(c=>c.checked).length;const total=cbs.length;const pct=total?Math.round(done/total*100):0;box.querySelector('.progress-fill').style.width=pct+'%';box.querySelector('.progress-label').textContent=`Выполнено шагов: ${done} из ${total}`;}
+    function checkChoices(id){const c=document.getElementById(id);const cards=c.querySelectorAll('.choice-card');let any=false,allOk=true;cards.forEach(card=>{if(card.classList.contains('selected'))any=true;if(card.dataset.correctChoice==='true'&&card.classList.contains('selected'))card.classList.add('correct');else if(card.dataset.correctChoice==='false'&&card.classList.contains('selected')){card.classList.add('incorrect');allOk=false;}});const res=c.querySelector('.activity-result');if(!any){res.textContent='⚠️ Выбери ответы!';res.className='activity-result neutral';}else if(allOk){res.textContent='✅ Молодец!';res.className='activity-result done';}else{res.textContent='❌ Есть ошибки.';res.className='activity-result neutral';}}
+    document.addEventListener('click',e=>{const card=e.target.closest('.choice-card');if(!card)return;const grid=card.closest('.choice-grid');grid.querySelectorAll('.choice-card').forEach(c=>c.classList.remove('selected','correct','incorrect'));card.classList.add('selected');});
+    function submitReflection(){const ta=document.getElementById('reflectionText');const res=document.getElementById('reflectionResult');if(!ta.value.trim()){res.textContent='Напиши пару слов.';return;}res.textContent='✅ Спасибо!';ta.disabled=true;}
+  </script>
+</body>
+</html>

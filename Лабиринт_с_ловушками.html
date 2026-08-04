@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>П5. Лабиринт с ловушками — РОБОВИТА</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: .84rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#7c2d12,#9a3412); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #fb923c;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .info-callout.warn { background: #78350f; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка лабиринта"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .82rem; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .shot {
+      display: block; max-width: 100%; margin: 12px 0; border-radius: 14px;
+      border: 2px solid var(--line,#e2e8f0); background: #0f172a; box-shadow: 0 8px 24px rgba(15,23,42,.12);
+    }
+    .shot-cap { font-size: .9rem; color: #475569; margin: -4px 0 14px; padding: 0 4px; }
+    .mini-game {
+      background: linear-gradient(180deg,#7c2d12,#9a3412); border-radius: 24px; padding: 20px;
+      border: 3px solid #fb923c; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #fed7aa; }
+    .mission-box {
+      background: #431407; border-radius: 12px; padding: 12px; border: 1px solid #fb923c; margin-bottom: 10px;
+    }
+    .maze-stage { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 14px; }
+    @media (max-width:900px) { .maze-stage { grid-template-columns: 1fr; } }
+    .maze-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;
+      background: #1c1917; padding: 10px; border-radius: 16px; border: 2px solid #a8a29e;
+      aspect-ratio: 1; max-width: 340px;
+    }
+    .cell {
+      border-radius: 4px; background: #44403c; cursor: pointer; min-height: 0;
+      display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 900;
+      user-select: none;
+    }
+    .cell.path { background: #d6d3d1; }
+    .cell.wall { background: #292524; cursor: default; }
+    .cell.trap { background: #dc2626; color: #fff; }
+    .cell.ghost { background: #a8a29e; border: 2px dashed #fbbf24; }
+    .cell.ghost.gone { background: #d6d3d1; border: none; }
+    .cell.finish { background: #2563eb; color: #fff; }
+    .cell.player { box-shadow: inset 0 0 0 3px #22c55e; }
+    .ctrl-panel {
+      background: #1e293b; border-radius: 16px; padding: 14px; border: 2px solid #64748b;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .phase-time {
+      font-size: .75rem; background: var(--primary-light,#e8f5e0); color: var(--primary-dark);
+      padding: 2px 10px; border-radius: 99px; font-weight: 700;
+    }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+    .task-steps label { cursor: pointer; }
+    .progress-wrap { margin: 12px 0 4px; }
+    .progress-bar { height: 12px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg,var(--primary,#61b01f),#84cc16); transition: width .25s; }
+    .progress-label { font-size: .9rem; font-weight: 700; color: var(--primary-dark); margin-top: 6px; }
+    .space-note {
+      background: linear-gradient(135deg,#fefce8,#ecfdf5); border: 2px dashed #65a30d;
+      border-radius: 18px; padding: 16px 18px; margin: 14px 0; font-weight: 700;
+    }
+    .arch-grid {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 12px; margin: 12px 0;
+    }
+    .arch-card {
+      background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 14px;
+    }
+    .arch-card h4 { margin: 0 0 6px; color: var(--primary-dark); }
+    .teacher-tip {
+      background: #fef3c7; border: 2px solid #f59e0b; border-radius: 14px; padding: 12px 16px; margin: 12px 0;
+      font-weight: 700; color: #78350f;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Проект П5</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">П5</div>
+      <div>
+        <div class="module-pill">Проектная деятельность · средний</div>
+        <h1>🌀 Лабиринт с ловушками</h1>
+        <p class="subtitle">Таймер, финиш, ловушки-телепорты и стены-обманки</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🏁</div>
+    <div>
+      <strong>Миссия проекта:</strong> взять лабиринт из Toolbox (или построить свой),
+      поставить <b>Finish</b> с таймером, расставить ловушки <code>Trap*</code>
+      (возврат на старт) и стены-проходы <code>Wall*</code> (исчезают при касании).
+      Добавь пасхалки из Toolbox — и гонка готова!
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом проекте ты:</h2>
+    <ul>
+      <li>поставишь финиш и сделаешь таймер в GUI ⏱️</li>
+      <li>научишься телепортировать на старт через <code>MoveTo</code> 📍</li>
+      <li>отличишь ловушку от стены-прохода по имени и скрипту 🧱</li>
+      <li>расставишь объекты по лабиринту и украсишь мир ✨</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📚 Теория</h2>
+
+    <div class="theory-section">
+      <h3>1. Три механики лабиринта</h3>
+      <div class="arch-grid">
+        <div class="arch-card">
+          <h4>🏁 Finish</h4>
+          <p style="margin:0;font-size:.9rem;">Касание → считаем время → поздравление → респавн.</p>
+        </div>
+        <div class="arch-card">
+          <h4>⚠️ Trap</h4>
+          <p style="margin:0;font-size:.9rem;">Имя содержит <code>Trap</code> → телепорт на старт + звук.</p>
+        </div>
+        <div class="arch-card">
+          <h4>👻 Wall</h4>
+          <p style="margin:0;font-size:.9rem;">Имя содержит <code>Wall</code> → становится невидимой и проходимой.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>2. Имена важны</h3>
+      <p>Скрипт ловушек ищет объекты, у которых в имени есть <code>Trap</code> или <code>Ловушка</code>.
+        Скрипт стен — у кого есть <code>Wall</code>. Поэтому <code>Trap1</code>, <code>Trap2</code>, <code>Wall</code>, <code>Wall2</code> — все подхватятся.</p>
+    </div>
+
+    <div class="theory-section">
+      <h3>3. Позиция старта</h3>
+      <p>В скрипте ловушек есть строка <code>Vector3.new(...)</code>.
+        Скопируй <b>Position</b> у своего SpawnLocation и вставь туда — иначе телепорт улетит «в космос».</p>
+    </div>
+
+    <div class="cheat-sheet">
+      <div class="cheat-grid">
+        <div class="cheat-item"><div class="title">Finish</div><div class="rule">Финишная плита</div></div>
+        <div class="cheat-item"><div class="title">os.time()</div><div class="rule">Секунды таймера</div></div>
+        <div class="cheat-item"><div class="title">Touched</div><div class="rule">Касание Part</div></div>
+        <div class="cheat-item"><div class="title">MoveTo</div><div class="rule">Телепорт персонажа</div></div>
+        <div class="cheat-item"><div class="title">Transparency</div><div class="rule">Невидимость стены</div></div>
+        <div class="cheat-item"><div class="title">CanCollide</div><div class="rule">Можно ли пройти</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="quiz1">
+    <h2>🧠 Проверка теории</h2>
+    <div class="quiz-block quiz-question" data-name="q1" data-correct="b">
+      <p><b>1.</b> Что делает ловушка <code>Trap1</code>?</p>
+      <label class="choice-card"><input type="radio" name="q1" value="a"> Даёт монеты</label>
+      <label class="choice-card"><input type="radio" name="q1" value="b"> Телепортирует игрока на старт</label>
+      <label class="choice-card"><input type="radio" name="q1" value="c"> Включает PointLight</label>
+      <div class="q-feedback"></div>
+    </div>
+    <div class="quiz-block quiz-question" data-name="q2" data-correct="a">
+      <p><b>2.</b> Чем стена <code>Wall</code> отличается от ловушки?</p>
+      <label class="choice-card"><input type="radio" name="q2" value="a"> Она исчезает и становится проходимой</label>
+      <label class="choice-card"><input type="radio" name="q2" value="b"> Она всегда убивает игрока</label>
+      <label class="choice-card"><input type="radio" name="q2" value="c"> Она нужна только для декора</label>
+      <div class="q-feedback"></div>
+    </div>
+    <div class="quiz-block quiz-question" data-name="q3" data-correct="c">
+      <p><b>3.</b> Зачем копировать Position у SpawnLocation?</p>
+      <label class="choice-card"><input type="radio" name="q3" value="a"> Чтобы покрасить стены</label>
+      <label class="choice-card"><input type="radio" name="q3" value="b"> Чтобы создать Finish</label>
+      <label class="choice-card"><input type="radio" name="q3" value="c"> Чтобы ловушки возвращали игрока точно на старт</label>
+      <div class="q-feedback"></div>
+    </div>
+    <button class="btn primary" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- MINI GAME -->
+  <div class="mini-game">
+    <h2>🎮 Мини-лабиринт</h2>
+    <div class="mission-box">
+      Кликай по соседним клеткам пути. <span style="color:#fca5a5">Красные</span> — ловушки (на старт).
+      <span style="color:#fde68a">Пунктир</span> — стена-проход (исчезает). Доберись до синего финиша!
+    </div>
+    <div class="maze-stage">
+      <div class="maze-grid" id="mgMaze"></div>
+      <div class="ctrl-panel">
+        <div>Время: <b id="mgTime">0</b> сек</div>
+        <div>Ловушек: <b id="mgTraps">0</b></div>
+        <div id="mgMsg" style="min-height:2.2em;font-weight:700;color:#fed7aa;"></div>
+        <button class="btn" type="button" onclick="resetMiniMaze()" style="background:#0f172a;color:#fff;border:1px solid #64748b;">Заново</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT -->
+  <div class="project-box" id="keyTaskBox">
+    <h2>🛠️ Проект в Roblox Studio</h2>
+    <p>Отмечай галочки — полоска покажет прогресс.</p>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="projectFill"></div></div>
+      <div class="progress-label" id="projectLabel">Выполнено шагов: 0</div>
+    </div>
+
+    <div class="phase">
+      <h3>🗺️ Фаза 1 — Лабиринт <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>Открой Toolbox → Models → поиск <code>maze</code>.</li>
+        <li>Вставь бесплатную модель лабиринта (или построй стены сам).</li>
+        <li>Поставь SpawnLocation у входа в лабиринт.</li>
+      </ol>
+      <img class="shot" src="assets/img/maze/01-maze-toolbox.png" alt="Модель maze в Toolbox" />
+      <p class="shot-cap">Toolbox: модель maze (FREE).</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">Лабиринт в мире, спавн у входа.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>🏁 Фаза 2 — Finish и таймер <span class="phase-time">15 мин</span></h3>
+      <ol>
+        <li>Создай Part на финише → Rename → <code>Finish</code>.</li>
+        <li>Добавь Script в <b>Workspace</b> (или ServerScriptService) и вставь код таймера.</li>
+        <li>Play: таймер тикает, касание Finish показывает результат.</li>
+      </ol>
+      <img class="shot" src="assets/img/maze/02-finish-part.png" alt="Part Finish" />
+      <p class="shot-cap">Плита финиша в конце лабиринта.</p>
+      <img class="shot" src="assets/img/maze/03-finish-name.png" alt="Имя Finish" />
+      <p class="shot-cap">Имя Part должно быть точно Finish.</p>
+      <img class="shot" src="assets/img/maze/04-workspace-script.png" alt="Script в Workspace" />
+      <p class="shot-cap">Script лежит в Workspace (или ServerScriptService).</p>
+
+<pre class="code-block"><span class="comment">-- Script: таймер + финиш (Workspace / ServerScriptService)</span>
+<span class="keyword">local</span> Players = game:GetService(<span class="string">"Players"</span>)
+<span class="keyword">local</span> playerTimes = {}
+
+Players.PlayerAdded:Connect(<span class="keyword">function</span>(player)
+    playerTimes[player] = os.time()
+
+    <span class="keyword">local</span> screenGui = Instance.new(<span class="string">"ScreenGui"</span>)
+    screenGui.Name = <span class="string">"SimpleTimer"</span>
+    screenGui.Parent = player:WaitForChild(<span class="string">"PlayerGui"</span>)
+
+    <span class="keyword">local</span> textLabel = Instance.new(<span class="string">"TextLabel"</span>)
+    textLabel.Name = <span class="string">"TimerText"</span>
+    textLabel.Size = UDim2.new(<span class="number">0</span>, <span class="number">200</span>, <span class="number">0</span>, <span class="number">50</span>)
+    textLabel.Position = UDim2.new(<span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">10</span>)
+    textLabel.Text = <span class="string">"Время: 0 сек"</span>
+    textLabel.TextColor3 = Color3.new(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)
+    textLabel.BackgroundColor3 = Color3.new(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+    textLabel.BackgroundTransparency = <span class="number">0.5</span>
+    textLabel.Parent = screenGui
+
+    <span class="keyword">while</span> player.Parent <span class="keyword">do</span>
+        <span class="keyword">if</span> playerTimes[player] <span class="keyword">then</span>
+            <span class="keyword">local</span> timePassed = os.time() - playerTimes[player]
+            textLabel.Text = <span class="string">"Время: "</span> .. timePassed .. <span class="string">" сек"</span>
+        <span class="keyword">end</span>
+        wait(<span class="number">1</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+<span class="keyword">local</span> finish = workspace:WaitForChild(<span class="string">"Finish"</span>)
+finish.Touched:Connect(<span class="keyword">function</span>(hit)
+    <span class="keyword">local</span> player = Players:GetPlayerFromCharacter(hit.Parent)
+    <span class="keyword">if</span> player <span class="keyword">and</span> playerTimes[player] <span class="keyword">then</span>
+        <span class="keyword">local</span> finishTime = os.time() - playerTimes[player]
+
+        <span class="keyword">local</span> resultGui = Instance.new(<span class="string">"ScreenGui"</span>)
+        resultGui.Name = <span class="string">"Result"</span>
+        resultGui.Parent = player.PlayerGui
+
+        <span class="keyword">local</span> resultText = Instance.new(<span class="string">"TextLabel"</span>)
+        resultText.Size = UDim2.new(<span class="number">0</span>, <span class="number">300</span>, <span class="number">0</span>, <span class="number">100</span>)
+        resultText.Position = UDim2.new(<span class="number">0.5</span>, -<span class="number">150</span>, <span class="number">0.5</span>, -<span class="number">50</span>)
+        resultText.Text = <span class="string">"УРА!\nТвое время: "</span> .. finishTime .. <span class="string">" секунд"</span>
+        resultText.TextColor3 = Color3.new(<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>)
+        resultText.TextSize = <span class="number">20</span>
+        resultText.BackgroundColor3 = Color3.new(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+        resultText.BackgroundTransparency = <span class="number">0.3</span>
+        resultText.Parent = resultGui
+
+        wait(<span class="number">3</span>)
+        resultGui:Destroy()
+
+        <span class="keyword">local</span> character = player.Character
+        <span class="keyword">if</span> character <span class="keyword">then</span>
+            <span class="keyword">local</span> humanoid = character:FindFirstChild(<span class="string">"Humanoid"</span>)
+            <span class="keyword">if</span> humanoid <span class="keyword">then</span>
+                humanoid.Health = <span class="number">0</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        playerTimes[player] = <span class="keyword">nil</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>)</pre>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">Finish создан, скрипт таймера работает в Play.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>⚠️ Фаза 3 — Ловушки Trap <span class="phase-time">18 мин</span></h3>
+      <ol>
+        <li>Создай Part-стену в коридоре, покрась как стены лабиринта.</li>
+        <li>Rename → <code>Trap1</code>.</li>
+        <li>Добавь Script (код ниже). Лучше <b>один</b> общий скрипт в Workspace/ServerScriptService — он найдёт все <code>Trap*</code>.</li>
+        <li>Скопируй Position у SpawnLocation → вставь в <code>Vector3.new(...)</code>.</li>
+        <li>Продублируй ловушки (<code>Trap2</code>, <code>Trap3</code>…) и расставь по лабиринту.</li>
+      </ol>
+      <img class="shot" src="assets/img/maze/05-trap-place.png" alt="Ловушка в коридоре" />
+      <p class="shot-cap">Стена-ловушка перекрывает проход.</p>
+      <img class="shot" src="assets/img/maze/06-trap1-script.png" alt="Trap1 → Script" />
+      <p class="shot-cap">Можно положить Script в Trap1 — или один общий в Workspace.</p>
+      <img class="shot" src="assets/img/maze/07-spawn-position.png" alt="Position SpawnLocation" />
+      <p class="shot-cap">Properties → Position у SpawnLocation — скопируй X, Y, Z.</p>
+      <img class="shot" src="assets/img/maze/08-start-position-code.png" alt="startPosition в коде" />
+      <p class="shot-cap">Замени координаты в строке startPosition на свои.</p>
+
+      <div class="teacher-tip">🎓 Важно: скрипт один на все ловушки. Если продублировать Trap вместе со Script, подписки задвоятся — оставь Script только в одном месте.</div>
+
+<pre class="code-block"><span class="comment">-- Script ловушек (один раз в Workspace / ServerScriptService)</span>
+<span class="keyword">local</span> Players = game:GetService(<span class="string">"Players"</span>)
+
+<span class="comment">-- Стартовая позиция (измени на свою!)</span>
+<span class="keyword">local</span> startPosition = Vector3.new(<span class="number">-30</span>, <span class="number">17.247</span>, <span class="number">40</span>)
+
+<span class="keyword">for</span> _, trap <span class="keyword">in</span> pairs(workspace:GetChildren()) <span class="keyword">do</span>
+    <span class="keyword">if</span> trap.Name:find(<span class="string">"Trap"</span>) <span class="keyword">or</span> trap.Name:find(<span class="string">"Ловушка"</span>) <span class="keyword">then</span>
+        trap.Touched:Connect(<span class="keyword">function</span>(hit)
+            <span class="keyword">local</span> humanoid = hit.Parent:FindFirstChild(<span class="string">"Humanoid"</span>)
+            <span class="keyword">if</span> humanoid <span class="keyword">then</span>
+                hit.Parent:MoveTo(startPosition)
+
+                <span class="keyword">local</span> sound = Instance.new(<span class="string">"Sound"</span>)
+                sound.SoundId = <span class="string">"rbxassetid://100600468769372"</span>
+                sound.Parent = trap
+                sound:Play()
+                wait(<span class="number">2</span>)
+                sound:Destroy()
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>)
+        print(<span class="string">"Ловушка '"</span> .. trap.Name .. <span class="string">"' настроена!"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+print(<span class="string">"Все ловушки готовы!"</span>)</pre>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">startPosition = координаты Spawn.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">Несколько Trap* расставлены и телепортируют.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>👻 Фаза 4 — Стены-проходы Wall <span class="phase-time">15 мин</span></h3>
+      <ol>
+        <li>Создай Part, внешне как ловушка (чтобы путать игрока).</li>
+        <li>Rename → <code>Wall</code> (или <code>Wall2</code>, <code>Wall3</code>…).</li>
+        <li>Один общий Script ищет все объекты с <code>Wall</code> в имени.</li>
+        <li>Расставь исчезающие стены по лабиринту рядом с ловушками.</li>
+      </ol>
+      <img class="shot" src="assets/img/maze/09-wall-corridor.png" alt="Стена в коридоре" />
+      <p class="shot-cap">Стена-проход выглядит как обычная преграда.</p>
+      <img class="shot" src="assets/img/maze/10-wall-script.png" alt="Wall → Script" />
+      <p class="shot-cap">Wall → Script (или один общий скрипт в Workspace).</p>
+
+<pre class="code-block"><span class="comment">-- Script исчезающих стен (один раз)</span>
+<span class="keyword">for</span> _, wall <span class="keyword">in</span> pairs(workspace:GetChildren()) <span class="keyword">do</span>
+    <span class="keyword">if</span> wall.Name:find(<span class="string">"Wall"</span>) <span class="keyword">and</span> wall:IsA(<span class="string">"BasePart"</span>) <span class="keyword">then</span>
+        wall.Touched:Connect(<span class="keyword">function</span>(hit)
+            <span class="keyword">local</span> humanoid = hit.Parent:FindFirstChild(<span class="string">"Humanoid"</span>)
+            <span class="keyword">if</span> humanoid <span class="keyword">then</span>
+                wall.Transparency = <span class="number">1</span>
+                wall.CanCollide = <span class="keyword">false</span>
+
+                <span class="keyword">local</span> sound = Instance.new(<span class="string">"Sound"</span>)
+                sound.SoundId = <span class="string">"rbxassetid://100600468769372"</span>
+                sound.Parent = wall
+                sound:Play()
+                wait(<span class="number">2</span>)
+                sound:Destroy()
+                print(<span class="string">"Стена '"</span> .. wall.Name .. <span class="string">"' исчезла!"</span>)
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>)
+        print(<span class="string">"Исчезающая стена '"</span> .. wall.Name .. <span class="string">"' настроена!"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+print(<span class="string">"Все исчезающие стены готовы!"</span>)</pre>
+
+      <div class="info-callout warn">
+        <span class="bulb">⚠️</span>
+        <div>В черновике иногда пишут <code>light.Enabled = false</code> — без объекта Light это даст ошибку. В рабочем коде выше этой строки нет.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">Несколько Wall* исчезают при касании.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>✨ Фаза 5 — Пасхалки и тест <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>Добавь из Toolbox пасхалки, статуи, указатели, монетки-декор.</li>
+        <li>Проверь маршрут: ловушки ↔ проходы ↔ финиш.</li>
+        <li>Сравни время с друзьями — кто быстрее?</li>
+      </ol>
+      <div class="space-note">🏆 Лабиринт с таймером, ловушками и обманками — готовый паркур-квест!</div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">Есть пасхалка / декор из Toolbox.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">Полный проход лабиринта до Finish работает.</label></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧯 Если не работает</h2>
+    <table class="prop-table">
+      <tr><th>Симптом</th><th>Что проверить</th></tr>
+      <tr><td>Нет таймера</td><td>Script в Workspace? Play, не Run? PlayerGui доступен?</td></tr>
+      <tr><td>Финиш молчит</td><td>Имя точно <code>Finish</code>? Part Anchored?</td></tr>
+      <tr><td>Ловушка не кидает на старт</td><td>Имя содержит Trap? Координаты startPosition верные?</td></tr>
+      <tr><td>Телепорт «в пол / в небо»</td><td>Y в Vector3 чуть выше пола спавна</td></tr>
+      <tr><td>Стена не исчезает</td><td>Имя содержит Wall? Скрипт один и запущен?</td></tr>
+      <tr><td>Красный Output</td><td>Нет обращения к несуществующему <code>light</code></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>собрал лабиринт с финишем и таймером;</li>
+      <li>настроил ловушки с телепортом на старт;</li>
+      <li>сделал стены-обманки, которые исчезают;</li>
+      <li>украсил уровень пасхалками.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Лабиринт живой!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти, чиним баги</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь педагога</label>
+    </div>
+    <textarea placeholder="Чем Trap отличается от Wall? Зачем копировать Position спавна?"></textarea>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Проект П5 · Лабиринт с ловушками</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function updateProjectProgress() {
+    const box = document.getElementById('keyTaskBox');
+    if (!box) return;
+    const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+    const checked = box.querySelectorAll('input[type="checkbox"]:checked').length;
+    const total = checkboxes.length;
+    const pct = total ? Math.round((checked / total) * 100) : 0;
+    const fill = document.getElementById('projectFill');
+    const label = document.getElementById('projectLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) {
+      label.textContent =
+        'Выполнено шагов: ' + checked + ' из ' + total +
+        (checked === total && total > 0 ? ' 🎉 Проект выполнен!' : '');
+    }
+  }
+
+  /* 7x7 maze: 0 wall, 1 path, 2 trap, 3 ghost wall, 4 finish, S start */
+  const LAYOUT = [
+    [0,0,0,0,0,0,0],
+    [0,1,1,2,1,3,0],
+    [0,0,1,0,0,1,0],
+    [0,1,1,1,2,1,0],
+    [0,1,0,0,0,1,0],
+    [0,1,1,3,1,4,0],
+    [0,0,0,0,0,0,0]
+  ];
+  const START = { r: 1, c: 1 };
+
+  const maze = {
+    r: START.r,
+    c: START.c,
+    traps: 0,
+    time: 0,
+    timer: null,
+    done: false,
+    gone: {}
+  };
+
+  function cellKey(r, c) { return r + ',' + c; }
+
+  function buildMaze() {
+    const grid = document.getElementById('mgMaze');
+    grid.innerHTML = '';
+    for (let r = 0; r < 7; r++) {
+      for (let c = 0; c < 7; c++) {
+        const d = document.createElement('div');
+        d.className = 'cell';
+        const t = LAYOUT[r][c];
+        if (t === 0) d.classList.add('wall');
+        else if (t === 2) { d.classList.add('trap'); d.textContent = '!'; }
+        else if (t === 3) {
+          d.classList.add('ghost');
+          if (maze.gone[cellKey(r, c)]) d.classList.add('gone');
+          else d.textContent = '?';
+        }
+        else if (t === 4) { d.classList.add('finish'); d.textContent = 'F'; }
+        else d.classList.add('path');
+        if (r === maze.r && c === maze.c) d.classList.add('player');
+        d.dataset.r = r;
+        d.dataset.c = c;
+        d.addEventListener('click', onCellClick);
+        grid.appendChild(d);
+      }
+    }
+    document.getElementById('mgTime').textContent = maze.time;
+    document.getElementById('mgTraps').textContent = maze.traps;
+  }
+
+  function neighbors(r, c) {
+    return Math.abs(r - maze.r) + Math.abs(c - maze.c) === 1;
+  }
+
+  function onCellClick(e) {
+    if (maze.done) return;
+    const r = Number(e.currentTarget.dataset.r);
+    const c = Number(e.currentTarget.dataset.c);
+    const t = LAYOUT[r][c];
+    if (t === 0) return;
+    if (!neighbors(r, c)) {
+      document.getElementById('mgMsg').textContent = 'Ходи только на соседнюю клетку';
+      return;
+    }
+    if (t === 3 && !maze.gone[cellKey(r, c)]) {
+      maze.gone[cellKey(r, c)] = true;
+      document.getElementById('mgMsg').textContent = 'Стена-проход исчезла! Можно идти.';
+      buildMaze();
+      return;
+    }
+    maze.r = r;
+    maze.c = c;
+    if (t === 2) {
+      maze.traps++;
+      maze.r = START.r;
+      maze.c = START.c;
+      document.getElementById('mgMsg').textContent = 'Ловушка! На старт.';
+    } else if (t === 4) {
+      maze.done = true;
+      clearInterval(maze.timer);
+      document.getElementById('mgMsg').textContent = 'УРА! Время: ' + maze.time + ' сек';
+    } else {
+      document.getElementById('mgMsg').textContent = '';
+    }
+    buildMaze();
+  }
+
+  function resetMiniMaze() {
+    clearInterval(maze.timer);
+    maze.r = START.r;
+    maze.c = START.c;
+    maze.traps = 0;
+    maze.time = 0;
+    maze.done = false;
+    maze.gone = {};
+    document.getElementById('mgMsg').textContent = '';
+    maze.timer = setInterval(function () {
+      if (!maze.done) {
+        maze.time++;
+        document.getElementById('mgTime').textContent = maze.time;
+      }
+    }, 1000);
+    buildMaze();
+  }
+
+  resetMiniMaze();
+  updateProjectProgress();
+</script>
+</body>
+</html>

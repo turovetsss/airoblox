@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Траектория курса ИИ — Учебный центр «РОБОВИТА»</title>
+<link rel="stylesheet" href="../assets/css/styles.css">
+<style>
+  .map-legend {
+    display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 12px 0 4px; align-items: center;
+  }
+  .map-legend span {
+    display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: .92rem;
+  }
+  .map-progress {
+    margin-top: 14px; background: #fff; border-radius: 14px; padding: 12px 16px;
+    border: 1px solid var(--line); font-weight: 700;
+  }
+  .map-progress .bar {
+    height: 10px; border-radius: 10px; background: #e2e8f0; overflow: hidden; margin-top: 8px;
+  }
+  .map-progress .fill {
+    height: 100%; width: 100%; background: linear-gradient(90deg, var(--primary), #a3e635);
+  }
+  .section-note {
+    font-size: .95rem; color: #475569; margin: 0 0 4px; line-height: 1.45;
+  }
+  .path-strip {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0 0;
+    font-weight: 800; font-size: .9rem;
+  }
+  .path-strip span {
+    background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 6px 10px;
+  }
+  .lrow .ttl-wrap { flex: 1; min-width: 0; }
+  .lrow .ttl { display: block; }
+  .lrow .desc {
+    display: block; margin-top: 4px; font-size: .9rem; font-weight: 600;
+    color: #64748b; line-height: 1.4;
+  }
+  /* ссылочные строки — кликабельны, как в карте курса Roblox */
+  a.lrow {
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+  a.lrow:hover {
+    transform: translateY(-1px);
+    border-color: var(--primary);
+    background: #F6FBF3;
+  }
+  /* добавим стиль для нулевого занятия, чтобы выделить */
+  .lrow.promo {
+    border-color: var(--gold);
+    background: #FFFBEB;
+  }
+  .lrow.promo:hover {
+    background: #FEF3C7;
+  }
+  .lrow.promo .code {
+    background: var(--gold);
+    color: #1a1a1a;
+  }
+</style>
+</head>
+<body class="course-map">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <div class="brand">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">курс искусственного интеллекта</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero">
+      <div>
+        <div class="module-pill">Курс · Искусственный интеллект</div>
+        <h1>Траектория курса</h1>
+        <p class="subtitle">От «что такое ИИ» — к безопасному поиску, проверке фактов и финальной миссии</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="card" style="background:linear-gradient(135deg,var(--primary-light),#F2FCE9);border:none;">
+    <h2 style="color:var(--primary-dark);">👋 Как устроена программа</h2>
+    <p>
+      Курс из <b>7 занятий</b> (включая бесплатное пробное): сначала знакомимся с ИИ и учимся говорить с ним,
+      потом безопасность и правда в сети, умный поиск и финальная миссия агента.
+      Это обзор траектории — <b>кликайте на занятия для просмотра</b>.
+    </p>
+    <div class="path-strip">
+      <span>0. Пробное</span> →
+      <span>1. Что такое ИИ</span> →
+      <span>2. Промпты</span> →
+      <span>3. Кибербезопасность</span> →
+      <span>4. Правда и фейки</span> →
+      <span>5. Умный поиск</span> →
+      <span>6. Агент ИИ</span>
+    </div>
+    <div class="map-legend">
+      <span><span class="st done" style="padding:4px 10px;border-radius:99px;">✅ В программе</span> тема входит в курс</span>
+      <span><span style="background:var(--gold);color:#1a1a1a;padding:4px 10px;border-radius:99px;">⭐ Пробное</span> бесплатное знакомство</span>
+    </div>
+    <div class="map-progress">
+      Занятий в траектории: <b>7</b>
+      <div class="bar"><div class="fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Нулевое пробное занятие -->
+  <div class="card module-card" style="border-color:var(--gold);">
+    <h2>⭐ Пробное занятие · знакомство с форматом <span class="mod-count">1 занятие</span></h2>
+    <p class="section-note">Бесплатное ознакомительное занятие: компьютер, алгоритм, игры и мини-проект с ИИ.</p>
+    <div class="lrows">
+      <a class="lrow promo" href="Пробное.html">
+        <span class="code">0</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Лаборатория старта: компьютер и ИИ</span>
+          <span class="desc">Теория, алгоритм, 5 мини-игр, запросы к ИИ и создание карточки «Мой умный помощник».</span>
+        </span>
+        <span class="st" style="background:var(--gold);color:#1a1a1a;padding:4px 12px;border-radius:99px;">⭐ Пробное</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="card module-card">
+    <h2>Модуль · Знакомство с ИИ <span class="mod-count">2 занятия</span></h2>
+    <p class="section-note">База: что умеет ИИ и как с ним правильно общаться.</p>
+    <div class="lrows">
+      <!-- Занятие 1 -->
+      <a class="lrow" href="Занятие_1_Что_такое_ИИ.html">
+        <span class="code">1</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Что такое искусственный интеллект?</span>
+          <span class="desc">Лаборатория будущего: миссии про ИИ, чипы знаний и сертификат знакомства.</span>
+        </span>
+        <span class="st done">✅ В программе</span>
+      </a>
+      <!-- Занятие 2 -->
+      <a class="lrow" href="Занятие_2_Мастер_Промтов.html">
+        <span class="code">2</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Как общаться с ИИ? (промпты)</span>
+          <span class="desc">Мастер промптов: чёткие запросы, роли, ограничения и практика диалога с ИИ.</span>
+        </span>
+        <span class="st done">✅ В программе</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="card module-card">
+    <h2>Модуль · Безопасность и правда <span class="mod-count">2 занятия</span></h2>
+    <p class="section-note">Защита в цифровой среде и умение отличать правду от обмана.</p>
+    <div class="lrows">
+      <!-- Занятие 3 -->
+      <a class="lrow" href="Занятие_3.html">
+        <span class="code">3</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Академия кибердетективов</span>
+          <span class="desc">Фишинг, вирусы, пароли и правила безопасного поведения в сети.</span>
+        </span>
+        <span class="st done">✅ В программе</span>
+      </a>
+      <!-- Занятие 4 -->
+      <a class="lrow" href="Занятие_4.html">
+        <span class="code">4</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Академия детективов правды</span>
+          <span class="desc">Фейки, проверка фактов, этика ИИ — учимся не верить всему подряд.</span>
+        </span>
+        <span class="st done">✅ В программе</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="card module-card">
+    <h2>Модуль · Поиск и итог <span class="mod-count">2 занятия</span></h2>
+    <p class="section-note">Умный поиск с ИИ и финальная практическая миссия.</p>
+    <div class="lrows">
+      <!-- Занятие 5 -->
+      <a class="lrow" href="Занятие_5.html">
+        <span class="code">5</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Экспедиция в мир умного поиска</span>
+          <span class="desc">Perplexity и исследование темы: как собрать надёжный доклад с помощью ИИ.</span>
+        </span>
+        <span class="st done">✅ В программе</span>
+      </a>
+      <!-- Занятие 6 -->
+      <a class="lrow" href="Занятие_6.html">
+        <span class="code">6</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Агент безопасности ИИ</span>
+          <span class="desc">Финальная миссия: помочь героям, применить всё изученное и закрепить роль эксперта.</span>
+        </span>
+        <span class="st done">✅ В программе</span>
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Траектория курса · Искусственный интеллект</div>
+  </div>
+</footer>
+
+</body>
+</html>

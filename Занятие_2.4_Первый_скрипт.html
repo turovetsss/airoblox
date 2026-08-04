@@ -905,7 +905,15 @@
     </div>
 
     <!-- ===== ИТОГОВЫЙ ТЕСТ ===== -->
-    <div class="quiz-wrap" id="quiz1">
+    
+    <!-- ===== МИНИ-ИГРА ===== -->
+    <div id="lessonMiniGame" class="rmg"></div>
+    <script src="assets/js/mini-games.js"></script>
+    <script>
+      RoboMiniGame.mount(document.getElementById("lessonMiniGame"), {"type":"lineOrder","title":"Собери первый скрипт","hint":"Кликай строки кода в правильном порядке.","lines":["local part = script.Parent","print(\"Скрипт запущен!\")","part.BrickColor = BrickColor.new(\"Bright red\")","wait(1)","part.BrickColor = BrickColor.new(\"Bright green\")"]});
+    </script>
+
+<div class="quiz-wrap" id="quiz1">
       <h2>📝 Итоговый тест «Что я узнал?»</h2>
 
       <div class="quiz-question" data-name="quiz1q0" data-correct="b">
@@ -985,10 +993,6 @@
       <a class="nav-btn prev" href="Занятие_2.1_Создание_ландшафта.html">
         <div class="lbl">← Назад</div>
         <div class="ttl">2.1 Создание ландшафта</div>
-      </a>
-      <a class="nav-btn next" href="Занятие_2.3_Строим_лес.html">
-        <div class="lbl">Далее →</div>
-        <div class="ttl">2.3 Строим лес</div>
       </a>
     </div>
 

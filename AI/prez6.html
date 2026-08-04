@@ -1,0 +1,978 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ИИ-Творец · Занятие 6 · Итоги модуля 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #61B01F;
+      --green-dark: #2E4A17;
+      --green-light: #E8F5E0;
+      --purple: #6C3F9B;
+      --purple-light: #F4EAFA;
+      --orange: #F0A500;
+      --orange-light: #FFF4DB;
+      --orange-ink: #875B00;
+      --red: #D32F2F;
+      --red-light: #FFEBEE;
+      --blue: #2677BD;
+      --blue-light: #E3F0FA;
+      --gold: #F9A825;
+      --gold-light: #FFF8E1;
+      --navy: #12274C;
+      --white: #FFFFFF;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #fff; overflow: hidden; height: 100vh; color: var(--green-dark); }
+    .presentation { display: flex; flex-direction: column; height: 100vh; }
+    .slide-stage { flex: 1; position: relative; overflow: hidden; }
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      padding: 28px 48px 20px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+      background: #fff;
+      animation: fade .4s ease;
+    }
+    .slide.active { display: flex; align-items: center; justify-content: center; }
+    .slide-inner {
+      width: 100%;
+      max-width: none;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 32px;
+      align-items: center;
+      height: 100%;
+      max-height: none;
+      padding: 0 1.5vw;
+    }
+    .slide-inner.full { grid-template-columns: 1fr; }
+    .slide-inner.stack { grid-template-columns: 1fr; max-width: none; }
+
+    .title-slide { background: var(--navy); color: #fff; }
+    .title-slide .slide-inner { grid-template-columns: 1.1fr 0.9fr; }
+    .title-slide h1 { font-size: clamp(34px, 5.5vw, 64px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; }
+    .title-slide h2 { font-size: clamp(26px, 3.8vw, 44px); font-weight: 800; color: #b9eb8d; margin: 10px 0; }
+    .title-slide p { font-size: clamp(18px, 2.2vw, 28px); font-weight: 700; max-width: none; opacity: .95; }
+    .title-slide .stars {
+      position: absolute; inset: 0; pointer-events: none; opacity: .35;
+      background-image: radial-gradient(2px 2px at 20% 30%, #fff, transparent),
+        radial-gradient(2px 2px at 70% 20%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 40% 70%, #9cf, transparent),
+        radial-gradient(2px 2px at 85% 60%, #fff, transparent),
+        radial-gradient(1px 1px at 10% 80%, #fff, transparent);
+    }
+
+    .eyebrow {
+      display: inline-block; padding: 8px 18px; border-radius: 99px;
+      font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;
+      background: var(--green-light); color: var(--green-dark);
+    }
+    .eyebrow.orange { background: var(--orange); color: #fff; }
+    .eyebrow.blue { background: var(--blue); color: #fff; }
+    .eyebrow.gold { background: var(--gold); color: var(--navy); }
+    h2 { font-size: clamp(34px, 4.8vw, 58px); font-weight: 900; line-height: 1.1; color: var(--green-dark); margin: 10px 0 8px; }
+    .lead { font-weight: 800; font-size: clamp(19px, 2.1vw, 28px); line-height: 1.45; }
+    .list { margin-top: 16px; display: grid; gap: 12px; font-size: clamp(18px, 2vw, 26px); font-weight: 800; }
+    .list span { display: flex; align-items: flex-start; gap: 10px; }
+    .tick {
+      width: 32px; height: 32px; border-radius: 50%; background: var(--green-light);
+      display: grid; place-items: center; color: var(--green); font-size: 14px; flex-shrink: 0; margin-top: 1px;
+    }
+    .tick.red { background: var(--red-light); color: var(--red); }
+    .tick.orange { background: var(--orange-light); color: var(--orange); }
+    .tick.blue { background: var(--blue-light); color: var(--blue); }
+    .tick.gold { background: var(--gold-light); color: var(--gold); }
+    .note {
+      padding: 16px 20px; border-radius: 18px; background: var(--orange-light); color: var(--orange-ink);
+      font-weight: 800; font-size: clamp(17px, 1.7vw, 23px); margin-top: 14px;
+    }
+    .note.green { background: var(--green-light); color: var(--green-dark); }
+    .note.purple { background: var(--purple-light); color: var(--purple); }
+    .note.blue { background: var(--blue-light); color: var(--blue); }
+    .note.gold { background: var(--gold-light); color: #5D4E00; }
+    .discuss {
+      margin-top: 14px; padding: 12px 16px; border-radius: 16px; border: 2px dashed var(--purple);
+      background: #faf5ff; color: var(--purple); font-weight: 800; font-size: clamp(14px, 1.2vw, 18px);
+    }
+    .discuss.blue { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+    .discuss.gold { border-color: var(--gold); background: var(--gold-light); color: #5D4E00; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    .can-card { padding: 16px; border-radius: 20px; font-weight: 800; }
+    .can-card h3 { font-size: clamp(16px, 1.5vw, 22px); margin-bottom: 6px; }
+    .can-card ul { list-style: none; padding: 0; font-size: clamp(16px, 1.6vw, 22px); display: grid; gap: 4px; }
+    .can-card ul li::before { content: "• "; }
+    .can { background: var(--green-light); color: var(--green-dark); }
+    .cannot { background: var(--red-light); color: var(--red); }
+    .blue-card { background: var(--blue-light); color: var(--blue); }
+    .gold-card { background: var(--gold-light); color: #5D4E00; }
+
+    .steps { display: grid; gap: 10px; margin-top: 12px; }
+    .step {
+      display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start;
+      background: var(--green-light); border-radius: 16px; padding: 12px 14px; font-weight: 800;
+      font-size: clamp(17px, 1.8vw, 24px);
+    }
+    
+    .step-num {
+      min-width: 42px; height: 42px; padding: 0 10px; border-radius: 999px; white-space: nowrap; font-size: 14px; background: var(--green); color: #fff;
+      display: grid; place-items: center; font-weight: 900;
+    }
+    .step.alt { background: var(--purple-light); }
+    .step.alt .step-num { background: var(--purple); }
+    .step.warn { background: var(--orange-light); }
+    .step.warn .step-num { background: var(--orange); color: #3E2C0B; }
+    .step.blue-step { background: var(--blue-light); }
+    .step.blue-step .step-num { background: var(--blue); }
+    .step.gold { background: var(--gold-light); }
+    .step.gold .step-num { background: var(--gold); color: #3E2C0B; }
+
+    .illustration { position: relative; display: flex; align-items: center; justify-content: center; min-height: 280px; }
+    .blob {
+      position: absolute; width: 78%; aspect-ratio: 1; border-radius: 45% 55% 60% 40%;
+      background: var(--green-light); transform: rotate(-12deg); opacity: 0.55;
+    }
+    .blob.blue { background: var(--blue-light); }
+    .blob.gold { background: var(--gold-light); }
+    .title-slide .blob { background: #244d82; opacity: 0.35; }
+
+    .robot {
+      position: relative; width: 150px; height: 180px; z-index: 2;
+      filter: drop-shadow(0 10px 12px rgba(18,39,76,0.15));
+    }
+    .robot-head {
+      position: absolute; width: 112px; height: 82px; left: 19px; top: 16px;
+      border-radius: 36px; background: linear-gradient(145deg, #fff, #c8e6ff); border: 5px solid #193a66;
+    }
+    .robot-ear {
+      position: absolute; top: 38px; width: 20px; height: 36px; border-radius: 12px;
+      background: var(--green); border: 4px solid #193a66;
+    }
+    .robot-ear.left { left: 2px; } .robot-ear.right { right: 2px; }
+    .robot-eye {
+      position: absolute; top: 36px; width: 15px; height: 20px; background: #193a66; border-radius: 50%;
+    }
+    .robot-eye.one { left: 42px; } .robot-eye.two { right: 42px; }
+    .robot-eye.happy { height: 12px; top: 40px; border-radius: 4px; background: var(--green); width: 20px; }
+    .robot-mouth {
+      position: absolute; width: 30px; height: 12px; left: 41px; top: 60px;
+      border-bottom: 4px solid #193a66; border-radius: 0 0 20px 20px;
+    }
+    .robot-mouth.happy {
+      width: 40px; height: 20px; left: 36px; top: 56px;
+      border: 4px solid #193a66; border-radius: 0 0 30px 30px;
+      border-top: none; background: transparent;
+    }
+    .antenna { position: absolute; width: 6px; height: 22px; left: 72px; top: -4px; background: #193a66; }
+    .antenna::before {
+      content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%;
+      background: var(--orange); left: -4px; top: -8px;
+    }
+    .robot-body {
+      position: absolute; width: 100px; height: 72px; left: 25px; bottom: 4px;
+      border-radius: 28px 28px 20px 20px; background: var(--green); border: 5px solid #193a66;
+    }
+    .robot-panel {
+      position: absolute; width: 48px; height: 28px; left: 26px; top: 18px;
+      border-radius: 12px; background: #f8fff4; border: 4px solid #193a66;
+    }
+    .robot-panel::before, .robot-panel::after {
+      content: ''; position: absolute; width: 7px; height: 7px; border-radius: 50%; top: 7px; background: var(--purple);
+    }
+    .robot-panel::before { left: 10px; } .robot-panel::after { right: 10px; }
+
+    .float-icon {
+      position: absolute; z-index: 3; width: 56px; height: 56px; display: grid; place-items: center;
+      border-radius: 18px; background: white; box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      font-size: 26px; animation: bob 3s ease-in-out infinite;
+    }
+    .float-icon.a { top: 4%; left: 4%; }
+    .float-icon.b { top: 10%; right: 4%; animation-delay: .6s; }
+    .float-icon.c { bottom: 8%; left: 2%; animation-delay: 1.2s; }
+    .float-icon.d { bottom: 4%; right: 6%; animation-delay: 1.7s; }
+
+    .ability-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+    .ability {
+      background: var(--green-light); border-radius: 16px; padding: 14px; font-weight: 800;
+      display: flex; gap: 10px; align-items: center; font-size: clamp(16px, 1.7vw, 22px);
+    }
+    .ability .ico { font-size: 28px; }
+    .ability.gold { background: var(--gold-light); }
+
+    .browser {
+      background: #fff; border-radius: 22px; box-shadow: 0 12px 28px rgba(17,53,76,0.12);
+      overflow: hidden; border: 3px solid #d8e8d1; width: 100%; max-width: 460px;
+    }
+    .browser-top { background: #e9f6e2; padding: 10px 16px; display: flex; gap: 8px; align-items: center; }
+    .browser-top .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--orange); }
+    .browser-top .dot:nth-child(2) { background: #a8d985; }
+    .browser-top .dot:nth-child(3) { background: #7e65a8; }
+    .browser-content { padding: 16px; }
+
+    .chat-bubble {
+      border-radius: 16px; padding: 12px 16px; font-weight: 800;
+      font-size: clamp(16px, 1.6vw, 22px); line-height: 1.4; margin-bottom: 10px;
+    }
+    .bad { background: var(--orange-light); border: 3px solid #f5c15a; color: var(--orange-ink); }
+    .good { background: var(--green-light); border: 3px solid #9bce75; color: var(--green-dark); }
+
+    .cta-link {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
+      background: var(--green); color: #fff; padding: 12px 22px; border-radius: 30px;
+      font-weight: 900; text-decoration: none; font-size: clamp(16px, 1.7vw, 22px);
+      box-shadow: 0 4px 0 #4a8a18;
+    }
+    .cta-link:hover { background: #52991a; }
+    .cta-link.blue { background: var(--blue); box-shadow: 0 4px 0 #1a5a8a; }
+    .cta-link.blue:hover { background: #1f6aa0; }
+
+    .check-list { margin-top: 12px; display: grid; gap: 8px; }
+    .check-item {
+      display: flex; gap: 10px; align-items: flex-start; font-weight: 800;
+      font-size: clamp(17px, 1.7vw, 23px); background: var(--green-light);
+      padding: 10px 14px; border-radius: 14px;
+    }
+    .check-item .ok { color: var(--green); font-size: 22px; line-height: 1; }
+    .check-item.gold { background: var(--gold-light); }
+    .check-item.gold .ok { color: var(--gold); }
+
+    .ref-links {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ref-links a {
+      background: #f0f4f9;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      color: var(--purple);
+      border: 1px solid #dce3ec;
+      transition: .2s;
+    }
+    .ref-links a:hover {
+      background: var(--purple-light);
+      border-color: var(--purple);
+    }
+
+    .teacher-toggle {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      z-index: 999;
+      background: var(--purple);
+      color: #fff;
+      border: none;
+      border-radius: 40px;
+      padding: 12px 20px;
+      font-weight: 900;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(108,63,155,.4);
+      transition: .2s;
+      font-family: inherit;
+    }
+    .teacher-toggle:hover { transform: scale(1.05); background: #5a2f8a; }
+    .teacher-panel {
+      position: fixed;
+      bottom: 150px;
+      right: 20px;
+      width: 360px;
+      max-height: 60vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.2);
+      z-index: 998;
+      display: none;
+      font-size: 14px;
+      line-height: 1.5;
+      border: 3px solid var(--purple-light);
+    }
+    .teacher-panel.open { display: block; }
+    .teacher-panel h4 { color: var(--purple); margin-bottom: 8px; }
+    .teacher-panel p { margin-bottom: 6px; padding: 4px 6px; border-radius: 6px; transition: .2s; }
+    .teacher-panel .meta { color: var(--orange-ink); font-weight: 700; }
+    .teacher-panel .active-note { background: var(--green-light); }
+
+    .footer-nav {
+      height: 76px;
+      background: white;
+      border-top: 1px solid #e6eee1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+    .nav-inner {
+      width: 100%;
+      max-width: none; width: 100%; padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border: 0;
+      border-radius: 30px; font-weight: 900; font-size: 15px; cursor: pointer; transition: .2s;
+      background: var(--green-light); color: var(--green-dark); font-family: inherit;
+    }
+    .nav-btn:hover { transform: translateY(-2px); background: #d8efc7; }
+    .nav-btn.primary { background: var(--green); color: white; }
+    .nav-btn.primary:hover { background: #52991a; }
+    .nav-btn:disabled { opacity: .4; pointer-events: none; }
+    .progress-wrap { flex: 1; max-width: 420px; }
+    .progress-track { height: 8px; border-radius: 99px; background: #e7eee5; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: inherit; transition: width .3s; }
+    .dots { display: flex; gap: 4px; justify-content: center; margin-top: 6px; flex-wrap: wrap; }
+    .nav-dot {
+      border: 0; padding: 0; width: 7px; height: 7px; border-radius: 50%;
+      background: #cad7c4; cursor: pointer; transition: .2s;
+    }
+    .nav-dot.active { background: var(--purple); transform: scale(1.35); }
+    .counter { font-weight: 900; font-size: 18px; white-space: nowrap; min-width: 72px; text-align: center; }
+
+    .chip {
+      display: inline-block; background: #fff; border-radius: 12px; padding: 6px 10px;
+      font-weight: 800; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,.06); margin: 3px;
+    }
+
+    @keyframes bob { 50% { transform: translateY(-10px) rotate(3deg); } }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 760px) {
+      .slide { padding: 16px; }
+      .slide-inner, .title-slide .slide-inner { grid-template-columns: 1fr; gap: 14px; }
+      .illustration { min-height: 180px; order: -1; }
+      .title-slide .illustration { order: 0; }
+      .robot { transform: scale(0.72); }
+      .two-col, .ability-grid { grid-template-columns: 1fr; }
+      .footer-nav { height: 68px; }
+      .progress-wrap { display: none; }
+      .nav-btn { padding: 8px 14px; font-size: 13px; }
+      .teacher-toggle { bottom: 80px; right: 10px; padding: 10px 16px; font-size: 12px; }
+      .teacher-panel { width: 280px; right: 10px; bottom: 130px; }
+    }
+  </style>
+</head>
+<body>
+<div class="presentation">
+  <main class="slide-stage">
+
+    <!-- 1. Титульный -->
+    <section class="slide title-slide active">
+      <div class="stars"></div>
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow" style="background:#F0A500;color:#12274C;">Курс · Занятие 6</span>
+          <h1>ИИ-ТВОРЕЦ: ОТ ИДЕИ ДО СВОЕГО ПЕРВОГО ПОМОЩНИКА</h1>
+          <h2>Итоги модуля 1. Создаём Памятку по безопасности в ИИ</h2>
+          <p>🎉 Финальный шаг первого модуля!</p>
+          <p style="margin-top:10px;font-size:clamp(14px,1.5vw,18px);font-weight:700;opacity:.9;">Сегодня мы подведём итоги всего модуля, создадим Памятку по безопасности в ИИ с помощью Gamma и получим сертификаты!</p>
+          <div class="ref-links" style="margin-top:18px;">
+            <a href="https://gamma.app" target="_blank">🎨 Gamma.app</a>
+     
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div class="float-icon a">🎉</div>
+          <div class="float-icon b">📜</div>
+          <div class="float-icon c">🏆</div>
+          <div class="float-icon d">🛡️</div>
+          <div class="robot">
+            <div class="antenna"></div>
+            <div class="robot-ear left"></div><div class="robot-ear right"></div>
+            <div class="robot-head"></div>
+            <div class="robot-eye one happy"></div><div class="robot-eye two happy"></div>
+            <div class="robot-mouth happy"></div>
+            <div class="robot-body"><div class="robot-panel"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Повтор модуля -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Повторяем модуль</span>
+          <h2>Что мы узнали за 5 занятий?</h2>
+          <p class="lead">Давай вспомним весь путь!</p>
+          <div class="list">
+            <span><span class="tick">🤖</span> <strong>Занятие 1:</strong> Что такое ИИ, где он живёт, как учится</span>
+            <span><span class="tick">💬</span> <strong>Занятие 2:</strong> Как общаться с ИИ — промпты, формула Роль+Задача+Контекст+Формат</span>
+            <span><span class="tick">🛡️</span> <strong>Занятие 3:</strong> Безопасность в интернете — дипфейки, кибербуллинг, защита данных</span>
+            <span><span class="tick">🔍</span> <strong>Занятие 4:</strong> Этика и фактчекинг — галлюцинации, проверка информации</span>
+            <span><span class="tick">🔎</span> <strong>Занятие 5:</strong> ИИ-поисковики — Perplexity, исследование тем</span>
+          </div>
+          <div class="note purple">🧠 Все эти знания мы соберём в <strong>Памятку по безопасности в ИИ</strong> — ваш личный инструмент защиты!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;background:#fff;border-radius:24px;padding:22px;box-shadow:0 10px 28px rgba(0,0,0,.08);text-align:center;font-weight:900;">
+            <div style="font-size:56px;">📚</div>
+            <div style="font-size:16px;color:var(--purple);">5 занятий — 5 шагов к безопасности</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Зачем нужна памятка? -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow gold">Мотивация</span>
+          <h2>Зачем создавать памятку?</h2>
+          <p class="lead">Памятка поможет тебе и твоим друзьям:</p>
+          <div class="list">
+            <span><span class="tick gold">✅</span> <strong>Не попасться</strong> на уловки мошенников и фишинг</span>
+            <span><span class="tick gold">✅</span> <strong>Распознавать</strong> дипфейки, фейковые новости и галлюцинации ИИ</span>
+            <span><span class="tick gold">✅</span> <strong>Защищать</strong> свои данные — пароли, личную информацию, переписки</span>
+            <span><span class="tick gold">✅</span> <strong>Этично</strong> использовать ИИ в учёбе, указывая источники и не выдавая чужое за своё</span>
+            <span><span class="tick gold">✅</span> <strong>Проверять</strong> информацию от ИИ с помощью фактчекинга и правила трёх источников</span>
+          </div>
+          <div class="note gold">📌 Памятка — это твой личный <strong>инструмент безопасности</strong>, который всегда будет под рукой. Её можно распечатать или сохранить в телефоне!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob gold"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🛡️</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Что такое Gamma? -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow blue">Инструмент</span>
+          <h2>Gamma: презентации с помощью ИИ</h2>
+          <p class="lead"><strong>Gamma</strong> — это бесплатный сервис, который с помощью ИИ создаёт красивые презентации, документы и веб-страницы за считанные минуты.</p>
+          <div class="ability-grid">
+            <div class="ability blue"><span class="ico">🎨</span> Автоматически подбирает стильный дизайн и структуру</div>
+            <div class="ability blue"><span class="ico">📄</span> Превращает ваши заметки в слайды или памятки</div>
+            <div class="ability blue"><span class="ico">🤖</span> Помогает с текстом — можно попросить сгенерировать описание</div>
+            <div class="ability blue"><span class="ico">📤</span> Готовым проектом можно поделиться по ссылке или скачать PDF</div>
+          </div>
+          <div class="note blue">💡 Мы будем использовать Gamma, чтобы создать <strong>Памятку по безопасности в ИИ</strong>. Это удобно, быстро и красиво!</div>
+          <div class="ref-links">
+            <a href="https://gamma.app" target="_blank">🎨 Gamma.app — официальный сайт</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob blue"></div>
+          <div style="position:relative;z-index:2;background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 28px rgba(0,0,0,.08);text-align:center;max-width:300px;border:3px solid var(--blue);">
+            <div style="font-size:56px;">🎨</div>
+            <div style="font-weight:900;font-size:20px;color:var(--blue);">Gamma</div>
+            <div style="font-size:14px;color:#61715c;">Презентации + ИИ</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Регистрация в Gamma -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Регистрация</span>
+          <h2>Регистрируемся в Gamma</h2>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Открой <strong>gamma.app</strong></div></div>
+            <div class="step alt"><div class="step-num">2</div><div>Нажми <strong>«Get started»</strong> и зарегистрируйся (через Google-аккаунт или email)</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>Выбери <strong>бесплатный план</strong> — его возможностей достаточно для создания памятки</div></div>
+            <div class="step blue-step"><div class="step-num">4</div><div>Готово! Ты на платформе и можешь создавать свои проекты!</div></div>
+          </div>
+          <div class="note">📌 Если у тебя нет Google-аккаунта, можно зарегистрироваться по электронной почте. Попроси помощи у педагога, если что-то непонятно.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">📝</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Структура памятки -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow gold">Содержание</span>
+          <h2>Из чего будет состоять памятка?</h2>
+          <p class="lead">Мы соберём в ней всё самое важное за модуль:</p>
+          <div class="list">
+            <span><span class="tick gold">1</span> <strong>Что такое ИИ</strong> — кратко, своими словами</span>
+            <span><span class="tick gold">2</span> <strong>Главные риски</strong> — дипфейки, фишинг, кибербуллинг, опасные чатботы</span>
+            <span><span class="tick gold">3</span> <strong>Правила безопасности</strong> — пароли, личные данные, подозрительные ссылки</span>
+            <span><span class="tick gold">4</span> <strong>Как проверять ИИ</strong> — фактчекинг, правило трёх источников, переспрашивание</span>
+            <span><span class="tick gold">5</span> <strong>Этичные правила</strong> — как указывать использование ИИ, что нельзя делать</span>
+            <span><span class="tick gold">6</span> <strong>Что делать в опасной ситуации</strong> — к кому обратиться, как реагировать</span>
+          </div>
+          <div class="note gold">📋 Это твоя <strong>личная памятка</strong> — можешь добавить свои пункты или примеры из жизни!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob gold"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">📋</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Пошаговая инструкция создания в Gamma -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow blue">Инструкция</span>
+          <h2>Как создать памятку в Gamma</h2>
+          <div class="steps">
+            <div class="step blue-step"><div class="step-num">1</div><div>Нажми <strong>«Create new»</strong> → выбери «Presentation»</div></div>
+            <div class="step blue-step"><div class="step-num">2</div><div>Введи тему: <strong>«Памятка по безопасности в ИИ»</strong>. Можно добавить ключевые слова</div></div>
+            <div class="step blue-step"><div class="step-num">3</div><div>Gamma сама предложит структуру и дизайн — <strong>выбери подходящий шаблон</strong></div></div>
+            <div class="step blue-step"><div class="step-num">4</div><div>Редактируй текст: меняй заголовки, добавляй свои правила и примеры</div></div>
+            <div class="step blue-step"><div class="step-num">5</div><div>Добавь картинки, иконки или эмодзи для наглядности</div></div>
+            <div class="step blue-step"><div class="step-num">6</div><div>Сохрани и <strong>поделись</strong> ссылкой с классом или скачай как PDF!</div></div>
+          </div>
+          <div class="note blue">🎨 Gamma сама подбирает дизайн — ты просто наполняешь содержание. Это творческая задача!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob blue"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🎨</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Пример структуры слайдов памятки -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow gold">Пример</span>
+          <h2>Как могут выглядеть слайды памятки</h2>
+          <p class="lead">Ориентируйся на эту структуру:</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;">
+            <div class="check-item gold"><span class="ok">1</span> Титульный слайд: «Моя памятка по безопасности в ИИ»</div>
+            <div class="check-item gold"><span class="ok">2</span> Что такое ИИ (короткое определение)</div>
+            <div class="check-item gold"><span class="ok">3</span> Где встречается ИИ (примеры из жизни)</div>
+            <div class="check-item gold"><span class="ok">4</span> Риски: дипфейки, фишинг, кибербуллинг</div>
+            <div class="check-item gold"><span class="ok">5</span> Правила безопасности (пароли, данные, ссылки)</div>
+            <div class="check-item gold"><span class="ok">6</span> Как проверять информацию от ИИ (фактчекинг)</div>
+            <div class="check-item gold"><span class="ok">7</span> Этические правила (указывай ИИ, не обманывай)</div>
+            <div class="check-item gold"><span class="ok">8</span> Что делать в опасной ситуации (план действий)</div>
+          </div>
+          <div class="note gold">📌 Это пример — ты можешь менять порядок, добавлять свои разделы, вставлять фотографии или рисунки.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Групповое планирование (мозговой штурм) -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow orange">Мозговой штурм</span>
+          <h2>Перед созданием: обсудим идеи!</h2>
+          <p class="lead">В парах или тройках ответьте на вопросы (2 минуты):</p>
+          <div class="list">
+            <span><span class="tick">❓</span> Какое правило безопасности ты считаешь <strong>самым важным</strong> и почему?</span>
+            <span><span class="tick">❓</span> Какой пример из жизни (свой или из новостей) можно добавить в памятку?</span>
+            <span><span class="tick">❓</span> Каким дизайном ты хочешь оформить памятку? (строгий, яркий, с эмодзи?)</span>
+          </div>
+          <div class="discuss">⏱ 2 минуты, потом 2–3 пары поделятся идеями со всеми.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Практика: создание памятки -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow orange">Практика</span>
+          <h2>⏱ Создаём памятку! (25 минут)</h2>
+          <p class="lead">Твоя задача — создать собственную памятку по безопасности в ИИ в Gamma.</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Открой Gamma и создай новую презентацию</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>Используй структуру со слайда 8 или придумай свою</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>Наполни каждый слайд: текст, примеры, эмодзи или картинки</div></div>
+            <div class="step blue-step"><div class="step-num">4</div><div>Сохрани и подготовься показать классу!</div></div>
+          </div>
+          <div class="discuss blue">⏱ Время пошло! Педагог поможет, если будут вопросы.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. Мини-конкурс: "Лучшая памятка" (промежуточный смотр) -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow orange">Конкурс</span>
+          <h2>🏆 Чья памятка самая полезная?</h2>
+          <p class="lead">После создания мы проведём мини-конкурс по номинациям:</p>
+          <div class="list">
+            <span><span class="tick">🏅</span> <strong>Самая полная</strong> — охватывает все важные темы модуля</span>
+            <span><span class="tick">🏅</span> <strong>Самая креативная</strong> — необычный дизайн или подача</span>
+            <span><span class="tick">🏅</span> <strong>Самая понятная</strong> — легко читается даже младшему школьнику</span>
+            <span><span class="tick">🏅</span> <strong>Приз зрительских симпатий</strong> — понравилась большинству</span>
+          </div>
+          <div class="discuss gold">Победители получат дополнительные наклейки или бонусы! 🎉</div>
+        </div>
+        <div class="illustration">
+          <div class="blob gold"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🏆</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Защита памяток (3-4 ученика) -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow orange">Защита</span>
+          <h2>Покажи свою памятку!</h2>
+          <p class="lead">3–4 желающих покажут классу свои работы.</p>
+          <div class="list">
+            <span><span class="tick">🎤</span> Расскажи, <strong>что ты включил</strong> в памятку</span>
+            <span><span class="tick">🛡️</span> Какой пункт считаешь <strong>самым важным</strong> и почему?</span>
+            <span><span class="tick">💡</span> Что бы ты <strong>посоветовал</strong> другим ребятам?</span>
+          </div>
+          <div class="discuss">👏 Слушаем и поддерживаем друг друга! Каждое выступление — аплодисменты.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob orange"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🎤</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. Игра «Безопасно или нет?» -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow orange">Игра</span>
+          <h2>🎯 Безопасно или нет?</h2>
+          <p class="lead">Я описываю ситуацию. Если это безопасно — 👍, если нет — ✋. Объясняем почему.</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Ты получил письмо от «администрации школы» с просьбой срочно прислать пароль. → <strong style="color:var(--red);">НЕТ ✋</strong> (фишинг)</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>Ты проверил факт в трёх разных источниках, прежде чем поверить. → <strong style="color:var(--green);">ДА 👍</strong> (фактчекинг)</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>Ты выложил в соцсети свой домашний адрес и телефон. → <strong style="color:var(--red);">НЕТ ✋</strong> (защита данных)</div></div>
+            <div class="step danger"><div class="step-num">4</div><div>Ты указал, что использовал ChatGPT при подготовке доклада. → <strong style="color:var(--green);">ДА 👍</strong> (этика)</div></div>
+          </div>
+          <div class="discuss">🧠 Обсуждение: какие ещё ситуации можно добавить в памятку?</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14. Обсуждение и рефлексия -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Рефлексия</span>
+          <h2>Что было самым важным в модуле?</h2>
+          <div class="list">
+            <span><span class="tick">❓</span> Что нового ты узнал об ИИ за эти 6 занятий?</span>
+            <span><span class="tick">❓</span> Какое правило безопасности ты запомнил лучше всего?</span>
+            <span><span class="tick">❓</span> Что тебе пригодится в школе и дома?</span>
+            <span><span class="tick">❓</span> Что было самым сложным, а что — самым интересным?</span>
+          </div>
+          <div class="discuss">Поделись с соседом (2 минуты). Потом послушаем 2–3 человека.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14b. Задание на урок (памятка) -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow gold">На уроке · проект</span>
+          <h2>Памятка в Gamma</h2>
+          <p class="lead">На занятии оформи презентацию «Как безопасно пользоваться ИИ».</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Открой <strong>Gamma.app</strong>, вставь промпт (стиль, цвета, герой).</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>Проверь слайды: запрос · данные · проверка · честность · твоё правило · чек-лист.</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>При необходимости доделай и сдай PDF/ссылку в Classroom.</div></div>
+          </div>
+          <div class="note gold">📌 Это задание на урок (миссия 10), не путай с домашкой ниже.</div>
+          <div class="ref-links">
+            <a href="https://gamma.app" target="_blank">🎨 Gamma.app</a>
+            <a href="https://classroom.google.com" target="_blank">📤 Сдать проект</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob gold"></div>
+          <div style="position:relative;z-index:2;font-size:110px;">🛡️🎨</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14c. Домашнее задание -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Google Classroom</span>
+          <h2>Домашнее задание</h2>
+          <p class="lead">Отдельно от памятки на уроке — выбери уровень:</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">⭐</div><div><strong>Лёгкое:</strong> Выпиши по памяти 5 правил безопасной работы с ИИ.</div></div>
+            <div class="step alt"><div class="step-num">⭐⭐</div><div><strong>Среднее:</strong> Покажи памятку родителям и запиши 1 их совет.</div></div>
+            <div class="step warn"><div class="step-num">⭐⭐⭐</div><div><strong>Сложное:</strong> Доделай Gamma (если не успел) и сдай ссылку/PDF.</div></div>
+          </div>
+          <div class="ref-links">
+            <a href="https://classroom.google.com" target="_blank">📤 Сдать ДЗ</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:110px;">🏠💻</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15. Итоги модуля 1 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow gold">Итоги</span>
+          <h2>Мы завершили модуль 1!</h2>
+          <p class="lead">За 6 занятий ты:</p>
+          <div class="check-list">
+            <div class="check-item gold"><span class="ok">✔️</span> Узнал, что такое ИИ и как он работает</div>
+            <div class="check-item gold"><span class="ok">✔️</span> Научился правильно задавать вопросы (промпты)</div>
+            <div class="check-item gold"><span class="ok">✔️</span> Освоил правила безопасности в интернете</div>
+            <div class="check-item gold"><span class="ok">✔️</span> Научился проверять информацию и распознавать фейки</div>
+            <div class="check-item gold"><span class="ok">✔️</span> Освоил ИИ-поисковик Perplexity</div>
+            <div class="check-item gold"><span class="ok">✔️</span> Создал свою Памятку по безопасности в ИИ!</div>
+          </div>
+          <p style="font-weight:900;color:var(--purple);font-size:clamp(18px,1.8vw,28px);margin-top:14px;">🎉 Поздравляю! Ты — настоящий ИИ-творец, вооружённый знаниями и этикой!</p>
+        </div>
+        <div class="illustration">
+          <div class="blob gold"></div>
+          <div class="float-icon a">🎉</div>
+          <div class="float-icon b">⭐</div>
+          <div class="float-icon c">🏆</div>
+          <div class="float-icon d">📜</div>
+          <div class="robot">
+            <div class="antenna"></div>
+            <div class="robot-ear left"></div><div class="robot-ear right"></div>
+            <div class="robot-head"></div>
+            <div class="robot-eye one happy"></div><div class="robot-eye two happy"></div>
+            <div class="robot-mouth happy"></div>
+            <div class="robot-body"><div class="robot-panel"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16. Вручение сертификатов -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow gold">Награждение</span>
+          <h2>📜 Вручение сертификатов</h2>
+          <p class="lead">Каждый, кто прошёл модуль, получает сертификат «AI-грамотность. Модуль 1».</p>
+          <div style="background:#FFF8E1;border-radius:24px;padding:24px;text-align:center;margin-top:16px;border:3px solid #F9A825;">
+            <div style="font-size:64px;">🎓</div>
+            <div style="font-weight:900;font-size:24px;color:var(--navy);">Сертификат</div>
+            <div style="font-weight:700;font-size:16px;color:#5D4E00;">Подтверждает, что ты успешно освоил модуль 1</div>
+            <div style="font-weight:900;font-size:20px;color:var(--green);margin-top:8px;">«Знакомство с ИИ и безопасность»</div>
+          </div>
+          <div class="note gold">📌 Сохрани сертификат в портфолио — он пригодится! Можешь повесить дома на стену.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob gold"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🎓</div>
+        </div>
+      </div>
+    </section>
+
+  
+
+    <!-- 18. Как поддерживать знания -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow blue">Развитие</span>
+          <h2>Как не забыть изученное?</h2>
+          <div class="steps">
+            <div class="step blue-step"><div class="step-num">1</div><div>Повесь памятку над столом или сохрани на телефоне — перечитывай раз в месяц</div></div>
+            <div class="step blue-step"><div class="step-num">2</div><div>Обсуждай новости о дипфейках и мошенничестве с друзьями и родителями</div></div>
+            <div class="step blue-step"><div class="step-num">3</div><div>Продолжай практиковаться: задавай вопросы ИИ, но всегда проверяй ответы</div></div>
+            <div class="step blue-step"><div class="step-num">4</div><div>Жди модуль 2 — там мы углубимся в творчество с ИИ!</div></div>
+          </div>
+          <div class="note blue">💡 Безопасность в интернете — это как спорт: регулярная практика делает её привычкой.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob blue"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">📆</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 19. Ответы на вопросы учеников -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Открытый микрофон</span>
+          <h2>Вопросы и ответы</h2>
+          <p class="lead">Что осталось непонятным? О чём хочешь спросить?</p>
+          <div class="list">
+            <span><span class="tick">🙋</span> Можно ли полностью доверять Perplexity?</span>
+            <span><span class="tick">🙋</span> Что делать, если я всё-таки попался на уловку мошенников?</span>
+            <span><span class="tick">🙋</span> Как часто обновляются знания ИИ?</span>
+          </div>
+          <div class="discuss">👩‍🏫 Педагог ответит на эти и другие вопросы.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 20. Коллективное фото и отзывы -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow gold">На память</span>
+          <h2>📸 Общее фото и пожелания</h2>
+          <p class="lead">Давайте сделаем фото с нашими памятками и сертификатами!</p>
+          <div class="list">
+            <span><span class="tick">✍️</span> Напиши на доске одно слово, которое описывает твои впечатления от модуля (например: «Круто», «Полезно», «Интересно»).</span>
+          </div>
+          <div class="discuss gold">Этот момент запомнится! Все большие молодцы.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob gold"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">📸</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 21. Анонс модуля 2 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow blue">Продолжение</span>
+          <h2>Модуль 2: Мастер промптов</h2>
+          <p class="lead">Следующий модуль — <strong>«Мастер промптов: текст и изображения»</strong>.</p>
+          <div class="list">
+            <span><span class="tick blue">🎨</span> Научишься создавать <strong>картинки</strong> с помощью ИИ (Kandinsky, Шедеврум)</span>
+            <span><span class="tick blue">✍️</span> Освоишь <strong>тексты в разных стилях</strong> — от сказки до делового письма</span>
+            <span><span class="tick blue">🧩</span> Узнаешь <strong>продвинутые техники</strong> промптинга (уточнение, ролевые модели)</span>
+            <span><span class="tick blue">📚</span> Создашь <strong>комикс из 4 кадров</strong> с помощью ИИ!</span>
+          </div>
+          <p style="font-weight:900;color:var(--blue);font-size:clamp(20px,2vw,32px);margin-top:16px;">🚀 Готов к новым приключениям? До встречи в модуле 2!</p>
+        </div>
+        <div class="illustration">
+          <div class="blob blue"></div>
+          <div style="position:relative;z-index:2;font-size:110px;transform:rotate(20deg);">🚀</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 22. Благодарность педагогу -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow gold">Спасибо!</span>
+          <h2>Спасибо учителю!</h2>
+          <p class="lead">Давайте поблагодарим нашего педагога за эти 6 занятий.</p>
+          <div class="note gold">👏 Знания, которые вы получили, — это результат труда и заботы вашего наставника. Аплодисменты!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob gold"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">👏</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 23. Финальный слайд -->
+    <section class="slide title-slide">
+      <div class="stars"></div>
+      <div class="slide-inner full" style="text-align:center;">
+        <div style="grid-column:1/-1;text-align:center;">
+          <span class="eyebrow" style="background:#F0A500;color:#12274C;">Модуль 1 завершён</span>
+          <h2 style="color:#fff;margin-top:20px;">Ты — ИИ-творец!</h2>
+          <p class="lead" style="color:#b9eb8d;max-width:700px;margin:20px auto;">Используй знания во благо, проверяй информацию и оставайся человеком — думающим, этичным и творческим.</p>
+          <div class="cta-link" style="display:inline-flex;margin-top:30px;background:var(--orange);box-shadow:0 4px 0 #c68400;">🎉 До встречи в модуле 2!</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer-nav">
+    <nav class="nav-inner">
+      <button class="nav-btn" id="prevBtn" type="button">← Назад</button>
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="dots" id="dots"></div>
+      </div>
+      <span class="counter" id="counter">1 / 23</span>
+      <button class="nav-btn primary" id="nextBtn" type="button">Вперёд →</button>
+    </nav>
+  </footer>
+</div>
+
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progressFill = document.getElementById('progressFill');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let current = 0;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Слайд ' + (i + 1));
+    dot.addEventListener('click', () => showSlide(i));
+    dots.appendChild(dot);
+  });
+
+  function showSlide(index) {
+    current = Math.max(0, Math.min(index, slides.length - 1));
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+    document.querySelectorAll('.nav-dot').forEach((dot, i) => dot.classList.toggle('active', i === current));
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progressFill.style.width = ((current + 1) / slides.length * 100) + '%';
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+
+    const notes = document.querySelectorAll('#teacherNotes p');
+    notes.forEach((p, i) => {
+      p.classList.toggle('active-note', i === current);
+    });
+    const activeNote = notes[current];
+    if (activeNote) {
+      activeNote.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  }
+
+  prevBtn.addEventListener('click', () => showSlide(current - 1));
+  nextBtn.addEventListener('click', () => showSlide(current + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); showSlide(current + 1); }
+    if (e.key === 'ArrowLeft') showSlide(current - 1);
+    if (e.key === 'Home') showSlide(0);
+    if (e.key === 'End') showSlide(slides.length - 1);
+  });
+  showSlide(0);
+
+  const toggleBtn = document.getElementById('teacherToggle');
+  const panel = document.getElementById('teacherPanel');
+  toggleBtn.addEventListener('click', () => {
+    panel.classList.toggle('open');
+    toggleBtn.textContent = panel.classList.contains('open') ? '📕 Скрыть заметки' : '📘 Для учителя';
+  });
+</script>
+</body>
+</html>

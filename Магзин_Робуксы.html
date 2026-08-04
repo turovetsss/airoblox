@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>П13. Магазин Робуксы — РОБОВИТА</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: .84rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#14532d,#166534); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #4ade80;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.warn { background: #78350f; }
+    .info-callout.green { background: #14532d; }
+    .info-callout.purple { background: #3b1f4a; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка магазина"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .88rem; line-height: 1.65; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .t { color: #a3e635; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .shot {
+      display: block; max-width: 100%; margin: 12px 0; border-radius: 14px;
+      border: 2px solid var(--line,#e2e8f0); background: #0f172a; box-shadow: 0 8px 24px rgba(15,23,42,.12);
+    }
+    .shot-cap { font-size: .9rem; color: #475569; margin: -4px 0 14px; padding: 0 4px; }
+    .mini-game {
+      background: linear-gradient(180deg,#14532d,#166534); border-radius: 24px; padding: 20px;
+      border: 3px solid #4ade80; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #bbf7d0; }
+    .mission-box {
+      background: #052e16; border-radius: 12px; padding: 12px; border: 1px solid #4ade80; margin-bottom: 10px;
+    }
+    .shop-demo {
+      display: grid; grid-template-columns: 1fr 1.1fr; gap: 16px; margin-top: 14px;
+    }
+    @media (max-width:900px) { .shop-demo { grid-template-columns: 1fr; } }
+    .phone {
+      background: #0f172a; border-radius: 16px; padding: 14px; border: 2px solid #64748b; min-height: 260px; position: relative;
+    }
+    .shop-open-btn {
+      padding: 10px 16px; border-radius: 12px; border: 2px solid #4ade80; background: #166534;
+      color: #fff; font-weight: 800; cursor: pointer;
+    }
+    .shop-panel {
+      display: none; margin-top: 12px; background: #be185d; border-radius: 14px; padding: 14px; border: 2px solid #fce7f3;
+    }
+    .shop-panel.show { display: block; }
+    .item-card {
+      background: #fce7f3; border-radius: 12px; padding: 12px; display: flex; gap: 12px; align-items: center; color: #831843;
+    }
+    .item-pic {
+      width: 64px; height: 64px; border-radius: 10px; background: #fda4af;
+      display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
+    }
+    .buy-btn {
+      margin-top: 12px; width: 100%; padding: 12px; border-radius: 12px; border: none;
+      background: #22c55e; color: #052e16; font-weight: 900; cursor: pointer;
+    }
+    .ctrl-panel {
+      background: #1e293b; border-radius: 16px; padding: 14px; border: 2px solid #64748b;
+    }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .phase-time {
+      font-size: .75rem; background: var(--primary-light,#e8f5e0); color: var(--primary-dark);
+      padding: 2px 10px; border-radius: 99px; font-weight: 700;
+    }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+    .task-steps label { cursor: pointer; }
+    .progress-wrap { margin: 12px 0 4px; }
+    .progress-bar { height: 12px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg,var(--primary,#61b01f),#84cc16); transition: width .25s; }
+    .progress-label { font-size: .9rem; font-weight: 700; color: var(--primary-dark); margin-top: 6px; }
+    .space-note {
+      background: linear-gradient(135deg,#fefce8,#ecfdf5); border: 2px dashed #65a30d;
+      border-radius: 18px; padding: 16px 18px; margin: 14px 0; font-weight: 700;
+    }
+    .teacher-tip {
+      background: #fef3c7; border: 2px solid #f59e0b; border-radius: 14px; padding: 12px 16px; margin: 12px 0;
+      font-weight: 700; color: #78350f;
+    }
+    .arch-grid {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 12px; margin: 12px 0;
+    }
+    .arch-card {
+      background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 14px;
+    }
+    .arch-card h4 { margin: 0 0 6px; color: var(--primary-dark); }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Проект П13</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">П13</div>
+      <div>
+        <div class="module-pill">Проектная деятельность · сложный</div>
+        <h1>🛒 Магазин Робуксы</h1>
+        <p class="subtitle">GUI магазина + Game Pass + выдача CocaCola в рюкзак</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🥤</div>
+    <div>
+      <strong>Миссия проекта:</strong> сделать магазин с кнопкой «Купить».
+      Игрок открывает окно, жмёт Buy → покупает <b>Game Pass</b> за робаксы →
+      получает инструмент <code>CocaCola</code> в Backpack. Нужны GUI, публикация игры и помощь учителя.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом проекте ты:</h2>
+    <ul>
+      <li>соберёшь GUI: <code>ShopButton</code>, <code>ShopFrame</code>, <code>Buy</code> 🖥️</li>
+      <li>подключишь картинку товара через AssetId 🖼️</li>
+      <li>создашь Game Pass на сайте Roblox 🎟️</li>
+      <li>выдашь Tool из <code>ReplicatedStorage</code> после покупки 🥤</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📚 Теория</h2>
+
+    <div class="theory-section">
+      <h3>1. Клиент и сервер в магазине</h3>
+      <div class="arch-grid">
+        <div class="arch-card">
+          <h4>🖥️ LocalScript</h4>
+          <p style="margin:0;font-size:.9rem;">Открывает GUI и вызывает <code>PromptGamePassPurchase</code></p>
+        </div>
+        <div class="arch-card">
+          <h4>⚙️ Server Script</h4>
+          <p style="margin:0;font-size:.9rem;">Проверяет пасс и кладёт CocaCola в Backpack</p>
+        </div>
+        <div class="arch-card">
+          <h4>🎟️ Game Pass</h4>
+          <p style="margin:0;font-size:.9rem;">Товар за робаксы. У каждого пасса свой ID</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>2. Иерархия GUI</h3>
+      <div class="tree-box">
+        <span class="g">StarterGui</span><br>
+        &nbsp;&nbsp;└─ <span class="g">ScreenGui</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="t">LocalScript</span> (покупка)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="g">ShopFrame</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;├─ Frame → ItemPicture, ItemName<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;└─ Buy<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <span class="g">ShopButton</span> (+ скрипт открыть/закрыть)
+      </div>
+    </div>
+
+    <div class="cheat-sheet">
+      <div class="cheat-grid">
+        <div class="cheat-item"><div class="title">ShopFrame</div><div class="rule">Окно магазина</div></div>
+        <div class="cheat-item"><div class="title">MarketplaceService</div><div class="rule">Покупки</div></div>
+        <div class="cheat-item"><div class="title">gamepassId</div><div class="rule">ID твоего пасса</div></div>
+        <div class="cheat-item"><div class="title">CocaCola</div><div class="rule">Tool в RS</div></div>
+        <div class="cheat-item"><div class="title">Visible</div><div class="rule">Скрыть окно</div></div>
+        <div class="cheat-item"><div class="title">Third Party Sales</div><div class="rule">Разрешить покупки</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="quiz1">
+    <h2>🧠 Проверка теории</h2>
+    <div class="quiz-block quiz-question" data-name="q1" data-correct="b">
+      <p><b>1.</b> Где лежит товар CocaCola для выдачи игроку?</p>
+      <label class="choice-card"><input type="radio" name="q1" value="a"> В Lighting</label>
+      <label class="choice-card"><input type="radio" name="q1" value="b"> В ReplicatedStorage</label>
+      <label class="choice-card"><input type="radio" name="q1" value="c"> В Terrain</label>
+      <div class="q-feedback"></div>
+    </div>
+    <div class="quiz-block quiz-question" data-name="q2" data-correct="a">
+      <p><b>2.</b> Что нужно вставить вместо <code>1841593670</code>?</p>
+      <label class="choice-card"><input type="radio" name="q2" value="a"> ID своего Game Pass</label>
+      <label class="choice-card"><input type="radio" name="q2" value="b"> Ник игрока</label>
+      <label class="choice-card"><input type="radio" name="q2" value="c"> Размер Frame</label>
+      <div class="q-feedback"></div>
+    </div>
+    <div class="quiz-block quiz-question" data-name="q3" data-correct="c">
+      <p><b>3.</b> Как тестировать покупки в Studio?</p>
+      <label class="choice-card"><input type="radio" name="q3" value="a"> Только Run</label>
+      <label class="choice-card"><input type="radio" name="q3" value="b"> Без публикации игры</label>
+      <label class="choice-card"><input type="radio" name="q3" value="c"> Server &amp; Clients (минимум 1 игрок) + опубликованная игра</label>
+      <div class="q-feedback"></div>
+    </div>
+    <button class="btn primary" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <div class="mini-game">
+    <h2>🎮 Мини-магазин на странице</h2>
+    <div class="mission-box">Открой магазин → «Купи» колу → получи предмет в инвентарь (симуляция без робаксов).</div>
+    <div class="shop-demo">
+      <div class="phone">
+        <button type="button" class="shop-open-btn" id="mgShopBtn">🛒 Shop</button>
+        <div class="shop-panel" id="mgShop">
+          <div class="item-card">
+            <div class="item-pic">🥤</div>
+            <div><b>COLA</b><br><span style="font-size:.85rem;">Game Pass бустер</span></div>
+          </div>
+          <button type="button" class="buy-btn" id="mgBuy">Buy</button>
+        </div>
+      </div>
+      <div class="ctrl-panel">
+        <div>Инвентарь: <b id="mgInv">пусто</b></div>
+        <div>Пасс: <b id="mgPass">нет</b></div>
+        <div id="mgMsg" style="min-height:2em;font-weight:700;color:#bbf7d0;"></div>
+        <button class="btn" type="button" onclick="resetMiniShop()" style="background:#0f172a;color:#fff;border:1px solid #64748b;">Сброс</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-box" id="keyTaskBox">
+    <h2>🛠️ Проект в Roblox Studio</h2>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="projectFill"></div></div>
+      <div class="progress-label" id="projectLabel">Выполнено шагов: 0</div>
+    </div>
+
+    <div class="phase">
+      <h3>🖥️ Фаза 1 — GUI магазина <span class="phase-time">20 мин</span></h3>
+      <ol>
+        <li>StarterGui → ScreenGui.</li>
+        <li>TextButton <code>ShopButton</code> + LocalScript открыть/закрыть.</li>
+        <li>Frame <code>ShopFrame</code> (фон любого цвета).</li>
+        <li>Внутри ShopFrame — ещё один Frame для товара.</li>
+        <li>В товарном Frame: <code>ItemPicture</code> (ImageLabel) + <code>ItemName</code> (TextLabel = COLA).</li>
+        <li>В Toolbox найди картинку колы → ПКМ → Copy Asset ID → вставь в Image.</li>
+        <li>В ShopFrame создай TextButton <code>Buy</code> под товаром.</li>
+        <li>В ScreenGui создай LocalScript (пока пустой) для покупки.</li>
+      </ol>
+      <img class="shot" src="assets/img/shop/01-screengui.png" alt="ScreenGui" />
+      <p class="shot-cap">StarterGui → ScreenGui.</p>
+      <img class="shot" src="assets/img/shop/02-shopbutton.png" alt="ShopButton" />
+      <p class="shot-cap">ShopButton — кнопка открытия магазина.</p>
+      <img class="shot" src="assets/img/shop/03-shopframe.png" alt="ShopFrame" />
+      <p class="shot-cap">ShopFrame — окно магазина.</p>
+      <img class="shot" src="assets/img/shop/04-item-frame.png" alt="Frame товара" />
+      <p class="shot-cap">Вложенный Frame для карточки товара.</p>
+      <img class="shot" src="assets/img/shop/05-itempicture-name.png" alt="ItemPicture и ItemName" />
+      <p class="shot-cap">ItemPicture + ItemName внутри карточки.</p>
+      <img class="shot" src="assets/img/shop/06-item-layout.png" alt="Раскладка" />
+      <p class="shot-cap">Картинка слева, название справа (розовая зона — Image).</p>
+      <img class="shot" src="assets/img/shop/07-cola-toolbox-img.png" alt="Картинка в Toolbox" />
+      <p class="shot-cap">Ищем изображение колы в Toolbox.</p>
+      <img class="shot" src="assets/img/shop/08-copy-assetid.png" alt="Copy Asset ID" />
+      <p class="shot-cap">ПКМ → Copy Asset ID.</p>
+      <img class="shot" src="assets/img/shop/09-image-property.png" alt="Свойство Image" />
+      <p class="shot-cap">Вставь ID в свойство Image у ItemPicture.</p>
+      <img class="shot" src="assets/img/shop/10-buy-button.png" alt="Кнопка Buy" />
+      <p class="shot-cap">Buy под карточкой товара.</p>
+      <img class="shot" src="assets/img/shop/11-hierarchy.png" alt="Иерархия ScreenGui" />
+      <p class="shot-cap">Проверь иерархию: ScreenGui → LocalScript, ShopFrame, ShopButton.</p>
+
+<pre class="code-block"><span class="comment">-- LocalScript внутри ShopButton (открыть / закрыть)</span>
+<span class="keyword">local</span> button = script.Parent
+<span class="keyword">local</span> shopFrame = button.Parent:WaitForChild(<span class="string">"ShopFrame"</span>)
+
+button.MouseButton1Click:Connect(<span class="keyword">function</span>()
+    shopFrame.Visible = <span class="keyword">not</span> shopFrame.Visible
+<span class="keyword">end</span>)</pre>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">GUI собран, иерархия как на скрине.</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">ShopButton открывает/закрывает ShopFrame.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>🥤 Фаза 2 — Модель CocaCola <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>Toolbox → поиск <code>cola buster</code> (или своя модель).</li>
+        <li>Вставь модель → положи в StarterPack → перенеси в <b>ReplicatedStorage</b>.</li>
+        <li>Переименуй в <code>CocaCola</code> (лучше как Tool).</li>
+      </ol>
+      <img class="shot" src="assets/img/shop/12-cola-buster-search.png" alt="Поиск cola buster" />
+      <p class="shot-cap">Creator Store / Toolbox: cola buster.</p>
+      <img class="shot" src="assets/img/shop/13-cocacola-storage.png" alt="CocaCola в ReplicatedStorage" />
+      <p class="shot-cap">ReplicatedStorage → CocaCola.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">CocaCola лежит в ReplicatedStorage.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>🎟️ Фаза 3 — Game Pass (с учителем) <span class="phase-time">20 мин</span></h3>
+      <div class="teacher-tip">🎓 На этом этапе зови учителя: игру нужно опубликовать и сделать публичной.</div>
+      <ol>
+        <li>Publish to Roblox → игра публичная.</li>
+        <li>На сайте Creator: Monetization → <b>Passes</b> → Create Pass.</li>
+        <li>Загрузи картинку, название, описание → Create pass.</li>
+        <li>Открой пасс → вкладка <b>Sales</b>: Item for sale ON → цена → Save Changes.</li>
+        <li>Скопируй <b>Pass ID</b> (цифры) — он понадобится в скриптах.</li>
+      </ol>
+      <img class="shot" src="assets/img/shop/14-monetization-passes.png" alt="Passes в меню" />
+      <p class="shot-cap">Monetization → Passes.</p>
+      <img class="shot" src="assets/img/shop/15-create-pass.png" alt="Create Pass" />
+      <p class="shot-cap">Кнопка Create Pass.</p>
+      <img class="shot" src="assets/img/shop/16-pass-details.png" alt="Название и описание пасса" />
+      <p class="shot-cap">Картинка, имя и описание пасса.</p>
+      <img class="shot" src="assets/img/shop/17-create-pass-btn.png" alt="Create pass подтверждение" />
+      <p class="shot-cap">Create pass — сохранить пасс.</p>
+      <img class="shot" src="assets/img/shop/18-pass-list.png" alt="Список пассов" />
+      <p class="shot-cap">Пасс появился в списке (пока Offsale — нормально до Sales).</p>
+      <img class="shot" src="assets/img/shop/19-sales-steps.png" alt="Sales шаги" />
+      <p class="shot-cap">Sales: 1) вкладка 2) Item for sale 3) цена 4) Save.</p>
+      <img class="shot" src="assets/img/shop/21-pass-id.png" alt="Pass ID" />
+      <p class="shot-cap">Скопируй Pass ID — это твой gamepassId.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">Игра опубликована, пасс создан и в продаже.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">Pass ID скопирован.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>📜 Фаза 4 — Скрипты покупки <span class="phase-time">18 мин</span></h3>
+      <ol>
+        <li>В LocalScript внутри ScreenGui вставь код покупки.</li>
+        <li>Замени <code>gamepassId</code> на свой Pass ID (в клиенте и на сервере).</li>
+        <li>В ServerScriptService создай Script с выдачей CocaCola.</li>
+        <li>У ShopFrame: Visible = false (окно скрыто до клика).</li>
+      </ol>
+      <img class="shot" src="assets/img/shop/20-localscript.png" alt="LocalScript в ScreenGui" />
+      <p class="shot-cap">LocalScript — прямой потомок ScreenGui.</p>
+      <img class="shot" src="assets/img/shop/22-serverscript.png" alt="Script в ServerScriptService" />
+      <p class="shot-cap">Серверный Script в ServerScriptService.</p>
+      <img class="shot" src="assets/img/shop/23-visible-off.png" alt="Visible выключен" />
+      <p class="shot-cap">ShopFrame → Visible снять галочку.</p>
+
+<pre class="code-block"><span class="comment">-- LocalScript в ScreenGui</span>
+<span class="keyword">local</span> MarketplaceService = game:GetService(<span class="string">"MarketplaceService"</span>)
+<span class="keyword">local</span> buyButton = script.Parent.ShopFrame.Buy
+<span class="keyword">local</span> player = game.Players.LocalPlayer
+<span class="keyword">local</span> gamepassId = <span class="number">1841593670</span> <span class="comment">-- ← свой Pass ID!</span>
+
+buyButton.MouseButton1Click:Connect(<span class="keyword">function</span>()
+    <span class="keyword">local</span> hasPass = <span class="keyword">false</span>
+    <span class="keyword">local</span> success, errormessage = pcall(<span class="keyword">function</span>()
+        hasPass = MarketplaceService:UserOwnsGamePassAsync(player.UserId, gamepassId)
+    <span class="keyword">end</span>)
+
+    <span class="keyword">if</span> hasPass <span class="keyword">then</span>
+        print(<span class="string">"У игрока уже есть кока-кола"</span>)
+    <span class="keyword">else</span>
+        MarketplaceService:PromptGamePassPurchase(player, gamepassId)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>)</pre>
+
+<pre class="code-block"><span class="comment">-- Script в ServerScriptService</span>
+<span class="keyword">local</span> MarketplaceService = game:GetService(<span class="string">"MarketplaceService"</span>)
+<span class="keyword">local</span> Players = game:GetService(<span class="string">"Players"</span>)
+<span class="keyword">local</span> gamepassId = <span class="number">1841593670</span> <span class="comment">-- ← тот же Pass ID!</span>
+
+<span class="keyword">local function</span> <span class="func">giveCola</span>(player)
+    <span class="keyword">local</span> cola = game.ReplicatedStorage.CocaCola:Clone()
+    cola.Parent = player.Backpack
+<span class="keyword">end</span>
+
+Players.PlayerAdded:Connect(<span class="keyword">function</span>(player)
+    <span class="keyword">local</span> success, err = pcall(<span class="keyword">function</span>()
+        <span class="keyword">local</span> hasPass = MarketplaceService:UserOwnsGamePassAsync(player.UserId, gamepassId)
+        <span class="keyword">if</span> hasPass <span class="keyword">then</span>
+            print(<span class="string">"У игрока есть пасс, добавляем колу"</span>)
+            giveCola(player)
+        <span class="keyword">else</span>
+            print(<span class="string">"У игрока нет пасса"</span>)
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>)
+    <span class="keyword">if not</span> success <span class="keyword">then</span>
+        warn(<span class="string">"Ошибка проверки пасса: "</span> .. tostring(err))
+    <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+<span class="keyword">local function</span> <span class="func">onPromptGamePassPurchaseFinished</span>(player, purchasedPassId, purchaseSuccess)
+    <span class="keyword">if</span> purchaseSuccess <span class="keyword">and</span> purchasedPassId == gamepassId <span class="keyword">then</span>
+        print(player.Name .. <span class="string">" купил кока-колу"</span>)
+        giveCola(player)
+    <span class="keyword">else</span>
+        print(player.Name .. <span class="string">" не купил кока-колу"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+MarketplaceService.PromptGamePassPurchaseFinished:Connect(onPromptGamePassPurchaseFinished)</pre>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">В обоих скриптах свой gamepassId.</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">ShopFrame.Visible = false.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>🔐 Фаза 5 — Настройки и тест <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>File → Experience Settings → Security.</li>
+        <li>Включи <b>Allow Third Party Sales</b>.</li>
+        <li>Тест: режим <b>Server &amp; Clients</b>, игроков ≥ 1.</li>
+      </ol>
+      <img class="shot" src="assets/img/shop/24-file-experience.png" alt="File → Experience Settings" />
+      <p class="shot-cap">File → Experience Settings.</p>
+      <img class="shot" src="assets/img/shop/25-third-party-sales.png" alt="Allow Third Party Sales" />
+      <p class="shot-cap">Security → Allow Third Party Sales = ON.</p>
+      <img class="shot" src="assets/img/shop/26-server-clients.png" alt="Server & Clients" />
+      <p class="shot-cap">Test → Server &amp; Clients, минимум 1 игрок.</p>
+      <div class="space-note">🏆 GUI + Game Pass + выдача Tool — магазин доната готов!</div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">Third Party Sales включён.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">Покупка / выдача колы проверены с сервера.</label></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧯 Если не работает</h2>
+    <table class="prop-table">
+      <tr><th>Симптом</th><th>Что проверить</th></tr>
+      <tr><td>Окно не открывается</td><td>Имена ShopButton / ShopFrame? LocalScript у кнопки?</td></tr>
+      <tr><td>Нет картинки</td><td>Asset ID в Image? Формат <code>rbxassetid://…</code></td></tr>
+      <tr><td>Покупка не стартует</td><td>Свой Pass ID? Игра опубликована? Third Party Sales?</td></tr>
+      <tr><td>Кола не выдаётся</td><td>CocaCola в ReplicatedStorage? Серверный Script? Имя точное?</td></tr>
+      <tr><td>В Play «тихо»</td><td>Тестируй Server &amp; Clients, не обычный Play</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>собрал GUI магазина с карточкой товара;</li>
+      <li>создал Game Pass и подключил его ID;</li>
+      <li>связал клиент (Prompt) и сервер (выдача Tool);</li>
+      <li>включили продажи в Experience Settings.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Магазин работает!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти, чиним баги</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь педагога</label>
+    </div>
+    <textarea placeholder="Почему покупку проверяет сервер? Зачем CocaCola лежит в ReplicatedStorage?"></textarea>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Проект П13 · Магазин Робуксы</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function updateProjectProgress() {
+    const box = document.getElementById('keyTaskBox');
+    if (!box) return;
+    const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+    const checked = box.querySelectorAll('input[type="checkbox"]:checked').length;
+    const total = checkboxes.length;
+    const pct = total ? Math.round((checked / total) * 100) : 0;
+    const fill = document.getElementById('projectFill');
+    const label = document.getElementById('projectLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) {
+      label.textContent =
+        'Выполнено шагов: ' + checked + ' из ' + total +
+        (checked === total && total > 0 ? ' 🎉 Проект выполнен!' : '');
+    }
+  }
+
+  let hasPass = false;
+  let open = false;
+
+  document.getElementById('mgShopBtn').addEventListener('click', function () {
+    open = !open;
+    document.getElementById('mgShop').classList.toggle('show', open);
+  });
+
+  document.getElementById('mgBuy').addEventListener('click', function () {
+    if (hasPass) {
+      document.getElementById('mgMsg').textContent = 'У игрока уже есть кока-кола';
+      return;
+    }
+    hasPass = true;
+    document.getElementById('mgPass').textContent = 'есть';
+    document.getElementById('mgInv').textContent = 'CocaCola';
+    document.getElementById('mgMsg').textContent = 'Купил кока-колу! Tool в Backpack.';
+  });
+
+  function resetMiniShop() {
+    hasPass = false;
+    open = false;
+    document.getElementById('mgShop').classList.remove('show');
+    document.getElementById('mgPass').textContent = 'нет';
+    document.getElementById('mgInv').textContent = 'пусто';
+    document.getElementById('mgMsg').textContent = '';
+  }
+
+  updateProjectProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Занятие 4 · Академия детективов правды | РОБОВИТА</title>
+<style>
+:root{
+  --primary:#2563EB;--primary-light:#EFF6FF;--primary-dark:#1E3A8A;
+  --accent:#F59E0B;--accent-light:#FFFBEB;--danger:#EF4444;--success:#10B981;
+  --line:#DBEAFE;--card-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#F8FAFC;font-family:'Segoe UI',Roboto,sans-serif;color:#1E293B;font-size:1.12rem;line-height:1.6}
+.wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem}
+.site-header{background:linear-gradient(135deg,#0F172A,#1E293B);color:#F1F5F9;padding:1.5rem 0 1rem;border-bottom:4px solid var(--accent)}
+.top-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.brand img{height:44px;border-radius:12px}
+.brand-name{font-weight:700;font-size:1.5rem}
+.brand-tag{font-size:.85rem;color:#94A3B8}
+.hero{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.hex-badge{background:var(--accent);color:#1E293B;font-weight:800;font-size:2.2rem;width:66px;height:66px;display:flex;align-items:center;justify-content:center;border-radius:16px;box-shadow:0 8px 0 #B45309}
+.module-pill{background:#4C1D95;color:#EDE9FE;padding:4px 14px;border-radius:30px;font-weight:600;font-size:.95rem;display:inline-block;margin-bottom:4px}
+.hero h1{font-size:2.1rem;margin:.2rem 0}
+.subtitle{color:#CBD5E1;font-size:1.05rem}
+.layout{display:grid;grid-template-columns:280px 1fr;gap:1.5rem;margin:1.5rem 0}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.internet-map{background:#0F172A;border-radius:20px;padding:1.2rem;color:#E2E8F0;border:2px solid #334155;position:sticky;top:12px}
+.internet-map h3{margin:0 0 1rem;font-size:1.1rem;color:#94A3B8}
+.map-zone{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:6px 0;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid transparent;transition:.4s;position:relative;overflow:hidden}
+.map-zone .icon{font-size:1.6rem}
+.map-zone .label{font-weight:600;font-size:.95rem}
+.map-zone.infected{border-color:var(--danger);background:rgba(239,68,68,.15)}
+.map-zone.infected::after{content:'🦠';position:absolute;right:10px;animation:pulse 1.5s infinite}
+.map-zone.saved{border-color:var(--success);background:rgba(16,185,129,.2)}
+.map-zone.saved::after{content:'✅';position:absolute;right:10px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.scenario-box{background:#1E293B;border-radius:24px;padding:20px 24px;margin:1.5rem 0;display:flex;gap:18px;align-items:center;color:#F1F5F9;border:1px solid var(--accent);box-shadow:0 0 20px rgba(245,158,11,.3)}
+.scenario-avatar{font-size:3rem;background:rgba(255,255,255,.1);border-radius:20px;padding:12px}
+.scenario-box strong{color:var(--accent)}
+.card,.task-box,.reflection-box,.ai-helper{background:#fff;border-radius:20px;padding:1.5rem 1.8rem;margin:1.5rem 0;box-shadow:var(--card-shadow);border:1px solid #E2E8F0}
+.card h2,.task-box h2{margin-top:0;color:var(--primary-dark);font-size:1.45rem}
+.artifact-bar{background:#fff;border-radius:20px;padding:1rem 1.2rem;border:1px solid var(--line);margin:1rem 0}
+.artifact-bar h3{margin:0 0 .8rem;font-size:1.1rem;color:var(--primary-dark)}
+.artifact-slots{display:flex;flex-wrap:wrap;gap:8px}
+.artifact-slot{width:52px;height:52px;border-radius:14px;border:2px dashed #CBD5E1;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:#F8FAFC;opacity:.5;transition:.3s}
+.artifact-slot.filled{opacity:1;border-style:solid;border-color:var(--primary);background:var(--primary-light);animation:pop .4s}
+@keyframes pop{0%{transform:scale(.5)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.supercomputer{background:linear-gradient(135deg,#1E1B4B,#312E81);border-radius:24px;padding:1.5rem;color:#fff;margin:1.5rem 0;text-align:center}
+.supercomputer-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:1rem 0}
+@media(max-width:600px){.supercomputer-grid{grid-template-columns:repeat(3,1fr)}}
+.sc-part{background:rgba(255,255,255,.08);border-radius:12px;padding:12px 6px;font-size:1.8rem;opacity:.25;transition:.4s}
+.sc-part.active{opacity:1;background:rgba(37,99,235,.3);box-shadow:0 0 12px rgba(37,99,235,.5)}
+.sc-part .name{font-size:.65rem;display:block;margin-top:4px;color:#CBD5E1}
+.xp-bar{font-weight:700;color:var(--primary-dark);margin:.5rem 0}
+.lives{display:flex;gap:6px;margin:.5rem 0}
+.heart{font-size:1.6rem}
+.roby-panel{position:fixed;bottom:20px;right:20px;z-index:1000;max-width:320px;display:flex;gap:10px;align-items:flex-end}
+.roby-avatar{width:64px;height:64px;background:linear-gradient(135deg,#F59E0B,#D97706);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 4px 12px rgba(0,0,0,.2);flex-shrink:0;animation:bob 2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.roby-bubble{background:#fff;border-radius:16px 16px 4px 16px;padding:12px 16px;box-shadow:0 4px 20px rgba(0,0,0,.15);border:2px solid var(--accent);font-size:.95rem}
+.action-btn{background:var(--primary);color:#fff;border:none;padding:10px 22px;border-radius:30px;font-weight:700;cursor:pointer;font-size:1rem;box-shadow:0 4px 0 var(--primary-dark);margin:4px;display:inline-block;text-decoration:none}
+.action-btn:hover{background:#1D4ED8}
+.action-btn.danger{background:var(--danger);box-shadow:0 4px 0 #B91C1C}
+.action-btn:disabled{opacity:.5;cursor:not-allowed}
+.choice-grid{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.choice-card{padding:10px 16px;background:#F8FAFC;border:2px solid #E2E8F0;border-radius:14px;cursor:pointer;transition:.2s;user-select:none}
+.choice-card:hover{border-color:var(--primary)}
+.choice-card.selected{border-color:var(--primary);background:var(--primary-light)}
+.choice-card.correct,.done-right{border-color:var(--success)!important;background:#D1FAE5!important}
+.choice-card.incorrect,.done-wrong{border-color:var(--danger)!important;background:#FEE2E2!important}
+.fact-row,.sort-card{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border:2px solid #E2E8F0;border-radius:12px;padding:12px 14px;margin-bottom:8px;background:#fff}
+.fact-btns{display:flex;gap:6px;flex-wrap:wrap}
+.fake-img{position:relative;background:linear-gradient(135deg,#E0E7FF,#FCE7F3);border-radius:16px;padding:1.2rem;min-height:180px;border:2px solid #C7D2FE;margin:1rem 0}
+.hotspot{position:absolute;padding:6px 10px;background:rgba(255,255,255,.85);border:2px dashed #64748B;border-radius:10px;cursor:pointer;font-size:.9rem;transition:.2s}
+.hotspot:hover{border-color:var(--accent);background:#FFFBEB}
+.hotspot.found{border-style:solid;border-color:var(--success);background:#D1FAE5}
+.chat-box{background:#F1F5F9;border-radius:14px;padding:1rem;min-height:90px;margin-bottom:.8rem}
+.drop-row{display:flex;gap:12px;flex-wrap:wrap;margin:1rem 0}
+.drop-zone{flex:1;min-width:140px;min-height:110px;border:2px dashed #94A3B8;border-radius:16px;padding:10px;text-align:center;background:#F8FAFC}
+.drop-zone.ok{border-color:var(--success);background:#ECFDF5}
+.drop-zone.warn{border-color:var(--accent);background:#FFFBEB}
+.drop-zone.bad{border-color:var(--danger);background:#FEF2F2}
+.drag-chip{padding:8px 14px;background:#fff;border:1px solid #CBD5E1;border-radius:10px;cursor:grab;display:inline-block;margin:4px;font-size:.95rem}
+.letter-box{background:#F8FAFC;padding:1rem;border-radius:12px;border:1px solid #E2E8F0}
+.hallu-spot{border-radius:4px;padding:0 3px;}
+.hallu-spot.found{background:#FDE68A}
+.hint-btn{background:#FEF3C7;border:none;padding:6px 16px;border-radius:30px;font-weight:600;color:#92400E;cursor:pointer;margin-top:6px}
+.hint-box{display:none;background:#F8FAFC;border-radius:12px;padding:12px;margin-top:8px;border-left:4px solid var(--accent)}
+.hint-box.show{display:block}
+.cheat-sheet{background:#F8FAFC;border-radius:20px;padding:20px 24px;border:2px solid var(--primary);margin:24px 0;position:relative}
+.cheat-sheet::before{content:"📘 Кодекс честного детектива";position:absolute;top:-14px;left:20px;background:var(--primary-light);color:var(--primary-dark);padding:2px 16px;border-radius:30px;font-weight:700;font-size:.9rem;border:1px solid var(--primary)}
+.cheat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:12px}
+.cheat-item{background:#fff;border-radius:14px;padding:12px 14px;border:1px solid #E2E8F0}
+.cheat-item .title{font-weight:700;color:var(--primary-dark)}
+.ai-buttons{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem}
+.alice-q-btn{background:var(--accent-light);color:#92400E;padding:10px 16px;border-radius:30px;font-weight:600;border:1px solid var(--accent);cursor:pointer;font-size:.95rem}
+.alice-q-btn:hover{background:var(--accent);color:#fff}
+#aliceAnswer{background:#FFFBEB;border-radius:12px;padding:12px;border-left:4px solid var(--accent);display:none}
+.final-project{background:#fff;border-radius:28px;padding:2rem;border:2px solid var(--primary);margin-top:2rem}
+.final-project table{width:100%;border-collapse:collapse;margin:1rem 0}
+.final-project th,.final-project td{border:1px solid #E2E8F0;padding:8px 12px;text-align:left}
+.final-project th{background:var(--primary-light)}
+.certificate{background:linear-gradient(135deg,#FFD54F,#FFB300);border-radius:28px;padding:2rem;text-align:center;color:#3E2C0B;border:4px solid #FF8F00;margin:2rem 0;display:none}
+.certificate.show{display:block}
+.reflection-radio-label{display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;cursor:pointer}
+textarea{width:100%;min-height:80px;border-radius:12px;border:1px solid var(--line);padding:10px;font-family:inherit;font-size:1rem}
+#confetti-container{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:fall 3s ease-out forwards}
+@keyframes fall{0%{transform:translateY(-80px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.step-list{display:flex;flex-direction:column;gap:8px;min-height:60px;padding:10px;border:2px dashed var(--line);border-radius:12px;background:#F8FAFC}
+.progress-mini{font-weight:700;color:var(--primary-dark);margin-top:.5rem}
+</style>
+<link rel="stylesheet" href="ai-common.css" />
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="#">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div style="color:#aaa;">Занятие 4</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">🕵️</div>
+      <div>
+        <div class="module-pill">Модуль 1 · Этика и ИИ</div>
+        <h1>Академия детективов правды</h1>
+        <p class="subtitle">Вирус FakeBot заразил интернет — вычисли ложь и защити правду!</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="scenario-box">
+    <div class="scenario-avatar">🦠</div>
+    <div>
+      <strong>ТРЕВОГА!</strong> Вирус <strong>FakeBot</strong> заполнил сеть фейками, дипфейками и украденными текстами.
+      Ты — <strong>детектив правды</strong>. Пройди 10 миссий, собери артефакты и активируй <strong>Фильтр правды</strong>!
+    </div>
+  </div>
+
+  <div class="ai-objectives objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Понять, что ИИ может ошибаться и «галлюцинировать»</li>
+      <li>Узнать, что такое дипфейк и зачем проверять источники</li>
+      <li>Освоить простой фактчекинг в 3 шага</li>
+      <li>Уважать авторские права при работе с ИИ</li>
+    </ul>
+  </div>
+  <div class="ai-timetable">
+    <h2>⏱️ План (≈90 минут)</h2>
+    <table>
+      <tr><th>Этап</th><th>Время</th></tr>
+      <tr><td>Теория: правда, фейки, дипфейки</td><td>12 мин</td></tr>
+      <tr><td>Миссии 1–5</td><td>35 мин</td></tr>
+      <tr><td>Миссии 6–10 + фильтр правды</td><td>30 мин</td></tr>
+      <tr><td>Проект / рефлексия</td><td>13 мин</td></tr>
+    </table>
+  </div>
+
+  <div class="layout">
+    <aside class="internet-map">
+      <h3>🌍 Карта дезинформации</h3>
+      <div class="map-zone infected" data-mission="1,2"><span class="icon">📹</span><span class="label">Видео и фото</span></div>
+      <div class="map-zone infected" data-mission="3,4"><span class="icon">📰</span><span class="label">Новости</span></div>
+      <div class="map-zone infected" data-mission="5,6"><span class="icon">✍️</span><span class="label">Авторство</span></div>
+      <div class="map-zone infected" data-mission="7,8"><span class="icon">🤖</span><span class="label">ChatGPT</span></div>
+      <div class="map-zone infected" data-mission="9,10"><span class="icon">🔍</span><span class="label">Фактчекинг</span></div>
+    </aside>
+
+    <div class="main-content">
+      <div class="achieve-rail" id="achieveRail">
+        <div class="achieve-rail-title"><span>🏅 Достижения</span><span style="opacity:.7;font-size:.85rem;">справа</span></div>
+        <div id="progressProfileHost"></div>
+        <div class="total-progress">
+          <strong>Прогресс: <span id="totalPct">0</span>%</strong>
+          <div class="tp-track" style="height:12px;background:#E2E8F0;border-radius:8px;overflow:hidden;margin-top:6px;"><div class="tp-fill" id="totalProgress" style="height:100%;width:0;background:linear-gradient(90deg,#2563EB,#10B981);transition:width .3s;"></div></div>
+        </div>
+        <div class="badges-bar" style="margin:8px 0;padding:0;border:none;background:transparent;">
+          <div class="badges-row" id="badgesContainer"><span style="opacity:.5;font-size:.85rem;">Бейджи появятся после миссий</span></div>
+        </div>
+        <div class="artifact-bar">
+          <h3>🎒 Артефакты правды (<span id="artifactCount">0</span>/10)</h3>
+          <div class="artifact-slots" id="artifactSlots"></div>
+        </div>
+        <div class="xp-bar" id="xpDisplay">⭐ Уровень: Новичок | XP: 0</div>
+        <div class="lives" id="livesContainer"><span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span></div>
+      </div>
+
+      <div class="supercomputer">
+        <h3>🛡️ Фильтр правды</h3>
+        <p style="opacity:.7;font-size:.9rem;">Собери все 10 модулей</p>
+        <div class="supercomputer-grid" id="scGrid"></div>
+        <p id="scStatus" style="font-weight:700;opacity:.5;">Ожидание модулей...</p>
+      </div>
+
+      <div class="certificate" id="certificateBlock">
+        <h2>🏆 Диплом детектива правды</h2>
+        <p id="diplomaName">Имя ученика</p>
+        <p>Ты разоблачил FakeBot и защитил правду!</p>
+      </div>
+
+      <div class="card">
+        <h2>📚 Теория: можно ли верить ИИ?</h2>
+        <p>ИИ умный, но <b>не знает всё</b>. Иногда ошибается, иногда <b>придумывает</b> (галлюцинации).</p>
+        <p><b>Дипфейк</b> — поддельное фото/видео/голос. <b>Авторское право</b> — чужое нельзя брать без указания автора.</p>
+        <p><b>Фактчекинг:</b> получил ответ → подумал → 2-й источник → 3-й источник → вывод.</p>
+        <div class="cheat-sheet">
+          <div class="cheat-grid">
+            <div class="cheat-item"><div class="title">✔ Проверяю ответы</div></div>
+            <div class="cheat-item"><div class="title">✔ Не копирую чужое</div></div>
+            <div class="cheat-item"><div class="title">✔ Указываю автора</div></div>
+            <div class="cheat-item"><div class="title">✔ Думаю своей головой</div></div>
+            <div class="cheat-item"><div class="title">✔ ИИ — помощник, не замена</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-helper">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:.8rem;">
+          <span style="font-size:32px;">🤖</span>
+          <div style="font-weight:700;font-size:1.3rem;color:var(--primary-dark);">Спроси Роби</div>
+        </div>
+        <div class="ai-buttons">
+          <button class="alice-q-btn" onclick="askRoby('deepfake')">Что такое дипфейк?</button>
+          <button class="alice-q-btn" onclick="askRoby('check')">Как проверить информацию?</button>
+          <button class="alice-q-btn" onclick="askRoby('hallu')">Почему ИИ ошибается?</button>
+          <button class="alice-q-btn" onclick="askRoby('copy')">Можно ли копировать у ИИ?</button>
+        </div>
+        <div id="aliceAnswer"></div>
+      </div>
+
+      <div id="missionsContainer"></div>
+
+      <!-- ФИНАЛЬНАЯ БИТВА (видна всегда) -->
+      <div class="card" id="bossFight">
+        <h2>🦠 Финальная битва: FakeBot</h2>
+        <p>Ответь на 5 вопросов. У тебя 3 жизни.</p>
+        <div id="bossQuestions"></div>
+        <button class="action-btn danger" onclick="startBossFight()">⚔️ Начать битву!</button>
+        <p id="bossResult" style="margin-top:1rem;font-weight:700;"></p>
+      </div>
+
+      <!-- ЗАДАНИЕ НА УРОК (ПРОЕКТ) -->
+      <div class="final-project" id="finalMission">
+        <h2>🧩 Задание на урок: «Поймай ошибку ИИ»</h2>
+        <p><strong>Цель:</strong> Доказать, что ты умеешь проверять ответы искусственного интеллекта и отличать факты от вымысла.</p>
+        <p><strong>На уроке:</strong> работа в Google Документах, Microsoft Word или PowerPoint. При необходимости доделай и сдай в Classroom.</p>
+
+        <h3>📄 Техническое задание</h3>
+        <div class="slide-struct" style="background:#f0f7ff; padding:1rem; border-radius:16px; margin:1rem 0;">
+          <p><strong>Шаг 1. Выбери тему</strong><br>Например: Самое большое животное, Космос, Динозавры, Вулканы, Роботы, Олимпийские игры, Известный ученый.</p>
+          <p><strong>Шаг 2. Задай ChatGPT 5 вопросов по выбранной теме</strong><br>Сделай скриншоты всех ответов. Вставь их в документ.</p>
+          <p><strong>Шаг 3. Проведи расследование</strong><br>Для каждого ответа найди подтверждение минимум в двух источниках (энциклопедия, официальный сайт музея, NASA, Britannica, Википедия с дополнительной проверкой и т.д.).<br>
+          🟢 Если ответ верный — поставь значок «Проверено».<br>
+          🟡 Если ответ неточный — выдели сомнительное место.<br>
+          🔴 Если ответ неверный — объясни, в чем ошибка, и напиши правильный вариант.</p>
+          <p><strong>Шаг 4. Сделай таблицу</strong></p>
+          <table style="width:100%; margin:.8rem 0;">
+            <tr><th>Вопрос</th><th>Ответ ИИ</th><th>Проверка</th><th>Итог</th></tr>
+            <tr><td>...</td><td>...</td><td>Нашёл подтверждение</td><td>✅ Верно</td></tr>
+            <tr><td>...</td><td>...</td><td>Не совпало</td><td>❌ Ошибка</td></tr>
+          </table>
+          <p><strong>Шаг 5. Вывод</strong><br>Ответь на вопросы: Почему нельзя слепо доверять ИИ? Когда ИИ особенно полезен? Как ты теперь будешь проверять информацию?</p>
+        </div>
+
+        <h3>📎 Что сдаем</h3>
+        <ul>
+          <li>Word или Google Документ (PDF приветствуется).</li>
+          <li>Минимум 5 скриншотов переписки с ChatGPT.</li>
+          <li>Минимум 10 ссылок на проверенные источники (по две на каждый вопрос).</li>
+        </ul>
+
+        <h3>⭐ Критерии оценки</h3>
+        <table>
+          <tr><th>Критерий</th><th>Баллы</th></tr>
+          <tr><td>5 вопросов к ИИ</td><td>2</td></tr>
+          <tr><td>Скриншоты переписки</td><td>2</td></tr>
+          <tr><td>Проверка в двух источниках</td><td>3</td></tr>
+          <tr><td>Правильно найденные ошибки или подтверждения</td><td>2</td></tr>
+          <tr><td>Собственный вывод</td><td>1</td></tr>
+        </table>
+        <p><strong>Максимум: 10 баллов.</strong></p>
+        <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать проект в Classroom</a>
+      </div>
+
+      <div class="card">
+        <h2>🏁 Домашнее задание</h2>
+        <p>Выбери уровень (это отдельно от проекта на уроке):</p>
+        <ul>
+          <li><strong>⭐ Лёгкое:</strong> Задай ИИ 1 вопрос-факт и проверь ответ в одном надёжном источнике. Скрин.</li>
+          <li><strong>⭐⭐ Среднее:</strong> Задай ИИ 3 вопроса. Отметь верно / неверно / неточно и укажи источники.</li>
+          <li><strong>⭐⭐⭐ Сложное:</strong> Найди одну ошибку (галлюцинацию) ИИ и напиши правильный ответ со ссылкой.</li>
+        </ul>
+        <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать ДЗ в Classroom</a>
+      </div>
+
+      <div class="reflection-box">
+        <h2>💭 Твой опыт</h2>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 12px;">
+          <label class="reflection-radio-label"><input type="radio" name="satisfaction" value="yes"> 🚀 Всё понял!</label>
+          <label class="reflection-radio-label"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти всё</label>
+          <label class="reflection-radio-label"><input type="radio" name="satisfaction" value="no"> 😕 Сложно</label>
+        </div>
+        <textarea id="reflectionText" placeholder="Что нового ты узнал о проверке информации?"></textarea>
+        <button class="action-btn" onclick="submitReflection()">Отправить</button>
+        <p id="reflectionResult" style="font-weight:700;margin-top:8px;"></p>
+      </div>
+
+      <div class="lesson-nav">
+        <a class="nav-btn prev" href="Занятие_3.html">← 3. Кибердетективы</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" /> Учебный центр «РОБОВИТА»</div>
+    <div>Занятие 4 · курс «ИИ-творец»</div>
+  </div>
+</footer>
+
+<div class="roby-panel">
+  <div class="roby-avatar">🕵️</div>
+  <div class="roby-bubble" id="robyText"><strong>Роби:</strong> Привет, детектив! Начни с Миссии 1! 🔍</div>
+</div>
+<div id="confetti-container"></div>
+<script src="ai-progress.js"></script>
+<script>
+const ARTIFACTS = [
+  {id:1,icon:'🔍',name:'Лупа'},
+  {id:2,icon:'🎭',name:'Маска дипфейка'},
+  {id:3,icon:'📰',name:'Газета'},
+  {id:4,icon:'🧠',name:'Антигаллюцинация'},
+  {id:5,icon:'©️',name:'Авторское право'},
+  {id:6,icon:'🛡️',name:'Щит от плагиата'},
+  {id:7,icon:'📡',name:'Радар источников'},
+  {id:8,icon:'🔗',name:'Цепь фактов'},
+  {id:9,icon:'📋',name:'Алгоритм'},
+  {id:10,icon:'📜',name:'Кодекс'}
+];
+
+const ROBY_MSGS = {
+  start:'Привет! FakeBot в сети. Начни с <strong>Миссии 1</strong> — отдели правду от лжи! 🔍',
+  mission1:'Отлично! Лупа твоя. Теперь ищи дипфейк-улики! 🎭',
+  mission2:'Дипфейк разоблачён! Проверь новости. 📰',
+  mission3:'Новости отсортированы! Ищи галлюцинации ИИ. 🧠',
+  mission4:'Галлюцинация поймана! Разберись с авторством. ©️',
+  mission5:'Автор защищён! Теперь — плагиат. 🛡️',
+  mission6:'Плагиат побеждён! Оцени источники. 📡',
+  mission7:'Источники проверены! Найди первоисточник. 🔗',
+  mission8:'Цепь фактов собрана! Собери алгоритм. 📋',
+  mission9:'Алгоритм готов! Прими кодекс детектива. 📜',
+  mission10:'Кодекс принят! Фильтр правды почти готов!',
+  artifact:'Артефакт получен!',
+  wrong:'Упс! Подумай ещё раз. 🤔',
+  life:'Осторожно! Минус жизнь. ❤️',
+  supercomputer:'🎉 ФИЛЬТР ПРАВДЫ АКТИВИРОВАН!',
+  boss_win:'Ты победил FakeBot! Ты — детектив правды! 🏆'
+};
+
+const ALICE = {
+  deepfake:'Дипфейк — поддельное фото, видео или голос, сделанное ИИ. Смотри на странные пальцы, тени, зубы, серьги.',
+  check:'Получил ответ → подумал → нашёл 2-й источник → 3-й → сделал вывод. Не верь одному источнику!',
+  hallu:'ИИ иногда «галлюцинирует»: придумывает факты, имена, даты. Ответ может звучать уверенно — но быть ложью.',
+  copy:'Копировать ответ ИИ и сдавать как свой — плагиат. Можно взять идеи, но писать и проверять самому.'
+};
+
+let xp=0, lives=3, studentName='Детектив';
+const missionsCompleted=new Set(), artifactsCollected=new Set();
+
+function persistProgress(){ if(window.RobovitaProgress) RobovitaProgress.save(); }
+function restoreProgressVisuals(){
+  artifactsCollected.forEach(id=>{
+    const art=ARTIFACTS.find(a=>a.id===id); if(!art)return;
+    const slot=document.getElementById('art'+id);
+    if(slot){ slot.textContent=art.icon; slot.classList.add('filled'); }
+    document.getElementById('sc'+id)?.classList.add('active');
+  });
+  if(artifactsCollected.size===10){
+    const st=document.getElementById('scStatus');
+    if(st){ st.textContent='⚡ ФИЛЬТР ПРАВДЫ АКТИВИРОВАН!'; st.style.opacity='1'; }
+  }
+}
+
+window.addEventListener('load',()=>{
+  initArtifacts(); initSupercomputer();
+  RobovitaProgress.mount({
+    key:'robovita_l4',
+    defaultName:'Детектив',
+    promptText:'Введи своё имя, детектив:',
+    host:'#progressProfileHost',
+    getState(){
+      return {
+        xp, lives,
+        missions:[...missionsCompleted],
+        artifacts:[...artifactsCollected],
+        badges:[...document.querySelectorAll('#badgesContainer .badge')].map(b=>b.dataset.badge||b.textContent)
+      };
+    },
+    applyState(d){
+      xp=d.xp||0; lives=d.lives!=null?d.lives:3;
+      (d.missions||[]).forEach(id=>missionsCompleted.add(+id));
+      (d.artifacts||[]).forEach(id=>artifactsCollected.add(+id));
+      (d.badges||[]).forEach(name=>{
+        if(!name)return;
+        const box=document.getElementById('badgesContainer');
+        if(!box||box.querySelector('[data-badge="'+name+'"]'))return;
+        const hint=box.querySelector('span[style]'); if(hint)hint.remove();
+        const b=document.createElement('span'); b.className='badge'; b.dataset.badge=name; b.textContent=name; box.appendChild(b);
+      });
+    },
+    onNameChange(name){
+      studentName=name;
+      const el=document.getElementById('diplomaName'); if(el) el.textContent=name;
+    },
+    onReady(){ restoreProgressVisuals(); robySay('start'); updateUI(); }
+  });
+});
+
+function initArtifacts(){
+  ARTIFACTS.forEach(a=>{
+    const d=document.createElement('div'); d.className='artifact-slot'; d.id='art'+a.id; d.title=a.name; d.textContent='?';
+    document.getElementById('artifactSlots').appendChild(d);
+  });
+}
+function initSupercomputer(){
+  ARTIFACTS.forEach(a=>{
+    const d=document.createElement('div'); d.className='sc-part'; d.id='sc'+a.id;
+    d.innerHTML=a.icon+'<span class="name">'+a.name+'</span>';
+    document.getElementById('scGrid').appendChild(d);
+  });
+}
+function robySay(k){document.getElementById('robyText').innerHTML='<strong>Роби:</strong> '+(ROBY_MSGS[k]||ROBY_MSGS.start);}
+function askRoby(k){const box=document.getElementById('aliceAnswer'); box.style.display='block'; box.textContent='🤖 '+ALICE[k];}
+function addXP(n){xp+=n;updateUI();}
+function loseLife(){if(lives>0)lives--;robySay('life');updateUI();if(lives===0){alert('💔 Жизни закончились! Попробуй снова.');lives=3;updateUI();}}
+function toggleHint(id){document.getElementById(id).classList.toggle('show');}
+
+function updateUI(){
+  document.getElementById('artifactCount').textContent=artifactsCollected.size;
+  const pct=Math.round((missionsCompleted.size/10)*100);
+  const pctEl=document.getElementById('totalPct');
+  const fillEl=document.getElementById('totalProgress');
+  if(pctEl)pctEl.textContent=pct;
+  if(fillEl)fillEl.style.width=pct+'%';
+  let level='Новичок'; if(xp>=100)level='Детектив'; if(xp>=250)level='Эксперт'; if(xp>=500)level='Защитник правды';
+  document.getElementById('xpDisplay').textContent=`⭐ ${level} | XP: ${xp}`;
+  document.querySelectorAll('.heart').forEach((h,i)=>h.textContent=i<lives?'❤️':'🖤');
+  document.querySelectorAll('.map-zone').forEach(z=>{
+    const ms=z.dataset.mission.split(',').map(Number);
+    const ok=ms.every(m=>missionsCompleted.has(m));
+    z.classList.toggle('saved',ok); z.classList.toggle('infected',!ok);
+  });
+  persistProgress();
+}
+
+function earnBadge(name){
+  const box=document.getElementById('badgesContainer');
+  if(!box)return;
+  if(box.querySelector('[data-badge="'+name+'"]'))return;
+  const hint=box.querySelector('span[style]');
+  if(hint)hint.remove();
+  const b=document.createElement('span');
+  b.className='badge'; b.dataset.badge=name; b.textContent=name;
+  box.appendChild(b);
+  persistProgress();
+}
+
+function completeMission(id){
+  if(missionsCompleted.has(id))return;
+  missionsCompleted.add(id);
+  const art=ARTIFACTS.find(a=>a.id===id);
+  if(art){
+    artifactsCollected.add(id);
+    document.getElementById('art'+id).textContent=art.icon;
+    document.getElementById('art'+id).classList.add('filled');
+    document.getElementById('sc'+id).classList.add('active');
+  }
+  addXP(50); earnBadge('Миссия '+id); robySay('mission'+id);
+  if(artifactsCollected.size===10){
+    document.getElementById('scStatus').textContent='⚡ ФИЛЬТР ПРАВДЫ АКТИВИРОВАН!';
+    document.getElementById('scStatus').style.opacity='1';
+    robySay('supercomputer'); launchConfetti();
+  }
+  updateUI();
+}
+
+function createMission(id,title,desc,html){
+  const art=ARTIFACTS.find(a=>a.id===id);
+  const d=document.createElement('div'); d.className='task-box'; d.id='mission'+id;
+  d.innerHTML=`<h2>🕵️ Миссия ${id}: ${title} <span style="font-size:.85rem;color:#888;">→ ${art.icon} ${art.name}</span></h2><p>${desc}</p>${html}`;
+  document.getElementById('missionsContainer').appendChild(d);
+}
+
+/* ===== МИССИЯ 1: Правда / Ложь (10 фактов) с проверкой у ИИ ===== */
+const facts = [
+  { t:'У пауков восемь ног.', truth:true, ai:'Согласно биологии, паукообразные имеют 8 ходильных ног. Но осторожно: иногда люди путают с насекомыми (у них 6). Проверь в энциклопедии!' },
+  { t:'Солнце меньше Луны.', truth:false, ai:'Диаметр Солнца около 1,4 млн км, Луны — 3,5 тыс км. Солнце во много раз больше. Но с Земли они выглядят одинаково из-за расстояния. Удивительно, правда?' },
+  { t:'Пингвины умеют летать.', truth:false, ai:'Пингвины не летают — они отличные пловцы! Их крылья превратились в ласты. Интересный факт: когда-то их предки, возможно, умели летать.' },
+  { t:'Вода при нормальном давлении кипит при 100°C.', truth:true, ai:'Да, при давлении 1 атмосфера (на уровне моря) вода закипает при 100°C. Но в горах, где давление ниже, температура кипения падает. Проверь на опыте!' },
+  { t:'Эйфелева башня находится в Лондоне.', truth:false, ai:'Эйфелева башня — символ Парижа, Франция. В Лондоне есть Биг-Бен и Тауэрский мост. Не перепутай!' },
+  { t:'Кит — это рыба.', truth:false, ai:'Киты — млекопитающие, они дышат воздухом и кормят детёнышей молоком. Рыбы же дышат жабрами. Огромная разница!' },
+  { t:'Земля вращается вокруг Солнца.', truth:true, ai:'Абсолютно верно! Это гелиоцентрическая система. Оборот занимает примерно 365 дней. Раньше люди думали, что Солнце вращается вокруг Земли.' },
+  { t:'Арбуз — это ягода.', truth:true, ai:'Ботаники относят арбуз к ягодам из-за сочной мякоти и множества семян. Хотя в быту его называют фруктом или даже овощем. Наука удивляет!' },
+  { t:'Великая Китайская стена видна из космоса невооружённым глазом.', truth:false, ai:'Это миф! Стена слишком узкая и сливается с ландшафтом. Астронавты подтверждают: её не видно без специальной оптики.' },
+  { t:'Слоны умеют прыгать.', truth:false, ai:'Взрослые слоны не могут прыгать — они слишком тяжёлые. Зато они отлично плавают и ходят почти бесшумно. Слонята иногда подпрыгивают, но это не настоящий прыжок.' }
+];
+let fOk = 0;
+createMission(1, 'Всегда ли ИИ говорит правду?', 'ИИ (и FakeBot) сыпят фактами. Отметь каждое утверждение: можно верить или нет? Если сомневаешься — спроси у ИИ-помощника.',
+  `<div style="text-align:center; margin-bottom:1rem;"><span style="font-size:3rem;">🤖</span><p style="font-weight:600; color:var(--primary-dark);">Даже если ответ выглядит убедительно — его нужно проверить.</p></div>
+   ${facts.map((f,i)=>`<div class="fact-row" id="fact${i}" style="justify-content:space-between; flex-wrap:wrap;">
+     <span style="flex:1; margin-right:12px; min-width:200px;">${f.t}</span>
+     <div class="fact-btns" style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+       <button class="action-btn" onclick="askFactAI(${i})" style="min-width:40px; background:var(--accent); box-shadow:0 4px 0 #b45309;" title="Спросить ИИ">🤖</button>
+       <button class="action-btn" onclick="ansFact(${i},true)" style="min-width:80px;">✅ Верю</button>
+       <button class="action-btn" onclick="ansFact(${i},false)" style="min-width:80px;">❌ Не верю</button>
+     </div>
+     <div id="ai-response-${i}" style="width:100%; margin-top:8px; background:#F0F9FF; border-left:4px solid var(--primary); border-radius:8px; padding:10px; display:none; font-style:italic;"></div>
+   </div>`).join('')}
+   <p class="progress-mini" id="fProg">Верно: 0 / 10</p>
+   <button class="hint-btn" onclick="toggleHint('h1')">📖 Подсказка преподавателя</button>
+   <div id="h1" class="hint-box">Пауки — 8 ног. Солнце огромное. Пингвины не летают. Кипение — 100°C. Эйфелева башня — в Париже. Кит — млекопитающее. Земля вращается вокруг Солнца. Арбуз — ягода. Стену не видно из космоса. Слоны не прыгают.</div>`
+);
+function askFactAI(index){ const div=document.getElementById(`ai-response-${index}`); div.style.display='block'; div.innerHTML=`<strong>🤖 ИИ-помощник:</strong> ${facts[index].ai}`; }
+function ansFact(i,val){
+  const row=document.getElementById('fact'+i); if(row.dataset.done)return;
+  row.dataset.done='1'; row.querySelectorAll('button').forEach(b=>b.disabled=true);
+  if(val===facts[i].truth){row.classList.add('done-right');fOk++;}
+  else{row.classList.add('done-wrong');loseLife();robySay('wrong');}
+  document.getElementById('fProg').textContent=`Верно: ${fOk} / 10`;
+  if(fOk===10)completeMission(1);
+}
+
+/* ===== МИССИЯ 2: Настоящее или ИИ? (12 картинок) ===== */
+const diImages = [
+  { url:'https://media.istockphoto.com/id/104355461/ru/%D1%84%D0%BE%D1%82%D0%BE/%D0%B2%D0%B8%D0%B4-%D1%81%D0%BF%D0%B5%D1%80%D0%B5%D0%B4%D0%B8-%D0%B1%D1%80%D0%B8%D1%82%D0%B0%D0%BD%D1%81%D0%BA%D0%B0%D1%8F-%D0%B0%D0%BC%D0%B5%D1%80%D0%B8%D0%BA%D0%B0%D0%BD%D1%81%D0%BA%D0%B0%D1%8F-%D0%BA%D0%BE%D1%80%D0%BE%D1%82%D0%BA%D0%BE%D1%88%D1%91%D1%80%D1%81%D1%82%D0%BD%D0%B0%D1%8F-%D0%BA%D0%BE%D1%88%D0%BA%D0%B0-7-%D0%BC%D0%B5%D1%81%D1%8F%D1%86%D0%B5%D0%B2-%D1%81%D0%B8%D0%B4%D1%8F.jpg?s=612x612&w=0&k=20&c=tHDoLbkg2ESuqR6LiK_-GCPzqdlWaqr64mgTRRwdEz0=', isAI:false },
+  { url:'https://yaart-web-alice-images.s3.yandex.net/063f50ca8cd411f19d7a6ab37608c299:1', isAI:true },
+  { url:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmVQGvEfUSg103OkEm8-0Yidw0LwINpN4_mgnDL7tRuRpq085tBFleuoA&s=10', isAI:false },
+  { url:'https://yaart-web-alice-images.s3.yandex.net/5248a8818cd411f18bd642faddbe0e51:1', isAI:true },
+  { url:'https://cdn.ingos.ru/images/blog/Bugatti-La-Voiture-Noire.jpg', isAI:false },
+  { url:'https://yaart-web-alice-images.s3.yandex.net/7c0187698cd411f1a484a20855596322:1', isAI:true },
+  { url:'https://www.bethowen.ru/upload/medialibrary/a60/a609e3d12043827f66a8c1d5fba60e66.jpg', isAI:false },
+  { url:'https://yaart-web-alice-images.s3.yandex.net/d785a1128cd411f185d76ef44c42a799:1', isAI:true },
+  { url:'https://florina.kh.ua/image/catalog/News/kamelija.jpg', isAI:false },
+  { url:'https://yaart-web-alice-images.s3.yandex.net/023798c38cd511f19715c2d4c6bbc87f:1', isAI:true },
+  { url:'https://jooinn.com/images/landscape-photography-of-mountain-and-body-of-water.jpg', isAI:false },
+  { url:'https://yaart-web-alice-images.s3.yandex.net/1c9133b28cd511f18bd642faddbe0e51:1', isAI:true }
+];
+let diOk=0;
+createMission(2,'Настоящее или ИИ?','Определи, где реальное фото, а где подделка от ИИ.',
+  `<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:1.2rem; margin-bottom:1.5rem;">
+    ${diImages.map((img,i)=>`<div class="di-card" id="di${i}" style="border:2px solid #E2E8F0; border-radius:16px; overflow:hidden; background:#fff; box-shadow:0 6px 10px rgba(0,0,0,0.08); display:flex; flex-direction:column;">
+      <img src="${img.url}" alt="Фото ${i+1}" style="width:100%; height:180px; object-fit:cover;" />
+      <div style="padding:12px; display:flex; gap:8px; justify-content:center; margin-top:auto;">
+        <button class="action-btn" onclick="ansDI(${i},false)" style="font-size:1rem; padding:8px 18px; flex:1;">📸 Реальное</button>
+        <button class="action-btn" onclick="ansDI(${i},true)" style="font-size:1rem; padding:8px 18px; flex:1;">🤖 ИИ</button>
+      </div>
+      <div id="diRes${i}" style="text-align:center; font-weight:700; font-size:1.3rem; padding:8px 0;"></div>
+    </div>`).join('')}
+  </div>
+  <p class="progress-mini" id="diProg" style="font-size:1.1rem;">Правильно: 0 / 12</p>
+  <button class="hint-btn" onclick="toggleHint('h2')">📖 Подсказка</button>
+  <div id="h2" class="hint-box" style="font-size:1rem;">Признаки ИИ: лишние пальцы, размытые детали, слишком гладкая кожа, нелогичные тени, летающие предметы, рыбы на деревьях.</div>`
+);
+function ansDI(i,userGuessIsAI){
+  const card=document.getElementById('di'+i); if(card.dataset.done)return;
+  card.dataset.done='1'; card.querySelectorAll('button').forEach(b=>b.disabled=true);
+  const correct=diImages[i].isAI, resDiv=document.getElementById('diRes'+i);
+  if(userGuessIsAI===correct){diOk++;resDiv.textContent='✅';resDiv.style.color='var(--success)';}
+  else{resDiv.textContent='❌';resDiv.style.color='var(--danger)';loseLife();robySay('wrong');}
+  document.getElementById('diProg').textContent=`Правильно: ${diOk} / 12`;
+  if(diOk===12)completeMission(2);
+}
+
+/* ===== МИССИЯ 3: Новостной светофор (15 карточек) ===== */
+const news=[
+  {id:'n0',t:'NASA опубликовало фото Марса на официальном сайте',z:'ok'},
+  {id:'n1',t:'«Срочно!!! Учёные нашли дракона в школе» (без источника)',z:'bad'},
+  {id:'n2',t:'Друг переслал новость из чата без ссылки',z:'warn'},
+  {id:'n3',t:'Статья в Britannica про вулканы',z:'ok'},
+  {id:'n4',t:'Реклама: «ИИ дарит 1 000 000 рублей каждому»',z:'bad'},
+  {id:'n5',t:'Новость на сайте Минздрава о пользе прививок',z:'ok'},
+  {id:'n6',t:'Пост в TikTok: «Шоколад вылечивает простуду за 5 минут»',z:'bad'},
+  {id:'n7',t:'Статья в Википедии со ссылками на источники',z:'ok'},
+  {id:'n8',t:'Письмо от неизвестного отправителя с просьбой перейти по ссылке',z:'bad'},
+  {id:'n9',t:'Прогноз погоды от Гидрометцентра на официальном сайте',z:'ok'},
+  {id:'n10',t:'Сообщение в родительском чате: «Завтра отменят школу!!!» (нет подтверждения)',z:'warn'},
+  {id:'n11',t:'Репортаж на BBC с указанием даты и места события',z:'ok'},
+  {id:'n12',t:'Картинка в Instagram: «Знаменитость умерла» без ссылки на новости',z:'bad'},
+  {id:'n13',t:'Заметка в местной газете о городском празднике',z:'ok'},
+  {id:'n14',t:'Сайт с «секретными методами заработка», требующий регистрацию',z:'bad'}
+];
+createMission(3,'Новостной светофор','Перетащи каждую новость в подходящую зону.',
+  `<div class="drop-row" style="flex-wrap:wrap; gap:0.8rem;">
+     <div class="drop-zone ok" id="nz-ok" ondragover="allowDrop(event)" ondrop="dropNews(event)" style="min-height:150px;"><strong>🟢 Надёжно</strong></div>
+     <div class="drop-zone warn" id="nz-warn" ondragover="allowDrop(event)" ondrop="dropNews(event)" style="min-height:150px;"><strong>🟡 Проверить</strong></div>
+     <div class="drop-zone bad" id="nz-bad" ondragover="allowDrop(event)" ondrop="dropNews(event)" style="min-height:150px;"><strong>🔴 Фейк/опасно</strong></div>
+   </div>
+   <div id="newsBank" style="display:flex; flex-wrap:wrap; gap:8px; margin:1rem 0;">${news.map(n=>`<div class="drag-chip" draggable="true" ondragstart="dragStart(event)" id="${n.id}">${n.t}</div>`).join('')}</div>
+   <button class="action-btn" onclick="checkNews()">Проверить</button><p id="newsRes" class="progress-mini"></p>
+   <button class="hint-btn" onclick="toggleHint('hintNews')">📖 Как распознать фейк?</button>
+   <div id="hintNews" class="hint-box" style="font-size:0.95rem;"><b>Признаки фейковой информации:</b><br>❗ Нет автора или источника<br>❗ Кричащие заголовки<br>❗ Обещания денег<br>❗ Требование перейти по ссылке<br>❗ Противоречит официальным данным<br>🟡 Если источник неизвестен — отнеси в «Проверить»</div>`
+);
+const newsAns={ n0:'nz-ok',n1:'nz-bad',n2:'nz-warn',n3:'nz-ok',n4:'nz-bad',n5:'nz-ok',n6:'nz-bad',n7:'nz-ok',n8:'nz-bad',n9:'nz-ok',n10:'nz-warn',n11:'nz-ok',n12:'nz-bad',n13:'nz-ok',n14:'nz-bad' };
+let dragEl=null;
+function dragStart(e){dragEl=e.target;e.dataTransfer.setData('text',e.target.id);}
+function allowDrop(e){e.preventDefault();}
+function dropNews(e){e.preventDefault();const zone=e.target.closest('.drop-zone');if(zone&&dragEl)zone.appendChild(dragEl);}
+function checkNews(){
+  let ok=0; Object.keys(newsAns).forEach(id=>{const el=document.getElementById(id);if(el&&el.parentElement&&el.parentElement.id===newsAns[id])ok++;});
+  document.getElementById('newsRes').textContent=`Правильно: ${ok} / 15`;
+  if(ok===15)completeMission(3); else{loseLife();robySay('wrong');}
+}
+
+/* ===== МИССИЯ 4: Охота на галлюцинации (кликабельные ошибки + ссылки на DeepSeek) ===== */
+const errorFragments=[{id:1,word:'Лондон',correct:'Париж',prompt:'Где находится Эйфелева башня?'},{id:2,word:'Ивана Петрова',correct:'Гюстава Эйфеля',prompt:'Кто архитектор Эйфелевой башни?'},{id:3,word:'Темза',correct:'Сена',prompt:'На какой реке стоит Эйфелева башня?'},{id:4,word:'самой высокой постройкой в мире',correct:'уже не самая высокая',prompt:'Какое здание самое высокое в мире сейчас?'},{id:5,word:'1900 года',correct:'1889 года',prompt:'В каком году проходила Всемирная выставка, к которой построили башню?'}];
+const fullText=`Эйфелева башня была построена в 1889 году в городе <span class="hallu-spot" data-id="1">Лондон</span> по проекту архитектора <span class="hallu-spot" data-id="2">Ивана Петрова</span>. Её высота составляет 330 метров. Башня находится на берегу реки <span class="hallu-spot" data-id="3">Темза</span> и является <span class="hallu-spot" data-id="4">самой высокой постройкой в мире</span>. Каждый год её посещают более 10 миллионов человек. Интересный факт: башня была построена для Всемирной выставки <span class="hallu-spot" data-id="5">1900 года</span>.`;
+let errorsFound=0,totalErrors=5;
+createMission(4,'Охота на галлюцинации',`<p>ChatGPT выдал такой текст об Эйфелевой башне. Не все факты в нём верны.</p>
+  <div class="letter-box" style="line-height:1.8; background:#F9FAFB; padding:1rem; border-radius:12px;"><p><strong>🤖 ChatGPT:</strong> ${fullText}</p></div>
+  <p style="font-weight:600; margin-top:1rem;">🔍 Проверь подозрительные места с помощью DeepSeek:</p>
+  <ul style="list-style:none; padding:0;">${errorFragments.map(f=>`<li style="margin-bottom:4px;"><a href="https://chat.deepseek.com/" target="_blank" style="color:var(--primary-dark); font-weight:600; text-decoration:underline;">🔗 ${f.prompt}</a></li>`).join('')}</ul>
+  <p style="font-weight:600; margin-top:1rem;">Кликни на <span style="background:#FFF3CD; padding:2px 6px; border-radius:4px;">неправильные слова</span> в тексте выше, чтобы отметить ошибки.</p>
+  <p class="progress-mini" id="hProg">Найдено ошибок: 0 / 5</p>
+  <button class="hint-btn" onclick="toggleHint('hint4')">📖 Подсказка преподавателя</button>
+  <div id="hint4" class="hint-box">Ошибки: Лондон → Париж, Иван Петров → Гюстав Эйфель, Темза → Сена, самая высокая → уже не рекорд, 1900 → 1889. Остальное верно.</div>`
+);
+setTimeout(()=>{document.querySelectorAll('.hallu-spot').forEach(el=>{el.addEventListener('click',function(){if(this.dataset.clicked)return;this.dataset.clicked='1';this.classList.add('found');errorsFound++;document.getElementById('hProg').textContent=`Найдено ошибок: ${errorsFound} / 5`;if(errorsFound===totalErrors)completeMission(4);});});},100);
+
+/* ===== МИССИЯ 5: Авторское право ===== */
+createMission(5,'Авторское право','Ты делаешь презентацию. Выбирай правильные действия в каждой ситуации.',
+  `<div class="chat-box" id="copySim"></div><div id="copyActs"></div><p id="copyRes"></p>`);
+const copySteps=[{msg:'Ты нашёл крутую картинку кота в интернете. Что сделаешь?',acts:['Просто вставлю','Укажу автора и источник','Скажу, что нарисовал сам'],ok:1},{msg:'Друг дал свой рисунок и разрешил использовать. Что сделать?',acts:['Взять и указать друга','Взять молча','Переименовать под себя'],ok:0},{msg:'ИИ сгенерировал картинку для ДЗ. Как честно?',acts:['Сдать как «мою работу без слов»','Написать: «картинка с помощью ИИ»','Сказать, что это фото с телефона'],ok:1}];
+let copyI=0;
+function renderCopy(){const s=document.getElementById('copySim'),a=document.getElementById('copyActs');if(copyI>=copySteps.length){s.innerHTML+='<p><strong>✅ Ты уважаешь авторские права!</strong></p>';a.innerHTML='';completeMission(5);return;}const st=copySteps[copyI];s.innerHTML+=`<p><strong>Ситуация:</strong> ${st.msg}</p>`;a.innerHTML=st.acts.map((x,i)=>`<button class="action-btn" onclick="pickCopy(${i})">${x}</button>`).join('');}
+function pickCopy(c){if(c===copySteps[copyI].ok)document.getElementById('copyRes').textContent='✅';else{document.getElementById('copyRes').textContent='❌';loseLife();robySay('wrong');}copyI++;renderCopy();}
+renderCopy();
+
+/* ===== МИССИЯ 6: Щит от плагиата ===== */
+createMission(6,'Щит от плагиата','Отметь каждый поступок: можно ✅ или нельзя ❌',`<div id="plag">${[['Скопировать сочинение ChatGPT и сдать как своё',false],['Попросить ИИ набросать план, а текст написать самому',true],['Взять абзац из Википедии без ссылки',false],['Пересказать своими словами и указать источник',true],['Сказать учителю, что пользовался ИИ как помощником',true]].map((x,i)=>`<div class="sort-card" id="pl${i}"><span>${x[0]}</span><div class="fact-btns"><button class="action-btn" onclick="plag(${i},true,${x[1]})">✅ Можно</button><button class="action-btn" onclick="plag(${i},false,${x[1]})">❌ Нельзя</button></div></div>`).join('')}</div><p class="progress-mini" id="plProg">Верно: 0 / 5</p>`);
+let plOk=0;
+function plag(i,ans,need){const row=document.getElementById('pl'+i);if(row.dataset.done)return;row.dataset.done='1';row.querySelectorAll('button').forEach(b=>b.disabled=true);if(ans===need){row.classList.add('done-right');plOk++;}else{row.classList.add('done-wrong');loseLife();robySay('wrong');}document.getElementById('plProg').textContent=`Верно: ${plOk} / 5`;if(plOk===5)completeMission(6);}
+
+/* ===== МИССИЯ 7: Радар источников ===== */
+createMission(7,'Радар источников','Где лучше искать подтверждение факта «Вода кипит при 100°C»? Выбери ВСЕ надёжные.',`<div class="choice-grid" id="srcGrid"><div class="choice-card" data-good="1">📚 Учебник физики</div><div class="choice-card" data-good="1">🌐 Britannica / энциклопедия</div><div class="choice-card" data-good="0">💬 Случайный TikTok</div><div class="choice-card" data-good="1">🔬 Сайт университета / NASA</div><div class="choice-card" data-good="0">😱 Анонимный чат «секреты науки»</div><div class="choice-card" data-good="0">📢 Рекламный пост «шок-факт»</div></div><button class="action-btn" onclick="checkSrc()">Проверить выбор</button><p id="srcRes" class="progress-mini"></p>`);
+document.getElementById('srcGrid').addEventListener('click',e=>{if(e.target.classList.contains('choice-card'))e.target.classList.toggle('selected');});
+function checkSrc(){const cards=[...document.querySelectorAll('#srcGrid .choice-card')];let good=true;cards.forEach(c=>{const sel=c.classList.contains('selected'),need=c.dataset.good==='1';if(sel!==need)good=false;c.classList.toggle('correct',need);c.classList.toggle('incorrect',sel&&!need);});if(good){document.getElementById('srcRes').textContent='✅ Все надёжные источники выбраны!';completeMission(7);}else{document.getElementById('srcRes').textContent='❌ Есть ошибки. Нужны: учебник, энциклопедия, научный сайт.';loseLife();robySay('wrong');}}
+
+/* ===== МИССИЯ 8: Цепь фактов ===== */
+const chain=[{msg:'В соцсетях вирусная новость: «На Марсе нашли школу роботов!». Что сделаешь первым?',acts:['Поделюсь с друзьями','Спрошу у автора, откуда информация','Поищу другие источники'],ok:2},{msg:'Ты нашёл ещё один сайт, который повторяет ту же новость. Что дальше?',acts:['Достаточно','Проверю, ссылаются ли они на официальные источники','Сразу сделаю вывод, что это правда'],ok:1},{msg:'Ни один из сайтов не указывает официальных источников. Как поступишь?',acts:['Поверю','Найду заявление NASA','Закрою расследование'],ok:1},{msg:'NASA пишет: новость — фейк. Что делаешь?',acts:['Сравню с другими официальными источниками','Решу, что NASA скрывает правду','Проигнорирую'],ok:0},{msg:'Ещё два научных журнала подтверждают фейк. Вывод?',acts:['Это точно фейк','Возможно, заговор','Нужно ещё подумать'],ok:0},{msg:'Ты готов опубликовать опровержение. Что напишешь?',acts:['«Новость — фейк, вот ссылки на NASA»','«Мне кажется, это неправда»','«Все врут»'],ok:0}];
+let chI=0;
+createMission(8,'Цепь фактов','FakeBot пишет: «На Марсе нашли школу роботов». Пройди расследование шаг за шагом.',`<div class="chat-box" id="chainSim"></div><div id="chainActs"></div><p id="chainRes"></p>`);
+function renderChain(){const s=document.getElementById('chainSim'),a=document.getElementById('chainActs');if(chI>=chain.length){s.innerHTML+='<p><strong>✅ Расследование завершено: это фейк!</strong></p>';a.innerHTML='';completeMission(8);return;}const st=chain[chI];s.innerHTML+=`<p><strong>Шаг ${chI+1}:</strong> ${st.msg}</p>`;a.innerHTML=st.acts.map((x,i)=>`<button class="action-btn" onclick="pickChain(${i})">${x}</button>`).join('');}
+function pickChain(c){if(c===chain[chI].ok)document.getElementById('chainRes').textContent='✅ Верный выбор!';else{document.getElementById('chainRes').textContent='❌ Это действие не приведёт к правде. Подумай лучше.';loseLife();robySay('wrong');}chI++;renderChain();}
+renderChain();
+
+/* ===== МИССИЯ 9: Алгоритм проверки ===== */
+const stepsOrder=['Получил ответ','Подумал','Нашёл 2-й источник','Нашёл 3-й источник','Сделал вывод'];
+createMission(9,'Алгоритм проверки','Перетащи шаги в правильный порядок сверху вниз.',`<p><strong>Правильный порядок:</strong></p><div class="step-list" id="stepTarget" ondragover="allowDrop(event)" ondrop="dropStep(event)"></div><p><strong>Банк шагов:</strong></p><div id="stepBank">${[...stepsOrder].sort(()=>Math.random()-.5).map((t,i)=>`<div class="drag-chip" draggable="true" ondragstart="dragStart(event)" id="st${i}" data-text="${t}">${t}</div>`).join('')}</div><button class="action-btn" onclick="checkSteps()">Проверить порядок</button><p id="stRes" class="progress-mini"></p>`);
+function dropStep(e){e.preventDefault();const list=document.getElementById('stepTarget');if(dragEl)list.appendChild(dragEl);}
+function checkSteps(){const got=[...document.getElementById('stepTarget').children].map(c=>c.dataset.text);if(JSON.stringify(got)===JSON.stringify(stepsOrder)){document.getElementById('stRes').textContent='✅ Верный алгоритм!';completeMission(9);}else{document.getElementById('stRes').textContent='❌ Порядок неверный.';loseLife();robySay('wrong');}}
+
+/* ===== МИССИЯ 10: Кодекс ===== */
+createMission(10,'Кодекс честного пользователя ИИ','Выбери ВСЕ правила кодекса.',`<div class="choice-grid" id="codeGrid"><div class="choice-card" data-good="1">✅ Проверяю ответы ИИ</div><div class="choice-card" data-good="1">✅ Не копирую чужое как своё</div><div class="choice-card" data-good="1">✅ Указываю автора и источники</div><div class="choice-card" data-good="1">✅ Думаю своей головой</div><div class="choice-card" data-good="0">❌ Верю всему, что пишет ИИ</div><div class="choice-card" data-good="0">❌ Сдаю сочинения ChatGPT без правок</div><div class="choice-card" data-good="1">✅ Использую ИИ как помощника</div><div class="choice-card" data-good="0">❌ Распространяю непроверенные новости</div></div><button class="action-btn" onclick="checkCode()">Принять кодекс</button><p id="codeRes" class="progress-mini"></p>`);
+document.getElementById('codeGrid').addEventListener('click',e=>{if(e.target.classList.contains('choice-card'))e.target.classList.toggle('selected');});
+function checkCode(){const cards=[...document.querySelectorAll('#codeGrid .choice-card')];let good=true;cards.forEach(c=>{const sel=c.classList.contains('selected'),need=c.dataset.good==='1';if(sel!==need)good=false;});if(good){document.getElementById('codeRes').textContent='✅ Кодекс принят!';completeMission(10);}else{document.getElementById('codeRes').textContent='❌ Выбери все правильные и не выбирай вредные.';loseLife();robySay('wrong');}}
+
+/* ===== ФИНАЛЬНАЯ БИТВА (доступна всегда, но проверяет артефакты) ===== */
+const bossQ=[{q:'Что такое дипфейк?',ok:1,o:['Фото кота','Поддельное видео/фото/голос','Игра']},{q:'Можно ли верить всему от ChatGPT?',ok:1,o:['Да','Нет, нужно проверять']},{q:'Что такое галлюцинация ИИ?',ok:1,o:['Ошибка в коде','Выдуманный факт','Картинка']},{q:'Нужно ли указывать автора картинки?',ok:0,o:['Да','Нет']},{q:'Как проверить новость?',ok:1,o:['Спросить у друга','Найти первоисточник','Поверить заголовку']}];
+let bI=0,bQs=[];
+function startBossFight(){if(artifactsCollected.size<10){alert('Сначала собери все 10 артефактов правды!');return;}bI=0;bQs=bossQ.sort(()=>Math.random()-.5).slice(0,5);showBoss();}
+function showBoss(){const c=document.getElementById('bossQuestions');if(bI>=bQs.length){document.getElementById('bossResult').textContent='🎉 FakeBot побеждён!';document.getElementById('certificateBlock').classList.add('show');robySay('boss_win');launchConfetti();return;}const q=bQs[bI];c.innerHTML=`<p><strong>${q.q}</strong></p>`+q.o.map((x,i)=>`<label style="display:block;margin:6px 0;"><input type="radio" name="bq" value="${i}"> ${x}</label>`).join('')+`<button class="action-btn" onclick="ansBoss(${q.ok})">Ответить</button>`;}
+function ansBoss(ok){const s=document.querySelector('input[name="bq"]:checked');if(!s)return;if(parseInt(s.value)===ok){bI++;showBoss();}else{loseLife();alert('Неправильно!');}}
+
+function launchConfetti(){const box=document.getElementById('confetti-container');for(let i=0;i<60;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.left=Math.random()*100+'%';p.style.background=['#FFD700','#FF6B6B','#4ECDC4','#45B7D1'][i%4];p.style.animationDelay=Math.random()*2+'s';box.appendChild(p);setTimeout(()=>p.remove(),3000);}}
+function submitReflection(){const t=document.getElementById('reflectionText');if(!t.value.trim()){alert('Напиши отзыв!');return;}alert('✅ Спасибо!');t.disabled=true;}
+updateUI();
+</script>
+</body>
+</html>

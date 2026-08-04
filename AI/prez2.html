@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ИИ-Творец · Занятие 2 · Как общаться с ИИ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #61B01F;
+      --green-dark: #2E4A17;
+      --green-light: #E8F5E0;
+      --purple: #6C3F9B;
+      --purple-light: #F4EAFA;
+      --orange: #F0A500;
+      --orange-light: #FFF4DB;
+      --orange-ink: #875B00;
+      --navy: #12274C;
+      --white: #FFFFFF;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #fff; overflow: hidden; height: 100vh; color: var(--green-dark); }
+    .presentation { display: flex; flex-direction: column; height: 100vh; }
+    .slide-stage { flex: 1; position: relative; overflow: hidden; }
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      padding: 28px 48px 20px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+      background: #fff;
+      animation: fade .4s ease;
+    }
+    .slide.active { display: flex; align-items: center; justify-content: center; }
+    .slide-inner {
+      width: 100%;
+      max-width: none;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 32px;
+      align-items: center;
+      height: 100%;
+      max-height: none;
+      padding: 0 1.5vw;
+    }
+    .slide-inner.full { grid-template-columns: 1fr; }
+    .slide-inner.stack { grid-template-columns: 1fr; max-width: none; }
+
+    .title-slide { background: var(--navy); color: #fff; }
+    .title-slide .slide-inner { grid-template-columns: 1.1fr 0.9fr; }
+    .title-slide h1 { font-size: clamp(34px, 5.5vw, 64px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; }
+    .title-slide h2 { font-size: clamp(26px, 3.8vw, 44px); font-weight: 800; color: #b9eb8d; margin: 10px 0; }
+    .title-slide p { font-size: clamp(18px, 2.2vw, 28px); font-weight: 700; max-width: none; opacity: .95; }
+    .title-slide .stars {
+      position: absolute; inset: 0; pointer-events: none; opacity: .35;
+      background-image: radial-gradient(2px 2px at 20% 30%, #fff, transparent),
+        radial-gradient(2px 2px at 70% 20%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 40% 70%, #9cf, transparent),
+        radial-gradient(2px 2px at 85% 60%, #fff, transparent),
+        radial-gradient(1px 1px at 10% 80%, #fff, transparent);
+    }
+
+    .eyebrow {
+      display: inline-block; padding: 8px 18px; border-radius: 99px;
+      font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;
+      background: var(--green-light); color: var(--green-dark);
+    }
+    h2 { font-size: clamp(34px, 4.8vw, 58px); font-weight: 900; line-height: 1.1; color: var(--green-dark); margin: 10px 0 8px; }
+    .lead { font-weight: 800; font-size: clamp(19px, 2.1vw, 28px); line-height: 1.45; }
+    .list { margin-top: 16px; display: grid; gap: 12px; font-size: clamp(18px, 2vw, 26px); font-weight: 800; }
+    .list span { display: flex; align-items: flex-start; gap: 10px; }
+    .tick {
+      width: 32px; height: 32px; border-radius: 50%; background: var(--green-light);
+      display: grid; place-items: center; color: var(--green); font-size: 14px; flex-shrink: 0; margin-top: 1px;
+    }
+    .note {
+      padding: 16px 20px; border-radius: 18px; background: var(--orange-light); color: var(--orange-ink);
+      font-weight: 800; font-size: clamp(17px, 1.7vw, 23px); margin-top: 14px;
+    }
+    .note.green { background: var(--green-light); color: var(--green-dark); }
+    .note.purple { background: var(--purple-light); color: var(--purple); }
+    .discuss {
+      margin-top: 14px; padding: 12px 16px; border-radius: 16px; border: 2px dashed var(--purple);
+      background: #faf5ff; color: var(--purple); font-weight: 800; font-size: clamp(17px, 1.8vw, 24px);
+    }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    .can-card { padding: 16px; border-radius: 20px; font-weight: 800; }
+    .can-card h3 { font-size: clamp(16px, 1.5vw, 22px); margin-bottom: 6px; }
+    .can-card ul { list-style: none; padding: 0; font-size: clamp(16px, 1.6vw, 22px); display: grid; gap: 4px; }
+    .can { background: var(--green-light); color: var(--green-dark); }
+    .cannot { background: var(--purple-light); color: var(--purple); }
+
+    .steps { display: grid; gap: 10px; margin-top: 12px; }
+    .step {
+      display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start;
+      background: var(--green-light); border-radius: 16px; padding: 12px 14px; font-weight: 800;
+      font-size: clamp(17px, 1.8vw, 24px);
+    }
+    
+    .step-num {
+      min-width: 42px; height: 42px; padding: 0 10px; border-radius: 999px; white-space: nowrap; font-size: 14px; background: var(--green); color: #fff;
+      display: grid; place-items: center; font-weight: 900;
+    }
+    .step.alt { background: var(--purple-light); }
+    .step.alt .step-num { background: var(--purple); }
+    .step.warn { background: var(--orange-light); }
+    .step.warn .step-num { background: var(--orange); color: #3E2C0B; }
+
+    .puzzle { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+    .puzzle-piece {
+      padding: 10px 16px; border-radius: 14px; font-weight: 900; color: #fff;
+      font-size: clamp(13px, 1.15vw, 16px);
+    }
+    .op { font-weight: 900; color: var(--orange); font-size: 20px; }
+
+    .task-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+    .task-card {
+      background: var(--green-light); border-radius: 16px; padding: 14px; font-weight: 800;
+      font-size: clamp(16px, 1.5vw, 21px); border: 2px solid transparent; transition: .2s;
+    }
+    .task-card:hover { border-color: var(--green); transform: translateY(-2px); }
+    .task-card .n { display: block; color: var(--purple); font-weight: 900; margin-bottom: 4px; }
+
+    .illustration { position: relative; display: flex; align-items: center; justify-content: center; min-height: 280px; }
+    .blob {
+      position: absolute; width: 78%; aspect-ratio: 1; border-radius: 45% 55% 60% 40%;
+      background: var(--green-light); transform: rotate(-12deg); opacity: 0.55;
+    }
+    .title-slide .blob { background: #244d82; opacity: 0.35; }
+
+    .robot {
+      position: relative; width: 150px; height: 180px; z-index: 2;
+      filter: drop-shadow(0 10px 12px rgba(18,39,76,0.15));
+    }
+    .robot-head {
+      position: absolute; width: 112px; height: 82px; left: 19px; top: 16px;
+      border-radius: 36px; background: linear-gradient(145deg, #fff, #c8e6ff); border: 5px solid #193a66;
+    }
+    .robot-ear {
+      position: absolute; top: 38px; width: 20px; height: 36px; border-radius: 12px;
+      background: var(--green); border: 4px solid #193a66;
+    }
+    .robot-ear.left { left: 2px; } .robot-ear.right { right: 2px; }
+    .robot-eye {
+      position: absolute; top: 36px; width: 15px; height: 20px; background: #193a66; border-radius: 50%;
+    }
+    .robot-eye.one { left: 42px; } .robot-eye.two { right: 42px; }
+    .robot-eye.think { height: 6px; top: 42px; border-radius: 4px; }
+    .robot-mouth {
+      position: absolute; width: 30px; height: 12px; left: 41px; top: 60px;
+      border-bottom: 4px solid #193a66; border-radius: 0 0 20px 20px;
+    }
+    .robot-mouth.o {
+      width: 18px; height: 18px; left: 47px; top: 56px;
+      border: 4px solid #193a66; border-radius: 50%; background: transparent;
+    }
+    .antenna { position: absolute; width: 6px; height: 22px; left: 72px; top: -4px; background: #193a66; }
+    .antenna::before {
+      content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%;
+      background: var(--orange); left: -4px; top: -8px;
+    }
+    .robot-body {
+      position: absolute; width: 100px; height: 72px; left: 25px; bottom: 4px;
+      border-radius: 28px 28px 20px 20px; background: var(--green); border: 5px solid #193a66;
+    }
+    .robot-panel {
+      position: absolute; width: 48px; height: 28px; left: 26px; top: 18px;
+      border-radius: 12px; background: #f8fff4; border: 4px solid #193a66;
+    }
+    .robot-panel::before, .robot-panel::after {
+      content: ''; position: absolute; width: 7px; height: 7px; border-radius: 50%; top: 7px; background: var(--purple);
+    }
+    .robot-panel::before { left: 10px; } .robot-panel::after { right: 10px; }
+
+    .float-icon {
+      position: absolute; z-index: 3; width: 56px; height: 56px; display: grid; place-items: center;
+      border-radius: 18px; background: white; box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      font-size: 26px; animation: bob 3s ease-in-out infinite;
+    }
+    .float-icon.a { top: 4%; left: 4%; }
+    .float-icon.b { top: 10%; right: 4%; animation-delay: .6s; }
+    .float-icon.c { bottom: 8%; left: 2%; animation-delay: 1.2s; }
+    .float-icon.d { bottom: 4%; right: 6%; animation-delay: 1.7s; }
+
+    .ability-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+    .ability {
+      background: var(--green-light); border-radius: 16px; padding: 14px; font-weight: 800;
+      display: flex; gap: 10px; align-items: center; font-size: clamp(16px, 1.7vw, 22px);
+    }
+    .ability .ico { font-size: 28px; }
+
+    .browser {
+      background: #fff; border-radius: 22px; box-shadow: 0 12px 28px rgba(17,53,76,0.12);
+      overflow: hidden; border: 3px solid #d8e8d1; width: 100%; max-width: 460px;
+    }
+    .browser-top { background: #e9f6e2; padding: 10px 16px; display: flex; gap: 8px; align-items: center; }
+    .browser-top .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--orange); }
+    .browser-top .dot:nth-child(2) { background: #a8d985; }
+    .browser-top .dot:nth-child(3) { background: #7e65a8; }
+    .browser-content { padding: 16px; }
+    .chat-bubble {
+      border-radius: 16px; padding: 12px 16px; font-weight: 800;
+      font-size: clamp(16px, 1.6vw, 22px); line-height: 1.4; margin-bottom: 10px;
+    }
+    .bad { background: var(--orange-light); border: 3px solid #f5c15a; color: var(--orange-ink); }
+    .good { background: var(--green-light); border: 3px solid #9bce75; color: var(--green-dark); }
+
+    .flow-pill {
+      display: inline-block; padding: 8px 14px; border-radius: 30px; font-weight: 900;
+      font-size: clamp(16px, 1.5vw, 21px);
+    }
+    .arrow { font-size: 22px; font-weight: 900; color: var(--orange); margin: 0 2px; }
+
+    .cta-link {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
+      background: var(--green); color: #fff; padding: 12px 22px; border-radius: 30px;
+      font-weight: 900; text-decoration: none; font-size: clamp(16px, 1.7vw, 22px);
+      box-shadow: 0 4px 0 #4a8a18;
+    }
+    .cta-link:hover { background: #52991a; }
+
+    .check-list { margin-top: 12px; display: grid; gap: 8px; }
+    .check-item {
+      display: flex; gap: 10px; align-items: flex-start; font-weight: 800;
+      font-size: clamp(17px, 1.7vw, 23px); background: var(--green-light);
+      padding: 10px 14px; border-radius: 14px;
+    }
+    .check-item .ok { color: var(--green); font-size: 22px; line-height: 1; }
+
+    .ref-links {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ref-links a {
+      background: #f0f4f9;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      color: var(--purple);
+      border: 1px solid #dce3ec;
+      transition: .2s;
+    }
+    .ref-links a:hover {
+      background: var(--purple-light);
+      border-color: var(--purple);
+    }
+
+    .teacher-toggle {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      z-index: 999;
+      background: var(--purple);
+      color: #fff;
+      border: none;
+      border-radius: 40px;
+      padding: 12px 20px;
+      font-weight: 900;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(108,63,155,.4);
+      transition: .2s;
+      font-family: inherit;
+    }
+    .teacher-toggle:hover { transform: scale(1.05); background: #5a2f8a; }
+    .teacher-panel {
+      position: fixed;
+      bottom: 150px;
+      right: 20px;
+      width: 360px;
+      max-height: 60vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.2);
+      z-index: 998;
+      display: none;
+      font-size: 14px;
+      line-height: 1.5;
+      border: 3px solid var(--purple-light);
+    }
+    .teacher-panel.open { display: block; }
+    .teacher-panel h4 { color: var(--purple); margin-bottom: 8px; }
+    .teacher-panel p { margin-bottom: 6px; padding: 4px 6px; border-radius: 6px; transition: .2s; }
+    .teacher-panel .meta { color: var(--orange-ink); font-weight: 700; }
+    .teacher-panel .active-note { background: var(--green-light); }
+
+    .footer-nav {
+      height: 76px;
+      background: white;
+      border-top: 1px solid #e6eee1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+    .nav-inner {
+      width: 100%;
+      max-width: none; width: 100%; padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border: 0;
+      border-radius: 30px; font-weight: 900; font-size: 15px; cursor: pointer; transition: .2s;
+      background: var(--green-light); color: var(--green-dark); font-family: inherit;
+    }
+    .nav-btn:hover { transform: translateY(-2px); background: #d8efc7; }
+    .nav-btn.primary { background: var(--green); color: white; }
+    .nav-btn.primary:hover { background: #52991a; }
+    .nav-btn:disabled { opacity: .4; pointer-events: none; }
+    .progress-wrap { flex: 1; max-width: 420px; }
+    .progress-track { height: 8px; border-radius: 99px; background: #e7eee5; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: inherit; transition: width .3s; }
+    .dots { display: flex; gap: 4px; justify-content: center; margin-top: 6px; flex-wrap: wrap; }
+    .nav-dot {
+      border: 0; padding: 0; width: 7px; height: 7px; border-radius: 50%;
+      background: #cad7c4; cursor: pointer; transition: .2s;
+    }
+    .nav-dot.active { background: var(--purple); transform: scale(1.35); }
+    .counter { font-weight: 900; font-size: 18px; white-space: nowrap; min-width: 72px; text-align: center; }
+
+    .chip {
+      display: inline-block; background: #fff; border-radius: 12px; padding: 6px 10px;
+      font-weight: 800; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,.06); margin: 3px;
+    }
+
+    @keyframes bob { 50% { transform: translateY(-10px) rotate(3deg); } }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 760px) {
+      .slide { padding: 16px; }
+      .slide-inner, .title-slide .slide-inner { grid-template-columns: 1fr; gap: 14px; }
+      .illustration { min-height: 180px; order: -1; }
+      .title-slide .illustration { order: 0; }
+      .robot { transform: scale(0.72); }
+      .two-col, .ability-grid, .task-cards { grid-template-columns: 1fr; }
+      .footer-nav { height: 68px; }
+      .progress-wrap { display: none; }
+      .nav-btn { padding: 8px 14px; font-size: 13px; }
+      .teacher-toggle { bottom: 80px; right: 10px; padding: 10px 16px; font-size: 12px; }
+      .teacher-panel { width: 280px; right: 10px; bottom: 130px; }
+    }
+  </style>
+</head>
+<body>
+<div class="presentation">
+  <main class="slide-stage">
+
+    <!-- 1. Титульный -->
+    <section class="slide title-slide active">
+      <div class="stars"></div>
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow" style="background:#F0A500;color:#12274C;">Курс · Занятие 2</span>
+          <h1>ИИ-ТВОРЕЦ: ОТ ИДЕИ ДО СВОЕГО ПЕРВОГО ПОМОЩНИКА</h1>
+          <h2>Как общаться с ИИ: искусство промпта</h2>
+          <p>💬 Твой второй шаг в мир ИИ</p>
+          <p style="margin-top:10px;font-size:clamp(14px,1.5vw,18px);font-weight:700;opacity:.9;">Сегодня ты научишься правильно задавать вопросы ИИ, чтобы получать точные и полезные ответы. Узнаешь формулу идеального запроса и сыграешь в битву промптов.</p>
+          <div class="ref-links" style="margin-top:18px;">
+            <a href="https://chat.openai.com" target="_blank">💬 ChatGPT</a>
+            <a href="https://deepseek.com" target="_blank">🔍 DeepSeek</a>
+            <a href="https://www.promptingguide.ai/ru" target="_blank">📘 Prompt Guide</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div class="float-icon a">💬</div>
+          <div class="float-icon b">✍️</div>
+          <div class="float-icon c">🧩</div>
+          <div class="float-icon d">🎯</div>
+          <div class="robot">
+            <div class="antenna"></div>
+            <div class="robot-ear left"></div><div class="robot-ear right"></div>
+            <div class="robot-head"></div>
+            <div class="robot-eye one"></div><div class="robot-eye two"></div>
+            <div class="robot-mouth"></div>
+            <div class="robot-body"><div class="robot-panel"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Повтор с прошлого занятия -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Повторяем</span>
+          <h2>Что мы узнали в прошлый раз?</h2>
+          <p class="lead">Давай быстро вспомним:</p>
+          <div class="list">
+            <span><span class="tick">🤖</span> ИИ — это программа, которая <strong>учится на примерах</strong></span>
+            <span><span class="tick">🌍</span> ИИ живёт вокруг нас: Алиса, YouTube, навигаторы</span>
+            <span><span class="tick">❌</span> ИИ может ошибаться — он <strong>предполагает</strong>, а не знает точно</span>
+            <span><span class="tick">🔍</span> Важно <strong>проверять</strong> информацию от ИИ</span>
+          </div>
+          <div class="note green">💡 Ключевое из прошлого урока: ИИ ищет наиболее вероятное продолжение того, что вы написали. Именно поэтому <strong>как</strong> вы пишете — имеет огромное значение.</div>
+          <div class="discuss">❓ Кто помнит, как называется запрос к ИИ? <span style="color:var(--purple);font-weight:900;">(Промпт!)</span></div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;background:#fff;border-radius:24px;padding:22px;box-shadow:0 10px 28px rgba(0,0,0,.08);text-align:center;font-weight:900;">
+            <div style="font-size:56px;">🧠</div>
+            <div style="font-size:16px;color:var(--purple);">Вспоминаем прошлое занятие</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Мотивация: игра "Сломанный телефон" -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Разминка</span>
+          <h2>Игра «Сломанный телефон»</h2>
+          <p class="lead">Сейчас мы поиграем в игру, которая покажет, <strong>почему важно говорить точно</strong>.</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Я шепчу предложение первому ученику. Например: <em>«Завтра в школе будет необычный урок по природоведению в актовом зале»</em>.</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>Каждый передаёт следующему то, что услышал.</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>Сравниваем, что получилось в конце с оригиналом! Как правило, фраза меняется до неузнаваемости.</div></div>
+          </div>
+          <div class="note purple">💡 Вывод: чем точнее и подробнее сообщение, тем меньше искажений. То же самое — с ИИ! Чем точнее ваш запрос, тем ближе ответ к тому, что вы хотели.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:80px;">🗣️➡️👂➡️🗣️➡️👂</div>
+          <div style="position:absolute;bottom:10%;right:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);">🤔 А что было в начале?</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Что такое промпт (повтор + углубление) -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Ключевое понятие</span>
+          <h2>Что такое ПРОМПТ?</h2>
+          <p class="lead"><strong>Промпт</strong> — это твой запрос к ИИ. Это не просто вопрос, а <strong>инструкция</strong>. Чем подробнее инструкция, тем точнее исполнение.</p>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:14px;">
+            <span class="flow-pill" style="background:var(--green-light);">Ты</span>
+            <span class="arrow">→</span>
+            <span class="flow-pill" style="background:var(--purple-light);color:var(--purple);">Промпт</span>
+            <span class="arrow">→</span>
+            <span class="flow-pill" style="background:var(--orange-light);color:var(--orange-ink);">ИИ</span>
+            <span class="arrow">→</span>
+            <span class="flow-pill" style="background:var(--green-light);">Ответ</span>
+          </div>
+          <div class="note green">💡 Важное отличие от поиска в Google: там вы вводите ключевые слова и получаете ссылки. В разговоре с ИИ вы ведёте <strong>диалог</strong> — он генерирует текст специально для вас.</div>
+          <div class="note purple">💡 Правило: <strong>чем точнее промпт, тем полезнее ответ</strong>.</div>
+          <div class="ref-links">
+            <a href="https://www.promptingguide.ai/ru" target="_blank">📘 Prompt Engineering Guide (рус.)</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div class="robot">
+            <div class="antenna"></div>
+            <div class="robot-ear left"></div><div class="robot-ear right"></div>
+            <div class="robot-head"></div>
+            <div class="robot-eye one"></div><div class="robot-eye two"></div>
+            <div class="robot-mouth"></div>
+            <div class="robot-body"><div class="robot-panel"></div></div>
+          </div>
+          <div style="position:absolute;top:6%;right:0;background:#fff;border-radius:16px;padding:10px 14px;font-weight:900;box-shadow:0 6px 16px rgba(0,0,0,.08);color:var(--purple);font-size:20px;">💬 ПРОМПТ</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Метафора: ИИ — буквальный помощник -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Метафора</span>
+          <h2>ИИ — очень буквальный помощник</h2>
+          <p class="lead">Представь, что ИИ — это <strong>инопланетянин</strong>, который только что выучил русский язык. Он знает все слова, но не понимает контекст, намёки, «само собой разумеющееся».</p>
+          <div class="two-col">
+            <div class="can-card can">
+              <h3>❌ Скажешь мало</h3>
+              <ul>
+                <li>«Расскажи про собак»</li>
+                <li>Ответ: огромный текст про всё — породы, болезни, анатомию...</li>
+              </ul>
+            </div>
+            <div class="can-card cannot">
+              <h3>✅ Скажешь подробно</h3>
+              <ul>
+                <li>«Расскажи 3 факта о собаках для ребёнка 7 лет»</li>
+                <li>Ответ: ровно три факта, простыми словами</li>
+              </ul>
+            </div>
+          </div>
+          <div class="discuss">❓ Как вы думаете, почему второй ответ лучше? <span style="color:var(--purple);font-weight:900;">(Потому что мы объяснили, что именно нужно, для кого и в каком формате!)</span></div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:80px;">👽💬</div>
+          <div style="position:absolute;bottom:8%;left:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);">«Я не понимаю, что ты хочешь…»</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Плохой промпт -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Разбираем ошибки</span>
+          <h2>❌ Плохой промпт</h2>
+          <div class="chat-bubble bad" style="font-size:clamp(18px,1.6vw,24px);">«Напиши про динозавров»</div>
+          <p class="lead" style="margin-top:12px;">Что здесь не так?</p>
+          <div class="list">
+            <span><span class="tick">⚠️</span> Слишком <strong>широко</strong> — непонятно, что именно нужно</span>
+            <span><span class="tick">⚠️</span> Нет <strong>контекста</strong> — для кого? зачем?</span>
+            <span><span class="tick">⚠️</span> Нет <strong>формата</strong> — коротко или подробно?</span>
+          </div>
+          <div class="note">📌 Признаки плохого промпта: слишком короткий, нет контекста, нет формата, нет конкретной задачи.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob" style="background:var(--orange-light);"></div>
+          <div style="position:relative;z-index:2;background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 28px rgba(0,0,0,.08);text-align:center;max-width:320px;border:3px solid #f5c15a;">
+            <div style="font-size:64px;">📄</div>
+            <div style="font-weight:900;font-size:16px;color:var(--orange-ink);">«А что именно про динозавров?»</div>
+            <div style="font-size:12px;color:#61715c;margin-top:6px;">ИИ не знает, что тебе нужно</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Хороший промпт -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Учимся правильно</span>
+          <h2>✅ Хороший промпт</h2>
+          <div class="chat-bubble good" style="font-size:clamp(18px,1.6vw,24px);">«Ты — палеонтолог. Расскажи 5 интересных фактов о тираннозавре для ребёнка 10 лет. Коротко и простыми словами.»</div>
+          <p class="lead" style="margin-top:12px;">Что здесь появилось?</p>
+          <div class="list">
+            <span><span class="tick">🧩</span> <strong>Роль</strong> — палеонтолог (задаёт стиль)</span>
+            <span><span class="tick">🎯</span> <strong>Задача</strong> — 5 фактов о тираннозавре (конкретно)</span>
+            <span><span class="tick">👤</span> <strong>Контекст</strong> — для ребёнка 10 лет (уровень)</span>
+            <span><span class="tick">📋</span> <strong>Формат</strong> — коротко, простыми словами (чётко)</span>
+          </div>
+          <div class="note green">✨ Теперь ИИ точно знает, что нужно! Ответ будет именно таким, какой вы хотели.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob" style="background:var(--green-light);"></div>
+          <div style="position:relative;z-index:2;background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 28px rgba(0,0,0,.08);text-align:center;max-width:320px;border:3px solid #9bce75;">
+            <div style="font-size:64px;">🦖</div>
+            <div style="font-weight:900;font-size:16px;color:var(--green-dark);">«Отлично! Вот 5 фактов…»</div>
+            <div style="font-size:12px;color:#61715c;margin-top:6px;">То, что нужно!</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Формула хорошего промпта -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Инструмент</span>
+          <h2>Формула хорошего промпта</h2>
+          <div class="puzzle">
+            <span class="puzzle-piece" style="background:var(--purple);">🧩 Роль</span>
+            <span class="op">+</span>
+            <span class="puzzle-piece" style="background:var(--green);">🎯 Задача</span>
+            <span class="op">+</span>
+            <span class="puzzle-piece" style="background:var(--orange);color:#3E2C0B;">👤 Контекст</span>
+            <span class="op">+</span>
+            <span class="puzzle-piece" style="background:#2677BD;">📋 Формат</span>
+            <span class="op">=</span>
+            <span class="puzzle-piece" style="background:var(--green-dark);">✨ Отличный ответ</span>
+          </div>
+          <div class="list" style="margin-top:14px;">
+            <span><span class="tick">🧩</span> <strong>Роль</strong> — кто ты? («Ты — учитель математики», «ты — повар»). Не обязательна, но очень помогает задать стиль.</span>
+            <span><span class="tick">🎯</span> <strong>Задача</strong> — что сделать? («Объясни», «Напиши», «Переведи»). Чем конкретнее глагол, тем лучше.</span>
+            <span><span class="tick">👤</span> <strong>Контекст</strong> — для кого и зачем? Самая часто пропускаемая часть, и именно её отсутствие портит ответ.</span>
+            <span><span class="tick">📋</span> <strong>Формат</strong> — как оформить? («В 3 предложениях», «Списком из 5 пунктов», «Простым языком»).</span>
+          </div>
+          <div class="note green">✨ Эта формула работает не только с ИИ — она полезна в любом общении, когда нужно получить конкретный результат.</div>
+   
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;background:#fff;border-radius:22px;padding:22px;box-shadow:0 10px 24px rgba(0,0,0,.08);text-align:center;font-weight:900;">
+            <div style="font-size:48px;">🧩</div>
+            <div style="font-size:18px;color:var(--purple);">Собери свой идеальный промпт</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Практика: улучши промпт -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Практика · 5 минут</span>
+          <h2>Улучши плохой промпт!</h2>
+          <p class="lead">Вот плохой запрос. Как его улучшить?</p>
+          <div class="chat-bubble bad" style="font-size:clamp(16px,1.4vw,20px);">«Объясни физику»</div>
+          <p class="lead" style="margin-top:12px;">🔧 Твоя задача: превратить его в хороший, используя формулу. Подумай и напиши в чат:</p>
+          <div class="task-cards">
+            <div class="task-card"><span class="n">🧩</span>Какую роль добавишь?</div>
+            <div class="task-card"><span class="n">🎯</span>Какую конкретную тему выберешь?</div>
+            <div class="task-card"><span class="n">👤</span>Для кого будешь объяснять?</div>
+            <div class="task-card" style="grid-column:1/-1;"><span class="n">📋</span>Какой формат выберешь? (список, история, примеры)</div>
+          </div>
+          <div class="discuss">⏱ 5 минут на размышление. Педагог поможет, если что‑то непонятно. Потом проверим!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 28px rgba(0,0,0,.08);text-align:center;max-width:300px;">
+            <div style="font-size:56px;">✏️</div>
+            <div style="font-weight:900;font-size:18px;color:var(--purple);">Улучшай!</div>
+            <div style="font-size:14px;color:#61715c;">Плохой → Хороший</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Разбор улучшенных промптов -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Разбор</span>
+          <h2>Как можно было улучшить?</h2>
+          <div class="chat-bubble good" style="font-size:clamp(16px,1.4vw,20px);">✅ «Ты — учитель физики. Объясни, почему небо голубое, ученику 5-го класса. Используй простые слова и примеры из жизни. 5 предложений.»</div>
+          <p class="lead" style="margin-top:12px;">Что изменилось?</p>
+          <div class="list">
+            <span><span class="tick">🧩</span> Появилась <strong>роль</strong> (учитель физики) — задаёт доверительный и доступный стиль</span>
+            <span><span class="tick">🎯</span> Конкретная <strong>задача</strong> (почему небо голубое) — не «вся физика»</span>
+            <span><span class="tick">👤</span> Появился <strong>контекст</strong> (ученик 5-го класса) — нужен простой язык</span>
+            <span><span class="tick">📋</span> Появился <strong>формат</strong> (5 предложений, простые слова) — ответ не будет бесконечным</span>
+          </div>
+          <div class="note green">✨ Теперь ИИ даст именно то, что нужно! Сравните ответы на плохой и хороший промпт в нейросети — разница очевидна.</div>
+        </div>
+        <div class="illustration">
+          <div class="blob" style="background:var(--green-light);"></div>
+          <div style="position:relative;z-index:2;font-size:80px;">🔵☀️</div>
+          <div style="position:absolute;bottom:8%;right:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);">«Небо голубое, потому что…»</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. Ролевая игра: интервью -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Ролевая игра</span>
+          <h2>Интервью с исторической личностью</h2>
+          <p class="lead">Ты — журналист. ИИ — известный человек из прошлого. Твоя задача — взять у него интервью.</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Выбери персонажа: <strong>Леонардо да Винчи</strong>, <strong>Юрий Гагарин</strong> или <strong>Клеопатра</strong>.</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>Составь промпт: <em>«Ты — Леонардо да Винчи, художник и учёный. Я — журналист из будущего. Ответь на три моих вопроса от первого лица. Вопрос первый: что для вас значит изобретение?»</em></div></div>
+            <div class="step warn"><div class="step-num">3</div><div>Задай вопросы и получи ответы! .</div></div>
+          </div>
+          <div class="discuss">❓ Какой вопрос ты задашь? Промпт — это не просто вопрос, а создание целого контекста и роли.</div>
+          <div class="ref-links">
+            <a href="https://chat.openai.com" target="_blank">💬 ChatGPT</a>
+            <a href="https://deepseek.com" target="_blank">🔍 DeepSeek</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:72px;">🎤🗣️</div>
+          <div style="position:absolute;bottom:8%;left:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);">«Возьми интервью у Леонардо!»</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Сравнение промптов для картинок -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Не только текст</span>
+          <h2>Промпты для картинок</h2>
+          <p class="lead">Те же правила работают и для генерации изображений!</p>
+          <div class="two-col">
+            <div class="can-card can">
+              <h3>❌ Плохо</h3>
+              <ul>
+                <li>«Нарисуй дракона»</li>
+                <li>Непонятно: какой? где? в каком стиле?</li>
+                <li>Результат — стандартный дракон</li>
+              </ul>
+            </div>
+            <div class="can-card cannot">
+              <h3>✅ Хорошо</h3>
+              <ul>
+                <li>«Нарисуй маленького фиолетового дракона с большими добрыми глазами, который сидит на облаке в форме зефира. Закатное солнце, мультяшный стиль, яркие пастельные цвета.»</li>
+                <li>Результат — уникальный рисунок!</li>
+              </ul>
+            </div>
+          </div>
+          <div class="note purple">🎨 Придумай свой промпт для картинки прямо сейчас! </div>
+         
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:80px;">🐉</div>
+          <div style="position:absolute;bottom:8%;right:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);">«Дракон в стиле аниме на закате»</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. Битва промптов -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Соревнование</span>
+          <h2>🏆 Битва промптов!</h2>
+          <p class="lead">Задание:</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div> <em>«Попросить ИИ объяснить, как работает холодильник»</em>.</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>У вас <strong>3 минуты</strong>, чтобы составить лучший промпт по формуле.</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>Зачитываем промпты. Класс голосует. Потом проверяем в нейросети. Побеждает тот, чей промпт дал <strong>самый точный и полезный ответ</strong>, а не самый длинный.</div></div>
+          </div>
+          <div class="note purple">💡 Хороший промпт — это точный промпт, а не обязательно длинный.</div>
+          <div class="discuss">⏱ Готовы? Начали!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14. Ресурсы для промптинга -->
+  
+
+   
+    <!-- 17. Этическая сторона -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Этика</span>
+          <h2>Промпты и этика</h2>
+          <p class="lead">Когда ты работаешь с ИИ, важно помнить:</p>
+          <div class="list">
+            <span><span class="tick">🤝</span> <strong>Не проси ИИ делать то, что неправильно</strong> — обманывать, оскорблять, выдавать чужую работу за свою.</span>
+            <span><span class="tick">📝</span> <strong>Указывай, что использовал ИИ</strong> — это честно по отношению к учителю и одноклассникам.</span>
+            <span><span class="tick">🔍</span> <strong>Проверяй ответы</strong> — ИИ может ошибаться или придумывать факты.</span>
+            <span><span class="tick">💡</span> <strong>ИИ — помощник твоим мыслям, а не замена им.</strong> Самый ценный результат получается тогда, когда думаешь ты, а ИИ помогает оформить и расширить.</span>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:80px;">⚖️</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18. Итоги занятия -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Отлично!</span>
+          <h2>Итоги занятия</h2>
+          <p class="lead">Сегодня ты:</p>
+          <div class="check-list">
+            <div class="check-item"><span class="ok">✔️</span> узнал, что такое <strong>промпт</strong> и почему его качество определяет ответ</div>
+            <div class="check-item"><span class="ok">✔️</span> освоил формулу <strong>Роль + Задача + Контекст + Формат</strong></div>
+            <div class="check-item"><span class="ok">✔️</span> научился отличать <strong>плохой</strong> промпт от <strong>хорошего</strong> и проверил на практике</div>
+            <div class="check-item"><span class="ok">✔️</span> попрактиковался в составлении промптов для текстов и картинок</div>
+            <div class="check-item"><span class="ok">✔️</span> узнал о <strong>мировых ресурсах</strong> и этике использования ИИ</div>
+          </div>
+          <p style="font-weight:900;color:var(--purple);font-size:clamp(18px,1.8vw,28px);margin-top:14px;">🎉 Ты стал грамотным пользователем ИИ! Теперь твои вопросы всегда будут точными, а ответы — полезными.</p>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div class="float-icon a">🎉</div>
+          <div class="float-icon b">⭐</div>
+          <div class="float-icon c">🏆</div>
+          <div class="float-icon d">✨</div>
+          <div class="robot">
+            <div class="antenna"></div>
+            <div class="robot-ear left"></div><div class="robot-ear right"></div>
+            <div class="robot-head"></div>
+            <div class="robot-eye one"></div><div class="robot-eye two"></div>
+            <div class="robot-mouth"></div>
+            <div class="robot-body"><div class="robot-panel"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 19. Домашнее задание -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Google Classroom</span>
+          <h2>Домашнее задание</h2>
+          <p class="lead">Выбери уровень и выполни задание с нейросетью.</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">⭐</div><div><strong>Лёгкий:</strong> Повтори формулу «Роль + Задача + Контекст + Формат» на любую тему (например, любимое животное). Скрин запроса и ответа.</div></div>
+            <div class="step alt"><div class="step-num">⭐⭐</div><div><strong>Средний:</strong> Придумай запрос для друга, который никогда не пользовался нейросетью. Опиши, какую часть формулы ты использовал.</div></div>
+            <div class="step warn"><div class="step-num">⭐⭐⭐</div><div><strong>Сложный:</strong> Придумай роль (детектив, пират, учёный) и попроси ИИ ответить в этой роли на два вопроса. Скрины + что получилось интереснее всего.</div></div>
+          </div>
+          <div class="note">📌 Формула: Роль + Задача + Контекст + Формат</div>
+          <div class="ref-links">
+            <a href="https://classroom.google.com" target="_blank">📤 Сдать в Classroom</a>
+            <a href="https://deepseek.com" target="_blank">🔍 DeepSeek</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:110px;">🏠💻</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 20. Анонс следующего занятия -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Продолжение</span>
+          <h2>На следующем занятии</h2>
+          <div class="list">
+            <span><span class="tick">🔹</span> Научимся <strong>проверять</strong> информацию от ИИ</span>
+            <span><span class="tick">🔹</span> Узнаем, как <strong>отличать правду от вымысла</strong> и не попадаться на ошибки</span>
+            <span><span class="tick">🔹</span> Поговорим о <strong>дипфейках</strong> и как их распознавать</span>
+            <span><span class="tick">🔹</span> Создадим <strong>личный чек-лист безопасности</strong> для работы с ИИ</span>
+          </div>
+          <p style="font-weight:900;color:var(--purple);font-size:clamp(20px,2vw,32px);margin-top:16px;">🚀 До встречи! Вы уже умеете разговаривать с ИИ — теперь научитесь делать это безопасно и с умом.</p>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:110px;transform:rotate(20deg);">🚀</div>
+          <div style="position:absolute;bottom:10%;left:4%;background:#fff;border-radius:16px;padding:10px 14px;font-weight:900;box-shadow:0 6px 16px rgba(0,0,0,.08);font-size:28px;">📅</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer-nav">
+    <nav class="nav-inner">
+      <button class="nav-btn" id="prevBtn" type="button">← Назад</button>
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="dots" id="dots"></div>
+      </div>
+      <span class="counter" id="counter">1 / 20</span>
+      <button class="nav-btn primary" id="nextBtn" type="button">Вперёд →</button>
+    </nav>
+  </footer>
+</div>
+
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progressFill = document.getElementById('progressFill');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let current = 0;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Слайд ' + (i + 1));
+    dot.addEventListener('click', () => showSlide(i));
+    dots.appendChild(dot);
+  });
+
+  function showSlide(index) {
+    current = Math.max(0, Math.min(index, slides.length - 1));
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+    document.querySelectorAll('.nav-dot').forEach((dot, i) => dot.classList.toggle('active', i === current));
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progressFill.style.width = ((current + 1) / slides.length * 100) + '%';
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+
+    const notes = document.querySelectorAll('#teacherNotes p');
+    notes.forEach((p, i) => {
+      p.classList.toggle('active-note', i === current);
+    });
+    const activeNote = notes[current];
+    if (activeNote) {
+      activeNote.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  }
+
+  prevBtn.addEventListener('click', () => showSlide(current - 1));
+  nextBtn.addEventListener('click', () => showSlide(current + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); showSlide(current + 1); }
+    if (e.key === 'ArrowLeft') showSlide(current - 1);
+    if (e.key === 'Home') showSlide(0);
+    if (e.key === 'End') showSlide(slides.length - 1);
+  });
+  showSlide(0);
+
+  const toggleBtn = document.getElementById('teacherToggle');
+  const panel = document.getElementById('teacherPanel');
+  toggleBtn.addEventListener('click', () => {
+    panel.classList.toggle('open');
+    toggleBtn.textContent = panel.classList.contains('open') ? '📕 Скрыть заметки' : '📘 Для учителя';
+  });
+</script>
+</body>
+</html>

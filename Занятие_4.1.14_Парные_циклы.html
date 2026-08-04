@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.1.14. Парные циклы — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: 1rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#1a1008,#3d2a12); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #fbbf24;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fde047; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка pairs"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(170px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .82rem; }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .95rem; line-height: 1.7; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .t { color: #a3e635; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.selected { border-color: var(--accent)!important; background: var(--accent-light)!important; }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+    @media (max-width:700px) { .compare-row { grid-template-columns: 1fr; } }
+    .compare-mini { border-radius: 14px; padding: 12px; border: 2px solid var(--line); background: #fff; font-size: .92rem; }
+    .compare-mini h4 { margin: 0 0 6px; }
+    .mini-game {
+      background: linear-gradient(180deg,#1a1008,#3d2a12); border-radius: 24px; padding: 20px;
+      border: 3px solid #fbbf24; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #fde047; }
+    .garland-stage { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 14px; }
+    @media (max-width:900px) { .garland-stage { grid-template-columns: 1fr; } }
+    .wire-board {
+      background: #0f172a; border: 2px solid #475569; border-radius: 16px; padding: 20px;
+      min-height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+    }
+    .lamps-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+    .lamp {
+      width: 64px; height: 64px; border-radius: 50%; border: 3px solid #64748b;
+      background: #334155; display: flex; align-items: center; justify-content: center;
+      font-weight: 900; color: #94a3b8; cursor: pointer; transition: .2s; font-size: .85rem;
+    }
+    .lamp.on { background: #fde047; border-color: #fbbf24; color: #713f12; box-shadow: 0 0 20px #fbbf24; }
+    .lamp.active { outline: 3px solid #38bdf8; transform: scale(1.1); }
+    .iv-display {
+      font-family: 'Courier New', monospace; background: #1e293b; padding: 10px 16px; border-radius: 12px;
+      border: 1px solid #475569; font-size: 1rem;
+    }
+    .iv-display .hi { color: #fde047; font-weight: 800; }
+    .controls-panel {
+      background: #1e293b; border-radius: 16px; padding: 14px; border: 2px solid #64748b;
+    }
+    .mission-box {
+      background: #713f12; border-radius: 12px; padding: 12px; border: 1px solid #fbbf24; margin-bottom: 10px;
+    }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin: 0 0 8px; color: var(--primary-dark,#1a4a0a); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .phase-time { font-size: .85rem; background: var(--accent-light,#f0e6f5); color: var(--accent-ink,#4a1a5a); padding: 3px 12px; border-radius: 20px; font-weight: 700; }
+    .progress-track { background: #e2e8f0; height: 10px; border-radius: 10px; margin: 16px 0 8px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg,var(--primary,#61b01f),#a3e635); transition: width .3s; }
+    .progress-label { font-size: .92rem; color: #334155; font-weight: 600; }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; align-items: baseline; gap: 8px; margin: 8px 0; line-height: 1.5; }
+    .task-steps li input[type="checkbox"] { transform: scale(1.2); flex-shrink: 0; margin-top: 3px; }
+    details.hint { background: #f1f5f9; border-radius: 12px; padding: 10px 14px; margin: 10px 0; border-left: 4px solid var(--accent,#6e0091); }
+    details.hint summary { cursor: pointer; font-weight: 700; color: var(--accent-ink,#4a1a5a); }
+    .space-note { background: #1a1a4a; color: #fbbf24; border-left: 4px solid #fbbf24; padding: 12px 16px; border-radius: 12px; margin: 12px 0; }
+    .build-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); gap: 10px; margin: 14px 0; }
+    .build-card {
+      background: linear-gradient(160deg,#1a1008,#3d2a12); color: #f8fafc; border-radius: 14px;
+      padding: 12px; text-align: center; border: 2px solid #fbbf24;
+    }
+    .build-card .ico { font-size: 1.8rem; }
+    .build-card .nm { font-weight: 800; margin: 4px 0; font-size: .9rem; }
+    .build-card .props { font-size: .75rem; opacity: .85; }
+    .path-flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; font-weight: 800; }
+    .path-flow span { background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+    .reflection-box textarea { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--line); font-family: inherit; min-height: 80px; }
+    .out-sample {
+      background: #0f172a; color: #a3e635; border-radius: 12px; padding: 12px 16px;
+      font-family: 'Courier New', monospace; margin: 10px 0; line-height: 1.6;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 4.1.14</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">4.1.14</div>
+      <div>
+        <div class="module-pill">Раздел 4.1 · Базовые конструкции</div>
+        <h1>🔄 Парные циклы</h1>
+        <p class="subtitle">for i, v in pairs — теория → мини-игра → неоновая гирлянда</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">💡</div>
+    <div>
+      <strong>5 лампочек — одно действие.</strong> Писать код для каждой скучно.
+      Сегодня <b>парный цикл</b> <code>for i, v in pairs(...)</code>: проходим весь список и включаем гирлянду одним скриптом.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом уроке ты:</h2>
+    <ul>
+      <li>поймёшь, что такое массив (таблица) и пара <code>i</code> / <code>v</code> 📦</li>
+      <li>научишься писать <code>for i, v in pairs(array)</code> 🔄</li>
+      <li>применишь цикл к Parts: цвет, Neon, двери 💡</li>
+      <li>соберёшь проект «Неоновая гирлянда» 🌃</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Теория pairs</td><td>18 мин</td><td>Массив, i и v, квиз</td></tr>
+      <tr><td>Мини-игра «Гирлянда»</td><td>10 мин</td><td>Смотрим i/v, кликаем лампы</td></tr>
+      <tr><td>Проект: неоновая гирлянда</td><td>50 мин</td><td>Лампы, волна, двери</td></tr>
+      <tr><td>Доп. задания</td><td>по желанию</td><td>Обратный порядок, буквы, GetChildren</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Рефлексия</td></tr>
+      <tr><td>Итого</td><td>90 мин + доп.</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- ===== ТЕОРИЯ ===== -->
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: парные циклы</h2>
+ <img src="assets/images/lesson-4.1.14/1.png" alt="Цветы-защитники" />
+    <div class="theory-section">
+      <h3>📦 Сначала — массив (таблица)</h3>
+      <p>В Lua список пишут в фигурных скобках. Индексы начинаются с <b>1</b>:</p>
+      <div class="code-block">
+        <span class="keyword">local</span> fruits = {<span class="string">"яблоко"</span>, <span class="string">"банан"</span>, <span class="string">"киви"</span>}<br>
+        <span class="comment">-- fruits[1] = "яблоко", fruits[2] = "банан" …</span>
+      </div>
+      <p>В игре в массив кладут <b>объекты</b>:</p>
+      <div class="code-block">
+        <span class="keyword">local</span> lights = {workspace.Light1, workspace.Light2, workspace.Light3}
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🔄 Что такое парный цикл?</h3>
+      <p>Цикл <code>pairs</code> проходит <b>все элементы</b> массива. На каждом шаге даёт две переменные:</p>
+      <ul>
+        <li><b>i</b> — индекс (номер: 1, 2, 3…)</li>
+        <li><b>v</b> — значение (строка или сам объект Part)</li>
+      </ul>
+      <div class="code-block">
+        <span class="keyword">for</span> i, v <span class="keyword">in</span> <span class="func">pairs</span>(fruits) <span class="keyword">do</span><br>
+        &nbsp;&nbsp;<span class="func">print</span>(i, v)<br>
+        <span class="keyword">end</span>
+      </div>
+      <div class="out-sample">
+        1&nbsp;&nbsp;яблоко<br>
+        2&nbsp;&nbsp;банан<br>
+        3&nbsp;&nbsp;киви
+      </div>
+      <div class="info-callout">
+        <span class="bulb">💡</span>
+        <div>Имена могут быть любыми: <code>for index, fruit in pairs(...)</code>. Часто пишут коротко <code>i, v</code> или <code>_, part</code> (если индекс не нужен).</div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🆚 Обычный for и pairs</h3>
+      <div class="compare-row">
+        <div class="compare-mini">
+          <h4>for i = 1, n</h4>
+          <p>Сам считаешь числа. Удобно «с конца» или каждый второй.</p>
+          <code>for i = 1, #lights do</code>
+        </div>
+        <div class="compare-mini">
+          <h4>for i, v in pairs</h4>
+          <p>Сразу даёт и номер, и элемент. Удобно для списка объектов.</p>
+          <code>for i, v in pairs(lights)</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>💡 Пример: включить лампочки</h3>
+      <div class="code-block">
+        <span class="keyword">local</span> lights = {<br>
+        &nbsp;&nbsp;workspace.Light1,<br>
+        &nbsp;&nbsp;workspace.Light2,<br>
+        &nbsp;&nbsp;workspace.Light3,<br>
+        &nbsp;&nbsp;workspace.Light4<br>
+        }<br><br>
+        <span class="keyword">for</span> i, lamp <span class="keyword">in</span> <span class="func">pairs</span>(lights) <span class="keyword">do</span><br>
+        &nbsp;&nbsp;lamp.Material = Enum.Material.Neon<br>
+        &nbsp;&nbsp;lamp.BrickColor = BrickColor.new(<span class="string">"New Yeller"</span>)<br>
+        &nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Включена лампа №"</span> .. i)<br>
+        &nbsp;&nbsp;<span class="func">task.wait</span>(<span class="number">0.5</span>)<br>
+        <span class="keyword">end</span>
+      </div>
+      <p>Один цикл — все лампы по очереди загораются.</p>
+    </div>
+
+    <div class="theory-section">
+      <h3>📁 Бонус: GetChildren + pairs</h3>
+      <p>Если лампы лежат в папке, массив можно не перечислять вручную:</p>
+      <div class="code-block">
+        <span class="keyword">local</span> folder = workspace.Lights<br>
+        <span class="keyword">for</span> _, child <span class="keyword">in</span> <span class="func">pairs</span>(folder:<span class="func">GetChildren</span>()) <span class="keyword">do</span><br>
+        &nbsp;&nbsp;<span class="keyword">if</span> child:IsA(<span class="string">"BasePart"</span>) <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;child.Material = Enum.Material.Neon<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>
+      </div>
+      <div class="tree-box">
+        <span class="g">Workspace</span><br>
+        &nbsp;&nbsp;<span class="g">Lights</span> (Folder)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">Light1, Light2, Light3…</span>
+      </div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz1">
+      <h3>🧠 Квиз: правильный синтаксис</h3>
+      <div class="choice-card" data-correct-choice="true">for i, v in pairs(items) do … end</div>
+      <div class="choice-card" data-correct-choice="false">for i, v in items do … end</div>
+      <div class="choice-card" data-correct-choice="false">for pairs(items) do … end</div>
+      <button class="action-btn" onclick="checkChoices('quiz1')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz2">
+      <h3>🧠 Квиз: что такое v?</h3>
+      <div class="choice-card" data-correct-choice="false">Только номер элемента</div>
+      <div class="choice-card" data-correct-choice="true">Значение / объект текущего элемента</div>
+      <div class="choice-card" data-correct-choice="false">Имя скрипта</div>
+      <button class="action-btn" onclick="checkChoices('quiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz3">
+      <h3>🧠 Квиз: зачем pairs в игре?</h3>
+      <div class="choice-card" data-correct-choice="true">Сделать одно действие со всеми объектами списка</div>
+      <div class="choice-card" data-correct-choice="false">Только рисовать GUI</div>
+      <div class="choice-card" data-correct-choice="false">Удалить ServerScriptService</div>
+      <button class="action-btn" onclick="checkChoices('quiz3')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="cheat-sheet">
+    <div class="cheat-grid">
+      <div class="cheat-item"><div class="title">📦 Массив</div><div class="rule"><code>{a, b, c}</code></div></div>
+      <div class="cheat-item"><div class="title">🔢 i</div><div class="rule">индекс 1, 2, 3…</div></div>
+      <div class="cheat-item"><div class="title">💎 v</div><div class="rule">значение / Part</div></div>
+      <div class="cheat-item"><div class="title">🔄 pairs</div><div class="rule"><code>for i,v in pairs(t)</code></div></div>
+      <div class="cheat-item"><div class="title">⏱️ wait</div><div class="rule">пауза между шагами</div></div>
+      <div class="cheat-item"><div class="title">📁 GetChildren</div><div class="rule">список из папки</div></div>
+    </div>
+  </div>
+
+  <!-- ===== МИНИ-ИГРА ===== -->
+  <div class="mini-game" id="miniGame">
+    <h2>🎮 Мини-игра: Гирлянда pairs</h2>
+    <p style="opacity:.9;margin:0;">Массив из 4 ламп. Смотри <code>i</code> и <code>v</code>, отвечай на вопросы кликом по лампе.</p>
+
+    <div class="garland-stage">
+      <div class="wire-board">
+        <div class="lamps-row" id="lampsRow">
+          <button type="button" class="lamp" data-i="1" data-name="Light1" onclick="clickLamp(this)">1<br>L1</button>
+          <button type="button" class="lamp" data-i="2" data-name="Light2" onclick="clickLamp(this)">2<br>L2</button>
+          <button type="button" class="lamp" data-i="3" data-name="Light3" onclick="clickLamp(this)">3<br>L3</button>
+          <button type="button" class="lamp" data-i="4" data-name="Light4" onclick="clickLamp(this)">4<br>L4</button>
+        </div>
+        <div class="iv-display" id="ivDisplay">for i, v in pairs(lights) — нажми «Шаг»</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="action-btn" onclick="stepPairs()">▶️ Шаг цикла</button>
+          <button type="button" class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetGarland()">🔄 Сброс ламп</button>
+        </div>
+      </div>
+
+      <div class="controls-panel">
+        <div class="mission-box">
+          <div style="font-weight:800;" id="missionTitle">Задание 1 из 3</div>
+          <div id="missionText" style="margin-top:6px;">Сделай 2 шага цикла, потом кликни лампу, у которой сейчас <b>i = 2</b>.</div>
+          <div id="missionResult" style="margin-top:8px;font-weight:800;min-height:1.3em;color:#fde047;"></div>
+        </div>
+        <button type="button" class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetMissions()">🔄 Сначала задания</button>
+        <p id="scoreLine" style="margin-top:12px;font-weight:800;">Очки: 0 / 3</p>
+        <p style="font-size:.85rem;opacity:.85;margin-top:8px;">lights = {Light1, Light2, Light3, Light4}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,#FFFBEB,#F6FBF3);border:2px solid var(--primary);border-radius:20px;padding:20px 24px;margin:20px 0;">
+    <h2 style="margin:0 0 .4rem;color:var(--primary-dark);">🗺️ С чего начать</h2>
+    <p>Baseplate. Папка <b>Lights</b> в Workspace + Script в ServerScriptService (или внутри папки).</p>
+  </div>
+
+  <!-- ===== ПРОЕКТ ===== -->
+  <div class="project-box" id="mainProject">
+    <h2>🌃 Проект «Неоновая гирлянда»</h2>
+    <p>Один скрипт с <code>pairs</code> включает ряд ламп, потом волну цветов и открывает ряд дверей.</p>
+
+    <div class="path-flow">
+      <span>💡 Лампы</span> →
+      <span>🔄 pairs включить</span> →
+      <span>🌈 Волна</span> →
+      <span>🚪 Двери</span>
+    </div>
+
+    <div class="build-grid">
+      <div class="build-card"><div class="ico">💡</div><div class="nm">Light1–5</div><div class="props">Parts в папке</div></div>
+      <div class="build-card"><div class="ico">📜</div><div class="nm">GarlandScript</div><div class="props">for i,v in pairs</div></div>
+      <div class="build-card"><div class="ico">🚪</div><div class="nm">Door1–3</div><div class="props">открытие циклом</div></div>
+      <div class="build-card"><div class="ico">📁</div><div class="nm">GetChildren</div><div class="props">доп. вариант</div></div>
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="projectProgress"></div></div>
+    <span class="progress-label" id="projectLabel">Выполнено шагов: 0 из 18</span>
+
+    <div class="phase" id="phase0">
+      <h3>💡 Фаза 0 — Собери лампы <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>Папка <b>Lights</b> в Workspace.</li>
+        <li>5 Part: Light1 … Light5 в ряд (Anchored).</li>
+        <li>Можно разные цвета пока обычные Plastic.</li>
+      </ol>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p0s0" onchange="updateProjectProgress()"><label for="p0s0">Папка Lights и 5 ламп созданы.</label></li>
+        <li><input type="checkbox" id="p0s1" onchange="updateProjectProgress()"><label for="p0s1">Имена Light1–Light5, все Anchored.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase1">
+      <h3>🔄 Фаза 1 — Включение через pairs <span class="phase-time">12 мин</span></h3>
+      <p>Script <b>GarlandScript</b> в ServerScriptService:</p>
+      <div class="code-block">
+        <span class="keyword">local</span> lights = {<br>
+        &nbsp;&nbsp;workspace.Lights.Light1,<br>
+        &nbsp;&nbsp;workspace.Lights.Light2,<br>
+        &nbsp;&nbsp;workspace.Lights.Light3,<br>
+        &nbsp;&nbsp;workspace.Lights.Light4,<br>
+        &nbsp;&nbsp;workspace.Lights.Light5<br>
+        }<br><br>
+        <span class="keyword">for</span> i, lamp <span class="keyword">in</span> <span class="func">pairs</span>(lights) <span class="keyword">do</span><br>
+        &nbsp;&nbsp;lamp.Material = Enum.Material.Neon<br>
+        &nbsp;&nbsp;lamp.BrickColor = BrickColor.new(<span class="string">"New Yeller"</span>)<br>
+        &nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Лампа "</span> .. i .. <span class="string">" включена"</span>)<br>
+        &nbsp;&nbsp;<span class="func">task.wait</span>(<span class="number">0.4</span>)<br>
+        <span class="keyword">end</span>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">Массив lights и цикл pairs написаны.</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">Play → лампы по очереди становятся Neon.</label></li>
+        <li><input type="checkbox" id="p1s2" onchange="updateProjectProgress()"><label for="p1s2">В Output видны номера 1…5.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase2">
+      <h3>🌈 Фаза 2 — Цветовая волна <span class="phase-time">12 мин</span></h3>
+      <p>Добавь второй цикл (после первого) с разными цветами:</p>
+      <div class="code-block">
+        <span class="keyword">local</span> colors = {<br>
+        &nbsp;&nbsp;<span class="string">"Bright red"</span>,<br>
+        &nbsp;&nbsp;<span class="string">"Bright orange"</span>,<br>
+        &nbsp;&nbsp;<span class="string">"New Yeller"</span>,<br>
+        &nbsp;&nbsp;<span class="string">"Lime green"</span>,<br>
+        &nbsp;&nbsp;<span class="string">"Cyan"</span><br>
+        }<br><br>
+        <span class="keyword">for</span> i, lamp <span class="keyword">in</span> <span class="func">pairs</span>(lights) <span class="keyword">do</span><br>
+        &nbsp;&nbsp;lamp.BrickColor = BrickColor.new(colors[i])<br>
+        &nbsp;&nbsp;<span class="func">task.wait</span>(<span class="number">0.3</span>)<br>
+        <span class="keyword">end</span>
+      </div>
+      <div class="info-callout green">
+        <span class="bulb">🌈</span>
+        <div>Индекс <code>i</code> связывает лампу и цвет: <code>colors[i]</code> — вот зачем нужна пара i и v!</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">Массив colors создан.</label></li>
+        <li><input type="checkbox" id="p2s1" onchange="updateProjectProgress()"><label for="p2s1">Второй цикл красит лампы разными цветами.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase3">
+      <h3>🚪 Фаза 3 — Двери одним циклом <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>Папка <b>Doors</b>: Door1, Door2, Door3 (тёмные Part).</li>
+        <li>После гирлянды открой все двери через pairs:</li>
+      </ol>
+      <div class="code-block">
+        <span class="keyword">local</span> doors = {<br>
+        &nbsp;&nbsp;workspace.Doors.Door1,<br>
+        &nbsp;&nbsp;workspace.Doors.Door2,<br>
+        &nbsp;&nbsp;workspace.Doors.Door3<br>
+        }<br><br>
+        <span class="keyword">for</span> _, door <span class="keyword">in</span> <span class="func">pairs</span>(doors) <span class="keyword">do</span><br>
+        &nbsp;&nbsp;door.Transparency = <span class="number">0.6</span><br>
+        &nbsp;&nbsp;door.CanCollide = <span class="keyword">false</span><br>
+        &nbsp;&nbsp;<span class="func">task.wait</span>(<span class="number">0.5</span>)<br>
+        <span class="keyword">end</span><br>
+        <span class="func">print</span>(<span class="string">"Все двери открыты!"</span>)
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">Три двери в папке Doors.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">pairs открывает двери по очереди.</label></li>
+        <li><input type="checkbox" id="p3s2" onchange="updateProjectProgress()"><label for="p3s2">Можно пройти сквозь открытые двери.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase4">
+      <h3>✅ Фаза 4 — Проверка <span class="phase-time">6 мин</span></h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">Play: лампы → цвета → двери без ошибок.</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">Понимаю разницу i и v (или _).</label></li>
+      </ul>
+      <div class="space-note">🎉 Базовая гирлянда готова! Дальше — доп. фазы.</div>
+    </div>
+
+    <div class="phase" id="phase5" style="border-color:#fbbf24;">
+      <h3>🔙 Фаза 5 (доп) — Выключение с конца <span class="phase-time">8 мин</span></h3>
+      <p>Пройди массив задом наперёд обычным for:</p>
+      <div class="code-block">
+        <span class="keyword">for</span> i = #lights, <span class="number">1</span>, -<span class="number">1</span> <span class="keyword">do</span><br>
+        &nbsp;&nbsp;<span class="keyword">local</span> lamp = lights[i]<br>
+        &nbsp;&nbsp;lamp.BrickColor = BrickColor.new(<span class="string">"Black"</span>)<br>
+        &nbsp;&nbsp;lamp.Material = Enum.Material.SmoothPlastic<br>
+        &nbsp;&nbsp;<span class="func">task.wait</span>(<span class="number">0.3</span>)<br>
+        <span class="keyword">end</span>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">Лампы гаснут от 5-й к 1-й.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">Вижу, когда удобнее pairs, а когда for i = #t, 1, -1.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase6" style="border-color:#38bdf8;">
+      <h3>📁 Фаза 6 (доп) — GetChildren вместо списка <span class="phase-time">8 мин</span></h3>
+      <div class="code-block">
+        <span class="keyword">for</span> _, child <span class="keyword">in</span> <span class="func">pairs</span>(workspace.Lights:<span class="func">GetChildren</span>()) <span class="keyword">do</span><br>
+        &nbsp;&nbsp;<span class="keyword">if</span> child:IsA(<span class="string">"BasePart"</span>) <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;child.Material = Enum.Material.Neon<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6s0" onchange="updateProjectProgress()"><label for="p6s0">Вариант с GetChildren работает.</label></li>
+        <li><input type="checkbox" id="p6s1" onchange="updateProjectProgress()"><label for="p6s1">Добавил 6-ю лампу — она тоже попала в цикл без правки массива.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase7" style="border-color:#a78bfa;">
+      <h3>🔤 Фаза 7 (доп) — Имя из букв <span class="phase-time">10 мин</span></h3>
+      <p>3–5 Part-букв у спавна. Массив + pairs: по очереди Transparency = 0 (сначала были 1).</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p7s0" onchange="updateProjectProgress()"><label for="p7s0">Буквы собраны и лежат в массиве.</label></li>
+        <li><input type="checkbox" id="p7s1" onchange="updateProjectProgress()"><label for="p7s1">pairs проявляет буквы с паузой.</label></li>
+        <li><input type="checkbox" id="p7s2" onchange="updateProjectProgress()"><label for="p7s2">Гирлянда + двери + буквы — один запуск Play.</label></li>
+      </ul>
+      <div class="space-note">🏆 Ты управляешь группами объектов одним парным циклом!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>собрал массив и обошёл его через <code>pairs</code>;</li>
+      <li>использовал индекс i и значение v;</li>
+      <li>зажёг гирлянду и открыл двери циклом;</li>
+      <li>попробовал GetChildren и обратный for.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Гирлянда горит!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти разобрался с i и v</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь</label>
+    </div>
+    <textarea placeholder="Чем pairs удобнее копипасты на каждую лампу? Где ещё применишь?"></textarea>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="Занятие_4.1.13_Игроки.html">
+      <div class="lbl">← Назад</div>
+      <div class="ttl">4.1.13 Игроки</div>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 4.1.14 · Парные циклы</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  const lampNames = ['Light1', 'Light2', 'Light3', 'Light4'];
+  let stepIndex = 0; // 0 = before first, after step N current i = N
+  let missionIndex = 0;
+  let score = 0;
+  let expectClick = false;
+
+  const missions = [
+    {
+      title: 'Задание 1 из 3',
+      text: 'Сделай <b>2 шага</b> цикла, потом кликни лампу с <b>i = 2</b>.',
+      needSteps: 2,
+      answerI: 2
+    },
+    {
+      title: 'Задание 2 из 3',
+      text: 'Сбрось лампы, сделай <b>4 шага</b>, кликни лампу с <b>i = 4</b> (v = Light4).',
+      needSteps: 4,
+      answerI: 4,
+      needReset: true
+    },
+    {
+      title: 'Задание 3 из 3',
+      text: 'Сделай <b>1 шаг</b> и кликни лампу, где <b>v = Light1</b>.',
+      needSteps: 1,
+      answerI: 1,
+      needReset: true
+    }
+  ];
+
+  function updateLampsVisual() {
+    document.querySelectorAll('.lamp').forEach(el => {
+      const i = Number(el.dataset.i);
+      el.classList.toggle('on', i <= stepIndex);
+      el.classList.toggle('active', i === stepIndex && stepIndex > 0);
+    });
+    if (stepIndex === 0) {
+      document.getElementById('ivDisplay').innerHTML = 'for i, v in pairs(lights) — нажми «Шаг»';
+    } else {
+      document.getElementById('ivDisplay').innerHTML =
+        'i = <span class="hi">' + stepIndex + '</span>, v = <span class="hi">' + lampNames[stepIndex - 1] + '</span>';
+    }
+  }
+
+  function stepPairs() {
+    if (stepIndex >= 4) {
+      document.getElementById('ivDisplay').textContent = 'Цикл закончен (все 4 элемента). Сброс ламп → снова.';
+      return;
+    }
+    stepIndex++;
+    updateLampsVisual();
+    const m = missions[missionIndex];
+    if (m && stepIndex === m.needSteps) {
+      expectClick = true;
+      document.getElementById('missionResult').textContent = '👆 Теперь кликни нужную лампу!';
+      document.getElementById('missionResult').style.color = '#fde047';
+    }
+  }
+
+  function resetGarland() {
+    stepIndex = 0;
+    expectClick = false;
+    updateLampsVisual();
+  }
+
+  function clickLamp(btn) {
+    const m = missions[missionIndex];
+    if (!m) return;
+    const res = document.getElementById('missionResult');
+    if (!expectClick || stepIndex !== m.needSteps) {
+      res.textContent = 'Сначала дойди шагами до нужного i (смотри задание).';
+      res.style.color = '#f87171';
+      return;
+    }
+    if (Number(btn.dataset.i) === m.answerI) {
+      score++;
+      expectClick = false;
+      res.textContent = '✅ Верно! i=' + m.answerI + ', v=' + lampNames[m.answerI - 1];
+      res.style.color = '#a7f3d0';
+      document.getElementById('scoreLine').textContent = 'Очки: ' + score + ' / 3';
+      missionIndex++;
+      if (missionIndex >= missions.length) {
+        document.getElementById('missionTitle').textContent = 'Готово!';
+        document.getElementById('missionText').textContent = 'Ты видишь пару i и v. Пора в Studio!';
+        res.textContent = '🏆 Все 3 задания выполнены!';
+      } else {
+        setTimeout(showMission, 600);
+      }
+    } else {
+      res.textContent = '❌ Не та лампа. Смотри текущие i и v на табло.';
+      res.style.color = '#f87171';
+    }
+  }
+
+  function showMission() {
+    const m = missions[missionIndex];
+    if (!m) return;
+    document.getElementById('missionTitle').textContent = m.title;
+    document.getElementById('missionText').innerHTML = m.text;
+    document.getElementById('missionResult').textContent = '';
+    expectClick = false;
+    if (m.needReset) resetGarland();
+  }
+
+  function resetMissions() {
+    missionIndex = 0;
+    score = 0;
+    document.getElementById('scoreLine').textContent = 'Очки: 0 / 3';
+    resetGarland();
+    showMission();
+  }
+
+  function updateProjectProgress() {
+    const cbs = document.querySelectorAll('#mainProject .task-steps input[type=checkbox]');
+    let done = 0;
+    cbs.forEach(cb => { if (cb.checked) done++; });
+    const total = cbs.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('projectProgress').style.width = pct + '%';
+    document.getElementById('projectLabel').textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+  }
+
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const selected = container.querySelector('.choice-card.selected');
+    const resultDiv = container.querySelector('.activity-result');
+    container.querySelectorAll('.choice-card').forEach(c => c.classList.remove('correct', 'incorrect'));
+    if (!selected) {
+      resultDiv.textContent = '⚠️ Выбери вариант!';
+      resultDiv.className = 'activity-result neutral';
+      return;
+    }
+    const ok = selected.dataset.correctChoice === 'true';
+    selected.classList.add(ok ? 'correct' : 'incorrect');
+    resultDiv.textContent = ok ? '✅ Верно!' : '❌ Попробуй ещё раз.';
+    resultDiv.className = 'activity-result ' + (ok ? 'done' : 'neutral');
+  }
+
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.choice-card');
+    if (!card) return;
+    const parent = card.closest('.interactive-box') || card.parentElement;
+    parent.querySelectorAll('.choice-card').forEach(c => {
+      c.classList.remove('selected', 'correct', 'incorrect');
+    });
+    card.classList.add('selected');
+  });
+
+  updateLampsVisual();
+  showMission();
+</script>
+</body>
+</html>

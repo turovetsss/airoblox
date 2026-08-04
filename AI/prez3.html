@@ -1,0 +1,872 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ИИ-Творец · Занятие 3 · Безопасность в интернете</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #61B01F;
+      --green-dark: #2E4A17;
+      --green-light: #E8F5E0;
+      --purple: #6C3F9B;
+      --purple-light: #F4EAFA;
+      --orange: #F0A500;
+      --orange-light: #FFF4DB;
+      --orange-ink: #875B00;
+      --red: #D32F2F;
+      --red-light: #FFEBEE;
+      --navy: #12274C;
+      --white: #FFFFFF;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #fff; overflow: hidden; height: 100vh; color: var(--green-dark); }
+    .presentation { display: flex; flex-direction: column; height: 100vh; }
+    .slide-stage { flex: 1; position: relative; overflow: hidden; }
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      padding: 28px 48px 20px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+      background: #fff;
+      animation: fade .4s ease;
+    }
+    .slide.active { display: flex; align-items: center; justify-content: center; }
+    .slide-inner {
+      width: 100%;
+      max-width: none;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 32px;
+      align-items: center;
+      height: 100%;
+      max-height: none;
+      padding: 0 1.5vw;
+    }
+    .slide-inner.full { grid-template-columns: 1fr; }
+    .slide-inner.stack { grid-template-columns: 1fr; max-width: none; }
+
+    .title-slide { background: var(--navy); color: #fff; }
+    .title-slide .slide-inner { grid-template-columns: 1.1fr 0.9fr; }
+    .title-slide h1 { font-size: clamp(34px, 5.5vw, 64px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; }
+    .title-slide h2 { font-size: clamp(26px, 3.8vw, 44px); font-weight: 800; color: #b9eb8d; margin: 10px 0; }
+    .title-slide p { font-size: clamp(18px, 2.2vw, 28px); font-weight: 700; max-width: none; opacity: .95; }
+    .title-slide .stars {
+      position: absolute; inset: 0; pointer-events: none; opacity: .35;
+      background-image: radial-gradient(2px 2px at 20% 30%, #fff, transparent),
+        radial-gradient(2px 2px at 70% 20%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 40% 70%, #9cf, transparent),
+        radial-gradient(2px 2px at 85% 60%, #fff, transparent),
+        radial-gradient(1px 1px at 10% 80%, #fff, transparent);
+    }
+
+    .eyebrow {
+      display: inline-block; padding: 8px 18px; border-radius: 99px;
+      font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;
+      background: var(--green-light); color: var(--green-dark);
+    }
+    .eyebrow.orange { background: var(--orange); color: #fff; }
+    .eyebrow.red { background: var(--red); color: #fff; }
+    h2 { font-size: clamp(34px, 4.8vw, 58px); font-weight: 900; line-height: 1.1; color: var(--green-dark); margin: 10px 0 8px; }
+    .lead { font-weight: 800; font-size: clamp(19px, 2.1vw, 28px); line-height: 1.45; }
+    .list { margin-top: 16px; display: grid; gap: 12px; font-size: clamp(18px, 2vw, 26px); font-weight: 800; }
+    .list span { display: flex; align-items: flex-start; gap: 10px; }
+    .tick {
+      width: 32px; height: 32px; border-radius: 50%; background: var(--green-light);
+      display: grid; place-items: center; color: var(--green); font-size: 14px; flex-shrink: 0; margin-top: 1px;
+    }
+    .tick.red { background: var(--red-light); color: var(--red); }
+    .tick.orange { background: var(--orange-light); color: var(--orange); }
+    .note {
+      padding: 16px 20px; border-radius: 18px; background: var(--orange-light); color: var(--orange-ink);
+      font-weight: 800; font-size: clamp(17px, 1.7vw, 23px); margin-top: 14px;
+    }
+    .note.green { background: var(--green-light); color: var(--green-dark); }
+    .note.purple { background: var(--purple-light); color: var(--purple); }
+    .note.red { background: var(--red-light); color: var(--red); }
+    .discuss {
+      margin-top: 14px; padding: 12px 16px; border-radius: 16px; border: 2px dashed var(--purple);
+      background: #faf5ff; color: var(--purple); font-weight: 800; font-size: clamp(14px, 1.2vw, 18px);
+    }
+    .discuss.red { border-color: var(--red); background: var(--red-light); color: var(--red); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    .can-card { padding: 16px; border-radius: 20px; font-weight: 800; }
+    .can-card h3 { font-size: clamp(16px, 1.5vw, 22px); margin-bottom: 6px; }
+    .can-card ul { list-style: none; padding: 0; font-size: clamp(16px, 1.6vw, 22px); display: grid; gap: 4px; }
+    .can-card ul li::before { content: "• "; }
+    .can { background: var(--green-light); color: var(--green-dark); }
+    .cannot { background: var(--red-light); color: var(--red); }
+    .warning-card { background: var(--orange-light); color: var(--orange-ink); border-left: 6px solid var(--orange); }
+
+    .steps { display: grid; gap: 10px; margin-top: 12px; }
+    .step {
+      display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start;
+      background: var(--green-light); border-radius: 16px; padding: 12px 14px; font-weight: 800;
+      font-size: clamp(17px, 1.8vw, 24px);
+    }
+    
+    .step-num {
+      min-width: 42px; height: 42px; padding: 0 10px; border-radius: 999px; white-space: nowrap; font-size: 14px; background: var(--green); color: #fff;
+      display: grid; place-items: center; font-weight: 900;
+    }
+    .step.alt { background: var(--purple-light); }
+    .step.alt .step-num { background: var(--purple); }
+    .step.warn { background: var(--orange-light); }
+    .step.warn .step-num { background: var(--orange); color: #3E2C0B; }
+    .step.danger { background: var(--red-light); }
+    .step.danger .step-num { background: var(--red); color: #fff; }
+
+    .illustration { position: relative; display: flex; align-items: center; justify-content: center; min-height: 280px; }
+    .blob {
+      position: absolute; width: 78%; aspect-ratio: 1; border-radius: 45% 55% 60% 40%;
+      background: var(--green-light); transform: rotate(-12deg); opacity: 0.55;
+    }
+    .blob.red { background: var(--red-light); }
+    .blob.orange { background: var(--orange-light); }
+    .title-slide .blob { background: #244d82; opacity: 0.35; }
+
+    .robot {
+      position: relative; width: 150px; height: 180px; z-index: 2;
+      filter: drop-shadow(0 10px 12px rgba(18,39,76,0.15));
+    }
+    .robot-head {
+      position: absolute; width: 112px; height: 82px; left: 19px; top: 16px;
+      border-radius: 36px; background: linear-gradient(145deg, #fff, #c8e6ff); border: 5px solid #193a66;
+    }
+    .robot-ear {
+      position: absolute; top: 38px; width: 20px; height: 36px; border-radius: 12px;
+      background: var(--green); border: 4px solid #193a66;
+    }
+    .robot-ear.left { left: 2px; } .robot-ear.right { right: 2px; }
+    .robot-eye {
+      position: absolute; top: 36px; width: 15px; height: 20px; background: #193a66; border-radius: 50%;
+    }
+    .robot-eye.one { left: 42px; } .robot-eye.two { right: 42px; }
+    .robot-eye.worried { height: 10px; top: 42px; border-radius: 4px; background: var(--red); }
+    .robot-mouth {
+      position: absolute; width: 30px; height: 12px; left: 41px; top: 60px;
+      border-bottom: 4px solid #193a66; border-radius: 0 0 20px 20px;
+    }
+    .robot-mouth.worried {
+      width: 20px; height: 14px; left: 46px; top: 58px;
+      border: 4px solid #193a66; border-radius: 50%; background: transparent;
+    }
+    .antenna { position: absolute; width: 6px; height: 22px; left: 72px; top: -4px; background: #193a66; }
+    .antenna::before {
+      content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%;
+      background: var(--orange); left: -4px; top: -8px;
+    }
+    .robot-body {
+      position: absolute; width: 100px; height: 72px; left: 25px; bottom: 4px;
+      border-radius: 28px 28px 20px 20px; background: var(--green); border: 5px solid #193a66;
+    }
+    .robot-panel {
+      position: absolute; width: 48px; height: 28px; left: 26px; top: 18px;
+      border-radius: 12px; background: #f8fff4; border: 4px solid #193a66;
+    }
+    .robot-panel::before, .robot-panel::after {
+      content: ''; position: absolute; width: 7px; height: 7px; border-radius: 50%; top: 7px; background: var(--purple);
+    }
+    .robot-panel::before { left: 10px; } .robot-panel::after { right: 10px; }
+
+    .float-icon {
+      position: absolute; z-index: 3; width: 56px; height: 56px; display: grid; place-items: center;
+      border-radius: 18px; background: white; box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      font-size: 26px; animation: bob 3s ease-in-out infinite;
+    }
+    .float-icon.a { top: 4%; left: 4%; }
+    .float-icon.b { top: 10%; right: 4%; animation-delay: .6s; }
+    .float-icon.c { bottom: 8%; left: 2%; animation-delay: 1.2s; }
+    .float-icon.d { bottom: 4%; right: 6%; animation-delay: 1.7s; }
+
+    .ability-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+    .ability {
+      background: var(--green-light); border-radius: 16px; padding: 14px; font-weight: 800;
+      display: flex; gap: 10px; align-items: center; font-size: clamp(16px, 1.7vw, 22px);
+    }
+    .ability .ico { font-size: 28px; }
+    .ability.danger { background: var(--red-light); }
+
+    .browser {
+      background: #fff; border-radius: 22px; box-shadow: 0 12px 28px rgba(17,53,76,0.12);
+      overflow: hidden; border: 3px solid #d8e8d1; width: 100%; max-width: 460px;
+    }
+    .browser-top { background: #e9f6e2; padding: 10px 16px; display: flex; gap: 8px; align-items: center; }
+    .browser-top .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--orange); }
+    .browser-top .dot:nth-child(2) { background: #a8d985; }
+    .browser-top .dot:nth-child(3) { background: #7e65a8; }
+    .browser-content { padding: 16px; }
+
+    .chat-bubble {
+      border-radius: 16px; padding: 12px 16px; font-weight: 800;
+      font-size: clamp(16px, 1.6vw, 22px); line-height: 1.4; margin-bottom: 10px;
+    }
+    .bad { background: var(--orange-light); border: 3px solid #f5c15a; color: var(--orange-ink); }
+    .good { background: var(--green-light); border: 3px solid #9bce75; color: var(--green-dark); }
+    .danger-bubble { background: var(--red-light); border: 3px solid var(--red); color: var(--red); }
+
+    .flow-pill {
+      display: inline-block; padding: 8px 14px; border-radius: 30px; font-weight: 900;
+      font-size: clamp(16px, 1.5vw, 21px);
+    }
+    .arrow { font-size: 22px; font-weight: 900; color: var(--orange); margin: 0 2px; }
+
+    .cta-link {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
+      background: var(--green); color: #fff; padding: 12px 22px; border-radius: 30px;
+      font-weight: 900; text-decoration: none; font-size: clamp(16px, 1.7vw, 22px);
+      box-shadow: 0 4px 0 #4a8a18;
+    }
+    .cta-link:hover { background: #52991a; }
+    .cta-link.danger { background: var(--red); box-shadow: 0 4px 0 #b71c1c; }
+    .cta-link.danger:hover { background: #c62828; }
+
+    .check-list { margin-top: 12px; display: grid; gap: 8px; }
+    .check-item {
+      display: flex; gap: 10px; align-items: flex-start; font-weight: 800;
+      font-size: clamp(17px, 1.7vw, 23px); background: var(--green-light);
+      padding: 10px 14px; border-radius: 14px;
+    }
+    .check-item .ok { color: var(--green); font-size: 22px; line-height: 1; }
+    .check-item.danger { background: var(--red-light); }
+    .check-item.danger .ok { color: var(--red); }
+
+    .ref-links {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ref-links a {
+      background: #f0f4f9;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      color: var(--purple);
+      border: 1px solid #dce3ec;
+      transition: .2s;
+    }
+    .ref-links a:hover {
+      background: var(--purple-light);
+      border-color: var(--purple);
+    }
+
+    .teacher-toggle {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      z-index: 999;
+      background: var(--purple);
+      color: #fff;
+      border: none;
+      border-radius: 40px;
+      padding: 12px 20px;
+      font-weight: 900;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(108,63,155,.4);
+      transition: .2s;
+      font-family: inherit;
+    }
+    .teacher-toggle:hover { transform: scale(1.05); background: #5a2f8a; }
+    .teacher-panel {
+      position: fixed;
+      bottom: 150px;
+      right: 20px;
+      width: 360px;
+      max-height: 60vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.2);
+      z-index: 998;
+      display: none;
+      font-size: 14px;
+      line-height: 1.5;
+      border: 3px solid var(--purple-light);
+    }
+    .teacher-panel.open { display: block; }
+    .teacher-panel h4 { color: var(--purple); margin-bottom: 8px; }
+    .teacher-panel p { margin-bottom: 6px; padding: 4px 6px; border-radius: 6px; transition: .2s; }
+    .teacher-panel .meta { color: var(--orange-ink); font-weight: 700; }
+    .teacher-panel .active-note { background: var(--green-light); }
+
+    .footer-nav {
+      height: 76px;
+      background: white;
+      border-top: 1px solid #e6eee1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+    .nav-inner {
+      width: 100%;
+      max-width: none; width: 100%; padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border: 0;
+      border-radius: 30px; font-weight: 900; font-size: 15px; cursor: pointer; transition: .2s;
+      background: var(--green-light); color: var(--green-dark); font-family: inherit;
+    }
+    .nav-btn:hover { transform: translateY(-2px); background: #d8efc7; }
+    .nav-btn.primary { background: var(--green); color: white; }
+    .nav-btn.primary:hover { background: #52991a; }
+    .nav-btn:disabled { opacity: .4; pointer-events: none; }
+    .progress-wrap { flex: 1; max-width: 420px; }
+    .progress-track { height: 8px; border-radius: 99px; background: #e7eee5; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: inherit; transition: width .3s; }
+    .dots { display: flex; gap: 4px; justify-content: center; margin-top: 6px; flex-wrap: wrap; }
+    .nav-dot {
+      border: 0; padding: 0; width: 7px; height: 7px; border-radius: 50%;
+      background: #cad7c4; cursor: pointer; transition: .2s;
+    }
+    .nav-dot.active { background: var(--purple); transform: scale(1.35); }
+    .counter { font-weight: 900; font-size: 18px; white-space: nowrap; min-width: 72px; text-align: center; }
+
+    .chip {
+      display: inline-block; background: #fff; border-radius: 12px; padding: 6px 10px;
+      font-weight: 800; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,.06); margin: 3px;
+    }
+
+    @keyframes bob { 50% { transform: translateY(-10px) rotate(3deg); } }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 760px) {
+      .slide { padding: 16px; }
+      .slide-inner, .title-slide .slide-inner { grid-template-columns: 1fr; gap: 14px; }
+      .illustration { min-height: 180px; order: -1; }
+      .title-slide .illustration { order: 0; }
+      .robot { transform: scale(0.72); }
+      .two-col, .ability-grid { grid-template-columns: 1fr; }
+      .footer-nav { height: 68px; }
+      .progress-wrap { display: none; }
+      .nav-btn { padding: 8px 14px; font-size: 13px; }
+      .teacher-toggle { bottom: 80px; right: 10px; padding: 10px 16px; font-size: 12px; }
+      .teacher-panel { width: 280px; right: 10px; bottom: 130px; }
+    }
+  </style>
+</head>
+<body>
+<div class="presentation">
+  <main class="slide-stage">
+
+    <!-- 1. Титульный -->
+    <section class="slide title-slide active">
+      <div class="stars"></div>
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow" style="background:#F0A500;color:#12274C;">Курс · Занятие 3</span>
+          <h1>ИИ-ТВОРЕЦ: ОТ ИДЕИ ДО СВОЕГО ПЕРВОГО ПОМОЩНИКА</h1>
+          <h2>Безопасность в интернете: как защитить себя при работе с ИИ</h2>
+          <p>🛡️ Твой третий шаг в мир ИИ</p>
+          <p style="margin-top:10px;font-size:clamp(14px,1.5vw,18px);font-weight:700;opacity:.9;">Сегодня ты узнаешь о рисках при работе с ИИ, научишься распознавать дипфейки и мошенников, поймёшь, как действовать при кибербуллинге, и создашь свой личный чек-лист безопасности.</p>
+      
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div class="float-icon a">🔒</div>
+          <div class="float-icon b">🛡️</div>
+          <div class="float-icon c">⚠️</div>
+          <div class="float-icon d">🔍</div>
+          <div class="robot">
+            <div class="antenna"></div>
+            <div class="robot-ear left"></div><div class="robot-ear right"></div>
+            <div class="robot-head"></div>
+            <div class="robot-eye one worried"></div><div class="robot-eye two worried"></div>
+            <div class="robot-mouth worried"></div>
+            <div class="robot-body"><div class="robot-panel"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Повтор -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Повторяем</span>
+          <h2>Что мы уже знаем?</h2>
+          <p class="lead">Давай быстро вспомним ключевые моменты прошлых занятий:</p>
+          <div class="list">
+            <span><span class="tick">🤖</span> ИИ — это программа, которая <strong>учится на примерах</strong> и предсказывает ответы</span>
+            <span><span class="tick">💬</span> <strong>Промпт</strong> — это запрос к ИИ. Формула: <strong>Роль + Задача + Контекст + Формат</strong></span>
+            <span><span class="tick">❌</span> ИИ может ошибаться и даже придумывать факты — всегда <strong>проверяй информацию</strong></span>
+            <span><span class="tick">🧠</span> ИИ — это <strong>инструмент</strong>, а не замена твоему мышлению</span>
+          </div>
+          <div class="discuss">❓ Какой самый важный урок вы вынесли с прошлых занятий? Почему проверка информации — это суперсила?</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;background:#fff;border-radius:24px;padding:22px;box-shadow:0 10px 28px rgba(0,0,0,.08);text-align:center;font-weight:900;">
+            <div style="font-size:56px;">🧠</div>
+            <div style="font-size:16px;color:var(--purple);">Вспоминаем прошлые занятия</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Мотивация: риски -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow red">Важно!</span>
+          <h2>Почему мы говорим о безопасности?</h2>
+          <p class="lead">ИИ — это мощный инструмент. Но, как и любой инструмент, его можно использовать во вред. Сегодня мы поговорим о том, как не попасться на уловки мошенников и защитить себя.</p>
+          <div class="list">
+            <span><span class="tick red">⚠️</span> ИИ может создавать <strong>фейковые</strong> изображения, видео и голоса — их называют дипфейками</span>
+            <span><span class="tick red">⚠️</span> Мошенники используют ИИ, чтобы <strong>обманывать</strong> людей и воровать их данные</span>
+            <span><span class="tick red">⚠️</span> Некоторые ИИ-чатботы могут давать <strong>опасные советы</strong> или пытаться манипулировать тобой</span>
+            <span><span class="tick red">⚠️</span> В интернете можно столкнуться с <strong>кибербуллингом</strong> — травлей и оскорблениями</span>
+          </div>
+          <div class="note red">🛡️ Знания — твоя главная защита. Чем лучше ты понимаешь риски, тем сложнее тебя обмануть. Сегодня ты станешь настоящим экспертом по безопасности!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob red"></div>
+          <div style="position:relative;z-index:2;font-size:80px;">⚠️</div>
+          <div style="position:absolute;bottom:10%;right:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);color:var(--red);">Будь осторожен!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Какие риски существуют -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow red">Риски</span>
+          <h2>С какими угрозами можно столкнуться?</h2>
+          <p class="lead">Давай разложим по полочкам. Есть несколько основных опасностей:</p>
+          <div class="two-col">
+            <div class="can-card cannot">
+              <h3>🔴 Что может навредить</h3>
+              <ul>
+                <li><strong>Дипфейки</strong> — поддельные видео и фото, созданные ИИ, чтобы выдать вымысел за правду</li>
+                <li><strong>Фишинг</strong> — когда мошенники под видом официальных писем или сайтов выманивают твои пароли и данные</li>
+                <li><strong>Кража личных данных</strong> — твоя личная информация (адрес, телефон, фото) попадает к злоумышленникам</li>
+                <li><strong>Кибербуллинг</strong> — оскорбления, травля и запугивание в интернете</li>
+              </ul>
+            </div>
+            <div class="can-card can">
+              <h3>🟢 Как защититься</h3>
+              <ul>
+                <li><strong>Проверяй</strong> информацию: сравнивай несколько источников, ищи подтверждение</li>
+                <li>Используй <strong>сложные и уникальные пароли</strong> для каждого сервиса</li>
+                <li><strong>Не делись</strong> личными данными в интернете без крайней необходимости</li>
+                <li>Если столкнулся с травлей или подозрительными сообщениями — <strong>сразу расскажи взрослому</strong></li>
+              </ul>
+            </div>
+          </div>
+          
+        </div>
+        <div class="illustration">
+          <div class="blob red"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🛡️</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Дипфейки -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow red">Дипфейки</span>
+          <h2>Что такое дипфейки и почему это опасно?</h2>
+          <p class="lead"><strong>Дипфейк</strong> — это видео, фото или аудио, созданные искусственным интеллектом так, что они выглядят как настоящие. Технология «глубокого обучения» (deep learning) позволяет подменять лица, копировать голоса и создавать полностью вымышленные ситуации.</p>
+          <div class="list">
+            <span><span class="tick red">🎭</span> ИИ может <strong>подменить лицо</strong> человека на видео — например, заставить знаменитость говорить то, чего она никогда не произносила</span>
+            <span><span class="tick red">🎤</span> ИИ может <strong>скопировать голос</strong> — достаточно небольшой записи, чтобы синтезировать любые фразы от имени этого человека</span>
+            <span><span class="tick red">📸</span> ИИ может создать <strong>фейковое фото</strong> — на котором ты «делаешь» то, чего никогда не делал</span>
+          </div>
+          <div class="note red">⚠️ Дипфейки часто используют для обмана: например, мошенники подделывают голос начальника и просят срочно перевести деньги. Всегда проверяй подозрительные видео и аудио!</div>
+          
+        </div>
+        <div class="illustration">
+          <div class="blob red"></div>
+          <div style="position:relative;z-index:2;font-size:80px;">🎭</div>
+          <div style="position:absolute;bottom:8%;right:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);">«Это не я!»</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Как распознать дипфейк -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Навык</span>
+          <h2>Как распознать дипфейк?</h2>
+          <p class="lead">Вот несколько признаков, которые помогут отличить подделку от реальности:</p>
+          <div class="steps">
+            <div class="step danger"><div class="step-num">1</div><div><strong>Странные детали</strong> — обрати внимание на глаза (неестественное моргание или его отсутствие), размытые границы лица, неестественные тени или движения.</div></div>
+            <div class="step danger"><div class="step-num">2</div><div><strong>Несовпадение звука и изображения</strong> — голос как будто чуть-чуть отстаёт от движения губ или звучит «механически».</div></div>
+            <div class="step danger"><div class="step-num">3</div><div><strong>Проверь источник</strong> — кто опубликовал видео? Это официальный канал или подозрительный аккаунт? Поищи, обсуждают ли это видео другие.</div></div>
+            <div class="step danger"><div class="step-num">4</div><div><strong>Задай себе вопрос</strong> — похоже ли это на правду? Если известный человек говорит что-то странное или скандальное — это повод насторожиться.</div></div>
+          </div>
+          <div class="note purple">💡 Главное правило: <strong>если сомневаешься — не верь, пока не найдёшь подтверждение</strong> из надёжного источника. Лучше перепроверить десять раз, чем попасться на обман!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🔍</div>
+          <div style="position:absolute;bottom:8%;left:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);">Проверяй!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Кибербуллинг -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow red">Кибербуллинг</span>
+          <h2>Кибербуллинг: что это и как с ним бороться</h2>
+          <p class="lead"><strong>Кибербуллинг</strong> — это травля и оскорбления, которые происходят в интернете. Обидчики могут использовать текстовые сообщения, фото, видео и даже создавать фейковые аккаунты, чтобы унизить или запугать человека.</p>
+          <div class="list">
+            <span><span class="tick red">😔</span> Оскорбительные сообщения в чатах и соцсетях</span>
+            <span><span class="tick red">📸</span> Распространение твоих личных фотографий без разрешения — это унизительно и незаконно</span>
+            <span><span class="tick red">🤖</span> Использование ИИ для создания фейковых компрометирующих материалов — например, дипфейков с твоим лицом</span>
+          </div>
+          <div class="note red">🛡️ Если ты стал жертвой кибербуллинга — <strong>не молчи</strong>! Обязательно расскажи взрослому, которому доверяешь: родителям, учителю, школьному психологу. Ты не один, и проблему можно решить.</div>
+       
+        </div>
+        <div class="illustration">
+          <div class="blob red"></div>
+          <div style="position:relative;z-index:2;font-size:80px;">🚫</div>
+          <div style="position:absolute;bottom:8%;right:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);">Стоп кибербуллинг!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Защита данных -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Защита</span>
+          <h2>Как защитить свои данные в интернете?</h2>
+          <p class="lead">Твои личные данные — это ключ к твоей цифровой жизни. Представь, что это ключ от твоей квартиры — ты же не будешь раздавать его незнакомцам?</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Используй <strong>сложные и уникальные пароли</strong>: минимум 8 символов, буквы в разном регистре, цифры и специальные знаки. Не используй один пароль везде!</div></div>
+            <div class="step alt"><div class="step-num">2</div><div><strong>Никому не сообщай</strong> пароль, свой адрес, телефон и другие личные данные в интернете — даже если просят «для проверки».</div></div>
+            <div class="step warn"><div class="step-num">3</div><div><strong>Не открывай</strong> подозрительные ссылки и вложения от незнакомых отправителей. Даже если письмо выглядит как от друга, но кажется странным — сначала свяжись с другом другим способом.</div></div>
+            <div class="step danger"><div class="step-num">4</div><div>По возможности <strong>включай двухфакторную аутентификацию</strong> — это дополнительный код, который приходит на телефон. Даже если кто-то узнает пароль, без кода он не войдёт.</div></div>
+          </div>
+         
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🔒</div>
+          <div style="position:absolute;bottom:8%;left:0;background:#fff;border-radius:16px;padding:8px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.06);">Защити себя!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Опасные ИИ-чатботы -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow red">Важно!</span>
+          <h2>Опасные ИИ-чатботы: не все «друзья» настоящие</h2>
+          <p class="lead">Сегодня существует множество чатботов, которые притворяются друзьями или помощниками, но на самом деле могут навредить.</p>
+          <div class="list">
+            <span><span class="tick red">⚠️</span> Некоторые чатботы могут давать <strong>опасные советы</strong> — например, как обойти родительский контроль или скрыть свои действия от взрослых</span>
+            <span><span class="tick red">⚠️</span> ИИ-компаньоны умеют <strong>манипулировать эмоциями</strong>: подстраиваться под твоё настроение и вызывать зависимость</span>
+            <span><span class="tick red">⚠️</span> Исследования показывают, что 72% подростков уже общаются с ИИ-компаньонами, но далеко не все сервисы безопасны</span>
+            <span><span class="tick red">⚠️</span> Большинство подобных сервисов <strong>не имеют родительского контроля</strong> и не проверяют возраст пользователей</span>
+          </div>
+          <div class="note red">🧠 Помни: <strong>ИИ — это программа, а не живой друг</strong>. Он не умеет по-настоящему переживать и заботиться о тебе. Если чатбот просит сообщить личные данные, пароль или сделать что-то необычное — прекрати общение и расскажи взрослым.</div>
+     
+        </div>
+        <div class="illustration">
+          <div class="blob red"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">🤖⚠️</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Практика: разбор кейсов -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow orange">Практика</span>
+          <h2>Разбор реальных ситуаций</h2>
+          <p class="lead">Сейчас вы будете работать в группах по 2–3 человека. Прочитайте ситуацию и решите, как правильно действовать. Запишите свои ответы — потом обсудим всем классом.</p>
+          <div class="task-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;">
+            <div class="task-card" style="background:var(--red-light);border-color:var(--red);">
+              <span class="n">🔴 Ситуация 1</span>
+              Тебе в мессенджер приходит сообщение от лучшего друга: «Срочно! Я потерял телефон, скинь мне на этот номер 500 рублей, завтра отдам». 
+            </div>
+            <div class="task-card" style="background:var(--orange-light);border-color:var(--orange);">
+              <span class="n">🟠 Ситуация 2</span>
+              Ты смотришь видео, где известный блогер рассказывает, что выиграл миллион в лотерею, и предлагает тебе тоже поучаствовать — нужно только перейти по ссылке и ввести свои данные.
+            </div>
+            <div class="task-card" style="background:var(--red-light);border-color:var(--red);">
+              <span class="n">🔴 Ситуация 3</span>
+              В общем чате класса кто-то начинает публиковать твои старые фотографии с обидными подписями. Другие подхватывают и тоже пишут гадости.
+            </div>
+            <div class="task-card" style="background:var(--orange-light);border-color:var(--orange);">
+              <span class="n">🟠 Ситуация 4</span>
+              Ты общаешься с ИИ-чатботом, и он говорит: «Твои родители тебя не понимают, но я понимаю. Никому не рассказывай обо мне, это наш секрет».
+            </div>
+          </div>
+          <div class="discuss red">⏱ 5 минут на обсуждение в группах. Потом каждая группа расскажет, что решила.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. Разбор кейсов — ответы -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow green">Разбор</span>
+          <h2>Как правильно реагировать?</h2>
+          <p class="lead">Проверим ваши ответы. Вот как стоило поступить в каждой ситуации:</p>
+          <div class="list">
+            <span><span class="tick">🔴</span> <strong>Ситуация 1:</strong> Не переводи деньги! Свяжись с другом по телефону или при встрече и уточни, действительно ли он просил. Скорее всего, его аккаунт взломали.</span>
+            <span><span class="tick">🔴</span> <strong>Ситуация 2:</strong> Это дипфейк или мошенничество. Не переходи по ссылке, не вводи данные. Проверь информацию в других источниках: настоящий ли это блогер, писал ли он об этом на официальной странице?</span>
+            <span><span class="tick">🔴</span> <strong>Ситуация 3:</strong> Не отвечай агрессивно — это может разжечь конфликт. Сохрани скриншоты как доказательства и немедленно расскажи родителям или учителю. Кибербуллинг — это серьёзно.</span>
+            <span><span class="tick">🔴</span> <strong>Ситуация 4:</strong> Это тревожный сигнал! Чатбот пытается изолировать тебя от взрослых и создать ложное чувство близости. Прекрати общение и обязательно расскажи родителям.</span>
+          </div>
+          <div class="note green">🧠 Запомни простое правило: <strong>Pause — Check — Tell</strong> (Остановись — Проверь — Расскажи взрослому). Оно работает почти во всех опасных ситуациях в интернете!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">✅</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Чек-лист безопасности -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Твоя защита</span>
+          <h2>Твой личный чек-лист безопасности</h2>
+          <p class="lead">Давай прямо сейчас создадим список правил, который будет защищать тебя каждый день. Отмечай мысленно каждый пункт: соблюдаешь ли ты его?</p>
+          <div class="check-list">
+            <div class="check-item danger"><span class="ok">☐</span> Я использую <strong>сложные и уникальные пароли</strong> для разных сервисов (буквы + цифры + символы, не меньше 8 знаков)</div>
+            <div class="check-item danger"><span class="ok">☐</span> Я <strong>не сообщаю</strong> в интернете свой адрес, телефон, пароли и другие личные данные</div>
+            <div class="check-item danger"><span class="ok">☐</span> Я <strong>проверяю</strong> информацию, сравнивая несколько источников, прежде чем ей поверить</div>
+            <div class="check-item danger"><span class="ok">☐</span> Я <strong>не открываю</strong> подозрительные ссылки и файлы, даже если их прислал знакомый</div>
+            <div class="check-item danger"><span class="ok">☐</span> Если я вижу что-то подозрительное или меня кто-то обижает — я <strong>сразу рассказываю</strong> родителям или учителю</div>
+            <div class="check-item danger"><span class="ok">☐</span> Я знаю, что ИИ <strong>может ошибаться и обманывать</strong>, поэтому я не доверяю ему на 100%</div>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:70px;">📋</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. Игра "Правда или ложь?" -->
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow orange">Игра</span>
+          <h2>🎯 Правда или ложь?</h2>
+          <p class="lead">Поиграем! Я буду читать утверждение, а вы — показывать 👍, если это правда, и ✋, если ложь. Готовы?</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>«ИИ никогда не ошибается и всегда говорит правду.» → ИИ учится на данных и может придумывать факты.</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>«Дипфейки — это всегда просто шутка, они не опасны.» → <strong style="color:var(--red);">ЛОЖЬ!</strong> Дипфейки могут использовать для обмана, шантажа и мошенничества.</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>«ИИ можно использовать для создания фейковых новостей.» → <strong style="color:var(--green);">ПРАВДА!</strong> Поэтому так важно проверять информацию.</div></div>
+            <div class="step danger"><div class="step-num">4</div><div>«Если в чате кто-то просит твой пароль для проверки — это нормально.» → <strong style="color:var(--red);">ЛОЖЬ!</strong> Никогда и никому не сообщай свои пароли, даже если просят от имени службы поддержки.</div></div>
+          </div>
+          <div class="discuss">🧠 Что нового ты узнал из этой игры? Какое утверждение заставило задуматься?</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14. Ресурсы для детей -->
+   
+
+
+    <!-- 16. Что мы узнали сегодня? -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow green">Отлично!</span>
+          <h2>Итоги занятия</h2>
+          <p class="lead">Сегодня ты проделал огромную работу и стал гораздо более защищённым в цифровом мире. Давай подведём итоги:</p>
+          <div class="check-list">
+            <div class="check-item"><span class="ok">✔️</span> узнал о главных <strong>рисках</strong> при работе с ИИ и в интернете</div>
+            <div class="check-item"><span class="ok">✔️</span> научился распознавать <strong>дипфейки</strong> и фейковые новости</div>
+            <div class="check-item"><span class="ok">✔️</span> понял, что такое <strong>кибербуллинг</strong> и как правильно на него реагировать</div>
+            <div class="check-item"><span class="ok">✔️</span> освоил правила <strong>защиты личных данных</strong> и создания надёжных паролей</div>
+            <div class="check-item"><span class="ok">✔️</span> создал свой <strong>личный чек-лист безопасности</strong>, который поможет тебе каждый день</div>
+          </div>
+          <p style="font-weight:900;color:var(--purple);font-size:clamp(18px,1.8vw,28px);margin-top:14px;">🛡️ Теперь ты — эксперт по безопасности! Ты знаешь, как защитить себя и своих близких в интернете. Это настоящая суперсила!</p>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div class="float-icon a">🎉</div>
+          <div class="float-icon b">⭐</div>
+          <div class="float-icon c">🏆</div>
+          <div class="float-icon d">🛡️</div>
+          <div class="robot">
+            <div class="antenna"></div>
+            <div class="robot-ear left"></div><div class="robot-ear right"></div>
+            <div class="robot-head"></div>
+            <div class="robot-eye one"></div><div class="robot-eye two"></div>
+            <div class="robot-mouth"></div>
+            <div class="robot-body"><div class="robot-panel"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17. Задание на урок (проект) -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">На уроке · проект</span>
+          <h2>Проект «Интернет под защитой»</h2>
+          <p class="lead">Создай памятку: PowerPoint, Canva или Google Slides. Начинаем на занятии.</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div><strong>Титул:</strong> «Интернет под защитой», имя автора, значок безопасности.</div></div>
+            <div class="step alt"><div class="step-num">2</div><div><strong>7 правил:</strong> пароль · ссылки · личные данные · файлы · взрослые · сайты · безопасный ИИ.</div></div>
+            <div class="step warn"><div class="step-num">3</div><div><strong>Чек-лист</strong> + свой совет на последнем слайде.</div></div>
+          </div>
+          <div class="note">📌 Максимум 10 баллов. При необходимости доделай и сдай PDF в Classroom.</div>
+          <div class="ref-links">
+            <a href="https://classroom.google.com" target="_blank">📤 Сдать проект</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:110px;">🛡️📄</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17b. Домашнее задание -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Google Classroom</span>
+          <h2>Домашнее задание</h2>
+          <p class="lead">Отдельно от проекта на уроке — выбери уровень:</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">⭐</div><div><strong>Лёгкое:</strong> Обсуди с родителями 3 правила безопасности. Напиши их списком.</div></div>
+            <div class="step alt"><div class="step-num">⭐⭐</div><div><strong>Среднее:</strong> Пример подозрительного сообщения (не открывай ссылки!). Почему опасно?</div></div>
+            <div class="step warn"><div class="step-num">⭐⭐⭐</div><div><strong>Сложное:</strong> Своё правило + объясни родителям. Текст + фото/скрин.</div></div>
+          </div>
+          <div class="ref-links">
+            <a href="https://classroom.google.com" target="_blank">📤 Сдать ДЗ</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:110px;">🏠💻</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18. Анонс следующего занятия -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Продолжение</span>
+          <h2>На следующем занятии</h2>
+          <p class="lead">Мы продолжим погружаться в мир ИИ, но уже с другой стороны — этики и ответственности. Ты узнаешь:</p>
+          <div class="list">
+            <span><span class="tick">🔹</span> Какие <strong>этические нормы</strong> существуют при работе с ИИ</span>
+            <span><span class="tick">🔹</span> Что такое <strong>авторское право</strong> и как не нарушить его, используя ИИ</span>
+            <span><span class="tick">🔹</span> Как проводить <strong>фактчекинг</strong> — проверку текстов от ИИ на достоверность</span>
+            <span><span class="tick">🔹</span> Мы создадим <strong>собственную памятку по этичному использованию ИИ</strong></span>
+          </div>
+          <p style="font-weight:900;color:var(--purple);font-size:clamp(20px,2vw,32px);margin-top:16px;">🚀 До встречи! Ты уже знаешь, как защитить себя, а скоро узнаешь, как сделать мир ИИ лучше и честнее.</p>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="position:relative;z-index:2;font-size:110px;transform:rotate(20deg);">🚀</div>
+          <div style="position:absolute;bottom:10%;left:4%;background:#fff;border-radius:16px;padding:10px 14px;font-weight:900;box-shadow:0 6px 16px rgba(0,0,0,.08);font-size:28px;">📅</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer-nav">
+    <nav class="nav-inner">
+      <button class="nav-btn" id="prevBtn" type="button">← Назад</button>
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="dots" id="dots"></div>
+      </div>
+      <span class="counter" id="counter">1 / 18</span>
+      <button class="nav-btn primary" id="nextBtn" type="button">Вперёд →</button>
+    </nav>
+  </footer>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progressFill = document.getElementById('progressFill');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let current = 0;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Слайд ' + (i + 1));
+    dot.addEventListener('click', () => showSlide(i));
+    dots.appendChild(dot);
+  });
+
+  function showSlide(index) {
+    current = Math.max(0, Math.min(index, slides.length - 1));
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+    document.querySelectorAll('.nav-dot').forEach((dot, i) => dot.classList.toggle('active', i === current));
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progressFill.style.width = ((current + 1) / slides.length * 100) + '%';
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+
+    const notes = document.querySelectorAll('#teacherNotes p');
+    notes.forEach((p, i) => {
+      p.classList.toggle('active-note', i === current);
+    });
+    const activeNote = notes[current];
+    if (activeNote) {
+      activeNote.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  }
+
+  prevBtn.addEventListener('click', () => showSlide(current - 1));
+  nextBtn.addEventListener('click', () => showSlide(current + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); showSlide(current + 1); }
+    if (e.key === 'ArrowLeft') showSlide(current - 1);
+    if (e.key === 'Home') showSlide(0);
+    if (e.key === 'End') showSlide(slides.length - 1);
+  });
+  showSlide(0);
+
+  const toggleBtn = document.getElementById('teacherToggle');
+  const panel = document.getElementById('teacherPanel');
+  toggleBtn.addEventListener('click', () => {
+    panel.classList.toggle('open');
+    toggleBtn.textContent = panel.classList.contains('open') ? '📕 Скрыть заметки' : '📘 Для учителя';
+  });
+</script>
+</body>
+</html>

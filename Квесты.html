@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>П4. Квесты · Загадки — РОБОВИТА</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: .84rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#312e81,#4c1d95); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #a78bfa;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .info-callout.warn { background: #78350f; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка квеста"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .82rem; }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .9rem; line-height: 1.7; margin: 12px 0;
+    }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .shot {
+      display: block; max-width: 100%; margin: 12px 0; border-radius: 14px;
+      border: 2px solid var(--line,#e2e8f0); background: #0f172a; box-shadow: 0 8px 24px rgba(15,23,42,.12);
+    }
+    .shot-cap { font-size: .9rem; color: #475569; margin: -4px 0 14px; padding: 0 4px; }
+    .mini-game {
+      background: linear-gradient(180deg,#312e81,#4c1d95); border-radius: 24px; padding: 20px;
+      border: 3px solid #a78bfa; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #ddd6fe; }
+    .mission-box {
+      background: #1e1b4b; border-radius: 12px; padding: 12px; border: 1px solid #a78bfa; margin-bottom: 10px;
+    }
+    .quest-stage { display: grid; grid-template-columns: 1fr 1.1fr; gap: 16px; margin-top: 14px; }
+    @media (max-width:900px) { .quest-stage { grid-template-columns: 1fr; } }
+    .pad {
+      background: #1e293b; border-radius: 16px; padding: 16px; border: 2px solid #64748b;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 280px;
+    }
+    .pad-btn {
+      aspect-ratio: 1; border-radius: 12px; border: 2px solid #c4b5fd; background: #312e81;
+      color: #f5f3ff; font-size: 1.4rem; font-weight: 900; cursor: pointer;
+    }
+    .pad-btn:hover { background: #4c1d95; }
+    .pad-display {
+      grid-column: 1 / -1; text-align: center; font-size: 1.8rem; font-weight: 900;
+      letter-spacing: .2em; background: #0f172a; border-radius: 12px; padding: 12px; color: #fbbf24;
+      border: 2px solid #fbbf24; margin-bottom: 4px;
+    }
+    .pad-open {
+      grid-column: 1 / -1; padding: 12px; border-radius: 12px; border: 2px solid #4ade80;
+      background: #14532d; color: #bbf7d0; font-weight: 800; cursor: pointer;
+    }
+    .quest-panel {
+      background: #1e293b; border-radius: 16px; padding: 14px; border: 2px solid #64748b;
+    }
+    .doors-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+    .fake-door {
+      width: 56px; height: 90px; border-radius: 8px 8px 4px 4px; border: 3px solid #fff;
+      cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,.3);
+    }
+    .fake-door:active { transform: translateY(2px); }
+    .flash-btn {
+      margin-top: 10px; padding: 12px 16px; border-radius: 12px; border: 2px solid #fbbf24;
+      background: #0f172a; color: #fbbf24; font-weight: 800; cursor: pointer; width: 100%;
+    }
+    .flash-btn.on { background: #fef08a; color: #422006; }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .phase-time {
+      font-size: .75rem; background: var(--primary-light,#e8f5e0); color: var(--primary-dark);
+      padding: 2px 10px; border-radius: 99px; font-weight: 700;
+    }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+    .task-steps label { cursor: pointer; }
+    .progress-wrap { margin: 12px 0 4px; }
+    .progress-bar { height: 12px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg,var(--primary,#61b01f),#84cc16); transition: width .25s; }
+    .progress-label { font-size: .9rem; font-weight: 700; color: var(--primary-dark); margin-top: 6px; }
+    .space-note {
+      background: linear-gradient(135deg,#fefce8,#ecfdf5); border: 2px dashed #65a30d;
+      border-radius: 18px; padding: 16px 18px; margin: 14px 0; font-weight: 700;
+    }
+    .arch-grid {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 12px; margin: 12px 0;
+    }
+    .arch-card {
+      background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 14px;
+    }
+    .arch-card h4 { margin: 0 0 6px; color: var(--primary-dark); }
+    .teacher-tip {
+      background: #fef3c7; border: 2px solid #f59e0b; border-radius: 14px; padding: 12px 16px; margin: 12px 0;
+      font-weight: 700; color: #78350f;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Проект П4</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">П4</div>
+      <div>
+        <div class="module-pill">Проектная деятельность · средний</div>
+        <h1>🔐 Квесты · Загадки</h1>
+        <p class="subtitle">Пин-код → двери-пустышки → тёмная комната с фонариком</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🗝️</div>
+    <div>
+      <strong>Миссия проекта:</strong> собрать трёхэтапный квест.
+      Сначала — дверь с пин-кодом <b>566</b>. Потом — комната с цветными дверями-загадками
+      (правильная — цвет неба). В финале — тёмная комната: включи фонарик и открой секретный выход.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом проекте ты:</h2>
+    <ul>
+      <li>соберёшь цифровую панель на двери (<code>Button1…9</code> + <code>SurfaceGui</code>) 🔢</li>
+      <li>сохранишь ввод в <code>IntValue CurrentCode</code> 💾</li>
+      <li>сделаешь GUI кода и двери-пустышки с <code>RemoteEvent</code> 🚪</li>
+      <li>включишь фонарик (<code>PointLight</code>) и уберёшь <code>SecretDoor</code> 🔦</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📚 Теория: логика квеста</h2>
+
+    <div class="theory-section">
+      <h3>1. Три комнаты — три загадки</h3>
+      <div class="arch-grid">
+        <div class="arch-card">
+          <h4>① Пин-код</h4>
+          <p style="margin:0;font-size:.9rem;">Кнопки набирают число в <code>CurrentCode</code>. Ручка <code>Open</code> сверяет с секретом.</p>
+        </div>
+        <div class="arch-card">
+          <h4>② Цветные двери</h4>
+          <p style="margin:0;font-size:.9rem;">Правильный цвет — <code>Bright blue</code> (небо). Остальные кидают на Spawn.</p>
+        </div>
+        <div class="arch-card">
+          <h4>③ Тёмная комната</h4>
+          <p style="margin:0;font-size:.9rem;">Кликни <code>FlashLight</code> → свет → <code>SecretDoor</code> исчезает.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>2. Как набирается код</h3>
+      <p>Каждая кнопка делает: <code>currentCode.Value = currentCode.Value * 10 + цифра</code>.</p>
+      <div class="tree-box">
+        Было 0 → жмём 5 → <b>5</b><br>
+        Жмём 6 → 5×10+6 = <b>56</b><br>
+        Жмём 6 → 56×10+6 = <b>566</b> ✅
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>3. IntValue и экран</h3>
+      <p><code>CurrentCode</code> в Workspace — общее хранилище кода.
+        LocalScript смотрит на изменение <code>Value</code> и пишет цифры в <code>CodeLabel</code>.</p>
+    </div>
+
+    <div class="cheat-sheet">
+      <div class="cheat-grid">
+        <div class="cheat-item"><div class="title">ClickDetector</div><div class="rule">Клик по Part</div></div>
+        <div class="cheat-item"><div class="title">IntValue</div><div class="rule">Число-код</div></div>
+        <div class="cheat-item"><div class="title">SurfaceGui</div><div class="rule">Текст на Part</div></div>
+        <div class="cheat-item"><div class="title">Weld</div><div class="rule">Скрепить дверь</div></div>
+        <div class="cheat-item"><div class="title">RemoteEvent</div><div class="rule">Сообщение игроку</div></div>
+        <div class="cheat-item"><div class="title">PointLight</div><div class="rule">Свет фонаря</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="quiz1">
+    <h2>🧠 Проверка теории</h2>
+    <div class="quiz-block quiz-question" data-name="q1" data-correct="b">
+      <p><b>1.</b> Зачем нужен <code>CurrentCode</code> (IntValue)?</p>
+      <label class="choice-card"><input type="radio" name="q1" value="a"> Чтобы покрасить дверь</label>
+      <label class="choice-card"><input type="radio" name="q1" value="b"> Чтобы хранить набранный пин-код</label>
+      <label class="choice-card"><input type="radio" name="q1" value="c"> Чтобы создать Terrain</label>
+      <div class="q-feedback"></div>
+    </div>
+    <div class="quiz-block quiz-question" data-name="q2" data-correct="a">
+      <p><b>2.</b> Какой цвет двери правильный во 2-й комнате?</p>
+      <label class="choice-card"><input type="radio" name="q2" value="a"> Bright blue (цвет неба)</label>
+      <label class="choice-card"><input type="radio" name="q2" value="b"> Bright red</label>
+      <label class="choice-card"><input type="radio" name="q2" value="c"> Любой цвет</label>
+      <div class="q-feedback"></div>
+    </div>
+    <div class="quiz-block quiz-question" data-name="q3" data-correct="c">
+      <p><b>3.</b> Что делает клик по <code>FlashLight</code>?</p>
+      <label class="choice-card"><input type="radio" name="q3" value="a"> Ломает топор</label>
+      <label class="choice-card"><input type="radio" name="q3" value="b"> Меняет пин-код на 000</label>
+      <label class="choice-card"><input type="radio" name="q3" value="c"> Включает PointLight и убирает SecretDoor</label>
+      <div class="q-feedback"></div>
+    </div>
+    <button class="btn primary" onclick="checkQuiz('quiz1')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- MINI GAME -->
+  <div class="mini-game">
+    <h2>🎮 Мини-квест на странице</h2>
+    <div class="mission-box">
+      Секретный код: спроси у «учителя»… шутка — набери <b>566</b>, открой дверь,
+      выбери синюю дверь, включи фонарик.
+    </div>
+    <div class="quest-stage">
+      <div>
+        <div class="pad" id="mgPad">
+          <div class="pad-display" id="mgCode">----</div>
+          <button type="button" class="pad-btn" data-d="1">1</button>
+          <button type="button" class="pad-btn" data-d="2">2</button>
+          <button type="button" class="pad-btn" data-d="3">3</button>
+          <button type="button" class="pad-btn" data-d="4">4</button>
+          <button type="button" class="pad-btn" data-d="5">5</button>
+          <button type="button" class="pad-btn" data-d="6">6</button>
+          <button type="button" class="pad-btn" data-d="7">7</button>
+          <button type="button" class="pad-btn" data-d="8">8</button>
+          <button type="button" class="pad-btn" data-d="9">9</button>
+          <button type="button" class="pad-open" id="mgOpen">🔓 Ручка Open</button>
+        </div>
+      </div>
+      <div class="quest-panel">
+        <div id="mgStep">Шаг 1: набери код и нажми Open</div>
+        <div class="doors-row" id="mgDoors" style="display:none;">
+          <div class="fake-door" style="background:#22c55e" data-ok="0" title="зелёная"></div>
+          <div class="fake-door" style="background:#ef4444" data-ok="0" title="красная"></div>
+          <div class="fake-door" style="background:#3b82f6" data-ok="1" title="синяя"></div>
+          <div class="fake-door" style="background:#a3e635" data-ok="0" title="лайм"></div>
+        </div>
+        <button type="button" class="flash-btn" id="mgFlash" style="display:none;">🔦 FlashLight</button>
+        <div id="mgMsg" style="margin-top:10px;font-weight:700;min-height:1.4em;color:#ddd6fe;"></div>
+        <button class="btn" type="button" onclick="resetMiniQuest()" style="margin-top:10px;background:#0f172a;color:#fff;border:1px solid #64748b;">Сброс</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT -->
+  <div class="project-box" id="keyTaskBox">
+    <h2>🛠️ Проект в Roblox Studio</h2>
+    <p>Три этапа квеста. Отмечай галочки — полоска покажет прогресс.</p>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="projectFill"></div></div>
+      <div class="progress-label" id="projectLabel">Выполнено шагов: 0</div>
+    </div>
+
+    <!-- ===== STAGE 1 ===== -->
+    <div class="phase">
+      <h3>🚪 Этап 1 · Дверь и ручка Open <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li><b>1.1</b> Создай Part с именем <code>Door</code>, покрась в любой цвет, Anchor.</li>
+        <li><b>1.2</b> Создай Part-ручку <code>Open</code>, перенеси <b>внутрь</b> Door.</li>
+        <li><b>1.3</b> В Open добавь <code>ClickDetector</code> и Script с кодом ниже.</li>
+      </ol>
+      <img class="shot" src="assets/img/quests/01-door.png" alt="Part Door" />
+      <p class="shot-cap">Door — основной парт двери.</p>
+      <img class="shot" src="assets/img/quests/02-open-part.png" alt="Part Open внутри Door" />
+      <p class="shot-cap">Ручка Open внутри Door.</p>
+      <img class="shot" src="assets/img/quests/03-open-script.png" alt="ClickDetector и Script в Open" />
+      <p class="shot-cap">Open → ClickDetector + Script.</p>
+
+<pre class="code-block"><span class="comment">-- Script внутри Open</span>
+<span class="keyword">local</span> clickDetector = script.Parent:WaitForChild(<span class="string">"ClickDetector"</span>)
+<span class="keyword">local</span> currentCode = workspace:WaitForChild(<span class="string">"CurrentCode"</span>)
+<span class="keyword">local</span> door = workspace:WaitForChild(<span class="string">"Door"</span>)
+<span class="keyword">local</span> SECRET_CODE = <span class="number">566</span>
+
+clickDetector.MouseClick:Connect(<span class="keyword">function</span>(player)
+    print(<span class="string">"Попытка открыть дверь, код: "</span> .. currentCode.Value)
+    <span class="keyword">if</span> currentCode.Value == SECRET_CODE <span class="keyword">then</span>
+        door.Transparency = <span class="number">0.5</span>
+        door.CanCollide = <span class="keyword">false</span>
+        print(<span class="string">"Дверь открыта игроком "</span> .. player.Name)
+        <span class="keyword">local</span> label = Instance.new(<span class="string">"Message"</span>, workspace)
+        label.Text = <span class="string">"Теперь найди правильную дверь!"</span>
+        wait(<span class="number">5</span>)
+        label:Destroy()
+    <span class="keyword">else</span>
+        print(<span class="string">"Неверный код от игрока "</span> .. player.Name)
+    <span class="keyword">end</span>
+    currentCode.Value = <span class="number">0</span> <span class="comment">-- сброс</span>
+<span class="keyword">end</span>)</pre>
+
+      <div class="teacher-tip">🎓 Секретный код <code>566</code> — можно сменить в строке <code>SECRET_CODE</code>. Ученикам код подсказывает педагог.</div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">Door + Open с ClickDetector и Script готовы.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>🔢 Этап 1 · Кнопки пин-кода <span class="phase-time">25 мин</span></h3>
+      <ol>
+        <li><b>1.4–1.5</b> Создай маленький Part на двери → имя <code>Button1</code>.</li>
+        <li>Добавь <code>ClickDetector</code> + Script (цифра 1).</li>
+        <li>Добавь <code>SurfaceGui</code> → внутри <code>TextLabel</code> с текстом «1».</li>
+        <li>В SurfaceGui включи отображение лицом к игроку (AlwaysOnTop / Face по необходимости).</li>
+        <li><b>1.6</b> Продублируй кнопку до 9 штук, 3 ряда. Имена <code>Button1…Button9</code>.</li>
+        <li>В каждой кнопке поменяй цифру в скрипте и в TextLabel.</li>
+        <li>Все кнопки — <b>внутри Door</b>.</li>
+      </ol>
+      <img class="shot" src="assets/img/quests/04-button1.png" alt="Button1" />
+      <p class="shot-cap">Первая кнопка Button1 на двери.</p>
+      <img class="shot" src="assets/img/quests/05-button-script.png" alt="Script кнопки" />
+      <p class="shot-cap">ClickDetector + Script у кнопки.</p>
+      <img class="shot" src="assets/img/quests/06-surfacegui.png" alt="SurfaceGui и TextLabel" />
+      <p class="shot-cap">SurfaceGui → TextLabel на кнопке.</p>
+      <img class="shot" src="assets/img/quests/07-face-camera.png" alt="Настройка Face" />
+      <p class="shot-cap">Настройка SurfaceGui, чтобы цифра смотрела на игрока.</p>
+      <img class="shot" src="assets/img/quests/08-textlabel.png" alt="Text = цифра" />
+      <p class="shot-cap">В Properties у TextLabel поле Text = номер кнопки.</p>
+      <img class="shot" src="assets/img/quests/09-keypad-grid.png" alt="Сетка кнопок 3×3" />
+      <p class="shot-cap">Сетка 3×3: цифры 1–9.</p>
+      <img class="shot" src="assets/img/quests/10-text-5.png" alt="Text = 5" />
+      <p class="shot-cap">Пример: у Button5 свойство Text = «5».</p>
+      <img class="shot" src="assets/img/quests/11-door-hierarchy.png" alt="Иерархия Door" />
+      <p class="shot-cap">Explorer: Door → Button1…Button9 + Open.</p>
+      <img class="shot" src="assets/img/quests/12-door-assembled.png" alt="Собранная дверь" />
+      <p class="shot-cap">Собранная дверь: панель + ручка Open.</p>
+
+<pre class="code-block"><span class="comment">-- Script внутри Button1 (для Button2 замени +1 на +2 и т.д.)</span>
+<span class="keyword">local</span> button = script.Parent
+<span class="keyword">local</span> clickDetector = button:WaitForChild(<span class="string">"ClickDetector"</span>)
+<span class="keyword">local</span> currentCode = workspace:WaitForChild(<span class="string">"CurrentCode"</span>)
+
+clickDetector.MouseClick:Connect(<span class="keyword">function</span>()
+    currentCode.Value = currentCode.Value * <span class="number">10</span> + <span class="number">1</span>
+<span class="keyword">end</span>)</pre>
+
+      <div class="info-callout purple">
+        <span class="bulb">📌</span>
+        <div>
+          <b>Button2:</b> <code>... * 10 + 2</code> ·
+          <b>Button3:</b> <code>... * 10 + 3</code> · … ·
+          <b>Button9:</b> <code>... * 10 + 9</code>
+        </div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">9 кнопок с цифрами и скриптами внутри Door.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>🔗 Этап 1 · Weld, CurrentCode, GUI <span class="phase-time">15 мин</span></h3>
+      <ol>
+        <li><b>1.7</b> Выдели всю дверь → вкладка <b>Model</b> → <b>Weld</b>. Поставь Anchor на все части.</li>
+        <li><b>1.8</b> В Workspace создай <code>IntValue</code>, переименуй в <code>CurrentCode</code>.</li>
+        <li><b>1.9</b> StarterGui → ScreenGui <code>CodeScreen</code> → TextLabel <code>CodeLabel</code> (сверху экрана).</li>
+        <li><b>1.10</b> StarterPlayer → StarterPlayerScripts → LocalScript (код ниже).</li>
+      </ol>
+      <img class="shot" src="assets/img/quests/13-weld.png" alt="Кнопка Weld" />
+      <p class="shot-cap">Model → Weld — скрепить все части двери.</p>
+      <img class="shot" src="assets/img/quests/14-intvalue-menu.png" alt="Добавление IntValue" />
+      <p class="shot-cap">Workspace → «+» → IntValue.</p>
+      <img class="shot" src="assets/img/quests/15-currentcode.png" alt="CurrentCode" />
+      <p class="shot-cap">IntValue переименован в CurrentCode.</p>
+      <img class="shot" src="assets/img/quests/16-codescreen.png" alt="CodeScreen" />
+      <p class="shot-cap">StarterGui → CodeScreen → CodeLabel.</p>
+      <img class="shot" src="assets/img/quests/17-localscript.png" alt="LocalScript в StarterPlayerScripts" />
+      <p class="shot-cap">LocalScript в StarterPlayerScripts.</p>
+
+<pre class="code-block"><span class="comment">-- LocalScript в StarterPlayerScripts</span>
+<span class="keyword">local</span> player = game.Players.LocalPlayer
+<span class="keyword">local</span> playerGui = player:WaitForChild(<span class="string">"PlayerGui"</span>)
+<span class="keyword">local</span> screenGui = playerGui:WaitForChild(<span class="string">"CodeScreen"</span>)
+<span class="keyword">local</span> codeLabel = screenGui:WaitForChild(<span class="string">"CodeLabel"</span>)
+<span class="keyword">local</span> currentCode = workspace:WaitForChild(<span class="string">"CurrentCode"</span>)
+
+<span class="keyword">local function</span> <span class="func">updateDisplay</span>()
+    <span class="keyword">local</span> code = currentCode.Value
+    <span class="keyword">if</span> code == <span class="number">0</span> <span class="keyword">then</span>
+        codeLabel.Text = <span class="string">"----"</span>
+    <span class="keyword">else</span>
+        codeLabel.Text = string.format(<span class="string">"%03d"</span>, code)
+    <span class="keyword">end</span>
+    print(<span class="string">"Экран обновлён: "</span> .. codeLabel.Text)
+<span class="keyword">end</span>
+
+updateDisplay()
+currentCode:GetPropertyChangedSignal(<span class="string">"Value"</span>):Connect(updateDisplay)</pre>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">Weld + Anchor, CurrentCode, CodeScreen, LocalScript.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">В Play код 566 открывает дверь, экран показывает цифры.</label></li>
+      </ul>
+    </div>
+
+    <!-- ===== STAGE 2 ===== -->
+    <div class="phase">
+      <h3>🌈 Этап 2 · Двери-пустышки <span class="phase-time">20 мин</span></h3>
+      <ol>
+        <li>После замка сделай комнату (Parts или Toolbox).</li>
+        <li><b>2.1</b> Создай несколько разноцветных Part-дверей.</li>
+        <li>В <b>каждую</b> дверь вставь один и тот же Script (ниже).</li>
+        <li>Правильный цвет: <code>Bright blue</code> (спроси у учителя, в какой строке проверка).</li>
+        <li>В ReplicatedStorage создай RemoteEvent <code>ShowMessage</code>.</li>
+        <li><b>2.2</b> Создай Part <code>WinRoom</code> в следующей комнате (точка телепорта).</li>
+      </ol>
+      <img class="shot" src="assets/img/quests/18-dummy-doors.png" alt="Цветные двери" />
+      <p class="shot-cap">Разноцветные двери-пустышки.</p>
+      <img class="shot" src="assets/img/quests/19-doorblue-script.png" alt="Script в двери" />
+      <p class="shot-cap">Script внутри, например, DoorBlue.</p>
+      <img class="shot" src="assets/img/quests/20-showmessage.png" alt="ShowMessage RemoteEvent" />
+      <p class="shot-cap">ReplicatedStorage → ShowMessage.</p>
+      <img class="shot" src="assets/img/quests/21-winroom.png" alt="WinRoom" />
+      <p class="shot-cap">Part WinRoom — точка победы / следующей комнаты.</p>
+
+      <div class="teacher-tip">🎓 Правильная дверь: <code>if doorColor == "Bright blue"</code>. Цвет Part в Properties → BrickColor = Bright blue.</div>
+
+<pre class="code-block"><span class="comment">-- Script внутри каждой цветной двери</span>
+<span class="keyword">local</span> door = script.Parent
+<span class="keyword">local</span> doorColor = door.BrickColor.Name
+<span class="keyword">local</span> spawnLocation = workspace:WaitForChild(<span class="string">"SpawnLocation"</span>)
+<span class="keyword">local</span> replicatedStorage = game:GetService(<span class="string">"ReplicatedStorage"</span>)
+<span class="keyword">local</span> showMessageEvent = replicatedStorage:WaitForChild(<span class="string">"ShowMessage"</span>)
+
+door.Touched:Connect(<span class="keyword">function</span>(hit)
+    <span class="keyword">local</span> character = hit.Parent
+    <span class="keyword">local</span> player = game.Players:GetPlayerFromCharacter(character)
+    <span class="keyword">if not</span> player <span class="keyword">then return end</span>
+
+    <span class="keyword">if</span> doorColor == <span class="string">"Bright blue"</span> <span class="keyword">then</span>
+        character:MoveTo(workspace.WinRoom.Position)
+        <span class="keyword">local</span> label = Instance.new(<span class="string">"Message"</span>, workspace)
+        label.Text = <span class="string">"Теперь найди, где включить свет в комнате!"</span>
+        wait(<span class="number">5</span>)
+        label:Destroy()
+        showMessageEvent:FireClient(player, <span class="string">"Правильно!"</span>, <span class="string">"Цвет неба — синий! Ты прошёл!"</span>, <span class="number">3</span>)
+    <span class="keyword">else</span>
+        character:MoveTo(spawnLocation.Position)
+        showMessageEvent:FireClient(player, <span class="string">"Подумай ещё"</span>, <span class="string">"Это не цвет неба. Попробуй другую дверь!"</span>, <span class="number">3</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>)</pre>
+
+      <div class="info-callout">
+        <span class="bulb">💡</span>
+        <div>
+          <b>Дополнительно:</b> в StarterPlayerScripts добавь LocalScript, который слушает <code>ShowMessage</code>
+          и показывает заголовок/текст (или используй уже существующий Message). Без слушателя FireClient «молчит».
+        </div>
+      </div>
+
+<pre class="code-block"><span class="comment">-- LocalScript: показ сообщений ShowMessage (доп.)</span>
+<span class="keyword">local</span> ReplicatedStorage = game:GetService(<span class="string">"ReplicatedStorage"</span>)
+<span class="keyword">local</span> showMessage = ReplicatedStorage:WaitForChild(<span class="string">"ShowMessage"</span>)
+
+showMessage.OnClientEvent:Connect(<span class="keyword">function</span>(title, text, seconds)
+    <span class="keyword">local</span> msg = Instance.new(<span class="string">"Message"</span>, workspace)
+    msg.Text = title .. <span class="string">" — "</span> .. text
+    task.wait(seconds <span class="keyword">or</span> <span class="number">3</span>)
+    msg:Destroy()
+<span class="keyword">end</span>)</pre>
+
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">Цветные двери + ShowMessage + WinRoom.</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">Синяя дверь телепортирует, остальные — на Spawn.</label></li>
+      </ul>
+    </div>
+
+    <!-- ===== STAGE 3 ===== -->
+    <div class="phase">
+      <h3>🌑 Этап 3 · Тёмная комната <span class="phase-time">18 мин</span></h3>
+      <ol>
+        <li>Собери комнату из тёмных стен (Parts), все с Anchor.</li>
+        <li>Одну стену-выход переименуй в <code>SecretDoor</code>.</li>
+        <li>Внутри комнаты Part <code>FlashLight</code> → ClickDetector + PointLight + Script.</li>
+        <li>У PointLight: <b>Enabled = false</b> (выключен до клика).</li>
+      </ol>
+      <img class="shot" src="assets/img/quests/22-secretdoor.png" alt="SecretDoor" />
+      <p class="shot-cap">Стена-выход: SecretDoor.</p>
+      <img class="shot" src="assets/img/quests/23-flashlight.png" alt="FlashLight иерархия" />
+      <p class="shot-cap">FlashLight → ClickDetector, PointLight, Script.</p>
+      <img class="shot" src="assets/img/quests/24-pointlight.png" alt="PointLight Enabled false" />
+      <p class="shot-cap">PointLight: Enabled снята галочка.</p>
+
+<pre class="code-block"><span class="comment">-- Script внутри FlashLight</span>
+<span class="keyword">local</span> flashlight = script.Parent
+<span class="keyword">local</span> clickDetector = flashlight:WaitForChild(<span class="string">"ClickDetector"</span>)
+<span class="keyword">local</span> light = flashlight:WaitForChild(<span class="string">"PointLight"</span>)
+<span class="keyword">local</span> door = workspace:WaitForChild(<span class="string">"SecretDoor"</span>)
+<span class="keyword">local</span> replicatedStorage = game:GetService(<span class="string">"ReplicatedStorage"</span>)
+<span class="keyword">local</span> showMessageEvent = replicatedStorage:WaitForChild(<span class="string">"ShowMessage"</span>)
+
+clickDetector.MouseClick:Connect(<span class="keyword">function</span>(player)
+    light.Enabled = <span class="keyword">true</span>
+    door.Transparency = <span class="number">0</span>
+    door.CanCollide = <span class="keyword">true</span>
+    door:Destroy()
+    showMessageEvent:FireClient(player, <span class="string">"Свет!"</span>, <span class="string">"Фонарик включён! Дверь появилась."</span>, <span class="number">2</span>)
+<span class="keyword">end</span>)</pre>
+
+      <div class="space-note">🏆 Пин-код → синяя дверь → фонарик = полный квест из трёх загадок!</div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">Тёмная комната + SecretDoor + FlashLight.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">Клик по фонарику включает свет и убирает SecretDoor.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>✨ Доп. идеи <span class="phase-time">10 мин</span></h3>
+      <ul>
+        <li>Кнопка сброса кода (ставит <code>CurrentCode.Value = 0</code>).</li>
+        <li>Звук при верном / неверном коде.</li>
+        <li>Подсказка на BillboardGui у двери: «Цвет неба?».</li>
+        <li>После фонарика — финальная Message «Квест пройден!».</li>
+      </ul>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6s0" onchange="updateProjectProgress()"><label for="p6s0">(Доп) Добавлено хотя бы одно улучшение.</label></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧯 Если не работает</h2>
+    <table class="prop-table">
+      <tr><th>Симптом</th><th>Что проверить</th></tr>
+      <tr><td>Код не набирается</td><td>Есть <code>CurrentCode</code>? Цифра в скрипте кнопки верная?</td></tr>
+      <tr><td>Экран «----» не меняется</td><td>LocalScript в StarterPlayerScripts? Имена CodeScreen / CodeLabel?</td></tr>
+      <tr><td>Дверь не открывается</td><td><code>SECRET_CODE = 566</code>? Кликнули именно Open?</td></tr>
+      <tr><td>Все цветные двери «не те»</td><td>BrickColor правильной двери = Bright blue?</td></tr>
+      <tr><td>Фонарик не светит</td><td>PointLight есть? Script включает <code>Enabled = true</code>?</td></tr>
+      <tr><td>ShowMessage молчит</td><td>RemoteEvent создан? Есть LocalScript-слушатель?</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>собрал дверь с пин-панелью и проверкой кода;</li>
+      <li>связал IntValue с GUI на экране;</li>
+      <li>сделал загадку цветных дверей и телепорт;</li>
+      <li>включили свет в тёмной комнате и открыл секретный выход.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Квест пройден!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти, чиним баги</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь педагога</label>
+    </div>
+    <textarea placeholder="Почему код хранят в IntValue, а не только на экране? Зачем RemoteEvent ShowMessage?"></textarea>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Проект П4 · Квесты · Загадки</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function updateProjectProgress() {
+    const box = document.getElementById('keyTaskBox');
+    if (!box) return;
+    const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+    const checked = box.querySelectorAll('input[type="checkbox"]:checked').length;
+    const total = checkboxes.length;
+    const pct = total ? Math.round((checked / total) * 100) : 0;
+    const fill = document.getElementById('projectFill');
+    const label = document.getElementById('projectLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) {
+      label.textContent =
+        'Выполнено шагов: ' + checked + ' из ' + total +
+        (checked === total && total > 0 ? ' 🎉 Проект выполнен!' : '');
+    }
+  }
+
+  const Q = {
+    code: 0,
+    stage: 1, // 1 pin, 2 doors, 3 flash, 4 done
+    secret: 566
+  };
+
+  function fmtCode() {
+    if (Q.code === 0) return '----';
+    return String(Q.code).padStart(3, '0');
+  }
+
+  function renderQuest() {
+    document.getElementById('mgCode').textContent = fmtCode();
+    const step = document.getElementById('mgStep');
+    const doors = document.getElementById('mgDoors');
+    const flash = document.getElementById('mgFlash');
+    if (Q.stage === 1) {
+      step.textContent = 'Шаг 1: набери код и нажми Open';
+      doors.style.display = 'none';
+      flash.style.display = 'none';
+    } else if (Q.stage === 2) {
+      step.textContent = 'Шаг 2: выбери дверь цвета неба';
+      doors.style.display = 'flex';
+      flash.style.display = 'none';
+    } else if (Q.stage === 3) {
+      step.textContent = 'Шаг 3: включи фонарик в тёмной комнате';
+      doors.style.display = 'none';
+      flash.style.display = 'block';
+      flash.classList.remove('on');
+    } else {
+      step.textContent = '🏆 Квест пройден!';
+      doors.style.display = 'none';
+      flash.style.display = 'block';
+      flash.classList.add('on');
+    }
+  }
+
+  document.querySelectorAll('.pad-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (Q.stage !== 1) return;
+      const d = Number(btn.dataset.d);
+      Q.code = Q.code * 10 + d;
+      if (Q.code > 9999) Q.code = d;
+      renderQuest();
+    });
+  });
+
+  document.getElementById('mgOpen').addEventListener('click', function () {
+    if (Q.stage !== 1) return;
+    if (Q.code === Q.secret) {
+      document.getElementById('mgMsg').textContent = 'Дверь открыта! Теперь найди правильную дверь!';
+      Q.stage = 2;
+      Q.code = 0;
+    } else {
+      document.getElementById('mgMsg').textContent = 'Неверный код. Сброс.';
+      Q.code = 0;
+    }
+    renderQuest();
+  });
+
+  document.querySelectorAll('.fake-door').forEach(function (door) {
+    door.addEventListener('click', function () {
+      if (Q.stage !== 2) return;
+      if (door.dataset.ok === '1') {
+        document.getElementById('mgMsg').textContent = 'Правильно! Цвет неба — синий!';
+        Q.stage = 3;
+      } else {
+        document.getElementById('mgMsg').textContent = 'Это не цвет неба. Попробуй другую!';
+      }
+      renderQuest();
+    });
+  });
+
+  document.getElementById('mgFlash').addEventListener('click', function () {
+    if (Q.stage !== 3) return;
+    document.getElementById('mgMsg').textContent = 'Свет! Фонарик включён, SecretDoor исчезла.';
+    Q.stage = 4;
+    renderQuest();
+  });
+
+  function resetMiniQuest() {
+    Q.code = 0;
+    Q.stage = 1;
+    document.getElementById('mgMsg').textContent = '';
+    renderQuest();
+  }
+
+  renderQuest();
+  updateProjectProgress();
+</script>
+</body>
+</html>

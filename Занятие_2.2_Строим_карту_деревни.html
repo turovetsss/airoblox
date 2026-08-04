@@ -258,7 +258,15 @@
     </div>
 
     <!-- ===== ИТОГОВЫЙ ОПРОС ===== -->
-    <div class="quiz-wrap" id="quiz1">
+    
+    <!-- ===== МИНИ-ИГРА ===== -->
+    <div id="lessonMiniGame" class="rmg"></div>
+    <script src="assets/js/mini-games.js"></script>
+    <script>
+      RoboMiniGame.mount(document.getElementById("lessonMiniGame"), {"type":"findClicks","title":"Что должно быть в деревне?","hint":"Кликни объекты, которые логично поставить на карту деревни.","targets":["🏠 Дом","🛤️ Дорога","🌲 Дерево","💡 Фонарь","⛲ Фонтан"],"decoys":["🚀 Ракета","🦈 Акула","📡 Спутник","🧱 Случайный мусор"],"need":5});
+    </script>
+
+<div class="quiz-wrap" id="quiz1">
       <h2>📝 Проверь себя</h2>
       <div class="quiz-question" data-name="quiz1q0" data-correct="b">
         <p class="quiz-q-text">1. Какая клавиша дублирует объект?</p>
@@ -311,10 +319,6 @@
       <a class="nav-btn prev" href="Занятие_1.5_Первый_скрипт.html">
         <div class="lbl">← Назад</div>
         <div class="ttl">1.5 Первый скрипт</div>
-      </a>
-      <a class="nav-btn next" href="Карта_курса.html">
-        <div class="lbl">Далее →</div>
-        <div class="ttl">К карте курса</div>
       </a>
     </div>
 

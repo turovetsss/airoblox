@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>П9. Игра в кальмара — комната 1 — РОБОВИТА</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: .86rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#450a0a,#7f1d1d); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #f87171;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .info-callout.warn { background: #78350f; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка «Красный / зелёный»"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(170px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .82rem; }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .92rem; line-height: 1.7; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .b { color: #f472b6; }
+    .tree-box .t { color: #a3e635; }
+    .tree-box .r { color: #fbbf24; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.selected { border-color: var(--accent)!important; background: var(--accent-light)!important; }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .shot {
+      display: block; max-width: 100%; margin: 12px 0; border-radius: 14px;
+      border: 2px solid var(--line,#e2e8f0); background: #0f172a; box-shadow: 0 8px 24px rgba(15,23,42,.12);
+    }
+    .shot-cap { font-size: .9rem; color: #475569; margin: -4px 0 14px; padding: 0 4px; }
+    .mini-game {
+      background: linear-gradient(180deg,#450a0a,#7f1d1d); border-radius: 24px; padding: 20px;
+      border: 3px solid #f87171; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #fecaca; }
+    .mission-box {
+      background: #1c1917; border-radius: 12px; padding: 12px; border: 1px solid #f87171; margin-bottom: 10px;
+    }
+    .rlgl-stage { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 14px; }
+    @media (max-width:900px) { .rlgl-stage { grid-template-columns: 1fr; } }
+    .rlgl-field {
+      background: #0f172a; border-radius: 16px; padding: 16px; border: 2px solid #64748b;
+      min-height: 280px; position: relative; overflow: hidden;
+    }
+    .rlgl-track {
+      position: absolute; left: 10%; right: 10%; top: 20%; bottom: 20%;
+      background: linear-gradient(90deg,#1d4ed8,#3b82f6); border-radius: 12px;
+    }
+    .rlgl-start, .rlgl-finish {
+      position: absolute; top: 20%; bottom: 20%; width: 12%; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: .75rem;
+    }
+    .rlgl-start { left: 4%; background: #eab308; color: #1c1917; }
+    .rlgl-finish { right: 4%; background: #e2e8f0; color: #1c1917; }
+    .rlgl-player {
+      position: absolute; top: 50%; width: 28px; height: 28px; margin-top: -14px;
+      background: #22c55e; border-radius: 50%; border: 3px solid #fff;
+      transition: left .05s linear; z-index: 2;
+    }
+    .rlgl-doll {
+      position: absolute; right: 6%; top: 8%; font-size: 2.2rem; z-index: 3;
+      transition: transform .4s;
+    }
+    .rlgl-doll.red { transform: scaleX(-1); filter: hue-rotate(-40deg); }
+    .light-banner {
+      text-align: center; font-weight: 900; font-size: 1.3rem; padding: 10px; border-radius: 12px;
+      margin-bottom: 10px;
+    }
+    .light-banner.green { background: #14532d; color: #bbf7d0; }
+    .light-banner.red { background: #7f1d1d; color: #fecaca; }
+    .ctrl-panel {
+      background: #1e293b; border-radius: 16px; padding: 14px; border: 2px solid #64748b;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .ctrl-panel button {
+      padding: 12px; border-radius: 12px; border: 2px solid #f87171; background: #450a0a;
+      color: #fff; font-weight: 800; cursor: pointer;
+    }
+    .ctrl-panel button:hover { background: #7f1d1d; }
+    .ctrl-panel .stat { font-size: .95rem; opacity: .9; }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .phase-time {
+      font-size: .75rem; background: var(--primary-light,#e8f5e0); color: var(--primary-dark);
+      padding: 2px 10px; border-radius: 99px; font-weight: 700;
+    }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+    .task-steps label { cursor: pointer; }
+    .progress-wrap { margin: 12px 0 4px; }
+    .progress-bar { height: 12px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg,var(--primary,#61b01f),#84cc16); transition: width .25s; }
+    .progress-label { font-size: .9rem; font-weight: 700; color: var(--primary-dark); margin-top: 6px; }
+    .space-note {
+      background: linear-gradient(135deg,#fefce8,#ecfdf5); border: 2px dashed #65a30d;
+      border-radius: 18px; padding: 16px 18px; margin: 14px 0; font-weight: 700;
+    }
+    .details-code summary { cursor: pointer; font-weight: 800; color: var(--primary-dark); padding: 8px 0; }
+    .arch-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 12px; margin: 12px 0; }
+    .arch-card { background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 14px; }
+    .arch-card h4 { margin: 0 0 6px; color: var(--primary-dark); }
+    .arch-card.green { border-color: #22c55e; background: #f0fdf4; }
+    .arch-card.red { border-color: #ef4444; background: #fef2f2; }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Проект П9</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">П9</div>
+      <div>
+        <div class="module-pill">Проектная деятельность · сложный</div>
+        <h1>🦑 Игра в кальмара · комната 1</h1>
+        <p class="subtitle">Красный свет / зелёный свет — арена, кукла, таймер, урон за движение</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🚦</div>
+    <div>
+      <strong>Миссия проекта:</strong> собрать арену и режим «Красный свет — зелёный свет».
+      На зелёном — беги к финишу. На красном — стой: сервер ловит движение и снимает HP.
+      Кукла поворачивает голову, GUI показывает свет, здоровье и таймер.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом проекте ты:</h2>
+    <ul>
+      <li>построишь арену: StartPlate · Field · FinishPlate · Doll 🏟️</li>
+      <li>сделаешь GUI: свет, HP, таймер 🖥️</li>
+      <li>свяжешь сервер и клиент через RemoteEvent ⚡</li>
+      <li>напишешь цикл красный/зелёный + урон за движение 🩸</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Теория правил</td><td>12 мин</td><td>Свет, движение, клиент/сервер</td></tr>
+      <tr><td>Мини-игра</td><td>8 мин</td><td>Тренировка на сайте</td></tr>
+      <tr><td>Арена + кукла</td><td>25 мин</td><td>Parts, Toolbox, иерархия</td></tr>
+      <tr><td>GUI + события</td><td>15 мин</td><td>GameGUI, RemoteEvent</td></tr>
+      <tr><td>Сервер + кровь</td><td>30 мин</td><td>Main Script + LocalScript</td></tr>
+      <tr><td>Тест + доп.</td><td>10 мин+</td><td>Play и баланс</td></tr>
+      <tr><td>Итого</td><td>~100 мин</td><td>лучше на 2 занятия</td></tr>
+    </table>
+    <p style="margin:10px 0 0;font-size:.95rem;color:#475569;">
+      <b>Нужно заранее:</b> GUI, RemoteEvent, Humanoid, Touched, циклы, if. После кликера и GUI-раздела.
+    </p>
+  </div>
+
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: как устроен раунд</h2>
+
+    <div class="theory-section">
+      <h3>🚦 Два состояния</h3>
+      <div class="arch-grid">
+        <div class="arch-card green">
+          <h4>Зелёный свет</h4>
+          <p>Можно бежать. Кукла «смотрит» на финиш. Урон за движение не наносится.</p>
+        </div>
+        <div class="arch-card red">
+          <h4>Красный свет</h4>
+          <p>Стоим! Сервер сравнивает позицию каждые 0.2 с. Сдвинулся &gt; 0.5 → −20 HP.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🧩 Кто что делает</h3>
+      <table class="prop-table">
+        <tr><th>Часть</th><th>Роль</th></tr>
+        <tr><td>ServerScript (SSS)</td><td>Таймер, смена света, урон, финиш, поворот головы</td></tr>
+        <tr><td>LocalScript в GameGUI</td><td>Текст Light / Timer / Health</td></tr>
+        <tr><td>LocalScript (кровь)</td><td>Эффект частиц при потере HP</td></tr>
+        <tr><td><code>LightStateEvent</code></td><td>Сервер → всем: красный/зелёный / сообщение</td></tr>
+        <tr><td><code>TimerUpdateEvent</code></td><td>Сервер → всем: секунды</td></tr>
+      </table>
+    </div>
+
+    <div class="theory-section">
+      <h3>📦 Целевая структура</h3>
+      <div class="tree-box">
+        <span class="g">Workspace</span> — стены, пол, <span class="b">StartPlate</span>, <span class="b">Field</span>, <span class="b">FinishPlate</span>, <span class="b">Doll</span><br>
+        <span class="g">StarterGui</span> → <span class="b">GameGUI</span> → LightLabel, HealthLabel, TimerLabel + LocalScript<br>
+        <span class="g">ReplicatedStorage</span> → <span class="r">LightStateEvent</span>, <span class="r">TimerUpdateEvent</span><br>
+        <span class="g">ServerScriptService</span> → Script (главный)<br>
+        <span class="g">StarterPlayerScripts</span> → LocalScript (кровь)
+      </div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz1">
+      <h3>🧠 Квиз: где проверять движение на красном свете?</h3>
+      <div class="choice-card" data-correct-choice="true">На сервере (иначе легко обмануть)</div>
+      <div class="choice-card" data-correct-choice="false">Только в LocalScript у игрока</div>
+      <div class="choice-card" data-correct-choice="false">В Lighting</div>
+      <button class="action-btn" onclick="checkChoices('quiz1')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz2">
+      <h3>🧠 Квиз: как должна называться модель куклы в Workspace?</h3>
+      <div class="choice-card" data-correct-choice="true">Doll (и внутри Model → Head)</div>
+      <div class="choice-card" data-correct-choice="false">Кукла</div>
+      <div class="choice-card" data-correct-choice="false">NPC1</div>
+      <button class="action-btn" onclick="checkChoices('quiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz3">
+      <h3>🧠 Квиз: что делает FinishPlate.Touched?</h3>
+      <div class="choice-card" data-correct-choice="true">Помечает игрока финишировавшим и убирает с поля</div>
+      <div class="choice-card" data-correct-choice="false">Включает красный свет</div>
+      <div class="choice-card" data-correct-choice="false">Создаёт RemoteEvent</div>
+      <button class="action-btn" onclick="checkChoices('quiz3')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="cheat-sheet">
+    <div class="cheat-grid">
+      <div class="cheat-item"><div class="title">Старт</div><div class="rule"><code>StartPlate</code></div></div>
+      <div class="cheat-item"><div class="title">Поле</div><div class="rule"><code>Field</code></div></div>
+      <div class="cheat-item"><div class="title">Финиш</div><div class="rule"><code>FinishPlate</code></div></div>
+      <div class="cheat-item"><div class="title">Кукла</div><div class="rule"><code>Doll</code> → Model → Head</div></div>
+      <div class="cheat-item"><div class="title">Красный</div><div class="rule">движение → урон</div></div>
+      <div class="cheat-item"><div class="title">Таймер</div><div class="rule">60 сек по умолчанию</div></div>
+    </div>
+  </div>
+
+  <!-- МИНИ-ИГРА -->
+  <div class="mini-game" id="miniGame">
+    <h2>🕹️ Мини-игра «Дойди до финиша»</h2>
+    <div class="mission-box"><b>Правило:</b> на зелёном зажимай «Бежать». На красном — отпусти, иначе −20 HP. Дойди до финиша!</div>
+    <div id="mgLight" class="light-banner green">ЗЕЛЁНЫЙ СВЕТ</div>
+    <div class="rlgl-stage">
+      <div class="rlgl-field" id="mgField">
+        <div class="rlgl-start">СТАРТ</div>
+        <div class="rlgl-track"></div>
+        <div class="rlgl-finish">ФИНИШ</div>
+        <div class="rlgl-doll" id="mgDoll">👧</div>
+        <div class="rlgl-player" id="mgPlayer" style="left:8%;"></div>
+      </div>
+      <div class="ctrl-panel">
+        <div class="stat">❤️ HP: <b id="mgHp">100</b></div>
+        <div class="stat">⏱️ Время: <b id="mgTime">60</b> сек</div>
+        <div class="stat">📍 Прогресс: <b id="mgPct">0</b>%</div>
+        <button type="button" id="mgRun">▶️ Бежать (зажимай)</button>
+        <button type="button" id="mgStart">🚀 Старт раунда</button>
+        <button type="button" id="mgReset">Сброс</button>
+        <div class="stat" id="mgMsg">Нажми «Старт раунда»</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПРОЕКТ -->
+  <div class="project-box" id="keyTaskBox">
+    <h2>🛠️ Проект в Studio: комната 1</h2>
+    <p>Имена объектов — как в коде. Куклу после Toolbox обязательно переименуй в <code>Doll</code>.</p>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="projectFill"></div></div>
+      <div class="progress-label" id="projectLabel">Выполнено шагов: 0</div>
+    </div>
+
+    <div class="phase" id="phase1">
+      <h3>🏟️ Фаза 1 — Комната и платформы <span class="phase-time">18 мин</span></h3>
+      <ol>
+        <li>Собери комнату: <b>4 стены + пол</b>. Всё Anchored = true.</li>
+        <li>Part во всю ширину у входа → имя <code>StartPlate</code>.</li>
+        <li>Большая платформа-поле → <code>Field</code>.</li>
+        <li>У противоположной стены → <code>FinishPlate</code>.</li>
+        <li>Поставь SpawnLocation на StartPlate.</li>
+      </ol>
+      <img class="shot" src="assets/img/squid/01-arena.png" alt="Арена: стены, поле, старт, финиш" />
+      <p class="shot-cap">Пример арены: старт, поле, финиш, место под куклу.</p>
+      <img class="shot" src="assets/img/squid/03-field.png" alt="Игровое поле Field" />
+      <p class="shot-cap">Field — основное игровое поле между стартом и финишем.</p>
+      <img class="shot" src="assets/img/squid/02-spawn.png" alt="Spawn на стартовой зоне" />
+      <p class="shot-cap">SpawnLocation на стартовой зоне.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">Комната собрана, всё Anchored.</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">Есть StartPlate, Field, FinishPlate с точными именами.</label></li>
+        <li><input type="checkbox" id="p1s2" onchange="updateProjectProgress()"><label for="p1s2">Spawn на старте.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase2">
+      <h3>👧 Фаза 2 — Кукла Doll <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>Toolbox → найди модель <b>Squid Game Doll</b> / SquidGameDoll.</li>
+        <li>Вставь за FinishPlate (смотрит на поле).</li>
+        <li>Переименуй корневую модель в <code>Doll</code>.</li>
+        <li>Проверь иерархию: внутри должен быть <code>Model</code> → <code>Head</code> (для поворота).</li>
+      </ol>
+      <img class="shot" src="assets/img/squid/05-doll-toolbox.png" alt="Squid Game Doll в Toolbox" />
+      <p class="shot-cap">Модель из Toolbox (бесплатная).</p>
+      <img class="shot" src="assets/img/squid/06-doll-hierarchy.png" alt="Иерархия Doll → Model → Head" />
+      <p class="shot-cap">Нужно: Doll → Model → Head (и Body). Иначе анимация головы не найдётся.</p>
+      <div class="info-callout warn">
+        <span class="bulb">⚠️</span>
+        <div>Скрипт ищет именно <code>workspace.Doll.Model.Head</code>. Если структура другая — поправь имена или вложи Parts в Model.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">Кукла вставлена и названа Doll.</label></li>
+        <li><input type="checkbox" id="p2s1" onchange="updateProjectProgress()"><label for="p2s1">В Explorer есть Doll → Model → Head.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase3">
+      <h3>🖥️ Фаза 3 — GameGUI <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>StarterGui → ScreenGui <code>GameGUI</code>.</li>
+        <li>Три TextLabel сверху:
+          <ul>
+            <li><code>LightLabel</code> — какой свет</li>
+            <li><code>HealthLabel</code> — HP</li>
+            <li><code>TimerLabel</code> — секунды</li>
+          </ul>
+        </li>
+        <li>Крупный читаемый текст, цвета на вкус.</li>
+      </ol>
+      <img class="shot" src="assets/img/squid/07-gamegui.png" alt="GameGUI в StarterGui" />
+      <p class="shot-cap">ScreenGui GameGUI.</p>
+      <img class="shot" src="assets/img/squid/08-labels.png" alt="Три TextLabel" />
+      <p class="shot-cap">LightLabel, HealthLabel, TimerLabel.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">GameGUI создан.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">Три Label с точными именами сверху экрана.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase4">
+      <h3>⚡ Фаза 4 — RemoteEvent <span class="phase-time">5 мин</span></h3>
+      <ol>
+        <li>ReplicatedStorage → два RemoteEvent:
+          <ul>
+            <li><code>LightStateEvent</code></li>
+            <li><code>TimerUpdateEvent</code></li>
+          </ul>
+        </li>
+      </ol>
+      <img class="shot" src="assets/img/squid/09-remoteevents.png" alt="Два RemoteEvent" />
+      <p class="shot-cap">LightStateEvent и TimerUpdateEvent.</p>
+      <div class="info-callout">
+        <span class="bulb">💡</span>
+        <div>Главный серверный скрипт умеет создать события сам, если их нет. Но лучше сделать вручную — так видно структуру.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">Оба RemoteEvent на месте.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase5">
+      <h3>📜 Фаза 5 — LocalScript в GameGUI <span class="phase-time">12 мин</span></h3>
+      <p>Внутри GameGUI создай <b>LocalScript</b> и вставь код обновления UI.</p>
+      <details open>
+        <summary class="details-code">📄 LocalScript (GameGUI)</summary>
+        <div class="code-block">
+<span class="keyword">local</span> player = game.Players.LocalPlayer<br>
+<span class="keyword">local</span> replicatedStorage = game:<span class="func">GetService</span>(<span class="string">"ReplicatedStorage"</span>)<br>
+<span class="keyword">local</span> lightStateEvent = replicatedStorage:<span class="func">WaitForChild</span>(<span class="string">"LightStateEvent"</span>)<br>
+<span class="keyword">local</span> timerUpdateEvent = replicatedStorage:<span class="func">WaitForChild</span>(<span class="string">"TimerUpdateEvent"</span>)<br>
+<span class="keyword">local</span> screenGui = script.Parent<br>
+<span class="keyword">local</span> lightLabel = screenGui:<span class="func">WaitForChild</span>(<span class="string">"LightLabel"</span>)<br>
+<span class="keyword">local</span> timerLabel = screenGui:<span class="func">WaitForChild</span>(<span class="string">"TimerLabel"</span>)<br>
+<span class="keyword">local</span> healthLabel = screenGui:<span class="func">WaitForChild</span>(<span class="string">"HealthLabel"</span>)<br><br>
+<span class="keyword">local function</span> <span class="func">updateHealth</span>()<br>
+&nbsp;&nbsp;<span class="keyword">while true do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> character = player.Character<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> character <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> humanoid = character:<span class="func">FindFirstChild</span>(<span class="string">"Humanoid"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> humanoid <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;healthLabel.Text = <span class="string">" "</span> .. math.floor(humanoid.Health)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.2</span>)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span><br>
+<span class="func">spawn</span>(updateHealth)<br><br>
+lightStateEvent.OnClientEvent:<span class="func">Connect</span>(<span class="keyword">function</span>(isRed, special, message)<br>
+&nbsp;&nbsp;<span class="keyword">if</span> special == <span class="string">"message"</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;lightLabel.Text = message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">2</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lightLabel.Text = <span class="string">""</span><br>
+&nbsp;&nbsp;<span class="keyword">elseif</span> special == <span class="string">"timeout"</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;lightLabel.Text = <span class="string">"ВРЕМЯ ВЫШЛО!"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;lightLabel.TextColor3 = Color3.new(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>)<br>
+&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> isRed <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lightLabel.Text = <span class="string">" КРАСНЫЙ СВЕТ"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lightLabel.TextColor3 = Color3.new(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lightLabel.Text = <span class="string">" ЗЕЛЁНЫЙ СВЕТ"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lightLabel.TextColor3 = Color3.new(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span>)<br><br>
+timerUpdateEvent.OnClientEvent:<span class="func">Connect</span>(<span class="keyword">function</span>(currentTime)<br>
+&nbsp;&nbsp;timerLabel.Text = <span class="string">" "</span> .. currentTime .. <span class="string">" сек"</span><br>
+<span class="keyword">end</span>)
+        </div>
+      </details>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">LocalScript лежит в GameGUI.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">Код вставлен без красных ошибок.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase6">
+      <h3>🖥️ Фаза 6 — Главный Script на сервере <span class="phase-time">18 мин</span></h3>
+      <ol>
+        <li>ServerScriptService → Script.</li>
+        <li>Вставь полный код игры (ниже).</li>
+      </ol>
+      <img class="shot" src="assets/img/squid/10-serverscript.png" alt="Script в ServerScriptService" />
+      <p class="shot-cap">Обычный Script в ServerScriptService.</p>
+      <details>
+        <summary class="details-code">📄 Главный серверный Script (полный код)</summary>
+        <div class="code-block">
+<span class="keyword">local</span> replicatedStorage = game:<span class="func">GetService</span>(<span class="string">"ReplicatedStorage"</span>)<br>
+<span class="keyword">local</span> players = game:<span class="func">GetService</span>(<span class="string">"Players"</span>)<br>
+<span class="keyword">local</span> TweenService = game:<span class="func">GetService</span>(<span class="string">"TweenService"</span>)<br><br>
+<span class="keyword">local</span> lightStateEvent = replicatedStorage:<span class="func">FindFirstChild</span>(<span class="string">"LightStateEvent"</span>)<br>
+<span class="keyword">if not</span> lightStateEvent <span class="keyword">then</span><br>
+&nbsp;&nbsp;lightStateEvent = Instance.new(<span class="string">"RemoteEvent"</span>)<br>
+&nbsp;&nbsp;lightStateEvent.Name = <span class="string">"LightStateEvent"</span><br>
+&nbsp;&nbsp;lightStateEvent.Parent = replicatedStorage<br>
+<span class="keyword">end</span><br>
+<span class="keyword">local</span> timerUpdateEvent = replicatedStorage:<span class="func">FindFirstChild</span>(<span class="string">"TimerUpdateEvent"</span>)<br>
+<span class="keyword">if not</span> timerUpdateEvent <span class="keyword">then</span><br>
+&nbsp;&nbsp;timerUpdateEvent = Instance.new(<span class="string">"RemoteEvent"</span>)<br>
+&nbsp;&nbsp;timerUpdateEvent.Name = <span class="string">"TimerUpdateEvent"</span><br>
+&nbsp;&nbsp;timerUpdateEvent.Parent = replicatedStorage<br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local</span> START_DELAY = <span class="number">5</span><br>
+<span class="keyword">local</span> GAME_TIME = <span class="number">60</span><br>
+<span class="keyword">local</span> RED_MIN, RED_MAX = <span class="number">3</span>, <span class="number">6</span><br>
+<span class="keyword">local</span> GREEN_MIN, GREEN_MAX = <span class="number">3</span>, <span class="number">6</span><br>
+<span class="keyword">local</span> DAMAGE_PER_MOVE = <span class="number">20</span><br><br>
+<span class="keyword">local</span> gameActive = <span class="keyword">false</span><br>
+<span class="keyword">local</span> timer = GAME_TIME<br>
+<span class="keyword">local</span> playersFinished = {}<br>
+<span class="keyword">local</span> playersPositions = {}<br><br>
+<span class="keyword">local</span> startPlate = workspace:<span class="func">FindFirstChild</span>(<span class="string">"StartPlate"</span>)<br>
+<span class="keyword">local</span> finishPlate = workspace:<span class="func">FindFirstChild</span>(<span class="string">"FinishPlate"</span>)<br>
+<span class="keyword">local</span> doll = workspace:<span class="func">FindFirstChild</span>(<span class="string">"Doll"</span>)<br>
+<span class="keyword">local</span> dollhead = doll <span class="keyword">and</span> doll:<span class="func">FindFirstChild</span>(<span class="string">"Model"</span>)<br>
+<span class="keyword">local</span> head = dollhead <span class="keyword">and</span> dollhead:<span class="func">FindFirstChild</span>(<span class="string">"Head"</span>)<br>
+<span class="keyword">if not</span> head <span class="keyword">then</span> <span class="func">warn</span>(<span class="string">"Голова куклы не найдена"</span>) <span class="keyword">end</span><br><br>
+<span class="keyword">local function</span> <span class="func">rotateHeadTo</span>(target)<br>
+&nbsp;&nbsp;<span class="keyword">if not</span> head <span class="keyword">then return end</span><br>
+&nbsp;&nbsp;<span class="keyword">local</span> targetPos = target:<span class="func">IsA</span>(<span class="string">"BasePart"</span>) <span class="keyword">and</span> target.Position <span class="keyword">or</span> target<br>
+&nbsp;&nbsp;<span class="keyword">local</span> direction = (targetPos - head.Position).Unit<br>
+&nbsp;&nbsp;<span class="keyword">local</span> targetCF = CFrame.lookAt(head.Position, head.Position + direction)<br>
+&nbsp;&nbsp;TweenService:<span class="func">Create</span>(head, TweenInfo.new(<span class="number">0.5</span>), {CFrame = targetCF}):<span class="func">Play</span>()<br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local function</span> <span class="func">setLightState</span>(isRed)<br>
+&nbsp;&nbsp;lightStateEvent:<span class="func">FireAllClients</span>(isRed)<br>
+&nbsp;&nbsp;<span class="keyword">if</span> isRed <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> startPlate <span class="keyword">then</span> <span class="func">rotateHeadTo</span>(startPlate) <span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> finishPlate <span class="keyword">then</span> <span class="func">rotateHeadTo</span>(finishPlate) <span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local function</span> <span class="func">damagePlayer</span>(player, amount)<br>
+&nbsp;&nbsp;<span class="keyword">local</span> character = player.Character<br>
+&nbsp;&nbsp;<span class="keyword">if not</span> character <span class="keyword">then return end</span><br>
+&nbsp;&nbsp;<span class="keyword">local</span> humanoid = character:<span class="func">FindFirstChild</span>(<span class="string">"Humanoid"</span>)<br>
+&nbsp;&nbsp;<span class="keyword">if</span> humanoid <span class="keyword">and</span> humanoid.Health &gt; <span class="number">0</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;humanoid.Health = math.max(<span class="number">0</span>, humanoid.Health - amount)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local function</span> <span class="func">checkMovement</span>()<br>
+&nbsp;&nbsp;<span class="keyword">for</span> _, player <span class="keyword">in</span> ipairs(players:<span class="func">GetPlayers</span>()) <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> playersFinished[player] <span class="keyword">then continue end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> character = player.Character<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if not</span> character <span class="keyword">then continue end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> rootPart = character:<span class="func">FindFirstChild</span>(<span class="string">"HumanoidRootPart"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> rootPart <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> currentPos = rootPart.Position<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> prevPos = playersPositions[player]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> prevPos <span class="keyword">and</span> (currentPos - prevPos).Magnitude &gt; <span class="number">0.5</span> <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">damagePlayer</span>(player, DAMAGE_PER_MOVE)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;playersPositions[player] = currentPos<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local function</span> <span class="func">redLightCycle</span>(duration)<br>
+&nbsp;&nbsp;<span class="func">setLightState</span>(<span class="keyword">true</span>)<br>
+&nbsp;&nbsp;playersPositions = {}<br>
+&nbsp;&nbsp;<span class="keyword">for</span> _, player <span class="keyword">in</span> ipairs(players:<span class="func">GetPlayers</span>()) <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if not</span> playersFinished[player] <span class="keyword">and</span> player.Character <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> rootPart = player.Character:<span class="func">FindFirstChild</span>(<span class="string">"HumanoidRootPart"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> rootPart <span class="keyword">then</span> playersPositions[player] = rootPart.Position <span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">local</span> startTime = tick()<br>
+&nbsp;&nbsp;<span class="keyword">while</span> gameActive <span class="keyword">and</span> (tick() - startTime) &lt; duration <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">checkMovement</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.2</span>)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local function</span> <span class="func">greenLightCycle</span>(duration)<br>
+&nbsp;&nbsp;<span class="func">setLightState</span>(<span class="keyword">false</span>)<br>
+&nbsp;&nbsp;<span class="func">wait</span>(duration)<br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">local function</span> <span class="func">startGame</span>()<br>
+&nbsp;&nbsp;gameActive = <span class="keyword">true</span><br>
+&nbsp;&nbsp;timer = GAME_TIME<br>
+&nbsp;&nbsp;playersFinished = {}<br>
+&nbsp;&nbsp;<span class="func">spawn</span>(<span class="keyword">function</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">while</span> gameActive <span class="keyword">and</span> timer &gt; <span class="number">0</span> <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timerUpdateEvent:<span class="func">FireAllClients</span>(timer)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">1</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timer = timer - <span class="number">1</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> timer &lt;= <span class="number">0</span> <span class="keyword">and</span> gameActive <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gameActive = <span class="keyword">false</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lightStateEvent:<span class="func">FireAllClients</span>(<span class="keyword">nil</span>, <span class="string">"timeout"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+&nbsp;&nbsp;<span class="keyword">while</span> gameActive <span class="keyword">and</span> timer &gt; <span class="number">0</span> <span class="keyword">do</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">redLightCycle</span>(math.random(RED_MIN, RED_MAX))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if not</span> gameActive <span class="keyword">then break end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">greenLightCycle</span>(math.random(GREEN_MIN, GREEN_MAX))<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span><br><br>
+<span class="keyword">if</span> finishPlate <span class="keyword">then</span><br>
+&nbsp;&nbsp;finishPlate.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> player = players:<span class="func">GetPlayerFromCharacter</span>(hit.Parent)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> player <span class="keyword">and not</span> playersFinished[player] <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;playersFinished[player] = <span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lightStateEvent:<span class="func">FireAllClients</span>(<span class="keyword">nil</span>, <span class="string">"message"</span>, player.Name .. <span class="string">" финишировал!"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> character = hit.Parent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> character <span class="keyword">and</span> character.PrimaryPart <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;character:<span class="func">SetPrimaryPartCFrame</span>(CFrame.new(<span class="number">0</span>, <span class="number">100</span>, <span class="number">0</span>))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+<span class="keyword">end</span><br><br>
+<span class="func">wait</span>(START_DELAY)<br>
+<span class="func">startGame</span>()
+        </div>
+      </details>
+      <div class="info-callout green">
+        <span class="bulb">🔑</span>
+        <div>После Play ждём 5 сек (<code>START_DELAY</code>) — затем начинается цикл красный ↔ зелёный.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6s0" onchange="updateProjectProgress()"><label for="p6s0">Серверный Script создан и заполнен.</label></li>
+        <li><input type="checkbox" id="p6s1" onchange="updateProjectProgress()"><label for="p6s1">Понимаю: урон за движение считает сервер.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase7">
+      <h3>🩸 Фаза 7 — Эффект крови <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>StarterPlayer → StarterPlayerScripts → <b>LocalScript</b>.</li>
+        <li>Вставь скрипт частиц при потере HP.</li>
+      </ol>
+      <img class="shot" src="assets/img/squid/11-localscript.png" alt="LocalScript в StarterPlayerScripts" />
+      <p class="shot-cap">LocalScript в StarterPlayerScripts.</p>
+      <img class="shot" src="assets/img/squid/12-blood-code.png" alt="Код эффекта крови" />
+      <p class="shot-cap">Пример кода эффекта в редакторе Studio.</p>
+      <img class="shot" src="assets/img/squid/13-blood-explain.png" alt="Пояснение логики эффекта" />
+      <p class="shot-cap">Логика: HealthChanged → если HP упал → ParticleEmitter на торсе → удалить через 0.5 с.</p>
+      <div class="code-block">
+<span class="keyword">local</span> player = game.Players.LocalPlayer<br>
+<span class="keyword">local</span> character = player.Character <span class="keyword">or</span> player.CharacterAdded:<span class="func">Wait</span>()<br>
+<span class="keyword">local</span> humanoid = character:<span class="func">WaitForChild</span>(<span class="string">"Humanoid"</span>)<br>
+<span class="keyword">local</span> lastHealth = humanoid.Health<br><br>
+humanoid.HealthChanged:<span class="func">Connect</span>(<span class="keyword">function</span>(health)<br>
+&nbsp;&nbsp;<span class="keyword">if</span> health &lt; lastHealth <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> torso = character:<span class="func">FindFirstChild</span>(<span class="string">"UpperTorso"</span>) <span class="keyword">or</span> character:<span class="func">FindFirstChild</span>(<span class="string">"Torso"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> torso <span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> blood = Instance.new(<span class="string">"ParticleEmitter"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blood.Texture = <span class="string">"rbxasset://textures/particles/smoke_main.dds"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blood.Color = ColorSequence.new(Color3.new(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blood.Rate = <span class="number">50</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blood.Lifetime = NumberRange.new(<span class="number">0.3</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blood.SpreadAngle = Vector2.new(<span class="number">180</span>, <span class="number">180</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blood.Speed = NumberRange.new(<span class="number">2</span>, <span class="number">5</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blood.Enabled = <span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blood.Parent = torso<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">0.5</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blood:<span class="func">Destroy</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;lastHealth = health<br>
+<span class="keyword">end</span>)
+      </div>
+      <div class="info-callout purple">
+        <span class="bulb">📌</span>
+        <div>Сравниваем с <code>lastHealth</code>, чтобы эффект был именно при <b>уроне</b>, а не при любом HealthChanged.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p7s0" onchange="updateProjectProgress()"><label for="p7s0">LocalScript крови создан.</label></li>
+        <li><input type="checkbox" id="p7s1" onchange="updateProjectProgress()"><label for="p7s1">При уроне видны красные частицы.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase8">
+      <h3>🧪 Фаза 8 — Проверка в Play <span class="phase-time">12 мин</span></h3>
+      <ol>
+        <li>Play → подожди 5 сек.</li>
+        <li>На зелёном беги, на красном стой.</li>
+        <li>Пошевелись на красном — HP падает, кровь вспыхивает.</li>
+        <li>Доберись до FinishPlate — сообщение «финишировал».</li>
+      </ol>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p8s0" onchange="updateProjectProgress()"><label for="p8s0">Свет и таймер обновляются в GUI.</label></li>
+        <li><input type="checkbox" id="p8s1" onchange="updateProjectProgress()"><label for="p8s1">Движение на красном наносит урон.</label></li>
+        <li><input type="checkbox" id="p8s2" onchange="updateProjectProgress()"><label for="p8s2">Кукла поворачивает голову (если Head найден).</label></li>
+        <li><input type="checkbox" id="p8s3" onchange="updateProjectProgress()"><label for="p8s3">Финиш срабатывает.</label></li>
+      </ul>
+      <div class="space-note">🎉 Комната 1 готова! Можно балансировать время и урон.</div>
+    </div>
+
+    <div class="phase" id="phase9" style="border-color:#fbbf24;">
+      <h3>⚖️ Фаза 9 (доп) — Баланс <span class="phase-time">8 мин</span></h3>
+      <p>В серверном скрипте подкрути: <code>GAME_TIME</code>, <code>DAMAGE_PER_MOVE</code>, <code>RED_MIN/MAX</code>, <code>GREEN_MIN/MAX</code>.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p9s0" onchange="updateProjectProgress()"><label for="p9s0">Подобрал сложность под свою группу.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase10" style="border-color:#a78bfa;">
+      <h3>🎨 Фаза 10 (доп) — Атмосфера <span class="phase-time">12 мин</span></h3>
+      <ul>
+        <li>Звук сирены на красный свет (Sound в Workspace).</li>
+        <li>Освещение: чуть темнее Ambient.</li>
+        <li>Декор стен / табличка «STOP».</li>
+      </ul>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p10s0" onchange="updateProjectProgress()"><label for="p10s0">Добавлен звук или декор.</label></li>
+        <li><input type="checkbox" id="p10s1" onchange="updateProjectProgress()"><label for="p10s1">После декора механика работает.</label></li>
+      </ul>
+      <div class="space-note">🏆 Портфолио-режим: раунды, GUI, урон, анимация куклы!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧯 Если не работает</h2>
+    <table class="prop-table">
+      <tr><th>Симптом</th><th>Что проверить</th></tr>
+      <tr><td>Нет смены света</td><td>Серверный Script? RemoteEvent? Имена LightLabel?</td></tr>
+      <tr><td>Нет урона</td><td>Игра уже стартовала (после 5 сек)? Движение &gt; 0.5 studs?</td></tr>
+      <tr><td>Голова не крутится</td><td>Doll → Model → Head? warn в Output?</td></tr>
+      <tr><td>Финиш не ловит</td><td>Имя FinishPlate? CanTouch? Character с Humanoid?</td></tr>
+      <tr><td>Нет крови</td><td>LocalScript в StarterPlayerScripts? R6/R15 торс найден?</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>собрал арену и режим раундов;</li>
+      <li>связал сервер с GUI через RemoteEvent;</li>
+      <li>сделал проверку движения и урон на красном свете;</li>
+      <li>добавил эффект крови и (по возможности) поворот куклы.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Дошёл до финиша!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти, чиним баги</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь</label>
+    </div>
+    <textarea placeholder="Почему урон за движение считает сервер, а не LocalScript? Зачем кукле Head внутри Model?"></textarea>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Проект П9 · Игра в кальмара · комната 1</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function updateProjectProgress() {
+    const box = document.getElementById('keyTaskBox');
+    if (!box) return;
+    const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+    const checked = box.querySelectorAll('input[type="checkbox"]:checked').length;
+    const total = checkboxes.length;
+    const pct = total ? Math.round((checked / total) * 100) : 0;
+    const fill = document.getElementById('projectFill');
+    const label = document.getElementById('projectLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) {
+      label.textContent = 'Выполнено шагов: ' + checked + ' из ' + total +
+        (checked === total && total > 0 ? ' 🎉 Проект выполнен!' : '');
+    }
+  }
+
+  /* ===== Мини-игра ===== */
+  const mg = {
+    running: false, holding: false, isRed: false, pos: 8, hp: 100, time: 60,
+    timerId: null, lightId: null, moveId: null, finished: false
+  };
+
+  function setLight(isRed) {
+    mg.isRed = isRed;
+    const el = document.getElementById('mgLight');
+    const doll = document.getElementById('mgDoll');
+    if (isRed) {
+      el.textContent = 'КРАСНЫЙ СВЕТ';
+      el.className = 'light-banner red';
+      doll.classList.add('red');
+    } else {
+      el.textContent = 'ЗЕЛЁНЫЙ СВЕТ';
+      el.className = 'light-banner green';
+      doll.classList.remove('red');
+    }
+  }
+
+  function renderMg() {
+    document.getElementById('mgHp').textContent = Math.max(0, Math.floor(mg.hp));
+    document.getElementById('mgTime').textContent = Math.max(0, mg.time);
+    const pct = Math.min(100, Math.round(((mg.pos - 8) / (82 - 8)) * 100));
+    document.getElementById('mgPct').textContent = Math.max(0, pct);
+    document.getElementById('mgPlayer').style.left = mg.pos + '%';
+  }
+
+  function damage(amount) {
+    mg.hp = Math.max(0, mg.hp - amount);
+    document.getElementById('mgMsg').textContent = 'Движение на красном! −' + amount + ' HP';
+    if (mg.hp <= 0) {
+      stopRound();
+      document.getElementById('mgMsg').textContent = '💀 Выбыл… Сброс и ещё раз!';
+    }
+    renderMg();
+  }
+
+  function tickMove() {
+    if (!mg.running || mg.finished) return;
+    if (mg.holding) {
+      if (mg.isRed) {
+        damage(20);
+        mg.holding = false;
+      } else {
+        mg.pos = Math.min(82, mg.pos + 0.9);
+        if (mg.pos >= 82) {
+          mg.finished = true;
+          stopRound();
+          document.getElementById('mgMsg').textContent = '🏆 Финиш! Теперь собери то же в Studio.';
+        }
+        renderMg();
+      }
+    }
+  }
+
+  function cycleLights() {
+    if (!mg.running) return;
+    setLight(true);
+    const redDur = 2000 + Math.random() * 2000;
+    setTimeout(function () {
+      if (!mg.running) return;
+      setLight(false);
+      const greenDur = 2000 + Math.random() * 2000;
+      setTimeout(cycleLights, greenDur);
+    }, redDur);
+  }
+
+  function stopRound() {
+    mg.running = false;
+    mg.holding = false;
+    clearInterval(mg.timerId);
+    clearInterval(mg.moveId);
+  }
+
+  function startRound() {
+    stopRound();
+    mg.running = true;
+    mg.finished = false;
+    mg.hp = 100;
+    mg.time = 60;
+    mg.pos = 8;
+    document.getElementById('mgMsg').textContent = 'Беги на зелёном, стой на красном!';
+    setLight(false);
+    renderMg();
+    mg.timerId = setInterval(function () {
+      if (!mg.running) return;
+      mg.time -= 1;
+      renderMg();
+      if (mg.time <= 0) {
+        stopRound();
+        document.getElementById('mgLight').textContent = 'ВРЕМЯ ВЫШЛО!';
+        document.getElementById('mgLight').className = 'light-banner red';
+        document.getElementById('mgMsg').textContent = 'Время вышло.';
+      }
+    }, 1000);
+    mg.moveId = setInterval(tickMove, 80);
+    setTimeout(cycleLights, 1500);
+  }
+
+  const runBtn = document.getElementById('mgRun');
+  runBtn.addEventListener('mousedown', function () { mg.holding = true; });
+  runBtn.addEventListener('mouseup', function () { mg.holding = false; });
+  runBtn.addEventListener('mouseleave', function () { mg.holding = false; });
+  runBtn.addEventListener('touchstart', function (e) { e.preventDefault(); mg.holding = true; });
+  runBtn.addEventListener('touchend', function () { mg.holding = false; });
+  document.getElementById('mgStart').addEventListener('click', startRound);
+  document.getElementById('mgReset').addEventListener('click', function () {
+    stopRound();
+    mg.hp = 100; mg.time = 60; mg.pos = 8; mg.finished = false;
+    setLight(false);
+    document.getElementById('mgMsg').textContent = 'Нажми «Старт раунда»';
+    renderMg();
+  });
+
+  renderMg();
+  updateProjectProgress();
+</script>
+</body>
+</html>

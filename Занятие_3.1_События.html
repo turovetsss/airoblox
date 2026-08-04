@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.1. События — Страшный лес  — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .choice-card {
+      cursor: pointer; transition: all 0.15s; user-select: none;
+      padding: 10px 14px; background: #fff; border: 2px solid #e2e8f0;
+      border-radius: 14px; display: block; margin: 8px 0; font-family: 'Courier New', monospace; font-size: 0.95rem;
+    }
+    .choice-card:hover { border-color: var(--primary); transform: translateY(-1px); }
+    .choice-card.selected { border-color: var(--accent) !important; background: var(--accent-light) !important; box-shadow: 0 0 0 3px rgba(110,0,145,.18); }
+    .choice-card.correct { border-color: var(--primary) !important; background: var(--primary-light) !important; }
+    .choice-card.incorrect { border-color: var(--danger) !important; background: var(--danger-light) !important; }
+    .choice-card.text-opt { font-family: inherit; font-weight: 700; }
+    .choice-card .kw { color: #1d4ed8; font-weight: 700; }
+    .choice-card .obj { color: #b91c1c; }
+    .choice-card .fn { color: #0284c7; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 16px 20px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: 1.05rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .code-light {
+      background: #fff; color: #1e293b; border: 1px solid #e2e8f0; border-radius: 12px;
+      padding: 14px 16px; font-family: 'Courier New', monospace; font-size: 0.98rem; margin: 10px 0; line-height: 1.5;
+    }
+    .code-light .kw { color: #1d4ed8; font-weight: 700; }
+    .code-light .obj { color: #b91c1c; }
+    .code-light .fn { color: #0284c7; }
+    .hint-btn {
+      background: var(--accent-light,#f0e6f5); border: none; padding: 6px 16px; border-radius: 30px;
+      font-weight: 600; color: var(--accent-ink,#4a1a5a); cursor: pointer; margin-top: 6px;
+    }
+    .hint-btn:hover { background: var(--accent,#b47cdb); color: #fff; }
+    .hint-box { display: none; background: #f1f5f9; border-radius: 12px; padding: 12px; margin-top: 8px; border-left: 4px solid var(--accent,#6e0091); }
+    .hint-box.show { display: block; }
+    .theory-section { margin-bottom: 22px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .scenario-box {
+      background: linear-gradient(135deg,#1a1030,#2d1b4e); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #6C3F9B;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка по событиям"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 14px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 14px 16px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 700; color: var(--primary-dark,#1a4a0a); border-bottom: 2px solid var(--primary-light,#e8f5e0); padding-bottom: 4px; margin-bottom: 6px; }
+    .cheat-item .rule { font-size: .92rem; margin: 4px 0; }
+    .cheat-item .rule code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .85rem; }
+    .map-card {
+      background: linear-gradient(135deg,#E8F5E0,#F4EAFA); border: 2px solid var(--primary,#61b01f);
+      border-radius: 20px; padding: 20px 24px; margin: 20px 0;
+    }
+    .map-card .dl {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; background: var(--primary,#61b01f);
+      color: #fff; padding: 12px 22px; border-radius: 30px; font-weight: 800; text-decoration: none;
+      box-shadow: 0 4px 0 #2E4A17;
+    }
+    .map-card .dl:hover { background: #4C8C18; }
+    .screenshot-placeholder {
+      background: #0f172a; border: 2px solid #334155; border-radius: 14px; padding: 10px;
+      text-align: center; margin: 12px 0; color: #94a3b8;
+    }
+    .screenshot-placeholder img {
+      max-width: 100%; border-radius: 10px; display: block; margin: 0 auto;
+      border: 2px solid var(--line,#e2e8f0);
+    }
+    .screenshot-placeholder .cap { margin-top: 8px; font-size: .9rem; font-weight: 600; }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin: 0 0 8px; color: var(--primary-dark,#1a4a0a); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .phase-time { font-size: .85rem; background: var(--accent-light,#f0e6f5); color: var(--accent-ink,#4a1a5a); padding: 3px 12px; border-radius: 20px; font-weight: 700; }
+    .progress-track { background: #e2e8f0; height: 10px; border-radius: 10px; margin: 16px 0 8px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg,var(--primary,#61b01f),#a3e635); transition: width .3s; }
+    .progress-label { font-size: .92rem; color: #334155; font-weight: 600; }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; align-items: baseline; gap: 8px; margin: 8px 0; line-height: 1.5; flex-wrap: wrap; }
+    .task-steps li input[type="checkbox"] { transform: scale(1.2); flex-shrink: 0; margin-top: 3px; }
+    .space-note { background: #1a1a4a; color: #fbbf24; border-left: 4px solid #fbbf24; padding: 12px 16px; border-radius: 12px; margin: 12px 0; font-weight: 500; }
+    .fav-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 12px; margin-top: 12px; }
+    .fav-card {
+      border: 2px solid #e2e8f0; border-radius: 16px; overflow: hidden; cursor: pointer; background: #fff; transition: .2s;
+    }
+    .fav-card:hover, .fav-card.selected { border-color: var(--accent,#6e0091); box-shadow: 0 0 0 3px rgba(110,0,145,.2); }
+    .fav-card img { width: 100%; height: 110px; object-fit: cover; display: block; background: #1e293b; }
+    .fav-card .cap { padding: 8px 10px; font-weight: 800; font-size: .9rem; text-align: center; }
+    .pseudo { color: #64748b; font-style: italic; }
+    .event-compare {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 12px; margin: 12px 0;
+    }
+    .event-compare .box {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px 14px;
+    }
+    .event-compare .box b { display: block; margin-bottom: 6px; color: var(--primary-dark); }
+    .vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+    @media (max-width:700px) { .vs-grid { grid-template-columns: 1fr; } }
+    .vs-ok { background: #ecfdf5; border: 2px solid #34d399; border-radius: 14px; padding: 12px; }
+    .vs-no { background: #fef2f2; border: 2px solid #f87171; border-radius: 14px; padding: 12px; }
+    .num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.6em; height: 1.6em; border-radius: 50%; margin-right: 6px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); font-weight: 800;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 5.1</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">5.1</div>
+      <div>
+        <div class="module-pill">Раздел 5 · События и иерархия объектов</div>
+        <h1>🧙 страшный лес — События</h1>
+        <p class="subtitle">Touched · ClickDetector · ProximityPrompt</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">🧙‍♀️</div>
+    <div>
+      <strong>Страхи в лесу!</strong> 
+      Собери грибы 🍄, открой ящики 📦, разблокируй пещеру ⛰️ и вернись домой 🏠 —
+      с помощью <strong>событий</strong> в Roblox!
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>🎯 На этом уроке ты:</h2>
+    <ul>
+      <li>поймёшь, что такое <b>событие</b> и зачем нужен <code>:Connect()</code> 📡</li>
+      <li>научишься трём способам взаимодействия: <b>Touched</b>, <b>ClickDetector</b>, <b>ProximityPrompt</b> 🖱️</li>
+      <li>оживишь готовую карту : грибы, ящики, лёд, двери 🗺️</li>
+      <li>пройдёшь квест от леса до дома 🏠</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Карта + теория</td><td>18 мин</td><td>Скачиваем карту, разбираем 3 типа событий + квизы</td></tr>
+      <tr><td>Фаза 1–2</td><td>16 мин</td><td>Грибы (Touched) и ящики (ClickDetector)</td></tr>
+      <tr><td>Фаза 3–4</td><td>16 мин</td><td>RockDoor и лёд с ключом</td></tr>
+      <tr><td>Фаза 5</td><td>14 мин</td><td>Locked_Door → путь домой</td></tr>
+      <tr><td>Итоги</td><td>8 мин</td><td>Шпаргалка и рефлексия</td></tr>
+      <tr><td>Итого</td><td>~72 мин</td><td>—</td></tr>
+    </table>
+    <p style="margin:10px 0 0;font-size:.95rem;color:#475569;">
+      <b>Нужно заранее:</b> переменные, <code>if</code>, <code>FindFirstChild</code> (раздел 4–5).
+    </p>
+  </div>
+
+  <!-- ===== КАРТА ===== -->
+  <div class="card map-card" id="mapDownload">
+    <h2 style="margin:0 0 .4rem;color:var(--primary-dark);">🗺️ Карта урока</h2>
+    <p style="margin:0 0 .6rem;">Скачай готовую карту и открой в <strong>Roblox Studio</strong>: File → Open from File.</p>
+    <div class="note" style="background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:12px;">
+      <b>Файл карты:</b>
+      <a href="assets/downloads/события.rbxl" download="события.rbxl" style="font-weight:800;color:var(--primary-dark);">⬇️ Скачать события.rbxl</a>
+      (если не скачивается — правый клик → «Сохранить ссылку как…»)
+    </div>
+    <div class="note" style="background:#fff;border-radius:12px;padding:12px 14px;">
+      <b>В Workspace уже есть:</b> <code>boxes</code>, <code>Locked_Door</code>, <code>home</code>, <code>world</code>, <code>Ice</code>, <code>RockDoor</code>, грибы и другие объекты для заданий.
+    </div>
+    <a class="dl" href="assets/downloads/события.rbxl" download="события.rbxl">⬇️ Скачать карту события.rbxl</a>
+  </div>
+
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px;line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82%20Touched%20%D0%B2%20Roblox%3F%22%7D" target="_blank" class="alice-q-btn">Как работает Touched?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20ClickDetector%3F%22%7D" target="_blank" class="alice-q-btn">Что такое ClickDetector?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20ProximityPrompt%3F%22%7D" target="_blank" class="alice-q-btn">Как использовать ProximityPrompt?</a>
+    </div>
+  </div>
+
+  <!-- ===== ТЕОРИЯ ===== -->
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: события в Roblox</h2>
+
+    <div class="theory-section">
+      <h3>📡 Что такое событие?</h3>
+      <p>Событие — это способ сказать коду: «Когда произойдёт <b>X</b>, выполни <b>Y</b>». Без событий скрипт просто «пробегает» сверху вниз один раз. С событием он <b>ждёт</b> действия игрока.</p>
+      <div class="event-compare">
+        <div class="box"><b>🦶 Touched</b>наступил на Part</div>
+        <div class="box"><b>🖱️ ClickDetector</b>кликнул мышью</div>
+        <div class="box"><b>🔑 ProximityPrompt</b>подошёл и нажал E</div>
+      </div>
+      <p>Подписка всегда одинаковая: <code>:Connect(function() … end)</code>.</p>
+      <div class="code-block">
+        <span class="comment">-- схема: объект.Событие:Connect(функция)</span><br>
+        чтоТо.Событие:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        &nbsp;&nbsp;<span class="comment">-- что делать, когда событие случилось</span><br>
+        <span class="keyword">end</span>)
+      </div>
+    </div>
+
+    <div class="theory-section" id="topic-touch">
+      <h3>🦶 Touched — касание</h3>
+      <p>Срабатывает, когда к Part прикасается другая деталь или персонаж. В параметр <code>hit</code> приходит то, что коснулось (часто нога игрока).</p>
+      <div class="code-block">
+        script.Parent.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> hit.Parent:FindFirstChild(<span class="string">"Humanoid"</span>) <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Игрок коснулся!"</span>)<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <table class="prop-table">
+        <tr><th>Элемент</th><th>Зачем</th></tr>
+        <tr><td><code>hit</code></td><td>Part, который коснулся (нога, рука…)</td></tr>
+        <tr><td><code>hit.Parent</code></td><td>Модель персонажа</td></tr>
+        <tr><td><code>FindFirstChild("Humanoid")</code></td><td>Проверка: это игрок, а не камень</td></tr>
+      </table>
+      <div class="info-callout green">
+        <span class="bulb">💡</span>
+        <div>Без проверки <code>Humanoid</code> гриб может «собраться», если на него упадёт другая деталь.</div>
+      </div>
+      <div class="interactive-box" id="quizTouch">
+        <h3>⚡ Где правильно написано событие касания?</h3>
+        <div class="choice-card" data-correct-choice="true"><span class="obj">script</span>.Parent.Touched:<span class="fn">Connect</span>(<span class="kw">function</span>(hit)<br>&nbsp;&nbsp;<br><span class="kw">end</span>)</div>
+        <div class="choice-card" data-correct-choice="false"><span class="obj">script</span>.Parent.Touched.<span class="fn">Connect</span>(<span class="kw">function</span>(hit)<br>&nbsp;&nbsp;<br><span class="kw">end</span>)</div>
+        <div class="choice-card" data-correct-choice="false"><span class="obj">script</span>.Parent.Touched:<span class="fn">Conect</span>(<span class="kw">function</span>(hit)<br>&nbsp;&nbsp;<br><span class="kw">end</span>)</div>
+        <div class="choice-card" data-correct-choice="false"><span class="obj">script</span>.Parent.Touched:<span class="fn">Connect</span>(hit()<br>&nbsp;&nbsp;<br><span class="kw">end</span>)</div>
+        <button class="action-btn" onclick="checkChoices('quizTouch')">Проверить</button>
+        <button class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetQuiz('quizTouch')">Ещё раз</button>
+        <div class="activity-result"></div>
+      </div>
+    </div>
+
+    <div class="theory-section" id="topic-click">
+      <h3>🖱️ ClickDetector — клик мыши</h3>
+      <p>Сначала в Part через «+» в Explorer добавляют объект <b>ClickDetector</b>. Потом в скрипте слушают событие <code>MouseClick</code>.</p>
+      <div class="code-block">
+        script.Parent.ClickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        &nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Клик по объекту!"</span>)<br>
+        <span class="keyword">end</span>)
+      </div>
+      <div class="vs-grid">
+        <div class="vs-ok">
+          <b>✅ Нужно</b><br>
+          Part → ClickDetector → Script<br>
+          Событие: <code>MouseClick</code>
+        </div>
+        <div class="vs-no">
+          <b>❌ Ошибка</b><br>
+          Только Script без ClickDetector<br>
+          Клик не сработает
+        </div>
+      </div>
+      <table class="prop-table">
+        <tr><th>Особенность</th><th>Описание</th></tr>
+        <tr><td>Объект</td><td><code>ClickDetector</code> — прямой ребёнок Part</td></tr>
+        <tr><td>Событие</td><td><code>MouseClick</code> — левая кнопка мыши</td></tr>
+      </table>
+      <div class="info-callout purple">
+        <span class="bulb">⚠️</span>
+        <div>Без ClickDetector скрипту не к чему «подписаться» — клик просто игнорируется.</div>
+      </div>
+      <div class="interactive-box" id="quizClickCode">
+        <h3>⚡ Где правильно написано событие клика?</h3>
+        <div class="choice-card" data-correct-choice="true"><span class="obj">script</span>.Parent.ClickDetector.MouseClick:<span class="fn">Connect</span>(<span class="kw">function</span>()<br>&nbsp;&nbsp;<br><span class="kw">end</span>)</div>
+        <div class="choice-card" data-correct-choice="false"><span class="obj">script</span>.Parent.ClickDetector:<span class="fn">Connect</span>(<span class="kw">function</span>()<br>&nbsp;&nbsp;<br><span class="kw">end</span>)</div>
+        <div class="choice-card" data-correct-choice="false"><span class="obj">script</span>.Parent.ClickDetector.MouseClick(<span class="kw">function</span>()<br>&nbsp;&nbsp;<br><span class="kw">end</span>)</div>
+        <div class="choice-card" data-correct-choice="false"><span class="obj">script</span>.Parent.MouseClick:<span class="fn">Connect</span>(<span class="kw">function</span>()<br>&nbsp;&nbsp;<br><span class="kw">end</span>)</div>
+        <button class="action-btn" onclick="checkChoices('quizClickCode')">Проверить</button>
+        <button class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetQuiz('quizClickCode')">Ещё раз</button>
+        <div class="activity-result"></div>
+      </div>
+      <div class="interactive-box" id="quizClickWhat" style="margin-top:1.2rem;">
+        <h3>⚡ Что такое ClickDetector?</h3>
+        <div class="choice-card text-opt" data-correct-choice="true">сенсор, который распознаёт события мыши</div>
+        <div class="choice-card text-opt" data-correct-choice="false">сенсор, который распознаёт события касания</div>
+        <div class="choice-card text-opt" data-correct-choice="false">обработчик клика мыши (функция)</div>
+        <div class="choice-card text-opt" data-correct-choice="false">функция клика мыши</div>
+        <button class="action-btn" onclick="checkChoices('quizClickWhat')">Проверить</button>
+        <button class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetQuiz('quizClickWhat')">Ещё раз</button>
+        <div class="activity-result"></div>
+      </div>
+    </div>
+
+    <div class="theory-section" id="topic-prox">
+      <h3>🔑 ProximityPrompt — взаимодействие рядом</h3>
+      <p>Показывает игроку кнопку (обычно <kbd>E</kbd>), когда он подходит близко. Объект <b>ProximityPrompt</b> кладут внутрь Part. Событие — <code>Triggered</code>.</p>
+      <div class="code-block">
+        script.Parent.ProximityPrompt.Triggered:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        &nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Взаимодействие!"</span>)<br>
+        <span class="keyword">end</span>)
+      </div>
+      <table class="prop-table">
+        <tr><th>Параметр</th><th>Описание</th></tr>
+        <tr><td><code>Triggered</code></td><td>Срабатывает, когда игрок нажал клавишу</td></tr>
+        <tr><td>Клавиша</td><td>По умолчанию <kbd>E</kbd> (можно сменить в Properties)</td></tr>
+      </table>
+      <div class="interactive-box" id="quizProx">
+        <h3>⚡ Где правильно написано ProximityPrompt?</h3>
+        <div class="choice-card" data-correct-choice="true"><span class="obj">script</span>.Parent.ProximityPrompt.Triggered:<span class="fn">Connect</span>(<span class="kw">function</span>()<br><span class="kw">end</span>)</div>
+        <div class="choice-card" data-correct-choice="false"><span class="obj">script</span>.Parent.ProximityPrompt:<span class="fn">Connect</span>(<span class="kw">function</span>()<br><span class="kw">end</span>)</div>
+        <div class="choice-card" data-correct-choice="false"><span class="obj">script</span>.Parent.ProximityPrompt.Triggered(<span class="kw">function</span>()<br><span class="kw">end</span>)</div>
+        <div class="choice-card" data-correct-choice="false"><span class="obj">script</span>.Parent.Triggered:<span class="fn">Connect</span>(<span class="kw">function</span>()<br><span class="kw">end</span>)</div>
+        <button class="action-btn" onclick="checkChoices('quizProx')">Проверить</button>
+        <button class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetQuiz('quizProx')">Ещё раз</button>
+        <div class="activity-result"></div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>✅ Три шаблона — сравни</h3>
+      <p>Один и тот же приём: <b>событие → Connect → function → end</b>. Меняется только «когда».</p>
+      <div class="code-block">
+        <span class="comment">-- 1. Касание</span><br>
+        script.Parent.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+        <span class="keyword">end</span>)<br><br>
+        <span class="comment">-- 2. Клик</span><br>
+        script.Parent.ClickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        <span class="keyword">end</span>)<br><br>
+        <span class="comment">-- 3. Клавиша E рядом</span><br>
+        script.Parent.ProximityPrompt.Triggered:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        <span class="keyword">end</span>)
+      </div>
+      <div class="info-callout">
+        <span class="bulb">🔑</span>
+        <div>
+          <b>Touched</b> — наступил · <b>ClickDetector</b> — кликнул · <b>ProximityPrompt</b> — подошёл и нажал E.
+          В проекте ниже каждый тип пригодится для своего объекта.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ШПАРГАЛКА ===== -->
+  <div class="cheat-sheet">
+    <h3 style="margin-top:0; margin-bottom:12px;">📘 Памятка: события в Roblox Lua</h3>
+    <div class="cheat-grid">
+      <div class="cheat-item">
+        <div class="title">🦶 Touched</div>
+        <div class="rule"><code>Touched:Connect(function(hit)</code></div>
+        <div class="rule">Нужен Part. Проверяй <code>Humanoid</code>.</div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">🖱️ MouseClick</div>
+        <div class="rule"><code>ClickDetector.MouseClick:Connect(...)</code></div>
+        <div class="rule">Сначала добавь <b>ClickDetector</b>.</div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">🔑 Triggered</div>
+        <div class="rule"><code>ProximityPrompt.Triggered:Connect(...)</code></div>
+        <div class="rule">Игрок подходит и жмёт <b>E</b>.</div>
+      </div>
+      <div class="cheat-item">
+        <div class="title">🗑️ Destroy</div>
+        <div class="rule"><code>script.Parent:Destroy()</code></div>
+        <div class="rule">Удаляет объект со сцены.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ПРОЕКТ ===== -->
+  <div class="project-box" id="project">
+    <h2>🗺️ Проект в Studio </h2>
+    <p>Открой скачанную карту <code>события.rbxl</code>. Ниже — фазы по порядку. Отмечай шаги галочками.</p>
+
+    <!-- Фаза 1 -->
+    <div class="phase" id="phase1">
+      <h3>🍄 Фаза 1 — Грибы (Touched) <span class="phase-time">8 мин</span></h3>
+      <div class="info-callout">
+        <span class="bulb">💡</span>
+        <div>
+          Добавь скрипт для <b>mushroom1</b> (лежит в <b>ReplicatedStorage</b>).
+          <ol style="margin:8px 0 0;padding-left:18px;">
+            <li>Создай событие касания.</li>
+            <li>Внутри него напиши условие: если у родителя hit есть дочерний объект Humanoid</li>
+            <li>В условии увеличь значение переменной mushrooms на 1.</li>
+            <li>Удали родительский объект.</li>
+          </ol>
+          Тоже самое сделай для <b>mushroom2</b> (лежит в <b>ReplicatedStorage</b>).
+        </div>
+      </div>
+      <div class="screenshot-placeholder">
+        <img src="assets/images/lesson-3.1/mushrooms.png" alt="Грибы на карте" loading="lazy" />
+        <p class="cap">Грибы на карте — собираются касанием</p>
+      </div>
+      <div class="code-block">
+        <span class="comment">-- Черновик:</span><br>
+        script.Parent.Touched:<span class="func">Connect</span>(<span class="keyword">function</span>(hit)<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> hit.Parent:FindFirstChild(<span class="string">"Humanoid"</span>) <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;game.Players[hit.Parent.Name].leaderstats.mushrooms.Value += <span class="number">1</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent:<span class="func">Destroy</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <div class="progress-track"><div class="progress-fill"></div></div>
+      <span class="progress-label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="p1s0" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p1s0">Найди mushroom1 и добавь Script.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="p1s1" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p1s1">Напиши Touched + проверку Humanoid + Destroy.</label>
+          <button class="hint-btn" onclick="toggleHint('hint1')">📖 Показать подсказку</button>
+          <div id="hint1" class="hint-box">Не забудь двоеточие перед <code>Connect</code> и <code>FindFirstChild("Humanoid")</code>.</div>
+        </li>
+        <li>
+          <input type="checkbox" id="p1s2" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p1s2">Запусти игру и наступи на гриб — он должен исчезнуть.</label>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Фаза 2 -->
+    <div class="phase" id="phase2">
+      <h3>📦 Фаза 2 — Ящики (ClickDetector) <span class="phase-time">8 мин</span></h3>
+      <img src="assets/images/lesson-3.1/3.png" alt="Грибы на карте" loading="lazy" />
+      <p>В папке <b>boxes</b> для каждого <b>Box</b> (1–7): добавь <b>ClickDetector</b> и Script. По клику — <code>Destroy</code>.</p>
+      <img src="assets/images/lesson-3.1/2.png" alt="Грибы на карте" loading="lazy" />
+      <div class="code-light">
+        <span class="pseudo">[событие клика:Connect(function()]</span><br>
+        script.Parent:Destroy()<br>
+        <span class="pseudo">[end)]</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill"></div></div>
+      <span class="progress-label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="p2s0" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p2s0">В каждый Box 1–7 добавь ClickDetector.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="p2s1" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p2s1">Вставь Script с MouseClick:Connect → Destroy.</label>
+          <button class="hint-btn" onclick="toggleHint('hint2')">📖 Показать подсказку</button>
+          <div id="hint2" class="hint-box">
+            <div class="code-block">
+              script.Parent.ClickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+              &nbsp;&nbsp;script.Parent:<span class="func">Destroy</span>()<br>
+              <span class="keyword">end</span>)
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="p2s2" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p2s2">Кликни по ящикам в игре — они исчезают.</label>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Фаза 3 -->
+    <div class="phase" id="phase3">
+      <h3>⛰️ Фаза 3 — RockDoor (ProximityPrompt) <span class="phase-time">8 мин</span></h3>
+      <p>В дверь в пещеру <b>RockDoor</b> добавь событие ProximityPrompt и Script. В скрипте условие : Если значение переменной <b>Opened</b> == true — удали RockDoor.</p>
+       <img src="assets/images/lesson-3.1/4.png" alt="Грибы на карте" loading="lazy" />
+         <p>Установи значение <b>Opened</b> в true.</p>
+        <img src="assets/images/lesson-3.1/5.png" alt="Грибы на карте" loading="lazy" />
+      <div class="code-light">
+        <span class="pseudo">[ProximityPrompt.Triggered:Connect(function()]</span> - напиши событие для триггера ProximityPrompt <br> 
+        &nbsp;&nbsp;<span class="kw">if</span> script.Parent.Opened.Value == <span class="kw">true</span> <span class="kw">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent:Destroy()<br>
+        &nbsp;&nbsp;<span class="kw">end</span><br>
+        <span class="kw">end</span>)
+      </div>
+      <div class="progress-track"><div class="progress-fill"></div></div>
+      <span class="progress-label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="p3s0" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p3s0">Добавь ProximityPrompt + Script в RockDoor.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="p3s1" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p3s1">Напиши Triggered + проверку Opened + Destroy. Проверь клавишей E.</label>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Фаза 4 -->
+    <div class="phase" id="phase4">
+      <h3>🧊 Фаза 4 — Лёд и ключ <span class="phase-time">8 мин</span></h3>
+      <p>В объект <b>Ice</b>: ClickDetector + Script. Считай клики; когда <code>count &gt;= taps.Value</code> — удали лёд.</p>
+      <img src="assets/images/lesson-3.1/6.png" alt="Грибы на карте" loading="lazy" />
+      <div class="code-block">
+        <span class="keyword">local</span> count = <span class="number">0</span><br><br>
+        script.Parent.ClickDetector.MouseClick:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        &nbsp;&nbsp;count = count + <span class="number">1</span><br>
+        &nbsp;&nbsp;<span class="keyword">if</span> count &gt;= script.taps.Value <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent:<span class="func">Destroy</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <div class="progress-track"><div class="progress-fill"></div></div>
+      <span class="progress-label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="p4s0" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p4s0">Найди Ice, добавь ClickDetector и Script.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="p4s1" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p4s1">Реализуй счётчик count и сравнение с taps.Value.</label>
+          <button class="hint-btn" onclick="toggleHint('hint4')">📖 Показать подсказку</button>
+          <div id="hint4" class="hint-box">Значение <code>taps</code> — IntValue внутри скрипта или Ice. Проверь Explorer.</div>
+        </li>
+        <li>
+          <input type="checkbox" id="p4s2" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p4s2">Кликай по льду, пока не появится ключ.</label>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Фаза 5 -->
+    <div class="phase" id="phase5">
+      <h3>🚪 Фаза 5 — Locked_Door → домой <span class="phase-time">14 мин</span></h3>
+      <img src="assets/images/lesson-3.1/8.png" alt="Грибы на карте" loading="lazy" />
+      <p>В <b>DoorBase</b> внутри модели <b>Locked_Door</b> добавь : ProximityPrompt + Script. Если <b>KeyRemove</b> == true — сделай дверь и Hole1/Hole2 прозрачными без коллизии на 3 секунды, затем верни.</p>
+      <img src="assets/images/lesson-3.1/7.png" alt="Грибы на карте" loading="lazy" />
+      <div class="code-block">
+        script.Parent.ProximityPrompt.Triggered:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        &nbsp;&nbsp;<span class="keyword">if</span> script.Parent.Parent.KeyRemove.Value == <span class="keyword">true</span> <span class="keyword">then</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.Transparency = <span class="number">1</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.CanCollide = <span class="keyword">false</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.Parent.Hole1.Transparency = <span class="number">1</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.Parent.Hole2.Transparency = <span class="number">1</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.Parent.Hole1.CanCollide = <span class="keyword">false</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.Parent.Hole2.CanCollide = <span class="keyword">false</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>(<span class="number">3</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.Transparency = <span class="number">0</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.CanCollide = <span class="keyword">true</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.Parent.Hole1.Transparency = <span class="number">0</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.Parent.Hole2.Transparency = <span class="number">0</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.Parent.Hole1.CanCollide = <span class="keyword">true</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;script.Parent.Parent.Hole2.CanCollide = <span class="keyword">true</span><br>
+        &nbsp;&nbsp;<span class="keyword">end</span><br>
+        <span class="keyword">end</span>)
+      </div>
+      <div class="space-note">Transparency = 1 — невидимо · CanCollide = false — можно пройти · wait(3) — пауза 3 секунды</div>
+      <div class="progress-track"><div class="progress-fill"></div></div>
+      <span class="progress-label">Выполнено шагов: 0 из 2</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="p5s0" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p5s0">В DoorBase добавь ProximityPrompt и Script.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="p5s1" onchange="updateTaskProgress(this.closest('.phase'))">
+          <label for="p5s1">Реализуй открытие при KeyRemove == true. Дойди до home.</label>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== ИТОГИ ===== -->
+  <div class="card">
+    <h2>💡 Сегодня ты создал:</h2>
+    <ul>
+      <li>событие касания для грибов 🍄</li>
+      <li>событие клика для ящиков и льда 📦🧊</li>
+      <li>события ProximityPrompt для дверей 🔑🚪</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box" id="reflectionBlock">
+    <h2>💭 Какое задание тебе понравилось больше всего?</h2>
+    <div class="fav-grid" id="favGrid">
+      <div class="fav-card" data-fav="1" onclick="pickFav(this)">
+                <div style="height:110px;background:#334155;display:grid;place-items:center;font-size:2.5rem;">🍄</div>
+        
+        <div class="cap">Фаза 1 · Грибы</div>
+      </div>
+      <div class="fav-card" data-fav="2" onclick="pickFav(this)">
+        <div style="height:110px;background:#334155;display:grid;place-items:center;font-size:2.5rem;">📦</div>
+        <div class="cap">Фаза 2 · Ящики</div>
+      </div>
+      <div class="fav-card" data-fav="3" onclick="pickFav(this)">
+       <div style="height:110px;background:#334155;display:grid;place-items:center;font-size:2.5rem;">🗿</div>
+        <div class="cap">Фаза 3 · Камень</div>
+      </div>
+      <div class="fav-card" data-fav="4" onclick="pickFav(this)">
+        <div style="height:110px;background:#1e3a5f;display:grid;place-items:center;font-size:2.5rem;">🧊🔑</div>
+        <div class="cap">Фаза 4 · Лёд</div>
+      </div>
+      <div class="fav-card" data-fav="5" onclick="pickFav(this)">
+        <div style="height:110px;background:#3b1f4a;display:grid;place-items:center;font-size:2.5rem;">🚪🏠</div>
+        <div class="cap">Фаза 5 · Дверь</div>
+      </div>
+    </div>
+    <textarea id="reflectionText" style="margin-top:14px;width:100%;min-height:90px;border-radius:12px;border:2px solid var(--line);padding:12px;font-family:inherit;" placeholder="Что нового ты узнал о событиях? Где ещё применишь Touched / ClickDetector / ProximityPrompt?"></textarea>
+    <button class="action-btn" onclick="submitReflection()">Отправить</button>
+    <div id="reflectionResult" style="margin-top:10px;font-weight:700;"></div>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="Занятие_4.1.14_Парные_циклы.html">
+      <div class="lbl">← Назад</div>
+      <div class="ttl">4.10 Парные циклы</div>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 5.1 · Страшный лес · События</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  function toggleHint(id) {
+    const box = document.getElementById(id);
+    box.classList.toggle('show');
+    const btn = box.previousElementSibling;
+    if (btn && btn.classList.contains('hint-btn')) {
+      btn.textContent = box.classList.contains('show') ? '🙈 Скрыть подсказку' : '📖 Показать подсказку';
+    }
+  }
+
+  function updateTaskProgress(box) {
+    if (!box) return;
+    const checkboxes = box.querySelectorAll('.task-steps input[type=checkbox]');
+    let done = 0;
+    checkboxes.forEach(cb => { if (cb.checked) done++; });
+    const total = checkboxes.length;
+    const percent = total ? Math.round((done / total) * 100) : 0;
+    const fill = box.querySelector('.progress-fill');
+    const label = box.querySelector('.progress-label');
+    if (fill) fill.style.width = percent + '%';
+    if (label) label.textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+  }
+
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const cards = container.querySelectorAll('.choice-card');
+    let anySelected = false;
+    let allCorrect = true;
+    cards.forEach(card => {
+      if (card.classList.contains('selected')) anySelected = true;
+      const isCorrect = card.dataset.correctChoice === 'true';
+      if (card.classList.contains('selected') && !isCorrect) {
+        card.classList.add('incorrect');
+        allCorrect = false;
+      } else if (card.classList.contains('selected') && isCorrect) {
+        card.classList.add('correct');
+      }
+    });
+    const resultDiv = container.querySelector('.activity-result');
+    if (!anySelected) {
+      resultDiv.textContent = '⚠️ Выбери ответы!';
+      resultDiv.className = 'activity-result neutral';
+      return;
+    }
+    if (allCorrect) {
+      resultDiv.textContent = '✅ Молодец!';
+      resultDiv.className = 'activity-result done';
+    } else {
+      resultDiv.textContent = '❌ Есть ошибки. Попробуй ещё.';
+      resultDiv.className = 'activity-result neutral';
+    }
+  }
+
+  function resetQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    container.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected', 'correct', 'incorrect'));
+    const resultDiv = container.querySelector('.activity-result');
+    resultDiv.textContent = '';
+    resultDiv.className = 'activity-result';
+  }
+
+  function pickFav(el) {
+    document.querySelectorAll('.fav-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function submitReflection() {
+    const textarea = document.getElementById('reflectionText');
+    const resultDiv = document.getElementById('reflectionResult');
+    const fav = document.querySelector('.fav-card.selected');
+    if (!fav && textarea.value.trim() === '') {
+      resultDiv.textContent = 'Выбери любимое задание или напиши отзыв.';
+      resultDiv.style.color = '#C0392B';
+      return;
+    }
+    resultDiv.textContent = '✅ Спасибо! Твой ответ записан.' + (fav ? ' Любимое: ' + fav.querySelector('.cap').textContent : '');
+    resultDiv.style.color = '#2E7D32';
+    textarea.disabled = true;
+  }
+
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.choice-card');
+    if (!card) return;
+    const parent = card.closest('.interactive-box') || card.parentElement;
+    parent.querySelectorAll('.choice-card').forEach(c => {
+      c.classList.remove('selected', 'correct', 'incorrect');
+    });
+    card.classList.add('selected');
+  });
+</script>
+</body>
+</html>

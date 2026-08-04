@@ -303,24 +303,67 @@
         <strong>💡 Фантазируй!</strong> Можно сделать вращающиеся платформы, прыжки через пропасть, движущиеся препятствия. Используй уже готовые детали из предыдущих заданий или найди новые в Toolbox.
       </div>
     </div>
-
-    <!-- ===== РЕФЛЕКСИЯ ===== -->
-    <div class="reflection-box">
-      <h2>💭 Ты доволен своей работой?</h2>
-      <p>Оцени свои ощущения:</p>
-      <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 8px 0 12px;">
-        <label style="display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px;">
-          <input type="radio" name="satisfaction" value="yes"> Да, мой паркур самый яркий и интересный!
-        </label>
-        <label style="display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px;">
-          <input type="radio" name="satisfaction" value="ok"> Да, но могу лучше...
-        </label>
-        <label style="display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px;">
-          <input type="radio" name="satisfaction" value="no"> Нет, получается криво!
-        </label>
+ <div class="card" style="margin-top: 30px;">
+      <h2>📘 Памятка перед опросом</h2>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <tr>
+            <th>Инструмент</th>
+            <th>Горячая клавиша</th>
+            <th>Действие</th>
+          </tr>
+          <tr>
+            <td><b>Select</b></td>
+            <td>Q</td>
+            <td>Выделить объект</td>
+          </tr>
+          <tr>
+            <td><b>Move</b></td>
+            <td>W</td>
+            <td>Переместить объект</td>
+          </tr>
+          <tr>
+            <td><b>Scale</b></td>
+            <td>E</td>
+            <td>Изменить размер</td>
+          </tr>
+          <tr>
+            <td><b>Rotate</b></td>
+            <td>R</td>
+            <td>Вращать объект</td>
+          </tr>
+        </table>
       </div>
-      <textarea placeholder="Что было самым сложным? Что понравилось больше всего?"></textarea>
+      <ul style="margin-top: 16px; font-size: 1.05rem; line-height: 1.8;">
+        <li><b>Дублирование:</b> <kbd>Ctrl+D</kbd> — быстрая копия выделенного объекта.</li>
+        <li><b>Anchored:</b> если включено (галочка), объект висит в воздухе и не падает. Обязательно для всех платформ паркура!</li>
+        <li><b>Toolbox:</b> панель с готовыми моделями. Открывается через меню <b>View → Toolbox</b> или <kbd>Ctrl+Alt+T</kbd>. Оттуда можно перетаскивать стулья, деревья, шипы и многое другое.</li>
+        <li><b>Explorer:</b> окно справа, где показан список всех объектов в игре. Если потерял деталь — ищи её там.</li>
+        <li><b>Properties:</b> окно свойств выделенного объекта. Здесь можно менять цвет (<code>BrickColor</code>), материал (<code>Material</code>), размер (<code>Size</code>) и включать <code>Anchored</code>.</li>
+        <li><b>Камера:</b> зажимай правую кнопку мыши и двигай — осматриваешься. Колёсико — приближение/отдаление. Средняя кнопка — панорамирование.</li>
+      </ul>
+      <div class="note">
+        💡 <b>Совет:</b> Если сомневаешься в ответе, вспомни, как ты выполнял задания на уроке. Все вопросы основаны именно на практике!
+      </div>
     </div>
+  <div class="reflection-box" id="reflectionBlock">
+  <h2>💭 Ты доволен своей работой?</h2>
+  <p>Оцени свои ощущения:</p>
+  <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 8px 0 12px;">
+    <label style="display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px;">
+      <input type="radio" name="satisfaction" value="yes"> Да, мой паркур самый яркий и интересный!
+    </label>
+    <label style="display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px;">
+      <input type="radio" name="satisfaction" value="ok"> Да, но могу лучше...
+    </label>
+    <label style="display: flex; align-items: center; gap: 6px; background: var(--primary-light); padding: 6px 14px; border-radius: 30px;">
+      <input type="radio" name="satisfaction" value="no"> Нет, получается криво!
+    </label>
+  </div>
+  <textarea id="reflectionText" placeholder="Что было самым сложным? Что понравилось больше всего?"></textarea>
+  <button class="action-btn" onclick="submitReflection()">Отправить</button>
+  <div id="reflectionResult" style="margin-top:10px; font-weight:700;"></div>
+</div>
 
     <!-- ===== ИНТЕРАКТИВ: ВОПРОСЫ ПО ИНСТРУМЕНТАМ ===== -->
     <div class="interactive-box" id="toolQuiz2">
@@ -344,7 +387,15 @@
     </div>
 
     <!-- ===== ИТОГОВЫЙ ОПРОС ===== -->
-    <div class="quiz-wrap" id="quiz1">
+    
+    <!-- ===== МИНИ-ИГРА ===== -->
+    <div id="lessonMiniGame" class="rmg"></div>
+    <script src="assets/js/mini-games.js"></script>
+    <script>
+      RoboMiniGame.mount(document.getElementById("lessonMiniGame"), {"type":"matchPick","title":"Какой инструмент взять?","hint":"Выбери инструмент Studio под задачу.","rounds":[{"q":"Нужно передвинуть Part в сторону","options":["Move","Scale","Rotate","Select"],"answer":"Move"},{"q":"Нужно сделать Part выше","options":["Move","Scale","Rotate","Anchor"],"answer":"Scale"},{"q":"Нужно повернуть модель двери","options":["Rotate","Move","Paint","Terrain"],"answer":"Rotate"},{"q":"Нужно взять готовую ёлку из магазина","options":["Toolbox","Explorer","Properties","Output"],"answer":"Toolbox"},{"q":"Где смотрят список всех объектов?","options":["Explorer","Toolbox","Lighting","Plugins"],"answer":"Explorer"}]});
+    </script>
+
+<div class="quiz-wrap" id="quiz1">
       <h2>📝 Проверь себя, паркурщик!</h2>
 
       <div class="quiz-question" data-name="quiz1q0" data-correct="b">
@@ -406,10 +457,6 @@
         <div class="lbl">← Назад</div>
         <div class="ttl">1.2 Первый урок в Roblox</div>
       </a>
-      <a class="nav-btn next" href="Занятие_1.5_Первый_скрипт.html">
-        <div class="lbl">Далее →</div>
-        <div class="ttl">1.4 Первый скрипт</div>
-      </a>
     </div>
 
   </main>
@@ -436,6 +483,20 @@
         }
       });
     });
+    function submitReflection() {
+  const textarea = document.getElementById('reflectionText');
+  const resultDiv = document.getElementById('reflectionResult');
+  if (textarea.value.trim() === '') {
+    resultDiv.textContent = 'Пожалуйста, напишите хотя бы несколько слов.';
+    resultDiv.style.color = '#C0392B';
+    return;
+  }
+  resultDiv.textContent = '✅ Спасибо! Твой ответ записан.';
+  resultDiv.style.color = '#2E7D32';
+  textarea.disabled = true;
+  const btn = document.querySelector('#reflectionBlock .action-btn');
+  if (btn) btn.disabled = true;
+}
   </script>
 
 </body>

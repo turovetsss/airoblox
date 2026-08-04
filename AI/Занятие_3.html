@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Занятие 3 · Академия кибердетективов | РОБОВИТА</title>
+    <style>
+        :root {
+            --primary: #61B01F;
+            --primary-light: #E8F5E0;
+            --primary-dark: #2E4A17;
+            --accent: #6C3F9B;
+            --accent-light: #F0E6F5;
+            --danger: #e94560;
+            --warning: #f0a500;
+            --line: #D3E8C4;
+            --card-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #F4F9F0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: #2E2E2E;
+            font-size: 1.15rem;
+            line-height: 1.6;
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .site-header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #eee;
+            padding: 1.5rem 0 1rem;
+            border-bottom: 3px solid var(--danger);
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand img {
+            height: 44px;
+            border-radius: 12px;
+        }
+
+        .brand-name {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .hex-badge {
+            background: var(--danger);
+            color: #fff;
+            font-weight: 800;
+            font-size: 2.2rem;
+            width: 66px;
+            height: 66px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            box-shadow: 0 8px 0 #b0304b;
+        }
+
+        .module-pill {
+            background: #533b7c;
+            color: #eee;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: .95rem;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            margin: .2rem 0;
+        }
+
+        .subtitle {
+            color: #ccc;
+            font-size: 1.05rem;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .internet-map {
+            background: #0f172a;
+            border-radius: 20px;
+            padding: 1.2rem;
+            color: #e2e8f0;
+            border: 2px solid #334155;
+            position: sticky;
+            top: 12px;
+        }
+
+        .internet-map h3 {
+            margin: 0 0 1rem;
+            font-size: 1.1rem;
+            color: #94a3b8;
+        }
+
+        .map-zone {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            margin: 6px 0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid transparent;
+            transition: .4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-zone .icon {
+            font-size: 1.6rem;
+        }
+
+        .map-zone .label {
+            font-weight: 600;
+            font-size: .95rem;
+        }
+
+        .map-zone.infected {
+            border-color: var(--danger);
+            background: rgba(233, 69, 96, .15);
+        }
+
+        .map-zone.infected::after {
+            content: '🦠';
+            position: absolute;
+            right: 10px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .map-zone.saved {
+            border-color: var(--primary);
+            background: rgba(97, 176, 31, .2);
+        }
+
+        .map-zone.saved::after {
+            content: '✅';
+            position: absolute;
+            right: 10px;
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1
+            }
+            50% {
+                opacity: .4
+            }
+        }
+
+        .scenario-box {
+            background: #0f3460;
+            border-radius: 24px;
+            padding: 20px 24px;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            color: #e2e8f0;
+            border: 1px solid var(--danger);
+            box-shadow: 0 0 20px rgba(233, 69, 96, .3);
+        }
+
+        .scenario-avatar {
+            font-size: 3rem;
+            background: rgba(255, 255, 255, .1);
+            border-radius: 20px;
+            padding: 12px;
+        }
+
+        .scenario-box strong {
+            color: var(--warning);
+        }
+
+        .card,
+        .task-box,
+        .interactive-box,
+        .quiz-wrap,
+        .reflection-box,
+        .objectives {
+            background: #fff;
+            border-radius: 20px;
+            padding: 1.5rem 1.8rem;
+            margin: 1.5rem 0;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #E2E8F0;
+        }
+
+        .card h2,
+        .task-box h2 {
+            margin-top: 0;
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+        }
+
+        .artifact-bar {
+            background: #fff;
+            border-radius: 20px;
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--line);
+            margin: 1rem 0;
+        }
+
+        .artifact-bar h3 {
+            margin: 0 0 .8rem;
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+        }
+
+        .artifact-slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .artifact-slot {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            background: #fafafa;
+            opacity: .5;
+            transition: .3s;
+        }
+
+        .artifact-slot.filled {
+            opacity: 1;
+            border-style: solid;
+            border-color: var(--primary);
+            background: var(--primary-light);
+            animation: pop .4s;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(.5)
+            }
+            70% {
+                transform: scale(1.15)
+            }
+            100% {
+                transform: scale(1)
+            }
+        }
+
+        .supercomputer {
+            background: linear-gradient(135deg, #1a1a2e, #2d1b4e);
+            border-radius: 24px;
+            padding: 1.5rem;
+            color: #fff;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .supercomputer-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 1rem 0;
+        }
+
+        @media (max-width:600px) {
+            .supercomputer-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .sc-part {
+            background: rgba(255, 255, 255, .08);
+            border-radius: 12px;
+            padding: 12px 6px;
+            font-size: 1.8rem;
+            opacity: .25;
+            transition: .4s;
+        }
+
+        .sc-part.active {
+            opacity: 1;
+            background: rgba(97, 176, 31, .3);
+            box-shadow: 0 0 12px rgba(97, 176, 31, .5);
+        }
+
+        .sc-part .name {
+            font-size: .65rem;
+            display: block;
+            margin-top: 4px;
+            color: #ccc;
+        }
+
+        .xp-bar {
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: .5rem 0;
+        }
+
+        .lives {
+            display: flex;
+            gap: 6px;
+            margin: .5rem 0;
+        }
+
+        .heart {
+            font-size: 1.6rem;
+        }
+
+        .roby-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 320px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .roby-avatar {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #61B01F, #4C8C18);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+            flex-shrink: 0;
+            animation: bob 2s ease-in-out infinite;
+        }
+
+        @keyframes bob {
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+            50% {
+                transform: translateY(-6px)
+            }
+        }
+
+        .roby-bubble {
+            background: #fff;
+            border-radius: 16px 16px 4px 16px;
+            padding: 12px 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .15);
+            border: 2px solid var(--primary);
+            font-size: .95rem;
+        }
+
+        .roby-bubble strong {
+            color: var(--primary-dark);
+        }
+
+        .action-btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 0 var(--primary-dark);
+            margin: 4px;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: #4C8C18;
+        }
+
+        .action-btn.danger {
+            background: var(--danger);
+            box-shadow: 0 4px 0 #b0304b;
+        }
+
+        .sort-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            border: 2px solid #D3D1C7;
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            background: #fff;
+        }
+
+        .sort-btn {
+            cursor: pointer;
+            border: 1.5px solid #9CC97A;
+            border-radius: 8px;
+            padding: 6px 10px;
+            background: #fff;
+        }
+
+        .sort-card.done-right {
+            border-color: #2E7D32;
+            background: #EAF7DF;
+        }
+
+        .sort-card.done-wrong {
+            border-color: #C0392B;
+            background: #FBEAEA;
+        }
+
+        .traffic-lane {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .drop-zone {
+            flex: 1;
+            min-width: 140px;
+            min-height: 100px;
+            border: 2px dashed #ccc;
+            border-radius: 16px;
+            padding: 10px;
+            text-align: center;
+            background: #fafafa;
+        }
+
+        .drop-zone.red {
+            border-color: var(--danger);
+            background: #fdecea;
+        }
+
+        .drop-zone.yellow {
+            border-color: var(--warning);
+            background: #fff8e1;
+        }
+
+        .drop-zone.green {
+            border-color: var(--primary);
+            background: #e8f5e0;
+        }
+
+        .draggable-card {
+            padding: 8px 14px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            cursor: grab;
+            display: inline-block;
+            margin: 4px;
+        }
+
+        .certificate {
+            background: linear-gradient(135deg, #FFD54F, #FFB300);
+            border-radius: 28px;
+            padding: 2rem;
+            text-align: center;
+            color: #3E2C0B;
+            border: 4px solid #FF8F00;
+            margin: 2rem 0;
+            display: none;
+        }
+
+        .certificate.show {
+            display: block;
+        }
+
+        #confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0);
+                opacity: 1
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0
+            }
+        }
+
+        .theory-section {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .theory-section:last-child {
+            border-bottom: none;
+        }
+
+        .theory-section h3 {
+            margin-top: 12px;
+            color: var(--primary-dark);
+        }
+
+        .theory-section ul {
+            padding-left: 24px;
+            line-height: 1.7;
+        }
+
+        .prop-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+        }
+
+        .prop-table th,
+        .prop-table td {
+            border: 1px solid var(--line);
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .prop-table th {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .cheat-sheet {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 20px 24px;
+            border: 2px solid var(--primary);
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .cheat-sheet::before {
+            content: "📘 Шпаргалка безопасности";
+            position: absolute;
+            top: -14px;
+            left: 20px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 2px 16px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 1px solid var(--primary);
+        }
+
+        .cheat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .cheat-item {
+            background: white;
+            border-radius: 14px;
+            padding: 14px 16px;
+            border: 1px solid var(--line);
+        }
+
+        .cheat-item .title {
+            font-weight: 700;
+            color: var(--primary-dark);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 4px;
+            margin-bottom: 6px;
+        }
+
+        .screenshot-placeholder {
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 12px 0;
+            color: #64748b;
+        }
+
+        .hint-btn {
+            background: var(--accent-light);
+            border: none;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            color: var(--accent-ink);
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        .hint-box {
+            display: none;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 8px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .hint-box.show {
+            display: block;
+        }
+
+        .phish-spot {
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 0 2px;
+        }
+
+        .desk-icon {
+            font-size: 2.5rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+        }
+
+        .desk-icon:hover {
+            border-color: var(--warning);
+        }
+
+        .target-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+            padding: 10px;
+            background: #fafafa;
+            border-radius: 12px;
+        }
+
+        .target-row input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #9CC97A;
+            border-radius: 8px;
+        }
+
+        .target-row.success {
+            background: #EAF7DF;
+            border: 1px solid var(--primary);
+        }
+
+        .final-project {
+            background: #fff;
+            border-radius: 28px;
+            padding: 2rem;
+            border: 2px solid var(--primary);
+            margin-top: 2rem;
+        }
+
+        .final-project h2 {
+            color: var(--primary-dark);
+        }
+
+        .final-project .slide-struct {
+            background: #f0f7ff;
+            padding: 1rem;
+            border-radius: 16px;
+            margin: 1rem 0;
+        }
+
+        .final-project table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .final-project table th,
+        .final-project table td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .final-project table th {
+            background: var(--primary-light);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #f0a500;
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        /* AI-помощник Алиса */
+        .ai-helper {
+            background: #fff;
+            border-radius: 20px;
+            padding: 1.5rem 1.8rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            border: 1px solid #E2E8F0;
+        }
+        .ai-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 0.8rem;
+        }
+        .ai-head .t {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary-dark);
+        }
+        .ai-sub {
+            margin: 0 0 1rem;
+            color: #4a5568;
+        }
+        .ai-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+        .alice-q-btn {
+            background: #f0e6f5;
+            color: #6C3F9B;
+            padding: 10px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid var(--accent);
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+        .alice-q-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .ai-answer {
+            background: rgba(97,176,31,0.06);
+            border-left: 4px solid var(--primary);
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin: 12px 0;
+            font-style: italic;
+        }
+        .ai-real-tip {
+            background: #f8fafc;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: #2d3748;
+            margin-top: 1rem;
+        }
+        .prompt-example {
+            background: #edf2f7;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: monospace;
+        }
+    </style>
+<link rel="stylesheet" href="ai-common.css" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <div class="top-bar">
+                <a class="brand" href="#">
+                    <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" />
+                    <div>
+                        <div class="brand-name">РОБОВИТА</div>
+                        <div class="brand-tag">учимся программировать роботов и игры</div>
+                    </div>
+                </a>
+                <div class="crumbs" style="color:#aaa;">Занятие 3</div>
+            </div>
+            <div class="hero">
+                <div class="hex-badge">🕵️</div>
+                <div>
+                    <div class="module-pill">Модуль 1 · Безопасность</div>
+                    <h1>Академия кибердетективов</h1>
+                    <p class="subtitle">Спаси цифровой мир от вируса PHISH‑X!</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <div class="scenario-box">
+            <div class="scenario-avatar">🚨</div>
+            <div>
+                <strong>ТРЕВОГА!</strong> Вирус <strong>PHISH‑X</strong> заразил весь интернет!
+                Ты — <strong>кибердетектив</strong>. Пройди 10 миссий, собери артефакты защиты и построй <strong>Суперкомпьютер</strong>, чтобы спасти цифровой мир!
+            </div>
+        </div>
+
+        <div class="ai-objectives objectives">
+            <h2>🎯 Цели занятия</h2>
+            <ul>
+                <li>Научиться создавать надёжные пароли</li>
+                <li>Распознавать фишинг и опасные сообщения</li>
+                <li>Знать правила при кибербуллинге</li>
+                <li>Безопасно общаться с ИИ (не делиться личными данными)</li>
+            </ul>
+        </div>
+        <div class="ai-timetable">
+            <h2>⏱️ План (≈90 минут)</h2>
+            <table>
+                <tr><th>Этап</th><th>Время</th></tr>
+                <tr><td>Теория безопасности</td><td>15 мин</td></tr>
+                <tr><td>Миссии 1–5 (пароли, фишинг, чаты)</td><td>35 мин</td></tr>
+                <tr><td>Миссии 6–10 + суперкомпьютер</td><td>30 мин</td></tr>
+                <tr><td>Рефлексия и ДЗ</td><td>10 мин</td></tr>
+            </table>
+        </div>
+
+        <div class="layout">
+            <aside class="internet-map" id="internetMap">
+                <h3>🌍 Карта интернета</h3>
+                <div class="map-zone infected" data-zone="computer" data-mission="1,2,7"><span class="icon">💻</span><span class="label">Компьютер</span></div>
+                <div class="map-zone infected" data-zone="roblox" data-mission="3,8"><span class="icon">🎮</span><span class="label">Roblox</span></div>
+                <div class="map-zone infected" data-zone="messenger" data-mission="4,5"><span class="icon">📱</span><span class="label">Мессенджер</span></div>
+                <div class="map-zone infected" data-zone="mail" data-mission="3,6"><span class="icon">📧</span><span class="label">Почта</span></div>
+                <div class="map-zone infected" data-zone="ai" data-mission="9"><span class="icon">🤖</span><span class="label">ИИ</span></div>
+                <div class="map-zone infected" data-zone="phishx" data-mission="10"><span class="icon">👾</span><span class="label">Сервер PHISH‑X</span></div>
+            </aside>
+
+            <div class="main-content">
+                <div class="achieve-rail" id="achieveRail">
+                    <div class="achieve-rail-title">
+                        <span>🏅 Достижения</span>
+                        <span style="opacity:.7;font-size:.85rem;">справа</span>
+                    </div>
+                    <div id="progressProfileHost"></div>
+                    <div class="total-progress">
+                        <strong>Прогресс: <span id="totalPct">0</span>%</strong>
+                        <div class="tp-track" style="height:12px;background:#E2E8F0;border-radius:8px;overflow:hidden;margin-top:6px;"><div class="tp-fill" id="totalProgress" style="height:100%;width:0;background:linear-gradient(90deg,#61B01F,#10B981);transition:width .3s;"></div></div>
+                    </div>
+                    <div class="badges-bar" style="margin:8px 0;padding:0;border:none;background:transparent;">
+                        <div class="badges-row" id="badgesContainer"><span style="opacity:.5;font-size:.85rem;">Бейджи появятся после миссий</span></div>
+                    </div>
+                    <div class="artifact-bar">
+                        <h3>🎒 Коллекция артефактов (<span id="artifactCount">0</span> / 10)</h3>
+                        <div class="artifact-slots" id="artifactSlots"></div>
+                    </div>
+                    <div class="xp-bar" id="xpDisplay">⭐ Уровень: Новичок | XP: 0</div>
+                    <div class="lives" id="livesContainer"><span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span></div>
+                </div>
+
+                <div class="supercomputer" id="supercomputer">
+                    <h3>⚡ Суперкомпьютер защиты</h3>
+                    <p style="opacity:.7;font-size:.9rem;">Собери все 10 модулей, чтобы активировать защиту</p>
+                    <div class="supercomputer-grid" id="scGrid"></div>
+                    <p id="scStatus" style="font-weight:700;opacity:.5;">Ожидание модулей...</p>
+                </div>
+
+                <div class="certificate" id="certificateBlock">
+                    <h2>🏆 Диплом кибердетектива</h2>
+                    <p id="diplomaName">Имя ученика</p>
+                    <p>Ты спас цифровой мир и победил PHISH‑X!</p>
+                </div>
+
+                <!-- Теория -->
+                <div class="card" id="theory-block">
+                    <h2>📚 Теория кибербезопасности</h2>
+                     <div class="img-placeholder"><img src="../assets/images/ai1/31.jpg"alt="Ночной город" style="width:80%; border-radius:12px;"></div>
+             
+                    <div class="theory-section">
+                        <h3>🔐 Пароли: твой первый рубеж защиты</h3>
+                        <p>Пароль — как ключ от твоей комнаты. Чтобы создать надёжный пароль, нужно смешивать <b>заглавные и строчные буквы, цифры и спецсимволы</b>. Никогда не используй одинаковый пароль для разных аккаунтов.</p>
+                       <ul><li>Минимум 8 символов</li><li>Не используй личные данные</li><li>Регулярно меняй пароли</li></ul>
+                    </div>
+                    <div class="theory-section">
+                        <h3>🎣 Фишинг: как мошенники крадут данные</h3>
+                        <table class="prop-table">
+                            <tr><th>Признаки фишинга</th><th>Пример</th></tr>
+                            <tr><td>Странный адрес отправителя</td><td>robux123@gmail.com</td></tr>
+                            <tr><td>Обещание подарков</td><td>«Вы выиграли 100000 Robux!»</td></tr>
+                            <tr><td>Срочность и угрозы</td><td>«Ваш аккаунт удалят через час»</td></tr>
+                            <tr><td>Просьба ввести пароль</td><td>«Подтвердите пароль»</td></tr>
+                        </table>
+                    </div>
+                    <div class="theory-section">
+                        <h3>💬 Кибербуллинг</h3>
+                        <ul><li>Заблокируй обидчика</li><li>Расскажи взрослым</li><li>Не отвечай на провокации</li></ul>
+                    </div>
+                    <div class="theory-section">
+                        <h3>🤖 Безопасное общение с ИИ</h3>
+                        <div class="cheat-sheet">
+                            <div class="cheat-grid">
+                                <div class="cheat-item"><div class="title">✅ Можно</div><div>Придумай сказку</div><div>Помоги решить задачу</div></div>
+                                <div class="cheat-item"><div class="title">❌ Нельзя</div><div>Пароли</div><div>Адрес, телефон</div><div>Фото документов</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== AI-помощник (Алиса) ===== -->
+                <div class="ai-helper">
+                    <div class="ai-head">
+                        <span style="font-size:32px; line-height:1;">🤖</span>
+                        <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+                    </div>
+                    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+
+                    <div class="ai-buttons">
+                        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D1%80%D0%B8%D0%B4%D1%83%D0%BC%D0%B0%D1%82%D1%8C%20%D0%BD%D0%B0%D0%B4%D1%91%D0%B6%D0%BD%D1%8B%D0%B9%20%D0%BF%D0%B0%D1%80%D0%BE%D0%BB%D1%8C%3F%22%7D" target="_blank" class="alice-q-btn">Как придумать надёжный пароль?</a>
+                        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%84%D0%B8%D1%88%D0%B8%D0%BD%D0%B3%20%D0%B8%20%D0%BA%D0%B0%D0%BA%20%D0%B5%D0%B3%D0%BE%20%D1%80%D0%B0%D1%81%D0%BF%D0%BE%D0%B7%D0%BD%D0%B0%D1%82%D1%8C%3F%22%7D" target="_blank" class="alice-q-btn">Что такое фишинг и как его распознать?</a>
+                        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9F%D0%BE%D1%87%D0%B5%D0%BC%D1%83%20%D0%BD%D0%B5%D0%BB%D1%8C%D0%B7%D1%8F%20%D1%81%D0%BE%D0%BE%D0%B1%D1%89%D0%B0%D1%82%D1%8C%20%D0%BB%D0%B8%D1%87%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5%20%D0%B2%20%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D0%BD%D0%B5%D1%82%D0%B5%3F%22%7D" target="_blank" class="alice-q-btn">Почему нельзя сообщать личные данные?</a>
+                        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%20%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%B8%D1%81%D0%BA%D1%83%D1%81%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%BC%20%D0%B8%D0%BD%D1%82%D0%B5%D0%BB%D0%BB%D0%B5%D0%BA%D1%82%D0%BE%D0%BC%3F%22%7D" target="_blank" class="alice-q-btn">Как безопасно пользоваться ИИ?</a>
+                        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D0%B4%D0%B5%D0%BB%D0%B0%D1%82%D1%8C%20%D0%B5%D1%81%D0%BB%D0%B8%20%D0%BD%D0%B5%D0%B7%D0%BD%D0%B0%D0%BA%D0%BE%D0%BC%D0%B5%D1%86%20%D0%BF%D1%80%D0%BE%D1%81%D0%B8%D1%82%20%D0%BF%D0%B0%D1%80%D0%BE%D0%BB%D1%8C%3F%22%7D" target="_blank" class="alice-q-btn">Что делать, если незнакомец просит пароль?</a>
+                    </div>
+
+                    <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
+                        💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+                    </div>
+
+                    <div class="ai-real-tip">
+                        <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про безопасность в интернете.<br>
+                        <span class="prompt-example">Просто скажи: «Алиса, как защитить свой аккаунт в Roblox?»</span>
+                        <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+                            ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="missionsContainer"></div>
+
+                <div id="projectSection" style="display:none;">
+                    <div class="card">
+                        <h2>🏢 Проектная мастерская: Агентство безопасности</h2>
+                        <p>Выполни <strong>минимум 2 из 3</strong> мини-проектов.</p>
+                        <div class="project-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1rem;">
+                            <div class="project-card" id="proj1" style="border:2px solid var(--line); border-radius:16px; padding:1rem; background:var(--primary-light);"><h4>🛡 Плакат «7 правил»</h4><textarea id="proj1text" placeholder="1. Не сообщай пароль..."></textarea><button class="action-btn" onclick="completeProject(1)">✅ Готово</button></div>
+                            <div class="project-card" id="proj2" style="border:2px solid var(--line); border-radius:16px; padding:1rem; background:var(--primary-light);"><h4>📖 Комикс «PHISH‑X атакует»</h4><textarea id="proj2text" placeholder="Кадр 1: Пришло письмо..."></textarea><button class="action-btn" onclick="completeProject(2)">✅ Готово</button></div>
+                            <div class="project-card" id="proj3" style="border:2px solid var(--line); border-radius:16px; padding:1rem; background:var(--primary-light);"><h4>🎮 Мини-квест</h4><textarea id="proj3text" placeholder="Ситуация 1: ..."></textarea><button class="action-btn" onclick="completeProject(3)">✅ Готово</button></div>
+                        </div>
+                        <p id="projectProgress" style="font-weight:700;">Проектов выполнено: 0 / 2</p>
+                        <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать в Classroom</a>
+                    </div>
+                </div>
+
+                <div class="card" id="teamGame" style="display:none;">
+                    <h2>🚔 Киберпатруль (командная игра)</h2>
+                    <p>Перетащите карточки: 🟢 Безопасно · 🟡 Осторожно · 🔴 Опасно</p>
+                    <div id="teamCards" style="display:flex;flex-wrap:wrap;gap:8px;margin:1rem 0;"></div>
+                    <div class="traffic-lane">
+                        <div class="drop-zone green" id="greenZone" ondragover="allowDrop(event)" ondrop="dropTeam(event)">🟢 Безопасно</div>
+                        <div class="drop-zone yellow" id="yellowZone" ondragover="allowDrop(event)" ondrop="dropTeam(event)">🟡 Осторожно</div>
+                        <div class="drop-zone red" id="redZone" ondragover="allowDrop(event)" ondrop="dropTeam(event)">🔴 Опасно</div>
+                    </div>
+                    <button class="action-btn" onclick="checkTeamGame()">Проверить команду</button>
+                    <p id="teamResult"></p>
+                </div>
+
+                <div id="bossFight" style="display:none;">
+                    <div class="card">
+                        <h2>👾 Финальная битва: PHISH‑X</h2>
+                        <p>Вирус атакует! Ответь на 5 вопросов. У тебя 3 жизни.</p>
+                        <div id="bossQuestions"></div>
+                        <button class="action-btn danger" onclick="startBossFight()">⚔️ Начать битву!</button>
+                        <p id="bossResult" style="margin-top:1rem;font-weight:700;"></p>
+                    </div>
+                </div>
+
+                <!-- ========== ЗАДАНИЕ НА УРОК (ПРОЕКТ) ========== -->
+                <div id="finalMission">
+                    <div class="final-project">
+                        <h2>🧩 Задание на урок: проект «Интернет под защитой»</h2>
+                        <p><strong>Цель:</strong> Создать памятку, которая поможет другим детям безопасно пользоваться Интернетом.</p>
+                        <p><strong>Программа:</strong> PowerPoint, Canva или Google Slides.</p>
+                        <p><strong>На уроке:</strong> собери структуру и основные слайды. При необходимости доделай и сдай PDF в Google Classroom.</p>
+
+                        <div class="slide-struct">
+                            <h3>📄 Структура презентации</h3>
+                            <p><strong>1. Титульный слайд</strong><br>🛡 Заголовок «Интернет под защитой»<br>Имя автора, картинка, значок безопасности.</p>
+                            <p><strong>2. Семь правил безопасности</strong><br>Оформить как красивую инфографику. Обязательные правила:</p>
+                            <ul>
+                                <li>✔ Надёжный пароль</li>
+                                <li>✔ Не открывать подозрительные ссылки</li>
+                                <li>✔ Не сообщать личные данные</li>
+                                <li>✔ Не скачивать неизвестные файлы</li>
+                                <li>✔ Сообщать взрослым</li>
+                                <li>✔ Проверять сайты</li>
+                                <li>✔ Безопасно пользоваться ИИ</li>
+                            </ul>
+                            <p><strong>3. Чек-лист</strong><br>☐ Пароль длиннее 8 символов<br>☐ Разные пароли<br>☐ Не сообщаю пароль<br>☐ Проверяю ссылки<br>☐ Спрашиваю взрослых</p>
+                            <p><strong>4. Последний слайд</strong><br>Придумать собственное правило. Например: <em>«Перед тем как нажать — сначала подумай.»</em></p>
+                        </div>
+
+                        <h3>⭐ Критерии оценки</h3>
+                        <table>
+                            <tr><th>Критерий</th><th>Баллы</th></tr>
+                            <tr><td>Оформление (читаемость, цвета, стиль)</td><td>3</td></tr>
+                            <tr><td>Правильность правил (все 7, без ошибок)</td><td>3</td></tr>
+                            <tr><td>Собственный совет (оригинальность)</td><td>2</td></tr>
+                            <tr><td>Аккуратность, нет ошибок</td><td>2</td></tr>
+                        </table>
+                        <p><strong>Максимум — 10 баллов</strong> 🏅</p>
+                        <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать проект в Classroom</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>🏁 Домашнее задание</h2>
+                    <p>Выбери уровень (это отдельно от проекта на уроке):</p>
+                    <ul>
+                        <li><strong>⭐ Лёгкое:</strong> Обсуди с родителями 3 правила безопасности из урока. Напиши их списком.</li>
+                        <li><strong>⭐⭐ Среднее:</strong> Найди пример подозрительного сообщения/письма (не открывай ссылки!). Скрин или описание: почему это опасно.</li>
+                        <li><strong>⭐⭐⭐ Сложное:</strong> Придумай своё правило безопасности и объясни его родителям. Короткий текст + фото/скрин.</li>
+                    </ul>
+                    <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Сдать ДЗ в Classroom</a>
+                </div>
+
+                <div class="reflection-box">
+                    <h2>💭 Рефлексия</h2>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 12px;">
+                        <label class="reflection-radio-label" style="display:inline-flex;align-items:center;gap:6px;background:#E8F5E0;padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Я детектив!</label>
+                        <label class="reflection-radio-label" style="display:inline-flex;align-items:center;gap:6px;background:#E8F5E0;padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти</label>
+                        <label class="reflection-radio-label" style="display:inline-flex;align-items:center;gap:6px;background:#E8F5E0;padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужно повторить</label>
+                    </div>
+                    <textarea id="reflectionText" placeholder="Что было самым крутым? Какое правило запомнишь навсегда?"></textarea>
+                    <button class="action-btn" onclick="submitReflection()">Отправить</button>
+                    <p id="reflectionResult" style="font-weight:700;margin-top:8px;"></p>
+                </div>
+
+                <div class="lesson-nav">
+                    <a class="nav-btn prev" href="Занятие_2_Мастер_Промтов.html">← 2. Мастер промптов</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" /> Учебный центр «РОБОВИТА»</div>
+        <div>Занятие 3 · курс «ИИ-творец»</div>
+      </div>
+    </footer>
+
+    <div class="roby-panel" id="robyPanel">
+        <div class="roby-avatar">🤖</div>
+        <div class="roby-bubble" id="robyText"><strong>Роби:</strong> Привет, детектив! Начни с Миссии 1! 🔑</div>
+    </div>
+
+    <div id="confetti-container"></div>
+    <script src="ai-progress.js"></script>
+    <script>
+        // ========== КОНФИГУРАЦИЯ ==========
+        const ARTIFACTS = [
+            { id: 1, icon: '🔑', name: 'Ключ безопасности', zone: 'computer' },
+            { id: 2, icon: '🛡', name: 'Щит', zone: 'computer' },
+            { id: 3, icon: '🔍', name: 'Лупа', zone: 'mail' },
+            { id: 4, icon: '📡', name: 'Антивирус', zone: 'messenger' },
+            { id: 5, icon: '🔒', name: 'Замок', zone: 'messenger' },
+            { id: 6, icon: '📱', name: 'Защищённый телефон', zone: 'mail' },
+            { id: 7, icon: '💾', name: 'Резервная копия', zone: 'computer' },
+            { id: 8, icon: '⚡', name: 'Антифишинг', zone: 'roblox' },
+            { id: 9, icon: '🧠', name: 'ИИ-модуль', zone: 'ai' },
+            { id: 10, icon: '🔐', name: 'Менеджер паролей', zone: 'phishx' }
+        ];
+
+        const ROBY_MSGS = {
+            start: 'Привет, детектив! PHISH‑X заразил интернет. Начни с <strong>Миссии 1</strong>! 🔑',
+            mission1: 'Отлично! Ключ безопасности у нас. Теперь собери щит! 🛡',
+            mission2: 'Щит активирован! Переходи к поиску фишинга. 🔍',
+            mission3: 'Фишинг обнаружен! Получи лупу. Теперь чат-ловушка. 📡',
+            mission4: 'Чат пройден! Антивирус твой. Кибербуллинг ждёт. 🔒',
+            mission5: 'С замком надёжнее. Теперь интернет-светофор. 📱',
+            mission6: 'Телефон защищён! Найди вирусы на столе. 💾',
+            mission7: 'Резервная копия сохранена! Победи мошенника. ⚡',
+            mission8: 'Антифишинг включён! Проверь ИИ-безопасность. 🧠',
+            mission9: 'ИИ-модуль установлен. Финальный босс! 🔐',
+            mission10: 'Менеджер паролей активирован! Суперкомпьютер запущен!',
+            wrong: 'Упс! Не переживай — ошибки учат нас. Попробуй ещё раз! 💪',
+            life: 'Ой-ой! Минус жизнь. Но ты ещё в игре! ❤️',
+            artifact: 'Новый артефакт в коллекции! Суперкомпьютер растёт! ⚡',
+            supercomputer: '🎉 СУПЕРКОМПЬЮТЕР АКТИВИРОВАН! Цифровой мир спасён!',
+            boss_win: 'Ты победил PHISH‑X! Ты — настоящий Страж Интернета! 🏆',
+            project: 'Крутой проект! Ты уже можешь учить других! 🎓'
+        };
+
+        let xp = 0,
+            lives = 3,
+            projectsDone = 0;
+        const missionsCompleted = new Set();
+        const artifactsCollected = new Set();
+        let studentName = 'Кибердетектив';
+
+        function restoreProgressVisuals() {
+            artifactsCollected.forEach(id => {
+                const art = ARTIFACTS.find(a => a.id === id);
+                if (!art) return;
+                const slot = document.getElementById('art' + id);
+                if (slot) { slot.textContent = art.icon; slot.classList.add('filled'); slot.title = art.name; }
+                const sc = document.getElementById('sc' + id);
+                if (sc) sc.classList.add('active');
+            });
+            if (artifactsCollected.size === 10) {
+                const st = document.getElementById('scStatus');
+                if (st) { st.textContent = '⚡ СУПЕРКОМПЬЮТЕР АКТИВИРОВАН!'; st.style.opacity = '1'; }
+            }
+        }
+
+        function persistProgress() {
+            if (window.RobovitaProgress) RobovitaProgress.save();
+        }
+
+        window.addEventListener('load', () => {
+            initArtifacts();
+            initSupercomputer();
+            RobovitaProgress.mount({
+                key: 'robovita_l3',
+                defaultName: 'Кибердетектив',
+                promptText: 'Введи своё имя, детектив:',
+                host: '#progressProfileHost',
+                getState() {
+                    return {
+                        xp, lives, projectsDone,
+                        missions: [...missionsCompleted],
+                        artifacts: [...artifactsCollected],
+                        badges: [...document.querySelectorAll('#badgesContainer .badge')].map(b => b.dataset.badge || b.textContent)
+                    };
+                },
+                applyState(d) {
+                    xp = d.xp || 0;
+                    lives = d.lives != null ? d.lives : 3;
+                    projectsDone = d.projectsDone || 0;
+                    (d.missions || []).forEach(id => missionsCompleted.add(+id));
+                    (d.artifacts || []).forEach(id => artifactsCollected.add(+id));
+                    (d.badges || []).forEach(name => {
+                        if (!name) return;
+                        const box = document.getElementById('badgesContainer');
+                        if (!box || box.querySelector('[data-badge="' + name + '"]')) return;
+                        const hint = box.querySelector('span[style]');
+                        if (hint) hint.remove();
+                        const b = document.createElement('span');
+                        b.className = 'badge';
+                        b.dataset.badge = name;
+                        b.textContent = name;
+                        box.appendChild(b);
+                    });
+                },
+                onNameChange(name) {
+                    studentName = name;
+                    const el = document.getElementById('diplomaName');
+                    if (el) el.textContent = name;
+                },
+                onReady() {
+                    restoreProgressVisuals();
+                    robySay('start');
+                    updateUI();
+                    const pp = document.getElementById('projectProgress');
+                    if (pp) pp.textContent = `Проектов выполнено: ${projectsDone} / 2`;
+                }
+            });
+        });
+
+        function initArtifacts() {
+            const slots = document.getElementById('artifactSlots');
+            ARTIFACTS.forEach(a => {
+                const d = document.createElement('div');
+                d.className = 'artifact-slot';
+                d.id = 'art' + a.id;
+                d.title = a.name;
+                d.textContent = '?';
+                slots.appendChild(d);
+            });
+        }
+
+        function initSupercomputer() {
+            const grid = document.getElementById('scGrid');
+            ARTIFACTS.forEach(a => {
+                const d = document.createElement('div');
+                d.className = 'sc-part';
+                d.id = 'sc' + a.id;
+                d.innerHTML = a.icon + '<span class="name">' + a.name + '</span>';
+                grid.appendChild(d);
+            });
+        }
+
+        function robySay(key) {
+            document.getElementById('robyText').innerHTML = '<strong>Роби:</strong> ' + (ROBY_MSGS[key] || ROBY_MSGS.start);
+        }
+
+        function updateUI() {
+            document.getElementById('artifactCount').textContent = artifactsCollected.size;
+            const pct = Math.round((missionsCompleted.size / 10) * 100);
+            const pctEl = document.getElementById('totalPct');
+            const fillEl = document.getElementById('totalProgress');
+            if (pctEl) pctEl.textContent = pct;
+            if (fillEl) fillEl.style.width = pct + '%';
+            let level = 'Новичок';
+            if (xp >= 100) level = 'Детектив';
+            if (xp >= 250) level = 'Эксперт';
+            if (xp >= 500) level = 'Страж Интернета';
+            document.getElementById('xpDisplay').textContent = `⭐ ${level} | XP: ${xp}`;
+            document.querySelectorAll('.heart').forEach((h, i) => h.textContent = i < lives ? '❤️' : '🖤');
+            if (artifactsCollected.size >= 4) document.getElementById('projectSection').style.display = 'block';
+            if (artifactsCollected.size >= 7) document.getElementById('teamGame').style.display = 'block';
+            if (artifactsCollected.size >= 10) {
+                document.getElementById('bossFight').style.display = 'block';
+            }
+            updateMap();
+            persistProgress();
+        }
+
+        function earnBadge(name) {
+            const box = document.getElementById('badgesContainer');
+            if (!box) return;
+            if (box.querySelector('[data-badge="' + name + '"]')) return;
+            const hint = box.querySelector('span[style]');
+            if (hint) hint.remove();
+            const b = document.createElement('span');
+            b.className = 'badge';
+            b.dataset.badge = name;
+            b.textContent = name;
+            box.appendChild(b);
+            persistProgress();
+        }
+
+        function updateMap() {
+            document.querySelectorAll('.map-zone').forEach(zone => {
+                const missions = zone.dataset.mission.split(',').map(Number);
+                const allDone = missions.every(m => missionsCompleted.has(m));
+                zone.classList.toggle('saved', allDone);
+                zone.classList.toggle('infected', !allDone);
+            });
+        }
+
+        function addXP(n) { xp += n;
+            updateUI(); }
+
+        function loseLife() {
+            if (lives > 0) lives--;
+            robySay('life');
+            updateUI();
+            if (lives === 0) {
+                alert('💔 Жизни закончились! Но ты можешь попробовать снова.');
+                lives = 3;
+                updateUI();
+            }
+        }
+
+        function completeMission(id) {
+            if (missionsCompleted.has(id)) return;
+            missionsCompleted.add(id);
+            const art = ARTIFACTS.find(a => a.id === id);
+            if (art) {
+                artifactsCollected.add(id);
+                const slot = document.getElementById('art' + id);
+                slot.textContent = art.icon;
+                slot.classList.add('filled');
+                slot.title = art.name;
+                const sc = document.getElementById('sc' + id);
+                sc.classList.add('active');
+            }
+            addXP(50);
+            earnBadge('Миссия ' + id);
+            robySay('mission' + id);
+            robySay('artifact');
+            if (artifactsCollected.size === 10) {
+                document.getElementById('scStatus').textContent = '⚡ СУПЕРКОМПЬЮТЕР АКТИВИРОВАН!';
+                document.getElementById('scStatus').style.opacity = '1';
+                robySay('supercomputer');
+                launchConfetti();
+            }
+            updateUI();
+        }
+
+        function completeProject(n) {
+            const ta = document.getElementById('proj' + n + 'text');
+            if (!ta.value.trim()) { alert('Заполни проект!'); return; }
+            const card = document.getElementById('proj' + n);
+            if (card.classList.contains('done')) return;
+            card.classList.add('done');
+            projectsDone++;
+            document.getElementById('projectProgress').textContent = `Проектов выполнено: ${projectsDone} / 2`;
+            addXP(30);
+            robySay('project');
+            if (projectsDone >= 2) launchConfetti();
+        }
+
+        function createMission(id, title, desc, html) {
+            const d = document.createElement('div');
+            d.className = 'task-box';
+            d.id = 'mission' + id;
+            const art = ARTIFACTS.find(a => a.id === id);
+            d.innerHTML =
+                `<h2>🕵️ Миссия ${id}: ${title} <span style="font-size:.85rem;color:#888;">→ ${art?.icon} ${art?.name}</span></h2><p>${desc}</p>${html}`;
+            document.getElementById('missionsContainer').appendChild(d);
+        }
+
+        // --- Миссия 1 (конструктор паролей) ---
+        createMission(1, 'Конструктор паролей', 'Собери надёжный пароль.',
+            `<div style="display:flex;gap:6px;flex-wrap:wrap;margin:1rem 0;">
+            ${['A','Q','m','g','8','2','$','#','@','%','!','*'].map(c=>`<button class="action-btn" onclick="addChar('${c}')">${c}</button>`).join('')}
+            <button class="action-btn" onclick="clearPwd()">Сброс</button>
+          </div>
+          <input type="text" id="pwdField" readonly style="width:100%;padding:10px;border:1px solid #9CC97A;border-radius:8px;font-size:1.2rem;">
+          <div style="height:10px; background:#eee; border-radius:5px; margin-top:10px;"><div id="pwdStrength" style="width:0%;height:100%;background:var(--danger);border-radius:5px;"></div></div>
+          <p id="pwdFeedback" style="font-weight:700;"></p>
+          <button class="hint-btn" onclick="toggleHint('hint1')">📖 Подсказка</button>
+          <div id="hint1" class="hint-box">Пароль <strong>123456</strong> взламывается мгновенно. Добавь заглавные буквы, цифры и спецсимволы.</div>`);
+        let pwd = '';
+
+        function addChar(c) { pwd += c;
+            document.getElementById('pwdField').value = pwd;
+            checkPwd(); }
+
+        function clearPwd() { pwd = '';
+            document.getElementById('pwdField').value = '';
+            checkPwd(); }
+
+        function checkPwd() {
+            let s = 0;
+            if (pwd.length >= 8) s++;
+            if (/[A-Z]/.test(pwd)) s++;
+            if (/[a-z]/.test(pwd)) s++;
+            if (/[0-9]/.test(pwd)) s++;
+            if (/[^A-Za-z0-9]/.test(pwd)) s++;
+            if (/password|1234/i.test(pwd)) s = 0;
+            const f = document.getElementById('pwdStrength');
+            f.style.width = (s / 5 * 100) + '%';
+            if (s >= 4 && pwd.length >= 8) {
+                f.style.background = '#61B01F';
+                document.getElementById('pwdFeedback').textContent = '✅ Супер!';
+                completeMission(1);
+            } else if (s >= 3) {
+                f.style.background = '#f0a500';
+                document.getElementById('pwdFeedback').textContent = '⚠️ Добавь спецсимволы.';
+            } else {
+                f.style.background = '#e94560';
+                document.getElementById('pwdFeedback').textContent = '❌ Слабый.';
+            }
+        }
+
+        // --- Миссия 2: взлом паролей ---
+        const hackTargets = [
+            { id: 1, target: 'Аккаунт Анны', clue: 'Она обожает кошек и родилась в 2014 году.', answer: 'кошка2014' },
+            { id: 2, target: 'Игрок Roblox CoolBoy2009', clue: 'Часто используют ник как пароль.', answer: 'coolboy2009' },
+            { id: 3, target: 'Почта "password"', clue: 'Самый популярный пароль в мире.', answer: 'password' },
+            { id: 4, target: 'Аккаунт "qwerty"', clue: 'Посмотри на верхний ряд клавиатуры.', answer: 'qwerty' },
+            { id: 5, target: 'Аккаунт "123456"', clue: 'Простые цифры по порядку.', answer: '123456' }
+        ];
+        let hacksRemaining = 5;
+        createMission(2, 'Взломай плохой пароль',
+            'Ты — хакер! Узнай пароли этих 5 аккаунтов, используя подсказки.',
+            hackTargets.map(t => `
+            <div class="target-row" id="target-${t.id}">
+              <span><strong>${t.target}</strong><br><small>${t.clue}</small></span>
+              <input type="text" id="guess-${t.id}" placeholder="Введи пароль" />
+              <button class="action-btn" onclick="tryHack(${t.id})">🔓 Взломать</button>
+            </div>
+          `).join('') + `<p id="hackProgress">Осталось взломать: 5</p>`);
+
+        function tryHack(id) {
+            const row = document.getElementById('target-' + id);
+            if (row.classList.contains('success')) return;
+            const guess = document.getElementById('guess-' + id).value.trim().toLowerCase();
+            const target = hackTargets.find(t => t.id === id);
+            if (guess === target.answer) {
+                row.classList.add('success');
+                row.querySelector('input').disabled = true;
+                row.querySelector('button').disabled = true;
+                row.querySelector('small').textContent = '✅ Взломан!';
+                hacksRemaining--;
+                document.getElementById('hackProgress').textContent = `Осталось взломать: ${hacksRemaining}`;
+                if (hacksRemaining === 0) completeMission(2);
+            } else {
+                alert('❌ Неверный пароль. Попробуй ещё раз.');
+                loseLife();
+            }
+        }
+
+        // --- Миссия 3: Фишинг ---
+        createMission(3, 'Фишинговый детектив', 'Найди все 5 подозрительных признаков в письме.',
+            `<div id="phishLetter" style="background:#f8f8f8;padding:1rem;border-radius:12px;border:1px solid #ccc;">
+            <p><strong>От:</strong> <span class="phish-spot">sUpport-roblox123@gmail.com</span></p>
+            <p><strong>Тема:</strong> 🎁 Вы выиграли 100000 Robux!</p>
+            <p>Ваш аккаунт выбран для бесплатного получения робуксов.</p>
+            <p>Для подтверждения <span class="phish-spot">введите ваш пароль</span> в форме.</p>
+            <p>Срок истекает через <span class="phish-spot">1 час!</span></p>
+            <p>Ссылка: <span class="phish-spot">http://robux-free.xyz</span></p>
+            <p>P.S. <span class="phish-spot">Никому не говорите</span> об этом письме.</p>
+          </div><p id="phishCount">Найдено: 0 / 5</p>
+          <button class="hint-btn" onclick="toggleHint('hint3')">📖 Какие признаки выдают фишинг?</button>
+          <div id="hint3" class="hint-box">Признаки: странный email, просьба пароля, срочность («1 час»), подозрительная ссылка, просьба никому не рассказывать.</div>`);
+        let phishFound = 0;
+        setTimeout(() => document.querySelectorAll('.phish-spot').forEach(el => {
+            el.addEventListener('click', function() {
+                if (this.dataset.ok) return;
+                this.dataset.ok = '1';
+                this.style.background = '#f0a500';
+                phishFound++;
+                document.getElementById('phishCount').textContent = `Найдено: ${phishFound} / 5`;
+                if (phishFound === 5) completeMission(3);
+            });
+        }), 100);
+
+        // --- Миссия 4: Чат ---
+        createMission(4, 'Спаси чат', 'Общайся с незнакомцем.',
+            `<div id="chatSim" style="background:#eee;padding:1rem;border-radius:12px;min-height:80px;"></div><div id="chatActions"></div><p id="chatResult"></p>`);
+        const chatSteps = [{ msg: 'Привет! Как тебя зовут?', acts: ['Ответить имя', 'Игнорировать'], ok: 1 }, { msg: 'А где ты живёшь?',
+            acts: ['Сказать город', 'Не отвечать'], ok: 1 }, { msg: 'Скинь фото.', acts: ['Отправить', 'Заблокировать'], ok: 1 }, {
+            msg: 'Никому не говори о нас.',
+            acts: ['Согласиться', 'Рассказать взрослым'],
+            ok: 1
+        } ];
+        let chatI = 0;
+
+        function renderChat() {
+            const s = document.getElementById('chatSim'),
+                a = document.getElementById('chatActions');
+            if (chatI >= chatSteps.length) {
+                s.innerHTML += '<p><strong>✅ Чат закрыт безопасно!</strong></p>';
+                a.innerHTML = '';
+                completeMission(4);
+                return;
+            }
+            const st = chatSteps[chatI];
+            s.innerHTML += `<p><strong>Незнакомец:</strong> ${st.msg}</p>`;
+            a.innerHTML = st.acts.map((x, i) => `<button class="action-btn" onclick="chatPick(${i})">${x}</button>`).join('');
+        }
+
+        function chatPick(c) {
+            if (c === chatSteps[chatI].ok) {
+                document.getElementById('chatResult').textContent = '✅';
+            } else {
+                document.getElementById('chatResult').textContent = '❌';
+                robySay('wrong');
+                loseLife();
+            }
+            chatI++;
+            renderChat();
+        }
+        renderChat();
+
+        // --- Миссия 5: Кибербуллинг ---
+        createMission(5, 'Кибербуллинг', 'Тебя добавили в чат, где смеются.',
+            `<p>😂😂😂 "ты смешной"</p>
+          <button class="action-btn" onclick="bully('block')">Заблокировать</button>
+          <button class="action-btn" onclick="bully('tell')">Рассказать взрослым</button>
+          <button class="action-btn" onclick="bully('reply')">Ответить грубо</button>
+          <button class="action-btn" onclick="bully('ignore')">Игнорировать</button>
+          <p id="bullyRes"></p>`);
+
+        function bully(c) {
+            if (c === 'block' || c === 'tell') {
+                document.getElementById('bullyRes').textContent = '✅ Молодец!';
+                completeMission(5);
+            } else {
+                document.getElementById('bullyRes').textContent = '❌ Лучше рассказать взрослым.';
+                robySay('wrong');
+                loseLife();
+            }
+        }
+
+        // --- Миссия 6: Интернет-светофор ---
+        createMission(6, 'Интернет-светофор', 'Перетащи карточки.',
+            `<div class="traffic-lane"><div class="drop-zone green" id="dg" ondragover="allowDrop(event)" ondrop="drop(event)">🟢</div><div class="drop-zone yellow" id="dy" ondragover="allowDrop(event)" ondrop="drop(event)">🟡</div><div class="drop-zone red" id="dr" ondragover="allowDrop(event)" ondrop="drop(event)">🔴</div></div>
+          <div id="tc">${['Отправить пароль|dr','Проверить ссылку|dy','Сообщить взрослым|dg','Перейти по ссылке незнакомца|dr','Надёжный пароль|dg'].map((x,i)=>{const[t]=x.split('|');return`<div class="draggable-card" draggable="true" ondragstart="drag(event)" id="c${i}">${t}</div>`;}).join('')}</div>
+          <button class="action-btn" onclick="checkTraffic()">Проверить</button><p id="trRes"></p>`);
+        const ans = { c0: 'dr', c1: 'dy', c2: 'dg', c3: 'dr', c4: 'dg' };
+        let dragged;
+
+        function drag(e) { dragged = e.target;
+            e.dataTransfer.setData('text', e.target.id); }
+
+        function allowDrop(e) { e.preventDefault(); }
+
+        function drop(e) { e.preventDefault(); if (e.target.classList.contains('drop-zone')) e.target.appendChild(dragged); }
+
+        function checkTraffic() {
+            let ok = 0;
+            Object.keys(ans).forEach(id => { if (document.getElementById(id).parentElement.id === ans[id]) ok++; });
+            document.getElementById('trRes').textContent = `Правильно: ${ok}/5`;
+            if (ok === 5) completeMission(6);
+        }
+
+        // --- Миссия 7: Найди вирус ---
+        createMission(7, 'Найди вирус', 'Подпиши каждый эмодзи: какой это файл. Потом отметь 3 опасных.',
+            `<p style="font-size:.95rem;margin-bottom:8px;">Выбери название файла для каждого значка:</p>
+          <div id="vd" style="display:grid;gap:10px;">
+            ${[
+              ['🎁','prize','Бесплатный_приз.exe','1'],
+              ['⚠️','update','Срочное_обновление.bat','1'],
+              ['💀','zip','Открой_меня.zip','1'],
+              ['📄','doc','Домашка.docx','0'],
+              ['📷','photo','Каникулы.jpg','0'],
+              ['📧','mail','Письмо_от_мамы.eml','0']
+            ].map((x,i)=>`
+              <div class="virus-row" data-danger="${x[3]}" data-ans="${x[2]}" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#f8fafc;padding:8px 10px;border-radius:12px;border:1px solid #e2e8f0;">
+                <span style="font-size:1.8rem;" id="di${i}">${x[0]}</span>
+                <select class="v-label" data-i="${i}" style="flex:1;min-width:180px;padding:6px 8px;border-radius:8px;border:1px solid #cbd5e1;font-weight:700;">
+                  <option value="">— что это за файл? —</option>
+                  <option value="Бесплатный_приз.exe">Бесплатный_приз.exe</option>
+                  <option value="Срочное_обновление.bat">Срочное_обновление.bat</option>
+                  <option value="Открой_меня.zip">Открой_меня.zip</option>
+                  <option value="Домашка.docx">Домашка.docx</option>
+                  <option value="Каникулы.jpg">Каникулы.jpg</option>
+                  <option value="Письмо_от_мамы.eml">Письмо_от_мамы.eml</option>
+                </select>
+                <button type="button" class="action-btn v-mark" data-i="${i}" disabled style="opacity:.5;">⚠ Опасный?</button>
+              </div>`).join('')}
+          </div>
+          <p id="vCnt">Подписано верно: 0/6 · Опасных отмечено: 0/3</p>
+          <button class="hint-btn" onclick="toggleHint('hint7')">📖 Подсказка</button>
+          <div id="hint7" class="hint-box">Опасны файлы с расширениями .exe, .bat, .zip от незнакомцев и «подарки». Документы, фото и письма от мамы обычно безопасны.</div>`);
+        let vLabeled = 0, vFound = 0;
+        function refreshVirusProgress(){
+          document.getElementById('vCnt').textContent = `Подписано верно: ${vLabeled}/6 · Опасных отмечено: ${vFound}/3`;
+          if (vLabeled === 6 && vFound === 3) completeMission(7);
+        }
+        window.virusLabel = function(sel){
+          const row = sel.closest('.virus-row');
+          const mark = row.querySelector('.v-mark');
+          const ok = sel.value === row.dataset.ans;
+          if (sel.dataset.wasOk === '1') { vLabeled = Math.max(0, vLabeled-1); sel.dataset.wasOk = '0'; }
+          if (ok) { vLabeled++; sel.dataset.wasOk = '1'; sel.style.borderColor = '#61B01F'; }
+          else { sel.style.borderColor = sel.value ? '#C0392B' : '#cbd5e1'; }
+          mark.disabled = !ok;
+          mark.style.opacity = ok ? '1' : '.5';
+          refreshVirusProgress();
+        };
+        window.virusMark = function(btn){
+          if (btn.dataset.done) return;
+          const row = btn.closest('.virus-row');
+          if (row.dataset.danger === '1') {
+            btn.dataset.done = '1';
+            btn.textContent = '🦠 Вирус!';
+            btn.disabled = true;
+            row.style.background = '#FEF3C7';
+            vFound++;
+            refreshVirusProgress();
+          } else {
+            loseLife();
+            robySay('wrong');
+            alert('Это безопасный файл!');
+          }
+        };
+        setTimeout(() => {
+          document.querySelectorAll('.v-label').forEach(sel => sel.addEventListener('change', function(){ virusLabel(this); }));
+          document.querySelectorAll('.v-mark').forEach(btn => btn.addEventListener('click', function(){ virusMark(this); }));
+        }, 100);
+
+        // --- Миссия 8: Победи мошенника ---
+        createMission(8, 'Победи мошенника', 'Ответь мошеннику.',
+            `<div id="scamC" style="background:#eee;padding:1rem;border-radius:12px;"><p><strong>Мошенник:</strong> Я сотрудник Roblox. Напиши пароль.</p></div>
+          <div id="scamA"><button class="action-btn" onclick="scam('no')">🚫 Нет</button><button class="action-btn" onclick="scam('why')">🤔 Почему?</button><button class="action-btn" onclick="scam('proof')">📄 Удостоверение</button></div>
+          <p id="scamR"></p>`);
+
+        function scam(c) {
+            const ch = document.getElementById('scamC'),
+                a = document.getElementById('scamA'),
+                r = document.getElementById('scamR');
+            if (c === 'no') {
+                ch.innerHTML += '<p><strong>Ты:</strong> Нет.</p>';
+                r.textContent = '✅';
+                completeMission(8);
+                a.innerHTML = '';
+            } else if (c === 'why') {
+                ch.innerHTML +=
+                    '<p><strong>Ты:</strong> Почему?</p><p><strong>Мошенник:</strong> Для проверки.</p>';
+                a.innerHTML =
+                    '<button class="action-btn" onclick="scam(\'no\')">🚫 Нет</button><button class="action-btn" onclick="scam(\'proof\')">📄 Удостоверение</button>';
+            } else {
+                ch.innerHTML +=
+                    '<p><strong>Ты:</strong> Покажи удостоверение.</p><p><strong>Мошенник:</strong> (сбежал)</p>';
+                r.textContent = '✅';
+                completeMission(8);
+                a.innerHTML = '';
+            }
+        }
+
+        // --- Миссия 9: ИИ ---
+        createMission(9, 'ИИ — друг, но не сейф', 'Для каждого пункта выбери: можно или нельзя. Правильный ответ только один.',
+            `<div id="aiS">${[
+              ['Придумай сказку',1],
+              ['Помоги с задачей по математике',1],
+              ['Мой домашний адрес',0],
+              ['Мой пароль от игры',0],
+              ['Фото паспорта',0],
+              ['Номер банковской карты',0]
+            ].map((x,i)=>`<div class="sort-card" data-ok="${x[1]}" id="aiCard${i}">
+              <span>${x[0]}</span>
+              <div class="fact-btns" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+                <button type="button" class="action-btn" onclick="aiAns(this,true)">✅ Можно</button>
+                <button type="button" class="action-btn" onclick="aiAns(this,false)">❌ Нельзя</button>
+              </div>
+            </div>`).join('')}</div><p id="aiR">Верно: 0 / 6</p>`);
+        let aiOk = 0;
+
+        function aiAns(btn, choseCan) {
+            const card = btn.closest('.sort-card');
+            if (card.dataset.answered) return;
+            const shouldCan = card.dataset.ok === '1';
+            if (choseCan === shouldCan) {
+                card.dataset.answered = '1';
+                card.querySelectorAll('button').forEach(b => b.disabled = true);
+                card.classList.add('done-right');
+                aiOk++;
+                document.getElementById('aiR').textContent = `Верно: ${aiOk} / 6`;
+                if (aiOk === 6) {
+                    document.getElementById('aiR').textContent = '✅ ИИ-модуль установлен!';
+                    completeMission(9);
+                }
+            } else {
+                card.classList.add('done-wrong');
+                robySay('wrong');
+                loseLife();
+                setTimeout(() => card.classList.remove('done-wrong'), 600);
+            }
+        }
+
+        // --- Миссия 10: Менеджер паролей ---
+        createMission(10, 'Менеджер паролей',
+            'Узнай, что такое менеджер паролей, и выбери правильные действия.',
+            `<div class="card" style="margin:0;padding:1rem;background:#f0f8ff;">
+            <p><strong>🤖 Роби:</strong> Менеджер паролей — как сейф для всех паролей. Ты запоминаешь <em>один</em> мастер-пароль!</p>
+          </div>
+          <h4>Что безопасно делать с менеджером паролей?</h4>
+          <div id="pmQuiz">
+            <div class="sort-card">Хранить пароли от игр в менеджере <button class="sort-btn" onclick="pmAns(this, true)">✅ Да</button><button class="sort-btn" onclick="pmAns(this, false)">❌ Нет</button></div>
+            <div class="sort-card">Записать мастер-пароль на стикере на мониторе <button class="sort-btn" onclick="pmAns(this, true)">✅ Да</button><button class="sort-btn" onclick="pmAns(this, false)">❌ Нет</button></div>
+            <div class="sort-card">Использовать один пароль для всех сервисов <button class="sort-btn" onclick="pmAns(this, true)">✅ Да</button><button class="sort-btn" onclick="pmAns(this, false)">❌ Нет</button></div>
+            <div class="sort-card">Попросить взрослого настроить семейный менеджер <button class="sort-btn" onclick="pmAns(this, true)">✅ Да</button><button class="sort-btn" onclick="pmAns(this, false)">❌ Нет</button></div>
+            <div class="sort-card">Отправить мастер-пароль другу <button class="sort-btn" onclick="pmAns(this, true)">✅ Да</button><button class="sort-btn" onclick="pmAns(this, false)">❌ Нет</button></div>
+          </div>
+          <p id="pmResult" style="font-weight:700;"></p>`);
+        let pmCorrect = 0;
+
+        function pmAns(btn, correct) {
+            const card = btn.closest('.sort-card');
+            if (card.dataset.answered) return;
+            card.dataset.answered = '1';
+            card.querySelectorAll('.sort-btn').forEach(b => b.disabled = true);
+            if (correct) { card.classList.add('done-right');
+                pmCorrect++; } else { card.classList.add('done-wrong');
+                robySay('wrong');
+                loseLife(); }
+            document.getElementById('pmResult').textContent = `Правильно: ${pmCorrect} / 3`;
+            if (pmCorrect >= 3) {
+                document.getElementById('pmResult').textContent = '✅ Ты понял, как работает менеджер паролей!';
+                completeMission(10);
+                document.getElementById('certificateBlock').classList.add('show');
+                robySay('boss_win');
+                launchConfetti();
+            }
+        }
+
+        // Командная игра
+        const teamData = [{ t: 'Письмо с просьбой ввести пароль', z: 'red' }, { t: 'Друг просит помочь с ДЗ', z: 'green' },
+            { t: 'Бесплатные робуксы', z: 'red' }, { t: 'Учитель прислал ссылку', z: 'green' }, { t: 'СМС с кодом, который не запрашивал',
+                z: 'red' }, { t: 'Родители просят расписание', z: 'green' }, { t: 'Сайт просит камеру без причины', z: 'yellow' },
+            { t: 'Друг просит пароль', z: 'red' }
+        ];
+
+        function renderTeam() {
+            document.getElementById('teamCards').innerHTML = teamData.map((c, i) =>
+                `<div class="draggable-card" draggable="true" ondragstart="dragTeam(event)" id="t${i}">${c.t}</div>`).join(
+                '');
+        }
+
+        function dragTeam(e) { e.dataTransfer.setData('text', e.target.id); }
+
+        function dropTeam(e) { e.preventDefault();
+            const id = e.dataTransfer.getData('text');
+            const el = document.getElementById(id); if (e.target.classList.contains('drop-zone')) e.target.appendChild(el); }
+
+        function checkTeamGame() {
+            let ok = 0;
+            teamData.forEach((c, i) => { const el = document.getElementById('t' + i);
+                const z = el.closest('.drop-zone')?.id || ''; if ((z === 'greenZone' && c.z === 'green') || (z ===
+                    'yellowZone' && c.z === 'yellow') || (z === 'redZone' && c.z === 'red')) ok++; });
+            document.getElementById('teamResult').textContent = `Результат: ${ok}/${teamData.length}`;
+            if (ok === teamData.length) { alert('🎉 Команда справилась!');
+                launchConfetti(); }
+        }
+        renderTeam();
+
+        // Босс
+        const bossQ = [{ q: 'Что такое фишинг?', ok: 1, o: ['Игра', 'Кража данных', 'Шифрование'] }, { q: 'Надёжный пароль?', ok: 2,
+            o: ['Только цифры', 'Только буквы', 'Буквы+цифры+символы'] }, { q: 'Незнакомец просит фото?', ok: 0, o: [
+                'Блокировать и рассказать', 'Отправить', 'Попросить его'
+            ] }, { q: 'Пароль в нейросеть?', ok: 1, o: ['Да', 'Нет'] }, { q: 'Кибербуллинг?', ok: 2, o: ['Ответить тем же',
+                'Игнорировать', 'Рассказать взрослым'
+            ] } ];
+        let bI = 0,
+            bQs = [];
+
+        function startBossFight() { bI = 0;
+            bQs = bossQ.sort(() => Math.random() - .5).slice(0, 5);
+            showBoss(); }
+
+        function showBoss() {
+            const c = document.getElementById('bossQuestions');
+            if (bI >= bQs.length) {
+                document.getElementById('bossResult').textContent = '🎉 PHISH‑X побеждён!';
+                document.getElementById('certificateBlock').classList.add('show');
+                robySay('boss_win');
+                launchConfetti();
+                return;
+            }
+            const q = bQs[bI];
+            c.innerHTML = `<p><strong>${q.q}</strong></p>` + q.o.map((x, i) =>
+                `<label><input type="radio" name="bq" value="${i}"> ${x}</label><br>`).join('') +
+                `<button class="action-btn" onclick="ansBoss(${q.ok})">Ответить</button>`;
+        }
+
+        function ansBoss(ok) {
+            const s = document.querySelector('input[name="bq"]:checked');
+            if (!s) return;
+            if (parseInt(s.value) === ok) { bI++;
+                showBoss(); } else { loseLife();
+                robySay('wrong');
+                alert('Неправильно!'); }
+        }
+
+        function launchConfetti() {
+            const box = document.getElementById('confetti-container');
+            const cols = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'];
+            for (let i = 0; i < 60; i++) {
+                const p = document.createElement('div');
+                p.className = 'confetti-piece';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.background = cols[i % 5];
+                p.style.animationDelay = Math.random() * 2 + 's';
+                box.appendChild(p);
+                setTimeout(() => p.remove(), 3000);
+            }
+        }
+
+        function submitReflection() { const t = document.getElementById('reflectionText'); if (!t.value.trim()) return;
+            alert('✅ Спасибо!');
+            t.disabled = true; }
+
+        function toggleHint(id) { const box = document.getElementById(id);
+            box.classList.toggle('show');
+            const btn = box.previousElementSibling;
+            btn.textContent = box.classList.contains('show') ? '🙈 Скрыть подсказку' : '📖 Показать подсказку'; }
+
+        updateUI();
+    </script>
+</body>
+</html>

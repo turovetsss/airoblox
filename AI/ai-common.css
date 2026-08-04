@@ -1,0 +1,380 @@
+/* Общий каркас занятий курса «ИИ-творец» (РОБОВИТА)
+   Карта слева у края · Достижения справа (компактнее)
+*/
+:root {
+  --ai-map-w: 248px;
+  --ai-achieve-w: 208px;
+  --ai-rail-bg: rgba(255, 255, 255, 0.97);
+  --ai-rail-border: #E2E8F0;
+  --ai-rail-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+}
+
+/* ===== Карта миссий / интернета — вплотную к левому краю ===== */
+aside.internet-map,
+aside.mission-map,
+.layout aside.internet-map,
+.layout aside.mission-map {
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: var(--ai-map-w) !important;
+  max-width: var(--ai-map-w) !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  margin: 0 !important;
+  border-radius: 0 18px 18px 0 !important;
+  border-left: none !important;
+  z-index: 120;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 1rem 0.85rem !important;
+}
+
+/* Сетка layout больше не держит колонку под карту */
+.layout {
+  display: block !important;
+  grid-template-columns: none !important;
+}
+.layout .main-content {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Отступ контента под левую карту */
+body:has(aside.internet-map),
+body:has(aside.mission-map) {
+  padding-left: var(--ai-map-w);
+}
+
+/* ===== Достижения — справа, компактнее ===== */
+.achieve-rail {
+  position: fixed !important;
+  right: 0 !important;
+  top: 10px !important;
+  bottom: 10px !important;
+  width: var(--ai-achieve-w) !important;
+  max-width: var(--ai-achieve-w) !important;
+  max-height: calc(100vh - 20px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 120;
+  background: var(--ai-rail-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--ai-rail-border);
+  border-right: none;
+  border-radius: 16px 0 0 16px;
+  padding: 8px 9px !important;
+  margin: 0 !important;
+  box-shadow: -6px 0 20px rgba(15, 23, 42, 0.1);
+  font-size: 0.8rem;
+  box-sizing: border-box;
+}
+
+body:has(.achieve-rail) {
+  padding-right: var(--ai-achieve-w);
+}
+
+.achieve-rail .achieve-rail-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 0 0 6px;
+  font-weight: 800;
+  color: #1E293B;
+  font-size: 0.86rem;
+}
+.achieve-rail .achieve-rail-title span:last-child {
+  font-size: 0.68rem !important;
+  opacity: 0.65;
+  font-weight: 600;
+}
+
+.achieve-rail .chip-progress,
+.achieve-rail .total-progress,
+.achieve-rail .artifact-bar,
+.achieve-rail .badges-bar,
+.achieve-rail .xp-bar,
+.achieve-rail .lives {
+  margin: 6px 0 !important;
+  padding: 6px 8px !important;
+  border-radius: 12px !important;
+}
+
+.achieve-rail .chip-progress {
+  position: static !important;
+  box-shadow: none !important;
+  border: 1px solid var(--ai-rail-border) !important;
+  background: #F8FAFC !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 6px !important;
+  border-radius: 12px !important;
+}
+
+.achieve-rail h3 {
+  font-size: 0.82rem !important;
+  margin: 0 0 6px !important;
+  line-height: 1.25;
+}
+
+.achieve-rail .artifact-slot {
+  width: 30px !important;
+  height: 30px !important;
+  font-size: 0.9rem !important;
+  border-radius: 8px !important;
+}
+
+.achieve-rail .artifact-slots,
+.achieve-rail .badges-row {
+  gap: 5px !important;
+}
+
+.achieve-rail .badge {
+  font-size: 0.68rem !important;
+  padding: 3px 7px !important;
+}
+
+.achieve-rail .tp-track,
+.achieve-rail .chip-track {
+  height: 8px !important;
+}
+
+.achieve-rail .xp-bar,
+.achieve-rail .lives {
+  font-size: 0.78rem !important;
+}
+
+.achieve-rail .heart {
+  font-size: 1rem !important;
+}
+
+/* ===== Общий shell: цели, план, навигация, футер ===== */
+.ai-objectives,
+.objectives {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.2rem 1.5rem;
+  margin: 1.2rem 0;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+.ai-objectives h2,
+.objectives h2 {
+  margin-top: 0;
+  color: #1E293B;
+}
+.ai-objectives ul,
+.objectives ul {
+  margin: 0.4rem 0 0;
+  padding-left: 1.2rem;
+}
+.ai-timetable {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.2rem 1.5rem;
+  margin: 1.2rem 0;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+.ai-timetable h2 { margin-top: 0; }
+.ai-timetable table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ai-timetable th,
+.ai-timetable td {
+  border: 1px solid #E2E8F0;
+  padding: 8px 12px;
+  text-align: left;
+}
+.ai-timetable th {
+  background: #F1F5F9;
+  font-weight: 700;
+}
+
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 1.8rem 0 1rem;
+}
+.lesson-nav .nav-btn {
+  display: inline-block;
+  background: #fff;
+  border: 2px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 12px 18px;
+  text-decoration: none;
+  color: #1E293B;
+  font-weight: 700;
+  box-shadow: 0 4px 0 #CBD5E1;
+}
+.lesson-nav .nav-btn:hover {
+  border-color: #61B01F;
+  color: #1a4a0a;
+}
+.lesson-nav .nav-btn.next {
+  margin-left: auto;
+  background: #61B01F;
+  color: #fff;
+  border-color: #4a8c18;
+  box-shadow: 0 4px 0 #2E4A17;
+}
+
+.site-footer,
+footer {
+  background: #0F172A;
+  color: #CBD5E1;
+  padding: 1.4rem 0;
+  margin-top: 2rem;
+}
+.site-footer .wrap,
+footer .wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.4rem;
+}
+.site-footer .foot-brand,
+footer .foot-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: #F8FAFC;
+}
+.site-footer img,
+footer img {
+  height: 36px;
+  border-radius: 8px;
+}
+
+.badges-bar h3 { margin: 0 0 0.5rem; }
+.badges-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.badge {
+  display: inline-block;
+  background: #10B981;
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+/* Роби чуть левее правой панели */
+.roby-panel {
+  right: calc(var(--ai-achieve-w) + 12px) !important;
+}
+
+/* ===== Мобильная вёрстка ===== */
+@media (max-width: 1100px) {
+  :root {
+    --ai-map-w: 210px;
+    --ai-achieve-w: 180px;
+  }
+}
+
+@media (max-width: 900px) {
+  body:has(aside.internet-map),
+  body:has(aside.mission-map),
+  body:has(.achieve-rail) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  aside.internet-map,
+  aside.mission-map,
+  .layout aside.internet-map,
+  .layout aside.mission-map {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    border-radius: 18px !important;
+    margin: 0 0 1rem !important;
+    z-index: 1;
+  }
+
+  .achieve-rail {
+    position: sticky !important;
+    right: auto !important;
+    top: 0 !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none;
+    border-radius: 14px !important;
+    border-right: 1px solid var(--ai-rail-border) !important;
+    margin: 0 0 1rem !important;
+    z-index: 40;
+  }
+
+  .roby-panel {
+    right: 12px !important;
+    bottom: 70px !important;
+    max-width: min(280px, calc(100vw - 24px)) !important;
+  }
+}
+
+/* ===== Профиль ученика: имя + сброс прогресса ===== */
+.progress-profile {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 8px;
+  margin: 0 0 8px;
+}
+.progress-profile .pp-label {
+  font-weight: 800;
+  font-size: 0.78rem;
+  color: #1E293B;
+  margin-bottom: 4px;
+}
+.progress-profile .pp-name {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #CBD5E1;
+  border-radius: 10px;
+  padding: 6px 8px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+.progress-profile .pp-hello {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 6px;
+}
+.progress-profile .pp-reset {
+  width: 100%;
+  border: 1px solid #FECACA;
+  background: #FEF2F2;
+  color: #991B1B;
+  border-radius: 10px;
+  padding: 6px 8px;
+  font: inherit;
+  font-weight: 800;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+.progress-profile .pp-reset:hover {
+  background: #FEE2E2;
+}
+.achieve-rail .progress-profile {
+  font-size: 0.78rem;
+}

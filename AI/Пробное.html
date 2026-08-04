@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Занятие 0 · Пробное по ИИ | РОБОВИТА</title>
+<style>
+:root{
+  --primary:#61B01F;--primary-light:#E8F5E0;--primary-dark:#1A4A0A;
+  --accent:#6E0091;--accent-light:#F0E6F5;--accent-ink:#4A1A5A;
+  --line:#E2EED6;--ink:#1E293B;--gold:#F59E0B;--danger:#EF4444;
+  --radius:20px;--shadow:0 8px 30px rgba(15,23,42,.06);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:#F8FAFC;color:var(--ink);font-size:1.05rem;line-height:1.6}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px 48px}
+.site-header{
+  background:rgba(232,245,224,.95);border-bottom:4px solid var(--primary);
+  margin-bottom:20px;position:sticky;top:0;z-index:30;backdrop-filter:blur(8px);
+}
+.top-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 0}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{height:44px;border-radius:12px}
+.brand-name{font-weight:800;font-size:1.15rem}
+.brand-tag{font-size:.8rem;color:#64748b}
+.free-pill{
+  background:#FEF3C7;color:#92400E;font-weight:800;padding:6px 14px;border-radius:99px;font-size:.88rem;
+  animation:pulse 2.5s infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.35)}50%{box-shadow:0 0 0 10px transparent}}
+.hero{display:flex;gap:16px;align-items:center;padding:4px 0 18px}
+.hex-badge{
+  width:70px;height:70px;border-radius:18px;background:linear-gradient(135deg,var(--primary),#4C8C18);
+  color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.7rem;flex-shrink:0;
+}
+.module-pill{background:var(--accent-light);color:var(--accent-ink);padding:5px 14px;border-radius:30px;font-weight:700;font-size:.88rem;display:inline-block}
+.hero h1{margin:6px 0 4px;font-size:1.75rem;color:var(--primary-dark);line-height:1.2}
+.subtitle{margin:0;color:#475569}
+
+.scenario-box{
+  background:linear-gradient(135deg,#0a0e2a,#1a1a4a);border-radius:var(--radius);
+  padding:18px 22px;margin:16px 0;display:flex;gap:14px;align-items:center;color:#e2e8f0;box-shadow:var(--shadow);
+}
+.scenario-avatar{font-size:2.8rem}
+.scenario-box strong{color:#fbbf24}
+
+.chip-bar{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:2px solid var(--primary);
+  border-radius:18px;padding:12px 16px;margin:14px 0;font-weight:700;
+  position:sticky;top:100px;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);
+}
+.chip-track{flex:1;min-width:120px;height:12px;background:#e2e8f0;border-radius:99px;overflow:hidden}
+.chip-fill{height:100%;width:0;background:linear-gradient(90deg,var(--primary),#a3e635,#fbbf24);transition:width .45s;border-radius:99px}
+.badges-row{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.badge{background:var(--primary-light);color:var(--primary-dark);padding:5px 12px;border-radius:99px;font-size:.82rem;font-weight:800}
+
+.card,.theory,.objectives,.project-box{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin:18px 0;box-shadow:var(--shadow)}
+.card h2,.theory h2,.objectives h2,.project-box h2,.mini-game h2{margin:0 0 10px;color:var(--primary-dark);font-size:1.35rem}
+.theory h3{color:var(--primary-dark);margin:16px 0 8px}
+.mini-game h2{color:#c4b5fd}
+
+table{width:100%;border-collapse:collapse;margin:10px 0;border-radius:12px;overflow:hidden}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+th{background:var(--primary-light);font-weight:700}
+
+.action-btn{
+  background:var(--primary);color:#fff;border:none;padding:10px 18px;border-radius:30px;
+  font-weight:800;cursor:pointer;font-size:1rem;margin:6px 6px 0 0;box-shadow:0 4px 0 #2E4A17;
+}
+.action-btn:hover{background:#4C8C18}
+.action-btn.grey{background:#64748b;box-shadow:0 4px 0 #334155}
+.action-btn:disabled{opacity:.5;cursor:default;box-shadow:none}
+
+.choice-card{
+  cursor:pointer;user-select:none;padding:10px 14px;background:#f8fafc;border:2px solid #e2e8f0;
+  border-radius:14px;font-weight:600;display:inline-block;margin:4px 6px;transition:.15s;color:#111;
+}
+.choice-card:hover{border-color:var(--primary)}
+.choice-card.selected{border-color:var(--accent)!important;background:var(--accent-light)!important}
+.choice-card.correct{border-color:var(--primary)!important;background:#dcfce7}
+.choice-card.incorrect{border-color:var(--danger)!important;background:#fee2e2}
+.result{font-weight:800;min-height:1.3em;margin-top:8px}
+.result.ok{color:#166534}.result.bad{color:#b91c1c}
+
+.space-note{background:#1a1a4a;color:#fbbf24;border-left:4px solid #fbbf24;padding:12px 14px;border-radius:12px;margin:12px 0}
+.media-block,.media-ph{margin:12px 0;text-align:center}
+.media-block img,.media-ph img{max-width:100%;border-radius:12px;border:2px solid var(--line)}
+
+.alice-btn{
+  display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;
+  background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;text-decoration:none;
+  font-weight:800;padding:10px 16px;border-radius:30px;box-shadow:0 4px 0 #312e81;
+}
+.alice-sub{font-weight:600;opacity:.9;font-size:.9rem}
+
+.mini-game{
+  background:linear-gradient(145deg,#0f172a,#1e1b4b);color:#e2e8f0;border-radius:20px;
+  padding:18px 20px;margin:20px 0;border:1px solid #334155;
+}
+.mission-box{background:rgba(255,255,255,.08);border-radius:12px;padding:12px;margin:10px 0;border:1px solid #475569}
+.stat{margin:6px 0;font-weight:700}
+
+/* алгоритм */
+.sort-list{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.sort-item{background:#fff;border:2px solid #cbd5e1;border-radius:10px;padding:10px 14px;cursor:grab;font-weight:700;color:#111}
+.sort-item.dragging{opacity:.45}
+
+/* игра 1 — пары */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:640px){.match-grid{grid-template-columns:1fr}}
+.match-col{background:rgba(0,0,0,.25);border-radius:12px;padding:10px;min-height:180px}
+.match-col h4{margin:0 0 8px;color:#fbbf24}
+.match-chip{
+  display:block;width:100%;margin:6px 0;padding:10px;border-radius:10px;border:2px solid #64748b;
+  background:#1e293b;color:#fff;font-weight:700;cursor:pointer;text-align:left;
+}
+.match-chip.on{border-color:#a3e635;background:#365314}
+.match-chip.done{opacity:.4;pointer-events:none}
+
+/* ----- стили для новых игр 2 и 3 (из первого кода) ----- */
+.tag-stage, .sign-stage, .rlgl-stage {
+  display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px; margin-top: 12px;
+}
+@media (max-width: 800px) {
+  .tag-stage, .sign-stage, .rlgl-stage { grid-template-columns: 1fr; }
+}
+.world-view, .wall-scene, .rlgl-field {
+  background: linear-gradient(#1e293b, #0f172a); border-radius: 14px; min-height: 220px;
+  position: relative; overflow: hidden; border: 2px solid #334155;
+}
+.controls-panel label { display: block; margin-top: 8px; font-size: .9rem; opacity: .9; }
+.controls-panel input[type=range] { width: 100%; }
+.prompt-preview-box { display: flex; flex-direction: column; justify-content: center; padding: 18px; }
+.preview-label { font-size: .85rem; opacity: .7; margin-bottom: 10px; }
+.preview-text {
+  background: rgba(255, 255, 255, .07); border-left: 3px solid #a3e635; border-radius: 0 10px 10px 0;
+  padding: 14px 16px; font-size: 1.05rem; line-height: 1.5; font-weight: 600; min-height: 60px;
+}
+.folder-scene { display: flex; align-items: center; justify-content: center; padding: 20px; }
+.scenario-card {
+  background: rgba(255, 255, 255, .08); border: 2px solid #475569; border-radius: 14px;
+  padding: 22px; font-size: 1.1rem; font-weight: 700; text-align: center; max-width: 320px;
+}
+.face-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+.face-btns button { padding: 6px 10px; border-radius: 10px; border: 2px solid #64748b; background: #1e293b; color: #fff; cursor: pointer; font-weight: 700; }
+.face-btns button.on { border-color: #a3e635; background: #365314; }
+.folder-btns button { font-size: .95rem; padding: 10px 14px; }
+.chat-field { display: flex; align-items: center; justify-content: center; padding: 20px; }
+.chat-bubble {
+  background: #fff; color: #111; border-radius: 16px 16px 16px 4px; padding: 16px 20px;
+  font-size: 1.1rem; font-weight: 700; max-width: 320px; box-shadow: 0 6px 20px rgba(0, 0, 0, .3); text-align: center;
+}
+#mgNo { box-shadow: 0 4px 0 #991b1b; background: var(--danger); }
+
+/* игра 4 */
+.prompt-keys{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
+.pchip{
+  min-width:110px;padding:14px 12px;border-radius:14px;border:2px solid #94a3b8;
+  background:#fff;color:#111;font-weight:800;cursor:pointer;
+}
+.pchip.on{background:#c4b5fd}
+.pchip.good{background:#86efac;border-color:#16a34a}
+.pchip.bad{background:#fca5a5}
+.built{background:#020617;border-radius:12px;padding:12px;min-height:70px;color:#a3e635;font-family:Consolas,monospace;margin:8px 0}
+
+/* игра 5 */
+.g5-opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+
+.prompt-box{
+  background:#0f172a;color:#e2e8f0;border-radius:14px;padding:14px 16px 48px;margin:12px 0;
+  font-family:Consolas,monospace;font-size:.95rem;position:relative;line-height:1.45;
+}
+.prompt-box .action-btn{position:absolute;right:10px;bottom:10px}
+.ai-links{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.ai-links a{
+  display:inline-flex;background:var(--primary);color:#fff;text-decoration:none;font-weight:800;
+  padding:12px 18px;border-radius:30px;box-shadow:0 4px 0 #2E4A17;
+}
+.ai-links a.alt{background:var(--accent);box-shadow:0 4px 0 #3b0764}
+.ai-links a.alt2{background:#0ea5e9;box-shadow:0 4px 0 #0369a1}
+
+.progress-bar{height:10px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;width:0;background:var(--primary);transition:.25s}
+.task-steps{list-style:none;padding:0}
+.task-steps li{margin:8px 0}
+input[type=text],textarea{width:100%;padding:10px 12px;border-radius:12px;border:2px solid var(--line);font:inherit;margin:6px 0}
+.certificate{display:none;text-align:center;background:linear-gradient(135deg,#FEF9C3,#E8F5E0);border:3px solid var(--primary);border-radius:18px;padding:22px;margin:18px 0}
+.certificate.show{display:block}
+.cta-box{background:linear-gradient(135deg,var(--accent-light),#fff);border:2px solid var(--accent);border-radius:18px;padding:16px;margin:18px 0}
+.cta-box h2{color:var(--accent-ink);margin-top:0}
+.site-footer{background:#1e293b;color:#cbd5e1;padding:16px 0;margin-top:24px}
+.site-footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-bottom:0}
+.path-strip{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0;font-weight:800;font-size:.9rem}
+.path-strip span{background:#fff;border:2px solid var(--line);border-radius:12px;padding:6px 10px}
+@media print{body *{visibility:hidden}#projectCard,#projectCard *{visibility:visible}#projectCard{position:absolute;left:0;top:0;width:100%;display:block!important}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <div class="brand">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="РОБОВИТА" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">курс «ИИ-творец»</div>
+        </div>
+      </div>
+      <span class="free-pill">🎁 Бесплатно · без регистрации</span>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">0</div>
+      <div>
+        <div class="module-pill">Пробное занятие · открыто для всех</div>
+        <h1>Лаборатория старта: компьютер и ИИ</h1>
+        <p class="subtitle">Теория · алгоритм · 5 игр · запросы в ИИ · свой мини-проект</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="scenario-box">
+    <div class="scenario-avatar">🧪</div>
+    <div>
+      <strong>Демо как на полном курсе.</strong> Сначала компьютер и алгоритм, потом игры про ИИ и безопасность,
+      в конце ты <b>сам</b> зайдёшь в нейросеть и сделаешь мини-проект. Собери <b>7 чипов</b>.
+    </div>
+  </div>
+
+  <div class="chip-bar">
+    <span>🧠</span>
+    <div class="chip-track"><div class="chip-fill" id="chipFill"></div></div>
+    <span id="chipCount">0 / 7 чипов</span>
+  </div>
+  <div class="badges-row" id="badges"><span style="opacity:.5;font-size:.85rem">Бейджи появятся после игр</span></div>
+
+  <div class="objectives">
+    <h2>🎯 За занятие ты</h2>
+    <ul>
+      <li>узнаешь части компьютера и мышь/клавиатуру;</li>
+      <li>соберёшь алгоритм по порядку;</li>
+      <li>поймёшь, чем ИИ отличается от обычной программы;</li>
+      <li>пройдёшь 5 мини-игр и сделаешь карточку «Мой умный помощник».</li>
+    </ul>
+  </div>
+
+  <!-- ТЕОРИЯ: КОМПЬЮТЕР + АЛГОРИТМ -->
+  <div class="theory">
+    <h2>📘 Компьютер и алгоритм</h2>
+    <h3>Из чего состоит компьютер?</h3>
+    <table>
+      <tr><th>Часть</th><th>Назначение</th><th>Аналогия</th></tr>
+      <tr><td>Монитор</td><td>Показывает изображение</td><td>Глаза</td></tr>
+      <tr><td>Системный блок / ноутбук</td><td>Вычисления</td><td>Мозг</td></tr>
+      <tr><td>Клавиатура</td><td>Ввод текста</td><td>Руки</td></tr>
+      <tr><td>Мышь</td><td>Курсор</td><td>Указательный палец</td></tr>
+    </table>
+    <div class="media-block">
+      <img src="../assets/images/lesson-1.1/computer_parts.png" alt="Части компьютера"
+        onerror="this.style.display='none'">
+    </div>
+
+    <h3>Мышь и клавиши</h3>
+    <table>
+      <tr><th>Действие</th><th>Зачем</th></tr>
+      <tr><td>Двойной клик ЛКМ</td><td>Открыть программу</td></tr>
+      <tr><td>Правый клик</td><td>Меню «Копировать…»</td></tr>
+      <tr><td>Перетаскивание</td><td>Переместить файл</td></tr>
+      <tr><td>Ctrl+C / Ctrl+V</td><td>Копировать / вставить</td></tr>
+    </table>
+
+    <h3>Что такое алгоритм?</h3>
+    <p>Алгоритм — список команд <b>по порядку</b>. Перепутал шаги — результат сломается. В программировании и в запросах к ИИ порядок тоже важен.</p>
+    <a class="alice-btn" href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%3F%22%7D" target="_blank" rel="noopener">
+      🧠 Спросить Алису <span class="alice-sub">что такое алгоритм?</span>
+    </a>
+    <div class="media-block">
+      <img src="../assets/images/lesson-1.1/tea_algorithm.png" alt="Алгоритм чая"
+        onerror="this.style.display='none'">
+    </div>
+
+    <div class="mini-game" id="algoGame">
+      <h2>🧩 Разминка: собери алгоритм чая <span style="opacity:.7;font-size:.85rem">(+1 чип)</span></h2>
+      <div class="mission-box"><b>📖 История.</b> Робот Бит перепутал рецепт. Расставь шаги сверху вниз правильно.</div>
+      <div class="sort-list" id="sortList">
+        <div class="sort-item" draggable="true" data-correct="2">Включить чайник</div>
+        <div class="sort-item" draggable="true" data-correct="1">Налить воду в чайник</div>
+        <div class="sort-item" draggable="true" data-correct="6">Вынуть пакетик — чай готов!</div>
+        <div class="sort-item" draggable="true" data-correct="3">Положить пакетик в чашку</div>
+        <div class="sort-item" draggable="true" data-correct="4">Залить кипятком</div>
+        <div class="sort-item" draggable="true" data-correct="5">Подождать 3 минуты</div>
+      </div>
+      <button type="button" class="action-btn" id="algoCheck">✅ Проверить</button>
+      <div class="result" id="algoResult"></div>
+    </div>
+  </div>
+
+  <!-- ТЕОРИЯ ИИ -->
+  <div class="theory">
+    <h2>🤖 Что такое ИИ?</h2>
+    <p><b>ИИ</b> учится на примерах и <b>предполагает</b>. Калькулятор и будильник просто выполняют правила — это не ИИ.</p>
+    <div class="space-note">⚠️ Не пиши в ИИ пароли, адрес, телефон и данные карты.</div>
+    <p><b>Хороший запрос</b> отвечает: кому? что сделать? в каком виде?</p>
+    <div class="media-block">
+      <img src="../assets/images/lesson-1.1/last.png" alt="ИИ"
+        onerror="this.style.display='none'">
+    </div>
+    <p><b>А теперь — где ИИ живёт прямо сейчас?</b></p>
+<ul>
+  <li><b>Голосовые помощники</b> (Алиса, Сири) — понимают речь.</li>
+  <li><b>YouTube и TikTok</b> — подбирают ролики для тебя.</li>
+  <li><b>Google</b> — угадывает, что ты ищешь.</li>
+  <li><b>Автомобили</b> — некоторые сами паркуются.</li>
+  <li><b>Телефоны</b> — разблокируются по лицу.</li>
+  <li><b>Почта</b> — прячет спам.</li>
+  <li><b>Переводчики</b> — понимают смысл текста.</li>
+  <li><b>Игры</b> — противники становятся умнее.</li>
+</ul>
+  </div>
+
+  <!-- ИГРА 1 -->
+  <div class="mini-game" id="game1">
+    <h2>🎮 Игра 1. Части компьютера <span style="opacity:.7;font-size:.85rem">(+1 чип)</span></h2>
+    <div class="mission-box">
+      <b>📖 История.</b> В лаборатории перепутали таблички. Кликни деталь слева, потом её «роль» справа. Собери <b>4 пары</b>.
+    </div>
+    <div class="stat">Пары: <b id="g1Pairs">0</b> / 4</div>
+    <div class="match-grid">
+      <div class="match-col" id="g1Left"><h4>Деталь</h4></div>
+      <div class="match-col" id="g1Right"><h4>Роль</h4></div>
+    </div>
+    <button type="button" class="action-btn grey" id="g1Reset">🔄 Сначала</button>
+    <div class="result" id="g1Res"></div>
+  </div>
+
+  <!-- ИГРА 2 (НОВАЯ: В какую папку отправить задачу?) -->
+  <div class="mini-game" id="game2">
+    <h2>🎮 Игра 2. В какую папку отправить задачу? <span style="opacity:.7;font-size:.85rem">(+1 чип)</span></h2>
+    <p class="game-intro" style="margin-top:-4px;opacity:.85;">Прочитай задачу и нажми на область, где ИИ поможет лучше всего.</p>
+    <div class="sign-stage">
+      <div class="wall-scene folder-scene">
+        <div class="scenario-card" id="g2Scenario">Загрузка задачи…</div>
+      </div>
+      <div class="controls-panel">
+        <div class="mission-box">
+          <div style="font-weight:800" id="g2Title">Задание 1 из 4</div>
+          <div id="g2Res" class="result" style="min-height:1.2em;margin-top:8px"></div>
+        </div>
+        <div class="face-btns folder-btns" id="folderBtns">
+          <button type="button" data-p="Учёба">📚 Учёба</button>
+          <button type="button" data-p="Игры">🎮 Игры</button>
+          <button type="button" data-p="Творчество">🎨 Творчество</button>
+          <button type="button" data-p="Поиск">🔍 Поиск фактов</button>
+        </div>
+        <div style="margin-top:10px">
+          <button type="button" class="action-btn grey" id="g2Reset">🔄 Сначала</button>
+        </div>
+        <p id="g2Score" style="font-weight:800">Очки: 0 / 4</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ИГРА 3 (НОВАЯ: Можно или нельзя отправлять ИИ?) -->
+  <div class="mini-game" id="game3">
+    <h2>🕹️ Игра 3. Можно или нельзя отправлять ИИ? <span style="opacity:.7;font-size:.85rem">(+1 чип)</span></h2>
+    <div class="mission-box"><b>Правило:</b> ИИ можно спрашивать про уроки, игры и интересные факты. Но нельзя присылать пароли, адрес, телефон и другие секреты.</div>
+    <div class="rlgl-stage" style="grid-template-columns:1.2fr 1fr;">
+      <div class="rlgl-field chat-field">
+        <div class="chat-bubble" id="mgBubble">Загрузка сообщения…</div>
+      </div>
+      <div class="controls-panel">
+        <div class="stat">📩 Сообщение <b id="mgIdx">1</b> из <b>6</b></div>
+        <div class="stat">⭐ Верно: <b id="mgScore">0</b></div>
+        <button type="button" class="action-btn" id="mgYes">✅ Можно отправить</button>
+        <button type="button" class="action-btn grey" id="mgNo">🚫 Нельзя отправлять</button>
+        <div style="margin-top:10px">
+          <button type="button" class="action-btn grey" id="mgReset">🔄 Сначала</button>
+        </div>
+        <div class="stat" id="mgMsg">Читай сообщение слева и выбирай!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ИГРА 4 -->
+  <div class="mini-game" id="game4">
+    <h2>🎹 Игра 4. Собери хороший запрос <span style="opacity:.7;font-size:.85rem">(+1 чип)</span></h2>
+    <div class="mission-box">
+      <b>📖 История.</b> Бит рассыпал промпт. Кликай куски <b>по порядку</b>: Роль → Задача → Формат → Пример.
+    </div>
+    <div class="built" id="g4Built">// кликай по порядку…</div>
+    <div class="prompt-keys" id="g4Keys"></div>
+    <button type="button" class="action-btn grey" id="g4Reset">Сначала</button>
+    <div class="result" id="g4Res"></div>
+  </div>
+
+  <!-- ИГРА 5 -->
+  <div class="mini-game" id="game5">
+    <h2>🎯 Игра 5. Что выбрать? <span style="opacity:.7;font-size:.85rem">(+1 чип)</span></h2>
+    <div class="mission-box">
+      <b>📖 История.</b> Экзамен Академии. Алиса даёт случаи — выбери один верный ответ. Нужно ≥ <b>3 из 4</b>.
+    </div>
+    <div id="g5Body"></div>
+    <div class="result" id="g5Res"></div>
+  </div>
+
+  <!-- ССЫЛКИ И ЗАПРОСЫ (перед проектом) -->
+  <div class="card" id="aiLinks">
+    <h2>🔗 Открой ИИ и скопируй запрос</h2>
+    <p>На полном курсе так же: сначала страница, потом настоящий ИИ.</p>
+    <div class="ai-links">
+      <a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT</a>
+      <a class="alt" href="https://chat.deepseek.com" target="_blank" rel="noopener">DeepSeek</a>
+      <a class="alt2" href="https://www.perplexity.ai" target="_blank" rel="noopener">Perplexity</a>
+    </div>
+    <h3>Запрос A — знакомство</h3>
+    <div class="prompt-box" id="pa">Объясни 10-летнему ребёнку, что такое искусственный интеллект, за 5 коротких предложений. Приведи 2 примера из обычной жизни.
+      <button type="button" class="action-btn grey" data-copy="pa">📋 Копировать</button>
+    </div>
+    <h3>Запрос B — помощник для проекта</h3>
+    <div class="prompt-box" id="pb">Ты — дружелюбный помощник для школьника. Придумай имя ИИ-помощника и опиши 3 умения: учёба, творчество, безопасность в интернете. Коротко, списком.
+      <button type="button" class="action-btn grey" data-copy="pb">📋 Копировать</button>
+    </div>
+    <h3>Запрос C — проверка</h3>
+    <div class="prompt-box" id="pc">Задай мне 3 простых вопроса, чтобы проверить, понял ли я разницу между ИИ и обычной программой. Жди моих ответов по одному.
+      <button type="button" class="action-btn grey" data-copy="pc">📋 Копировать</button>
+    </div>
+  </div>
+
+  <!-- ПРОЕКТ -->
+  <div class="project-box" id="mainProject">
+    <h2>🚀 Мини-проект: «Мой умный помощник» <span style="color:#64748b;font-size:.9rem">(+1 чип)</span></h2>
+    <p>Сделай сам: открой ИИ → вставь запросы → заполни карточку.</p>
+    <div class="progress-bar"><div class="progress-fill" id="projectFill"></div></div>
+    <div id="projectLabel" style="font-weight:700">Шаги: 0 / 6</div>
+    <ol>
+      <li>Открой ChatGPT или DeepSeek по ссылке выше.</li>
+      <li>Вставь <b>Запрос B</b>, получи ответ.</li>
+      <li>Вставь <b>Запрос A</b>, сохрани факт.</li>
+      <li>Заполни поля и отметь шаги.</li>
+    </ol>
+    <ul class="task-steps">
+      <li><label><input type="checkbox" class="pstep" /> Открыл ИИ по ссылке</label></li>
+      <li><label><input type="checkbox" class="pstep" /> Вставил запрос B</label></li>
+      <li><label><input type="checkbox" class="pstep" /> Вставил запрос A</label></li>
+      <li><label><input type="checkbox" class="pstep" /> Придумал имя помощника</label></li>
+      <li><label><input type="checkbox" class="pstep" /> Написал 3 умения</label></li>
+      <li><label><input type="checkbox" class="pstep" /> Выбрал правило безопасности</label></li>
+    </ul>
+    <p><b>Имя помощника</b></p>
+    <input id="botName" type="text" maxlength="24" placeholder="Алма / Бит / …" />
+    <p><b>3 умения (через запятую)</b></p>
+    <input id="botSkills" type="text" placeholder="учёба, творчество, …" />
+    <p><b>Факт из ответа ИИ</b></p>
+    <textarea id="botFact" rows="2" placeholder="Один факт своими словами"></textarea>
+    <p><b>Правило</b></p>
+    <div class="choice-card" id="safeOk">Не пишу пароли и адрес</div>
+    <div class="choice-card" id="safeBad">Можно любые секреты</div>
+    <div>
+      <button type="button" class="action-btn" id="projFinish">✅ Собрать карточку</button>
+    </div>
+    <div class="result" id="projRes"></div>
+    <div id="projectCard" style="display:none;margin-top:14px;padding:16px;border:3px solid var(--primary);border-radius:16px;background:linear-gradient(135deg,#E8F5E0,#FFFBEB)">
+      <h3 style="margin-top:0;color:var(--primary-dark)">📁 Проект · Мой умный помощник</h3>
+      <p><b>Имя:</b> <span id="oName"></span></p>
+      <p><b>Умения:</b> <span id="oSkills"></span></p>
+      <p><b>Факт:</b> <span id="oFact"></span></p>
+      <p><b>Правило:</b> не пишу пароли и адрес</p>
+      <p style="font-size:.85rem;color:#64748b">РОБОВИТА · пробное занятие 0</p>
+      <button type="button" class="action-btn grey" onclick="window.print()">🖨️ Печать</button>
+    </div>
+  </div>
+
+  <div class="certificate" id="cert">
+    <h2>🏅 Сертификат гостя лаборатории</h2>
+    <p>Ты прошёл компьютер, алгоритм, игры про ИИ и мини-проект.</p>
+    <p>Дата: <span id="certDate"></span></p>
+  </div>
+
+  <div class="cta-box">
+    <h2>🚀 Полный курс «ИИ-творец»</h2>
+    <p>Дальше: мастер промптов, кибербезопасность, фейки, умный поиск, финальный агент ИИ.</p>
+     <a href="../AI/Карта.html" target="_blank" rel="noopener">К курсу</a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>Учебный центр «РОБОВИТА»</div>
+    <div>Занятие 0 · бесплатное пробное · ИИ</div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const TOTAL = 7;
+  let chips = 0;
+  const done = {};
+
+  function badge(t) {
+    const box = document.getElementById('badges');
+    const hint = box.querySelector('span[style]');
+    if (hint) hint.remove();
+    if ([...box.querySelectorAll('.badge')].some(b => b.textContent.includes(t))) return;
+    const s = document.createElement('span');
+    s.className = 'badge';
+    s.textContent = '✅ ' + t;
+    box.appendChild(s);
+  }
+
+  function complete(key, title, n) {
+    if (done[key]) return;
+    done[key] = true;
+    chips = Math.min(TOTAL, chips + (n || 1));
+    document.getElementById('chipFill').style.width = (chips / TOTAL * 100) + '%';
+    document.getElementById('chipCount').textContent = chips + ' / ' + TOTAL + ' чипов';
+    badge(title);
+    if (chips >= TOTAL) {
+      document.getElementById('cert').classList.add('show');
+      document.getElementById('certDate').textContent = new Date().toLocaleDateString('ru-RU');
+    }
+  }
+
+  /* —— копирование —— */
+  document.querySelectorAll('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-copy');
+      const el = document.getElementById(id);
+      const text = el.childNodes[0].textContent.trim();
+      navigator.clipboard.writeText(text).then(() => alert('Скопировано! Вставь в ИИ.'));
+    });
+  });
+
+  /* —— Алгоритм —— */
+  const sortList = document.getElementById('sortList');
+  let dragItem = null;
+  sortList.addEventListener('dragstart', e => {
+    dragItem = e.target.closest('.sort-item');
+    if (!dragItem) return;
+    dragItem.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  sortList.addEventListener('dragend', () => {
+    if (dragItem) dragItem.classList.remove('dragging');
+    dragItem = null;
+  });
+  sortList.addEventListener('dragover', e => e.preventDefault());
+  sortList.addEventListener('drop', e => {
+    e.preventDefault();
+    const target = e.target.closest('.sort-item');
+    if (!target || !dragItem || target === dragItem) return;
+    const kids = [...sortList.children];
+    const di = kids.indexOf(dragItem);
+    const ti = kids.indexOf(target);
+    if (di < ti) sortList.insertBefore(dragItem, target.nextSibling);
+    else sortList.insertBefore(dragItem, target);
+  });
+  document.getElementById('algoCheck').onclick = () => {
+    const items = [...sortList.querySelectorAll('.sort-item')];
+    const ok = items.every((it, i) => +it.dataset.correct === i + 1);
+    const res = document.getElementById('algoResult');
+    if (ok) {
+      res.className = 'result ok';
+      res.textContent = '✅ Порядок верный!';
+      complete('algo', 'Алгоритм');
+    } else {
+      res.className = 'result bad';
+      res.textContent = '❌ Переставь шаги. Сверху — первый.';
+    }
+  };
+
+  /* —— Игра 1: пары —— */
+  const pairs = [
+    { id: 'mon', left: '🖥️ Монитор', right: 'Глаза компьютера' },
+    { id: 'cpu', left: '🧠 Системный блок', right: 'Мозг / вычисления' },
+    { id: 'kb', left: '⌨️ Клавиатура', right: 'Ввод текста' },
+    { id: 'ms', left: '🖱️ Мышь', right: 'Управление курсором' }
+  ];
+  let g1Sel = null;
+  let g1Done = 0;
+
+  function buildG1() {
+    g1Sel = null;
+    g1Done = 0;
+    document.getElementById('g1Pairs').textContent = '0';
+    document.getElementById('g1Res').textContent = '';
+    const L = document.getElementById('g1Left');
+    const R = document.getElementById('g1Right');
+    L.innerHTML = '<h4>Деталь</h4>';
+    R.innerHTML = '<h4>Роль</h4>';
+    const left = pairs.slice().sort(() => Math.random() - 0.5);
+    const right = pairs.slice().sort(() => Math.random() - 0.5);
+    left.forEach(p => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'match-chip';
+      b.dataset.id = p.id;
+      b.dataset.side = 'L';
+      b.textContent = p.left;
+      b.onclick = () => pickG1(b);
+      L.appendChild(b);
+    });
+    right.forEach(p => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'match-chip';
+      b.dataset.id = p.id;
+      b.dataset.side = 'R';
+      b.textContent = p.right;
+      b.onclick = () => pickG1(b);
+      R.appendChild(b);
+    });
+  }
+
+  function pickG1(btn) {
+    if (btn.classList.contains('done')) return;
+    if (!g1Sel) {
+      document.querySelectorAll('#game1 .match-chip').forEach(c => c.classList.remove('on'));
+      btn.classList.add('on');
+      g1Sel = btn;
+      return;
+    }
+    if (g1Sel === btn) {
+      btn.classList.remove('on');
+      g1Sel = null;
+      return;
+    }
+    if (g1Sel.dataset.side === btn.dataset.side) {
+      g1Sel.classList.remove('on');
+      btn.classList.add('on');
+      g1Sel = btn;
+      return;
+    }
+    const a = g1Sel, b = btn;
+    const res = document.getElementById('g1Res');
+    if (a.dataset.id === b.dataset.id) {
+      a.classList.add('done');
+      b.classList.add('done');
+      a.classList.remove('on');
+      b.classList.remove('on');
+      g1Done++;
+      document.getElementById('g1Pairs').textContent = String(g1Done);
+      res.className = 'result ok';
+      res.textContent = '✅ Пара найдена!';
+      g1Sel = null;
+      if (g1Done >= 4) {
+        res.textContent = '✅ Все пары собраны!';
+        complete('g1', 'Игра 1');
+      }
+    } else {
+      res.className = 'result bad';
+      res.textContent = '❌ Не пара. Попробуй другую роль.';
+      a.classList.remove('on');
+      g1Sel = null;
+    }
+  }
+  document.getElementById('g1Reset').onclick = buildG1;
+  buildG1();
+
+  /* —— Новая ИГРА 2: В какую папку отправить задачу? —— */
+  const g2Rounds = [
+    { text: 'Помочь придумать окончание сказки про дракона', a: 'Творчество' },
+    { text: 'Узнать, сколько лет живут черепахи', a: 'Поиск' },
+    { text: 'Придумать смешное название для команды в игре', a: 'Игры' },
+    { text: 'Объяснить простыми словами, что такое дроби', a: 'Учёба' }
+  ];
+  let g2i = 0, g2sc = 0;
+  const g2Scenario = document.getElementById('g2Scenario');
+  const g2Title = document.getElementById('g2Title');
+  const g2Res = document.getElementById('g2Res');
+  const g2Score = document.getElementById('g2Score');
+  const folderBtns = document.querySelectorAll('#folderBtns button');
+
+  function showG2() {
+    if (g2i >= g2Rounds.length) {
+      g2Title.textContent = '🎉 Готово!';
+      g2Scenario.textContent = 'Результат: ' + g2sc + ' из ' + g2Rounds.length;
+      g2Res.textContent = '';
+      return;
+    }
+    g2Title.textContent = 'Задание ' + (g2i + 1) + ' из ' + g2Rounds.length;
+    g2Scenario.textContent = g2Rounds[g2i].text;
+    g2Res.textContent = '';
+  }
+  folderBtns.forEach(btn => {
+    btn.addEventListener('click', function () {
+      if (g2i >= g2Rounds.length) return;
+      const ok = btn.dataset.p === g2Rounds[g2i].a;
+      if (ok) {
+        g2Res.className = 'result ok';
+        g2Res.textContent = '✅ Точно, это «' + btn.dataset.p + '»!';
+        g2sc++;
+      } else {
+        g2Res.className = 'result bad';
+        g2Res.textContent = '❌ Правильный ответ: «' + g2Rounds[g2i].a + '»';
+      }
+      g2i++;
+      g2Score.textContent = 'Очки: ' + g2sc + ' / ' + g2Rounds.length;
+      if (g2i >= g2Rounds.length && g2sc >= 3) complete('g2', 'Игра 2');
+      setTimeout(showG2, 900);
+    });
+  });
+  document.getElementById('g2Reset').onclick = function () {
+    g2i = 0;
+    g2sc = 0;
+    g2Score.textContent = 'Очки: 0 / ' + g2Rounds.length;
+    showG2();
+  };
+  showG2();
+
+  /* —— Новая ИГРА 3: Можно или нельзя отправлять ИИ? —— */
+  const g3Messages = [
+    { text: 'Сколько будет 24 × 15?', safe: true },
+    { text: 'Вот мой домашний адрес: ул. Ленина, дом 5', safe: false },
+    { text: 'Придумай смешную историю про кота-космонавта', safe: true },
+    { text: 'Мой пароль от почты — qwerty123, помоги его запомнить', safe: false },
+    { text: 'Объясни, почему идёт дождь', safe: true },
+    { text: 'Вот номер телефона мамы, напиши ей сообщение', safe: false }
+  ];
+  let mgI = 0, mgScoreN = 0;
+  const mgBubble = document.getElementById('mgBubble');
+  const mgIdxEl = document.getElementById('mgIdx');
+  const mgScoreEl = document.getElementById('mgScore');
+  const mgMsgEl = document.getElementById('mgMsg');
+  const mgYesBtn = document.getElementById('mgYes');
+  const mgNoBtn = document.getElementById('mgNo');
+
+  function showMg() {
+    if (mgI >= g3Messages.length) {
+      mgBubble.textContent = '🎉 Все сообщения проверены!';
+      mgMsgEl.textContent = 'Результат: ' + mgScoreN + ' из ' + g3Messages.length;
+      mgYesBtn.disabled = true;
+      mgNoBtn.disabled = true;
+      if (mgScoreN >= 4) complete('g3', 'Игра 3');
+      return;
+    }
+    mgBubble.textContent = g3Messages[mgI].text;
+    mgIdxEl.textContent = mgI + 1;
+    mgMsgEl.textContent = 'Можно это отправлять ИИ?';
+  }
+
+  function answerMg(sendIt) {
+    if (mgI >= g3Messages.length) return;
+    const ok = sendIt === g3Messages[mgI].safe;
+    if (ok) {
+      mgScoreN++;
+      mgMsgEl.textContent = '✅ Верно!';
+    } else {
+      mgMsgEl.textContent = g3Messages[mgI].safe ? '❌ На самом деле это спрашивать можно' : '❌ Это личные данные — нельзя отправлять!';
+    }
+    mgScoreEl.textContent = mgScoreN;
+    mgI++;
+    setTimeout(showMg, 900);
+  }
+  mgYesBtn.onclick = () => answerMg(true);
+  mgNoBtn.onclick = () => answerMg(false);
+  document.getElementById('mgReset').onclick = function () {
+    mgI = 0;
+    mgScoreN = 0;
+    mgYesBtn.disabled = false;
+    mgNoBtn.disabled = false;
+    mgScoreEl.textContent = '0';
+    showMg();
+  };
+  showMg();
+
+  /* —— Игра 4: порядок промпта —— */
+  const g4Parts = [
+    { need: 0, label: 'Роль', text: 'Объясни как учителю для 10-летнего' },
+    { need: 1, label: 'Задача', text: 'что такое искусственный интеллект' },
+    { need: 2, label: 'Формат', text: 'в 4 коротких предложениях' },
+    { need: 3, label: 'Пример', text: 'и добавь 1 пример из жизни' }
+  ];
+  let g4Next = 0;
+
+  function buildG4() {
+    g4Next = 0;
+    document.getElementById('g4Built').textContent = '// кликай по порядку…';
+    document.getElementById('g4Res').textContent = '';
+    const box = document.getElementById('g4Keys');
+    box.innerHTML = '';
+    g4Parts.slice().sort(() => Math.random() - 0.5).forEach(p => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pchip';
+      b.dataset.need = String(p.need);
+      b.textContent = p.label;
+      b.title = p.text;
+      b.onclick = () => {
+        if (b.disabled) return;
+        document.querySelectorAll('#g4Keys .pchip').forEach(x => x.classList.remove('on'));
+        b.classList.add('on');
+        const res = document.getElementById('g4Res');
+        if (+b.dataset.need === g4Next) {
+          b.classList.add('good');
+          b.disabled = true;
+          const built = document.getElementById('g4Built');
+          if (g4Next === 0) built.textContent = '';
+          built.textContent += (g4Next ? ' ' : '') + p.text;
+          g4Next++;
+          res.className = 'result ok';
+          res.textContent = 'Часть ' + g4Next + ' / 4';
+          if (g4Next >= 4) {
+            res.textContent = '🎵 Запрос собран!';
+            complete('g4', 'Игра 4');
+          }
+        } else {
+          b.classList.add('bad');
+          res.className = 'result bad';
+          res.textContent = 'Не тот порядок: Роль → Задача → Формат → Пример';
+          setTimeout(() => b.classList.remove('bad', 'on'), 400);
+        }
+      };
+      box.appendChild(b);
+    });
+  }
+  document.getElementById('g4Reset').onclick = buildG4;
+  buildG4();
+
+  /* —— Игра 5 —— */
+  const g5Rounds = [
+    { q: 'Одноклассник просит написать в ИИ пароль от почты. Что ответить?', opts: ['Нельзя — это секрет', 'Можно, ИИ друг', 'Пусть в чат класса'], a: 'Нельзя — это секрет' },
+    { q: 'Нужен доклад с источниками. Куда лучше?', opts: ['Perplexity', 'Калькулятор', 'Будильник'], a: 'Perplexity' },
+    { q: '«напиши что-нибудь» — хороший запрос?', opts: ['Нет, слишком расплывчато', 'Да, идеально', 'Да, если КАПСОМ'], a: 'Нет, слишком расплывчато' },
+    { q: 'Чем ИИ отличается от калькулятора?', opts: ['Учится на примерах и предполагает', 'Всегда один ответ', 'Не умеет считать'], a: 'Учится на примерах и предполагает' }
+  ];
+  let g5i = 0, g5s = 0;
+
+  function renderG5() {
+    const body = document.getElementById('g5Body');
+    const res = document.getElementById('g5Res');
+    if (g5i >= g5Rounds.length) {
+      body.innerHTML = '<p style="font-weight:800">Экзамен: ' + g5s + ' / ' + g5Rounds.length + '</p>';
+      if (g5s >= 3) complete('g5', 'Игра 5');
+      else {
+        res.className = 'result bad';
+        res.textContent = 'Нужно минимум 3 верных. Обнови страницу, чтобы пройти снова.';
+      }
+      return;
+    }
+    const r = g5Rounds[g5i];
+    body.innerHTML = '<p class="mission-box"><b>Случай ' + (g5i + 1) + ':</b> ' + r.q + '</p><div class="g5-opts" id="g5opts"></div>';
+    const opts = document.getElementById('g5opts');
+    r.opts.slice().sort(() => Math.random() - 0.5).forEach(o => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'action-btn';
+      b.style.display = 'block';
+      b.style.width = '100%';
+      b.textContent = o;
+      b.onclick = () => {
+        const ok = o === r.a;
+        res.className = 'result ' + (ok ? 'ok' : 'bad');
+        res.textContent = ok ? '✅ Верно!' : '❌ Верно: ' + r.a;
+        if (ok) g5s++;
+        g5i++;
+        setTimeout(renderG5, ok ? 450 : 850);
+      };
+      opts.appendChild(b);
+    });
+  }
+  renderG5();
+
+  /* —— Проект —— */
+  const safeOk = document.getElementById('safeOk');
+  const safeBad = document.getElementById('safeBad');
+  safeOk.onclick = () => { safeOk.classList.add('selected'); safeBad.classList.remove('selected'); };
+  safeBad.onclick = () => { safeBad.classList.add('selected'); safeOk.classList.remove('selected'); };
+
+  function updProject() {
+    const n = [...document.querySelectorAll('.pstep')].filter(x => x.checked).length;
+    document.getElementById('projectFill').style.width = (n / 6 * 100) + '%';
+    document.getElementById('projectLabel').textContent = 'Шаги: ' + n + ' / 6';
+  }
+  document.querySelectorAll('.pstep').forEach(cb => cb.addEventListener('change', updProject));
+
+  document.getElementById('projFinish').onclick = () => {
+    const steps = [...document.querySelectorAll('.pstep')].filter(x => x.checked).length;
+    const name = document.getElementById('botName').value.trim();
+    const skills = document.getElementById('botSkills').value.trim();
+    const fact = document.getElementById('botFact').value.trim();
+    const safe = safeOk.classList.contains('selected');
+    const res = document.getElementById('projRes');
+    if (steps < 6 || name.length < 2 || skills.length < 5 || fact.length < 10 || !safe) {
+      res.className = 'result bad';
+      res.textContent = 'Отметь 6 шагов, заполни поля и выбери верное правило.';
+      return;
+    }
+    document.getElementById('oName').textContent = name;
+    document.getElementById('oSkills').textContent = skills;
+    document.getElementById('oFact').textContent = fact;
+    document.getElementById('projectCard').style.display = 'block';
+    res.className = 'result ok';
+    res.textContent = '🎉 Проект готов!';
+    complete('proj', 'Мини-проект', 1);
+  };
+})();
+</script>
+</body>
+</html>

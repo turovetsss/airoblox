@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2.7. GetChildren — Бургерная Чума — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    /* ===== ОСНОВНЫЕ СТИЛИ ===== */
+    .choice-card {
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      padding: 8px 16px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 30px;
+      display: inline-block;
+      margin: 4px 6px;
+    }
+    .choice-card:hover { border-color: var(--primary); transform: translateY(-2px); background: #f1f5f9; }
+    .choice-card.selected { border-color: var(--accent) !important; background: var(--accent-light) !important; box-shadow: 0 0 0 3px rgba(110, 0, 145, 0.2); }
+    .choice-card.correct { border-color: var(--primary) !important; background: var(--primary-light) !important; }
+    .choice-card.incorrect { border-color: var(--danger) !important; background: var(--danger-light) !important; }
+    
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    
+    .choice-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 16px; }
+    
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 16px 20px; border-radius: 12px; font-family: 'Courier New', monospace; font-size: 1.2rem; overflow-x: auto; margin: 12px 0; line-height: 1.6;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    
+    .hint-btn {
+      background: var(--accent-light, #f0e6f5); border: none; padding: 6px 16px; border-radius: 30px; font-weight: 600; color: var(--accent-ink, #4a1a5a); cursor: pointer; transition: 0.15s; margin-top: 6px;
+    }
+    .hint-btn:hover { background: var(--accent, #b47cdb); color: white; }
+    .hint-box { display: none; background: #f1f5f9; border-radius: 12px; padding: 12px; margin-top: 8px; border-left: 4px solid var(--accent, #6e0091); }
+    .hint-box.show { display: block; }
+    
+    .theory-section { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--line, #e2e8f0); }
+    .theory-section:last-child { border-bottom: none; }
+    .theory-section h3 { margin-top: 12px; color: var(--primary-dark, #1a4a0a); }
+    .theory-section ul, .theory-section ol { padding-left: 24px; line-height: 1.7; }
+    .theory-section li { margin-bottom: 4px; }
+    
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line, #e2e8f0); padding: 8px 12px; text-align: left; }
+    .prop-table th { background: var(--primary-light, #e8f5e0); color: var(--primary-dark, #1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+    
+    .scenario-box {
+      background: linear-gradient(135deg, #0a0e2a, #1a1a4a); border-radius: 20px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #3b3b8a;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary, #61b01f); margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка по GetChildren()";
+      position: absolute; top: -14px; left: 20px; background: var(--primary-light, #e8f5e0); color: var(--primary-dark, #1a4a0a); padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: 0.9rem; border: 1px solid var(--primary, #61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 12px; }
+    .cheat-item { background: white; border-radius: 14px; padding: 14px 16px; border: 1px solid var(--line, #e2e8f0); }
+    .cheat-item .title { font-weight: 700; color: var(--primary-dark, #1a4a0a); border-bottom: 2px solid var(--primary-light, #e8f5e0); padding-bottom: 4px; margin-bottom: 6px; }
+    .cheat-item .rule { font-size: 0.92rem; margin: 4px 0; }
+    .cheat-item .rule code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
+    
+    .screenshot-placeholder { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 20px; text-align: center; margin: 12px 0; color: #64748b; font-style: italic; }
+    .note-box { background: #f8fafc; border-left: 4px solid var(--accent); padding: 12px 16px; border-radius: 8px; margin: 12px 0; }
+    .num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.6em; height: 1.6em; border-radius: 50%; margin-right: 6px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); font-weight: 800;
+    }
+    .map-card {
+      background: linear-gradient(135deg,#E8F5E0,#F4EAFA); border: 2px solid var(--primary,#61b01f);
+      border-radius: 20px; padding: 20px 24px; margin: 20px 0;
+    }
+    .map-card .dl {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; background: var(--primary,#61b01f);
+      color: #fff; padding: 12px 22px; border-radius: 30px; font-weight: 800; text-decoration: none;
+      box-shadow: 0 4px 0 #2E4A17;
+    }
+    .map-card .dl:hover { background: #4C8C18; color: #fff; }
+    .space-note { background: #1a1a4a; color: #fbbf24; border-left: 4px solid #fbbf24; padding: 12px 16px; border-radius: 12px; margin: 12px 0; font-weight: 500; }
+  </style>
+</head>
+<body class="lesson-page">
+
+  <header class="site-header">
+    <div class="wrap">
+      <div class="top-bar">
+        <a class="brand" href="Карта_курса.html">
+          <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+          <div>
+            <div class="brand-name">РОБОВИТА</div>
+            <div class="brand-tag">учимся программировать роботов и игры</div>
+          </div>
+        </a>
+        <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 2.7</div>
+      </div>
+      <div class="hero">
+        <div class="hex-badge">2.7</div>
+        <div>
+          <div class="module-pill">Раздел 2 · Программирование</div>
+          <h1>🍔 GetChildren — Бургерная чума</h1>
+          <p class="subtitle">Операция «Спасение города»: свет, бургеры, жители, гидранты и ворота</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- Сюжет -->
+    <div class="scenario-box">
+      <div class="scenario-avatar">🚨</div>
+      <div>
+        <strong>Операция «Спасение города»</strong><br>
+        На город обрушилась таинственная <strong>«Бургерная чума»</strong>. Свет погас, улицы залиты водой из сломанных гидрантов,
+        жители превратились в серые статуи <b>MrGrey</b>, а повсюду валяются испорченные бургеры <b>BadBurger</b>.
+        Ты — агент-программист. Твоё оружие — <code>GetChildren()</code>: команда, которая берёт <b>всех детей</b> папки разом
+        и позволяет чинить город циклом, а не по одному объекту.
+      </div>
+    </div>
+
+    <div class="card" id="story">
+      <h2>📖 История миссии</h2>
+      <div class="theory-section">
+        <h3>Глава 1. Город во тьме</h3>
+        <p>Чума началась с кухни бургерной: рецепт испортили, и «BadBurger» разлетелся по всему району.
+          Сначала погасли фонари — в папке <code>LIGHTS</code> десятки ламп, и вручную включать каждую слишком долго.
+          Нужен цикл по <code>GetChildren()</code>.</p>
+      </div>
+      <div class="theory-section">
+        <h3>Глава 2. Опасный мусор</h3>
+        <p>Люди продолжают носить плохие бургеры в рюкзаке. У мусорки <b>Trash</b> стоит ClickDetector:
+          если набрать <b>5+</b> BadBurger и кликнуть — скрипт проверит рюкзак через <code>GetChildren()</code> и уничтожит их все.</p>
+      </div>
+      <div class="theory-section">
+        <h3>Глава 3. Спасение людей</h3>
+        <p>Жители застыли серыми статуями <b>MrGrey</b>. В <code>ServerStorage</code> лежит модель здорового человека <b>Noob</b>,
+          а в рюкзаке у героя — таблетка <b>Pill</b>. Скрипт <code>HelpHumanScript</code> перебирает всех MrGrey,
+          и при клике со статуей (если есть Pill) ставит клона Noob на место статуи, а статую удаляет.</p>
+      </div>
+      <div class="theory-section">
+        <h3>Глава 4. Потоп</h3>
+        <p>Гидранты в папке <code>Hydrant</code> бьют фонтанами, лужи в папке <code>Water</code> заливают улицы.
+          На рычаге <b>Velo</b> есть ProximityPrompt: нажал <kbd>E</kbd> — выключил частицы у всех гидрантов и удалил всю воду.</p>
+      </div>
+      <div class="theory-section">
+        <h3>Глава 5. Ворота наружу</h3>
+        <p>Последний рубеж — кодовые блоки в папках <code>NUMBERSCODEFALSE</code> и <code>NUMBERSCODETRUE</code>.
+          Кнопка <b>Red_Button</b> сдвигает и поворачивает все блоки разом. Город спасён — путь открыт!</p>
+      </div>
+    </div>
+
+    <!-- Цели -->
+    <div class="objectives">
+      <h2>🎯 На этом уроке ты:</h2>
+      <ul>
+        <li>поймёшь, зачем нужен <code>GetChildren()</code> и чем он отличается от <code>FindFirstChild</code></li>
+        <li>научишься двум циклам: <code>pairs</code> и <code>for i = 1, #list</code></li>
+        <li>включишь свет во всём городе одной командой</li>
+        <li>очистишь рюкзак от BadBurger и спасёшь жителей MrGrey → Noob</li>
+        <li>починишь гидранты и откроешь ворота через группы объектов</li>
+      </ul>
+    </div>
+
+    <!-- План занятия -->
+    <div class="card">
+      <table class="timetable">
+        <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+        <tr><td>История + теория</td><td>15 мин</td><td>GetChildren, циклы, Backpack, Clone/Destroy</td></tr>
+        <tr><td>Задание 1 — Электричество</td><td>10 мин</td><td>Цикл по папке LIGHTS</td></tr>
+        <tr><td>Задание 2 — Испорченные бургеры</td><td>12 мин</td><td>GetChildren рюкзака + Trash</td></tr>
+        <tr><td>Задание 3 — Спасение людей</td><td>14 мин</td><td>HelpHumanScript: MrGrey + Pill → Noob</td></tr>
+        <tr><td>Задание 4 — Сломанные гидранты</td><td>12 мин</td><td>Hydrant / Water + ProximityPrompt</td></tr>
+        <tr><td>Задание 5 — Открытие ворот</td><td>12 мин</td><td>NUMBERSCODEFALSE / TRUE</td></tr>
+        <tr><td>Творчество + опрос</td><td>10 мин</td><td>Своя механика и проверка</td></tr>
+        <tr><td>Итого</td><td>~85 мин</td><td>—</td></tr>
+      </table>
+    </div>
+
+    <!-- ===== КАРТА ===== -->
+    <div class="card map-card" id="mapDownload">
+      <h2 style="margin:0 0 .4rem;color:var(--primary-dark);">🗺️ Карта урока «Бургерная чума»</h2>
+      <p style="margin:0 0 .6rem;">Скачай готовую карту и открой в <strong>Roblox Studio</strong>: File → Open from File.</p>
+      <div class="note" style="background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:12px;">
+        <b>Файл карты:</b>
+        <a href="assets/downloads/getchildren.rbxl" download="getchildren.rbxl" style="font-weight:800;color:var(--primary-dark);">⬇️ Скачать getchildren.rbxl</a>
+        (если не скачивается — правый клик → «Сохранить ссылку как…»)
+      </div>
+      <div class="note" style="background:#fff;border-radius:12px;padding:12px 14px;">
+        <b>На карте уже есть:</b> папки <code>LIGHTS</code>, <code>MrGrey</code>, <code>Hydrant</code>, <code>Water</code>,
+        объекты <code>Trash</code>, <code>Velo</code>, <code>Red_Button</code>, скрипт <code>HelpHumanScript</code>,
+        модель <code>Noob</code> в ServerStorage.
+      </div>
+      <a class="dl" href="assets/downloads/getchildren.rbxl" download="getchildren.rbxl">⬇️ Скачать карту getchildren.rbxl</a>
+    </div>
+
+
+    <!-- ========================================================== -->
+    <!--  ТЕОРИЯ                                                    -->
+    <!-- ========================================================== -->
+    <div class="card" id="theory-getchildren">
+      <h2><span class="num">0</span> Теория: GetChildren() и работа с группами</h2>
+
+      <div class="theory-section">
+        <h3>🌳 Дерево объектов</h3>
+        <p>
+          В Roblox всё — дерево: у <b>Workspace</b> есть дети (дома, папки), у папки — свои дети (лампы, статуи).
+          <code>GetChildren()</code> возвращает <b>таблицу всех прямых детей</b> родителя. Не внуков — только один уровень вниз.
+        </p>
+        <div class="code-block">
+          <span class="keyword">local</span> objects = game.Workspace.Model:<b>GetChildren()</b><br>
+          <span class="comment">-- objects = { Part1, Part2, Script, ... }</span><br>
+          <span class="func">print</span>(#objects) <span class="comment">-- сколько детей</span>
+        </div>
+      </div>
+
+      <div class="theory-section">
+        <h3>🔍 GetChildren vs FindFirstChild</h3>
+        <table class="prop-table">
+          <tr><th>Команда</th><th>Что делает</th><th>Когда нужна</th></tr>
+          <tr><td><code>GetChildren()</code></td><td>Все дети → таблица</td><td>Включить 20 фонарей, удалить всю воду</td></tr>
+          <tr><td><code>FindFirstChild("Имя")</code></td><td>Один ребёнок по имени (или nil)</td><td>Найти Pill, ClickDetector, Noob</td></tr>
+        </table>
+        <div class="space-note">
+          💡 В миссии спасения оба приёма нужны вместе: <code>GetChildren()</code> — список статуй, <code>FindFirstChild</code> — таблетка и клик.
+        </div>
+      </div>
+
+      <div class="theory-section">
+        <h3>🔄 Два способа пройтись по таблице</h3>
+        <p><b>1) pairs</b> — удобно, когда не важен номер:</p>
+        <div class="code-block">
+          <span class="keyword">local</span> list = workspace.Folder:GetChildren()<br>
+          <span class="keyword">for</span> i, v <span class="keyword">in</span> <span class="func">pairs</span>(list) <span class="keyword">do</span><br>
+          &nbsp;&nbsp;<span class="func">print</span>(v.Name) <span class="comment">-- v = объект</span><br>
+          <span class="keyword">end</span>
+        </div>
+        <p><b>2) for i = 1, #list</b> — когда нужен индекс (как в заданиях с гидрантами и воротами):</p>
+        <div class="code-block">
+          <span class="keyword">local</span> list = workspace.Folder:GetChildren()<br>
+          <span class="keyword">for</span> i = <span class="number">1</span>, #list <span class="keyword">do</span><br>
+          &nbsp;&nbsp;list[i].Transparency = <span class="number">0.5</span><br>
+          <span class="keyword">end</span>
+        </div>
+      </div>
+
+      <div class="theory-section">
+        <h3>🎒 Backpack — рюкзак игрока</h3>
+        <p>
+          <code>player.Backpack</code> хранит Tools. Через <code>GetChildren()</code> можно перебрать все предметы,
+          через <code>FindFirstChild("Pill")</code> — быстро проверить одну вещь.
+        </p>
+        <div class="code-block">
+          <span class="keyword">if</span> player.Backpack:FindFirstChild(<span class="string">"Pill"</span>) <span class="keyword">then</span><br>
+          &nbsp;&nbsp;<span class="func">print</span>(<span class="string">"Есть лекарство!"</span>)<br>
+          <span class="keyword">end</span>
+        </div>
+      </div>
+
+      <div class="theory-section">
+        <h3>🧬 Clone и Destroy — спасение статуй</h3>
+        <p>Чтобы «превратить» MrGrey в человека:</p>
+        <ol>
+          <li>Запомнить позицию статуи</li>
+          <li><code>Destroy()</code> — убрать статую</li>
+          <li><code>Clone()</code> модели Noob из ServerStorage</li>
+          <li>Поставить клон на ту же позицию (<code>SetPrimaryPartCFrame</code>)</li>
+        </ol>
+        <div class="code-block">
+          <span class="keyword">local</span> pos = primaryPart.Position<br>
+          v:<span class="func">Destroy</span>()<br>
+          <span class="keyword">local</span> newNoob = noobModel:<span class="func">Clone</span>()<br>
+          newNoob.Parent = workspace<br>
+          newNoob:<span class="func">SetPrimaryPartCFrame</span>(CFrame.new(pos))
+        </div>
+        <div class="space-note">
+          ⚠️ У модели Noob должен быть назначен <b>PrimaryPart</b>, иначе <code>SetPrimaryPartCFrame</code> не сработает.
+        </div>
+      </div>
+
+      <div class="theory-section">
+        <h3>📡 GetService и события</h3>
+        <p><code>game:GetService("ServerStorage")</code> — безопасный доступ к сервису.
+          Для клика — <code>ClickDetector.MouseClick:Connect</code>, для клавиши E — <code>ProximityPrompt.Triggered:Connect</code>.</p>
+      </div>
+    </div>
+
+    <!-- ===== МИНИ-ИГРА: РОДИТЕЛЬ И ДЕТИ ===== -->
+    <div id="lessonMiniGame" class="rmg"></div>
+    <script src="assets/js/mini-games.js"></script>
+    <script>
+      RoboMiniGame.mount(document.getElementById('lessonMiniGame'), {
+        type: 'hierarchyKids',
+        title: 'GetChildren — кто дети папки?',
+        hint: 'Parent = папка MrGrey. Кликай только то, что вернёт GetChildren() — прямых детей. Чужие сервисы и предметы не нажимай!',
+        parent: 'MrGrey',
+        kids: ['🗿 MrGrey', '🗿 MrGrey', '🗿 MrGrey', '🗿 MrGrey'],
+        others: ['Workspace', 'Lighting', 'ServerStorage', 'Noob', 'Pill', 'PlayerGui', 'BadBurger']
+      });
+    </script>
+
+    <div class="ai-helper">
+      <div class="ai-head">
+        <span style="font-size:32px; line-height:1;">🤖</span>
+        <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+      </div>
+      <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+      <div class="ai-buttons">
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82%20GetChildren%20%D0%B2%20Roblox%3F%22%7D" target="_blank" class="alice-q-btn">Как работает GetChildren в Roblox?</a>
+        <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20pairs%20%D0%B2%20Roblox%20Lua%3F%22%7D" target="_blank" class="alice-q-btn">Как использовать pairs в Roblox Lua?</a>
+      </div>
+      <div class="ai-answer" style="border-left-color: var(--primary); background: rgba(97,176,31,0.06);">
+        💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+      </div>
+    </div>
+
+
+    <!-- ===== ШПАРГАЛКА ПО GETCHILDREN ===== -->
+    <div class="cheat-sheet">
+      <div class="cheat-grid">
+        <div class="cheat-item">
+          <div class="title">📁 Получение объектов</div>
+          <div class="rule"><code>game.Workspace.Folder:GetChildren()</code></div>
+          <div class="rule">Вернёт таблицу со всеми объектами внутри папки Folder.</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">🔄 Цикл для таблицы</div>
+          <div class="rule"><code><span class="keyword">for</span> i, v <span class="keyword">in</span> <span class="func">pairs</span>(list) <span class="keyword">do</span></code></div>
+          <div class="rule">Где <code>i</code> — это номер, а <code>v</code> — сам объект.</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">🎒 Доступ к рюкзаку</div>
+          <div class="rule"><code>player.Backpack:GetChildren()</code></div>
+          <div class="rule">Позволяет проверить, какие предметы у игрока.</div>
+        </div>
+
+        <div class="cheat-item">
+          <div class="title">🛠️ Изменение свойств</div>
+          <div class="rule"><code>v.Transparency = 0.5</code></div>
+          <div class="rule">Или <code>v:Destroy()</code> для удаления объекта.</div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ========================================================== -->
+    <!--  ЗАДАНИЕ 1: ЭЛЕКТРИЧЕСТВО                                   -->
+    <!-- ========================================================== -->
+    <div class="task-box" id="task1">
+      <h2>💡 Задание 1 — Включи электричество</h2>
+      <p>В городе отключили свет. Все объекты, отвечающие за свет, находятся в папке <b>LIGHTS</b> внутри Workspace. Тебе нужно пройтись по всем этим объектам и включить их.</p>
+      <ul>
+        <li>Создай скрипт (<code>Script</code>) в любом месте, например, в <code>ServerScriptService</code>.</li>
+        <li>Используй <code>GetChildren()</code> для папки <code>game.Workspace.LIGHTS</code>.</li>
+        <li>С помощью цикла включи свет у всех объектов.</li>
+          <div class="screenshot-placeholder">
+            <img src="assets/images/lesson-4.2.3/1.png" alt="Папка LIGHTS" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          </div>
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task1Progress"></div></div>
+      <span class="progress-label" id="task1Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t1s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s0">Создай скрипт для включения света.</label>
+        
+        </li>
+        <li>
+          <input type="checkbox" id="t1s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s1">Напиши код с циклом по GetChildren().</label>
+          <button class="hint-btn" onclick="toggleHint('hint1')">📖 Показать подсказку (Пример кода)</button>
+          <div id="hint1" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> lightFolder = game.Workspace.LIGHTS <span class="comment">-- Находим папку</span><br>
+              <span class="keyword">local</span> lights = lightFolder:<b>GetChildren()</b> <span class="comment">-- Получаем все объекты</span><br><br>
+              <span class="keyword">for</span> i, light <span class="keyword">in</span> <span class="func">pairs</span>(lights) <span class="keyword">do</span><br>
+              &nbsp;&nbsp;light.PointLight.Enabled = <span class="keyword">true</span> <span class="comment">-- Включаем свет у каждого</span><br>
+              <span class="keyword">end</span>
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t1s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t1s2">Запусти игру и проверь, зажглись ли фонари и свет в городе.</label>
+        </li>
+         <img src="assets/images/lesson-4.2.3/2.png" alt="Папка LIGHTS" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          
+      </ul>
+      <div class="note-box">
+        💡 Команда <code>light.PointLight.Enabled = true</code> включает прожектор, если он находится внутри объекта-родителя.
+      </div>
+    </div>
+
+
+    <!-- ========================================================== -->
+    <!--  ЗАДАНИЕ 2: ИСПОРЧЕННЫЕ БУРГЕРЫ                            -->
+    <!-- ========================================================== -->
+    <div class="task-box" id="task2">
+      <h2>🍔 Задание 2 — Очисти город от плохих бургеров</h2>
+      <p>На карте есть мусорка (<b>Trash</b>) с детектором клика (<code>ClickDetector</code>). Когда игрок нажимает на неё, скрипт должен проверить, сколько у него в рюкзаке предметов <b>BadBurger</b>. Если их 5 или больше, все они должны исчезнуть.</p>
+       <img src="assets/images/lesson-4.2.3/3.png" alt="Папка LIGHTS" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          
+      <ul>
+        <li>Открой объект <code>Trash</code> и открой внутри него скрипт.</li>
+        <li>Создай переменную, которая считает количество бургеров.</li>
+        <li>В событии нажатия используй цикл, чтобы перебрать рюкзак игрока и посчитать бургеры.</li>
+         <li>Собери все плохие бургеры и выбрось в мусорку</li>
+         <img src="assets/images/lesson-4.2.3/4.png" alt="Папка LIGHTS" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+          
+      </ul>
+
+      <div class="progress-track"><div class="progress-fill" id="task2Progress"></div></div>
+      <span class="progress-label" id="task2Label">Выполнено шагов: 0 из 4</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t2s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s0">Открой объект <b>Trash</b>, найди внутри него <code>ClickDetector</code> и создай <b>Script</b>.</label>
+          <img src="assets/images/lesson-4.2.3/5.png" alt="Папка LIGHTS" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" />
+        </li>
+        <li>
+           <input type="checkbox" id="t2s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+           <label for="t2s1">В скрипте создай локальную переменную <code>badburgers = 0</code>.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t2s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s2">Напиши функцию для клика по ClickDetector и перебор рюкзака через GetChildren().</label>
+          <button class="hint-btn" onclick="toggleHint('hint2')">📖 Показать подсказку (Пример кода)</button>
+          <div id="hint2" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> trash = <span class="keyword">script</span>.Parent<br>
+              <span class="keyword">local</span> clickDetector = trash.ClickDetector<br><br>
+              clickDetector.MouseClick<b>:Connect</b>(<span class="keyword">function</span>(player)<br>
+              &nbsp;&nbsp;<span class="keyword">local</span> badburgers = <span class="number">0</span><br>
+              &nbsp;&nbsp;<span class="keyword">local</span> backpackItems = player.Backpack:<b>GetChildren()</b><br>
+              &nbsp;&nbsp;<span class="comment">-- Считаем количество плохих бургеров</span><br>
+              &nbsp;&nbsp;<span class="keyword">for</span> i, v <span class="keyword">in</span> <span class="func">pairs</span>(backpackItems) <span class="keyword">do</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> v.Name == <span class="string">"BadBurger"</span> <span class="keyword">then</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;badburgers = badburgers + <span class="number">1</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+              &nbsp;&nbsp;<span class="keyword">end</span><br><br>
+              &nbsp;&nbsp;<span class="keyword">if</span> badburgers >= <span class="number">5</span> <span class="keyword">then</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> i, v <span class="keyword">in</span> <span class="func">pairs</span>(backpackItems) <span class="keyword">do</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> v.Name == <span class="string">"BadBurger"</span> <span class="keyword">then</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v<b>:Destroy()</b> <span class="comment">-- Удаляем найденный бургер из рюкзака</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">print</span>(<span class="string">"Все плохие бургеры удалены!"</span>)<br>
+              &nbsp;&nbsp;<span class="keyword">end</span><br>
+              <span class="keyword">end</span>)
+            </div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t2s3" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t2s3">Собери 5 BadBurger, освободи руку и нажми на мусорку. Проверь Output.</label>
+        </li>
+      </ul>
+    </div>
+
+
+    <!-- ========================================================== -->
+    <!--  ЗАДАНИЕ 3: СПАСЕНИЕ ЛЮДЕЙ                                 -->
+    <!-- ========================================================== -->
+   <!-- ========================================================== -->
+<!--  ЗАДАНИЕ 3: СПАСЕНИЕ ЛЮДЕЙ                                 -->
+<!-- ========================================================== -->
+<div class="task-box" id="task3">
+  <h2>🤖 Задание 3. Спасение людей</h2>
+  <p>
+    Серые статуи <b>MrGrey</b> — это жители города. В <code>ServerStorage</code> лежит модель <b>Noob</b> (здоровый человек),
+    а лекарство — предмет <b>Pill</b> в рюкзаке. Скрипт перебирает всех детей папки MrGrey через <code>GetChildren()</code>
+    и при клике со статуей (если есть Pill) ставит клона Noob на место статуи.
+  </p>
+  <p><b>Открой HelpHumanScript в ServerScriptService:</b></p>
+  <img src="assets/images/lesson-4.2.3/6.png" alt="HelpHumanScript в ServerScriptService" style="max-width:100%; border-radius:12px; border:2px solid var(--line); margin:8px 0;" />
+
+  <ol>
+    <li>В переменной <code>serverStorage</code> подключи серверное хранилище <b>ServerStorage</b>.</li>
+    <li>В переменной <code>noobModel</code> найди модель <b>Noob</b>.</li>
+    <li>В переменной <code>mrGreyModels</code> укажи все объекты в папке <b>MrGrey</b> (<code>GetChildren()</code>).</li>
+    <li>Создай цикл, который будет перебирать все объекты <code>mrGreyModels</code>.</li>
+    <li>Напиши условие для проверки имени модели (<code>MrGrey</code>).</li>
+    <li>Создай переменную для поиска <b>ClickDetector</b>.</li>
+    <li>Проверь, есть ли у модели MrGrey компонент ClickDetector.</li>
+    <li>Создай функцию, которая будет срабатывать при взаимодействии с ClickDetector.</li>
+    <li>Удали модель MrGrey после создания копии Noob.</li>
+    <li>Проверь: клик по MrGrey с Pill → появляется Noob, статуя исчезает.</li>
+  </ol>
+
+  <div class="progress-track"><div class="progress-fill" id="task3Progress"></div></div>
+  <span class="progress-label" id="task3Label">Выполнено шагов: 0 из 3</span>
+  <ul class="task-steps">
+    <li>
+      <input type="checkbox" id="t3s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t3s0">Открой скрипт <code>HelpHumanScript</code> в ServerScriptService.</label>
+      <img src="assets/images/lesson-4.2.3/7.png" alt="HelpHumanScript" style="max-width:100%; border-radius:12px; border:2px solid var(--line); margin-top:8px;" />
+    </li>
+    <li>
+      <input type="checkbox" id="t3s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t3s1">Напиши код спасения: GetChildren → ClickDetector → Pill → Clone Noob → Destroy MrGrey.</label>
+      <button class="hint-btn" onclick="toggleHint('hint3')">📖 Показать подсказку (код)</button>
+      <div id="hint3" class="hint-box">
+        <div class="code-block">
+          <span class="keyword">local</span> serverStorage = game:GetService(<span class="string">"ServerStorage"</span>)<br>
+          <span class="keyword">local</span> noobModel = serverStorage:FindFirstChild(<span class="string">"Noob"</span>)<br>
+          <span class="keyword">local</span> mrGreyModels = game.Workspace.MrGrey:<b>GetChildren()</b><br><br>
+          <span class="keyword">for</span> i, v <span class="keyword">in</span> <span class="func">pairs</span>(mrGreyModels) <span class="keyword">do</span><br>
+          &nbsp;&nbsp;<span class="keyword">if</span> v.Name == <span class="string">"MrGrey"</span> <span class="keyword">then</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> clickDetector = v:FindFirstChild(<span class="string">"ClickDetector"</span>)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> clickDetector <span class="keyword">then</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clickDetector.MouseClick:<b>Connect</b>(<span class="keyword">function</span>(player)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> char = player.Character<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> char <span class="keyword">then</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> humanoidRootPart = char:FindFirstChild(<span class="string">"HumanoidRootPart"</span>)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> humanoidRootPart <span class="keyword">and</span> noobModel <span class="keyword">then</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> primaryPart = v.PrimaryPart<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> <span class="keyword">not</span> primaryPart <span class="keyword">then</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;primaryPart = v:FindFirstChildWhichIsA(<span class="string">"BasePart"</span>)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> primaryPart <span class="keyword">then</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> spawnPosition = primaryPart.Position<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v:<b>Destroy</b>()<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">local</span> newNoob = noobModel:<b>Clone</b>()<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newNoob.Parent = workspace<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newNoob:SetPrimaryPartCFrame(CFrame.new(spawnPosition))<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+          &nbsp;&nbsp;<span class="keyword">end</span><br>
+          <span class="keyword">end</span>
+        </div>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" id="t3s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+      <label for="t3s2">Возьми Pill, освободи руку и кликни по статуе — должен появиться Noob.</label>
+    </li>
+  </ul>
+  <div class="note-box">
+    💊 Чтобы превратить статую обратно в человека, освободи руку и нажми на статую.
+  </div>
+</div>
+
+
+    <!-- ========================================================== -->
+    <!--  ЗАДАНИЕ 4: СЛОМАННЫЕ ГИДРАНТЫ                             -->
+    <!-- ========================================================== -->
+    <div class="task-box" id="task4">
+      <h2>🚿 Задание 4. Сломанные гидранты</h2>
+      <p>
+        Гидранты затопили улицы. На рычаге <b>Velo</b> → <b>MeshPart</b> есть <code>ProximityPrompt</code> и <code>Script</code>.
+        Нужно через <code>GetChildren()</code> выключить частицы у всех объектов папки <b>Hydrant</b>
+        и удалить все объекты папки <b>Water</b>.
+      </p>
+        <img src="assets/images/lesson-4.2.3/8.png" alt="HelpHumanScript в ServerScriptService" style="max-width:100%; border-radius:12px; border:2px solid var(--line); margin:8px 0;" />
+
+      <p><b>Открой скрипт в рычаге:</b></p>
+      <img src="assets/images/lesson-4.2.3/9.png" alt="Velo / ProximityPrompt" style="max-width:280px; border-radius:12px; border:2px solid var(--line); margin:8px 0;" />
+
+      <ol>
+        <li>В переменной <code>hydrant</code> укажи путь до папки <b>Hydrant</b> и получи все объекты.</li>
+        <li>В переменной <code>water</code> укажи путь до папки <b>Water</b> и получи все объекты.</li>
+        <li>В переменной <code>Proximity</code> укажи путь до <b>ProximityPrompt</b>.</li>
+        <li>Создай функцию, которая срабатывает при взаимодействии с ProximityPrompt.</li>
+        <li>Перебери все объекты папки Hydrant и выключи генератор частиц.</li>
+        <li>Перебери все объекты папки Water и удали их из игры.</li>
+      </ol>
+
+      <div class="progress-track"><div class="progress-fill" id="task4Progress"></div></div>
+      <span class="progress-label" id="task4Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t4s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t4s0">Открой Script рядом с ProximityPrompt внутри MeshPart у Velo.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t4s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t4s1">Напиши код с двумя циклами <code>for i = 1, #list</code> и GetChildren.</label>
+          <button class="hint-btn" onclick="toggleHint('hint4')">📖 Показать подсказку (код)</button>
+          <div id="hint4" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> hydrant = game.Workspace.Hydrant:<b>GetChildren</b>()<br>
+              <span class="keyword">local</span> water = game.Workspace.Water:<b>GetChildren</b>()<br>
+              <span class="keyword">local</span> Proximity = <span class="keyword">script</span>.Parent.Parent.ProximityPrompt<br><br>
+              Proximity.Triggered:<b>Connect</b>(<span class="keyword">function</span>(player)<br>
+              &nbsp;&nbsp;<span class="keyword">for</span> i = <span class="number">1</span>, #hydrant <span class="keyword">do</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;hydrant[i].ParticleEmitter.Enabled = <span class="keyword">false</span><br>
+              &nbsp;&nbsp;<span class="keyword">end</span><br>
+              &nbsp;&nbsp;<span class="keyword">for</span> i = <span class="number">1</span>, #water <span class="keyword">do</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;water[i]:<b>Destroy</b>()<br>
+              &nbsp;&nbsp;<span class="keyword">end</span><br>
+              <span class="keyword">end</span>)
+            </div>
+            <p style="margin-top:8px;">Если ParticleEmitter лежит глубже внутри гидранта, используй:<br>
+              <code>hydrant[i]:FindFirstChildWhichIsA("ParticleEmitter").Enabled = false</code></p>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t4s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t4s2">Подойди к рычагу, нажми <kbd>E</kbd> — фонтаны гаснут, лужи исчезают.</label>
+        </li>
+      </ul>
+    </div>
+
+
+    <!-- ========================================================== -->
+    <!--  ЗАДАНИЕ 5: ОТКРЫТИЕ ВОРОТ                                 -->
+    <!-- ========================================================== -->
+    <div class="task-box" id="task5">
+      <h2>🚪 Задание 5. Открытие ворот</h2>
+      <p>
+        Финал спасения: кнопка <b>Red_Button</b> сдвигает кодовые блоки.
+        Папки <code>NUMBERSCODEFALSE</code> и <code>NUMBERSCODETRUE</code> содержат все детали ворот —
+        снова работаем группами через <code>GetChildren()</code>.
+      </p>
+      <ol>
+        <li>Добавь Script к кнопке <b>Red_Button</b> (рядом с ProximityPrompt).</li>
+        <li>В переменной <code>button</code> укажи путь до ProximityPrompt.</li>
+        <li>В <code>num1</code> получи все объекты папки <b>NUMBERSCODEFALSE</b>.</li>
+        <li>В <code>num2</code> получи все объекты папки <b>NUMBERSCODETRUE</b>.</li>
+        <li>Создай функцию на нажатие кнопки (<code>Triggered:Connect</code>).</li>
+        <li>Перебери num1: сдвинь Position и задай Orientation.</li>
+        <li>Перебери num2: сдвинь Position и задай Orientation.</li>
+        <li>Смени цвет кнопки на случайный.</li>
+      </ol>
+
+      <div class="progress-track"><div class="progress-fill" id="task5Progress"></div></div>
+      <span class="progress-label" id="task5Label">Выполнено шагов: 0 из 3</span>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="t5s0" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t5s0">Создай Script у Red_Button рядом с ProximityPrompt.</label>
+        </li>
+        <li>
+          <input type="checkbox" id="t5s1" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t5s1">Напиши код открытия ворот (два цикла + случайный цвет).</label>
+          <button class="hint-btn" onclick="toggleHint('hint5')">📖 Показать подсказку (код)</button>
+          <div id="hint5" class="hint-box">
+            <div class="code-block">
+              <span class="keyword">local</span> button = <span class="keyword">script</span>.Parent.ProximityPrompt<br>
+              <span class="keyword">local</span> num1 = game.Workspace.NUMBERSCODEFALSE:<b>GetChildren</b>()<br>
+              <span class="keyword">local</span> num2 = game.Workspace.NUMBERSCODETRUE:<b>GetChildren</b>()<br><br>
+              button.Triggered:<b>Connect</b>(<span class="keyword">function</span>()<br>
+              &nbsp;&nbsp;<span class="keyword">for</span> i = <span class="number">1</span>, #num1 <span class="keyword">do</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;num1[i].Position = num1[i].Position - Vector3.new(<span class="number">5</span>, <span class="number">1</span>, <span class="number">1</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;num1[i].Orientation = Vector3.new(<span class="number">0</span>, <span class="number">-90</span>, <span class="number">-45</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+              &nbsp;&nbsp;<span class="keyword">end</span><br>
+              &nbsp;&nbsp;<span class="keyword">for</span> i = <span class="number">1</span>, #num2 <span class="keyword">do</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;num2[i].Position = num2[i].Position + Vector3.new(<span class="number">5</span>, <span class="number">1</span>, <span class="number">1</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;num2[i].Orientation = Vector3.new(<span class="number">0</span>, <span class="number">-90</span>, <span class="number">-45</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">wait</span>()<br>
+              &nbsp;&nbsp;<span class="keyword">end</span><br>
+              &nbsp;&nbsp;button.Parent.BrickColor = BrickColor.Random()<br>
+              <span class="keyword">end</span>)
+            </div>
+            <p style="margin-top:8px;">Если папки на карте названы иначе (например без буквы S), подставь точные имена из Explorer.</p>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="t5s2" onchange="updateTaskProgress(this.closest('.task-box'))">
+          <label for="t5s2">Нажми E на кнопке — блоки разъедутся, путь наружу открыт.</label>
+        </li>
+      </ul>
+      <div class="note-box">
+        🎉 Молодец! Ты отлично поработал — город спасён с помощью GetChildren().
+      </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!--  ТВОРЧЕСКОЕ ЗАДАНИЕ                                        -->
+    <!-- ========================================================== -->
+    <div class="task-box" id="task6">
+      <h2>🎨 Творческое задание — Придумай свою механику</h2>
+      <p>Используй <code>GetChildren()</code> для своего проекта. Собери несколько объектов в одну папку в Workspace и запрограммируй их изменение. Например:</p>
+      <ul>
+        <li>🎨 Сделай кнопку, которая меняет цвет сразу у всех домов в городе.</li>
+      </ul>
+      <div class="note-box">
+        🤖 <b>Совет:</b> Не бойся экспериментировать! <code>GetChildren()</code> работает с любыми объектами. Попробуй изменить не только положение, но и свойства <code>Transparency</code>, <code>Material</code> или <code>Color</code>.
+      </div>
+    </div>
+
+
+    <!-- ========================================================== -->
+    <!--  БЫСТРАЯ ПРОВЕРКА (ВЫБЕРИ КАРТОЧКИ)                       -->
+    <!-- ========================================================== -->
+    <div class="interactive-box" id="toolQuiz">
+      <h2>🧩 Быстрая проверка: выбери правильные карточки</h2>
+
+      <p><b>1. Что делает команда GetChildren()?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Показывает все объекты, которые находятся внутри другого объекта.</div>
+        <div class="choice-card" data-correct-choice="false">Создаёт новые объекты в игре.</div>
+        <div class="choice-card" data-correct-choice="false">Удаляет все объекты в игре.</div>
+      </div>
+
+      <p><b>2. Как правильно написать функцию GetChildren() для папки Model?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">local objects = game.Workspace.Model:GetChildren()</div>
+        <div class="choice-card" data-correct-choice="false">local objects = game.Workspace.Model:GetObjects()</div>
+        <div class="choice-card" data-correct-choice="false">local objects = game.Workspace.Model.GetChildren</div>
+      </div>
+
+      <p><b>3. Как перебрать все элементы в таблице objects?</b></p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">for i = 1, objects do</div>
+        <div class="choice-card" data-correct-choice="true">for i, v in pairs(objects) do</div>
+        <div class="choice-card" data-correct-choice="false">for v in objects do</div>
+      </div>
+
+      <button class="action-btn" onclick="checkChoices('toolQuiz')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+
+    <!-- ========================================================== -->
+    <!--  РЕФЛЕКСИЯ                                                  -->
+    <!-- ========================================================== -->
+    <div class="reflection-box" id="reflectionBlock">
+      <h2>💭 Твой опыт</h2>
+      <p>Оцени, как прошло занятие:</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="yes"> 🚀 Всё понял, сделал всё сам!
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="ok"> 🤔 Понял почти всё, иногда нужна была подсказка.
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;">
+          <input type="radio" name="satisfaction" value="no"> 😕 Было сложно, нужно ещё раз повторить.
+        </label>
+      </div>
+      <textarea id="reflectionText" placeholder="Что нового ты узнал о GetChildren()?&#10;Какое задание тебе понравилось больше всего?"></textarea>
+      <button class="action-btn" onclick="submitReflection()">Отправить</button>
+      <div id="reflectionResult" style="margin-top:10px; font-weight:700;"></div>
+    </div>
+
+
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    
+<div class="lesson-nav">
+      <a class="nav-btn prev" href="Занятие_2.6_Таблицы.html">
+        <div class="lbl">← Назад</div>
+        <div class="ttl">2.6 Таблицы</div>
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-brand">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+        Учебный центр «РОБОВИТА»
+      </div>
+      <div>Занятие 2.7 · офлайн-курс по Roblox Studio и Lua · 🍔 GetChildren()</div>
+    </div>
+  </footer>
+
+  <script src="assets/js/lesson.js"></script>
+  <script>
+    // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+    function toggleHint(id) {
+      const box = document.getElementById(id);
+      box.classList.toggle('show');
+      const btn = box.previousElementSibling;
+      if (box.classList.contains('show')) {
+        btn.textContent = '🙈 Скрыть подсказку';
+      } else {
+        btn.textContent = '📖 Показать подсказку';
+      }
+    }
+
+    function submitReflection() {
+      const textarea = document.getElementById('reflectionText');
+      const resultDiv = document.getElementById('reflectionResult');
+      if (textarea.value.trim() === '') {
+        resultDiv.textContent = 'Пожалуйста, напишите хотя бы несколько слов.';
+        resultDiv.style.color = '#C0392B';
+        return;
+      }
+      resultDiv.textContent = '✅ Спасибо! Твой ответ записан.';
+      resultDiv.style.color = '#2E7D32';
+      textarea.disabled = true;
+      const btn = document.querySelector('#reflectionBlock .action-btn');
+      if (btn) btn.disabled = true;
+    }
+
+    function updateTaskProgress(taskBox) {
+      const checkboxes = taskBox.querySelectorAll('.task-steps input[type=checkbox]');
+      let done = 0;
+      checkboxes.forEach(cb => { if (cb.checked) done++; });
+      const total = checkboxes.length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+      const fill = taskBox.querySelector('.progress-fill');
+      const label = taskBox.querySelector('.progress-label');
+      if (fill) fill.style.width = percent + '%';
+      if (label) label.textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+    }
+
+    function checkChoices(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const cards = container.querySelectorAll('.choice-card');
+      let allCorrect = true;
+      let anySelected = false;
+      cards.forEach(card => {
+        if (card.classList.contains('selected')) anySelected = true;
+        const isCorrect = card.dataset.correctChoice === 'true';
+        if (card.classList.contains('selected') && !isCorrect) {
+          card.classList.add('incorrect');
+          allCorrect = false;
+        } else if (card.classList.contains('selected') && isCorrect) {
+          card.classList.add('correct');
+        }
+      });
+      const resultDiv = container.querySelector('.activity-result');
+      if (!resultDiv) return;
+      if (!anySelected) {
+        resultDiv.textContent = '⚠️ Выбери ответы на все вопросы!';
+        resultDiv.className = 'activity-result neutral';
+        return;
+      }
+      if (allCorrect) {
+        resultDiv.textContent = '✅ Молодец! Всё верно.';
+        resultDiv.className = 'activity-result done';
+      } else {
+        resultDiv.textContent = '❌ Есть ошибки. Попробуй ещё раз.';
+        resultDiv.className = 'activity-result neutral';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('click', function(e) {
+        const card = e.target.closest('.choice-card');
+        if (!card) return;
+        const parent = card.closest('.choice-grid');
+        if (!parent) return;
+        parent.querySelectorAll('.choice-card').forEach(c => {
+          c.classList.remove('selected', 'correct', 'incorrect');
+        });
+        card.classList.add('selected');
+      });
+    });
+  </script>
+</body>
+</html>

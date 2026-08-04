@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.1.5. TweenGUI (анимация интерфейса) — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    .code-block {
+      background: #2a2f3a; color: #e2e8f0; padding: 14px 18px; border-radius: 12px;
+      font-family: 'Courier New', monospace; font-size: 1rem; overflow-x: auto; margin: 12px 0; line-height: 1.55;
+    }
+    .code-block .comment { color: #94a3b8; }
+    .code-block .keyword { color: #f472b6; font-weight: 600; }
+    .code-block .string { color: #a3e635; }
+    .code-block .func { color: #60a5fa; }
+    .code-block .number { color: #fbbf24; }
+    .prop-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .prop-table th, .prop-table td { border: 1px solid var(--line,#e2e8f0); padding: 8px 12px; text-align: left; vertical-align: top; }
+    .prop-table th { background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a); }
+    .prop-table td code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .9rem; }
+    .theory-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line,#e2e8f0); }
+    .theory-section:last-of-type { border-bottom: none; }
+    .theory-section h3 { margin-top: 0; color: var(--primary-dark,#1a4a0a); }
+    .scenario-box {
+      background: linear-gradient(135deg,#1a0a2e,#2d1b4e); border-radius: 20px; padding: 16px 20px;
+      margin: 16px 0; display: flex; gap: 16px; align-items: center; color: #e2e8f0; border: 1px solid #e879f9;
+    }
+    .scenario-avatar { font-size: 3rem; flex-shrink: 0; }
+    .scenario-box strong { color: #fbbf24; }
+    .info-callout {
+      background: #1e3a5f; color: #f1f5f9; border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-callout .bulb { font-size: 1.5rem; }
+    .info-callout.purple { background: #3b1f4a; }
+    .info-callout.green { background: #14532d; }
+    .cheat-sheet {
+      background: #f8fafc; border-radius: 20px; padding: 20px 24px; border: 2px solid var(--primary,#61b01f);
+      margin: 24px 0; position: relative;
+    }
+    .cheat-sheet::before {
+      content: "📘 Шпаргалка Tween GUI"; position: absolute; top: -14px; left: 20px;
+      background: var(--primary-light,#e8f5e0); color: var(--primary-dark,#1a4a0a);
+      padding: 2px 16px; border-radius: 30px; font-weight: 700; font-size: .9rem; border: 1px solid var(--primary,#61b01f);
+    }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(170px,1fr)); gap: 12px; margin-top: 12px; }
+    .cheat-item { background: #fff; border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line,#e2e8f0); }
+    .cheat-item .title { font-weight: 800; color: var(--primary-dark,#1a4a0a); margin-bottom: 4px; }
+    .cheat-item .rule { font-size: .88rem; margin: 4px 0; }
+    .cheat-item code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: .82rem; }
+    .tree-box {
+      background: #1e293b; color: #e2e8f0; border-radius: 14px; padding: 14px 18px;
+      font-family: 'Courier New', monospace; font-size: .95rem; line-height: 1.7; margin: 12px 0;
+    }
+    .tree-box .g { color: #60a5fa; }
+    .tree-box .b { color: #f472b6; }
+    .tree-box .t { color: #a3e635; }
+    .choice-card {
+      cursor: pointer; transition: .15s; user-select: none; padding: 10px 14px; background: #fff;
+      border: 2px solid #e2e8f0; border-radius: 14px; display: block; margin: 8px 0; font-weight: 700;
+    }
+    .choice-card:hover { border-color: var(--primary); }
+    .choice-card.selected { border-color: var(--accent)!important; background: var(--accent-light)!important; }
+    .choice-card.correct { border-color: var(--primary)!important; background: var(--primary-light)!important; }
+    .choice-card.incorrect { border-color: var(--danger)!important; background: var(--danger-light)!important; }
+    .activity-result.done { background: var(--primary-light); color: var(--primary-dark); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .activity-result.neutral { background: var(--accent-light); color: var(--accent-ink); padding: 10px 16px; border-radius: 12px; font-weight: 700; }
+    .quiz-block { margin: 16px 0; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--line); }
+    .layer-flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; font-weight: 800; }
+    .layer-flow span { background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+    .method-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 12px; margin: 12px 0; }
+    .method-card {
+      background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 14px;
+    }
+    .method-card h4 { margin: 0 0 6px; color: var(--primary-dark); }
+    .method-card code { font-size: .8rem; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+    .mini-game {
+      background: linear-gradient(180deg,#1a0a2e,#2d1b4e); border-radius: 24px; padding: 20px;
+      border: 3px solid #e879f9; margin: 24px 0; color: #f8fafc;
+    }
+    .mini-game h2 { margin: 0 0 8px; color: #f0abfc; }
+    .tween-stage { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 14px; }
+    @media (max-width:900px) { .tween-stage { grid-template-columns: 1fr; } }
+    .phone-screen {
+      background: #0f172a; border: 3px solid #64748b; border-radius: 20px; height: 320px;
+      position: relative; overflow: hidden;
+    }
+    .phone-screen .hint-edge {
+      position: absolute; top: 8px; left: 0; right: 0; text-align: center;
+      font-size: .75rem; color: #64748b; z-index: 1;
+    }
+    .slide-panel {
+      position: absolute; left: 50%; width: 70%; height: 120px;
+      background: linear-gradient(160deg,#7c3aed,#db2777); border: 3px solid #f0abfc;
+      border-radius: 16px; display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 1.2rem; color: #fff; z-index: 2;
+      box-shadow: 0 8px 24px rgba(0,0,0,.4);
+      transform: translateX(-50%);
+      top: -130px;
+      transition: none;
+    }
+    .controls-panel {
+      background: #1e293b; border-radius: 16px; padding: 14px; border: 2px solid #64748b;
+    }
+    .controls-panel label { display: block; font-size: .85rem; opacity: .85; margin: 8px 0 4px; }
+    .controls-panel select, .controls-panel input[type=range] {
+      width: 100%; padding: 8px; border-radius: 10px; border: 1px solid #475569;
+      background: #0f172a; color: #f8fafc; font-weight: 700;
+    }
+    .mission-box {
+      background: #4a044e; border-radius: 12px; padding: 12px; border: 1px solid #e879f9; margin-bottom: 10px;
+    }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .project-box {
+      background: linear-gradient(135deg,#fff,#F6FBF3); border: 3px solid var(--primary,#61b01f);
+      border-radius: 24px; padding: 24px 28px; margin: 28px 0;
+    }
+    .project-box > h2 { color: var(--primary-dark,#1a4a0a); margin-top: 0; }
+    .phase {
+      background: #fff; border: 2px solid var(--line,#e2e8f0); border-radius: 18px;
+      padding: 18px 20px; margin: 18px 0;
+    }
+    .phase h3 { margin: 0 0 8px; color: var(--primary-dark,#1a4a0a); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .phase-time { font-size: .85rem; background: var(--accent-light,#f0e6f5); color: var(--accent-ink,#4a1a5a); padding: 3px 12px; border-radius: 20px; font-weight: 700; }
+    .progress-track { background: #e2e8f0; height: 10px; border-radius: 10px; margin: 16px 0 8px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg,var(--primary,#61b01f),#a3e635); transition: width .3s; }
+    .progress-label { font-size: .92rem; color: #334155; font-weight: 600; }
+    .task-steps { list-style: none; padding: 0; margin: 12px 0 0; }
+    .task-steps li { display: flex; align-items: baseline; gap: 8px; margin: 8px 0; line-height: 1.5; }
+    .task-steps li input[type="checkbox"] { transform: scale(1.2); flex-shrink: 0; margin-top: 3px; }
+    details.hint { background: #f1f5f9; border-radius: 12px; padding: 10px 14px; margin: 10px 0; border-left: 4px solid var(--accent,#6e0091); }
+    details.hint summary { cursor: pointer; font-weight: 700; color: var(--accent-ink,#4a1a5a); }
+    .space-note { background: #1a1a4a; color: #fbbf24; border-left: 4px solid #fbbf24; padding: 12px 16px; border-radius: 12px; margin: 12px 0; }
+    .build-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); gap: 10px; margin: 14px 0; }
+    .build-card {
+      background: linear-gradient(160deg,#1a0a2e,#2d1b4e); color: #f8fafc; border-radius: 14px;
+      padding: 12px; text-align: center; border: 2px solid #e879f9;
+    }
+    .build-card .ico { font-size: 1.8rem; }
+    .build-card .nm { font-weight: 800; margin: 4px 0; font-size: .9rem; }
+    .build-card .props { font-size: .75rem; opacity: .85; }
+    .path-flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; font-weight: 800; }
+    .path-flow span { background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+    .reflection-box textarea { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--line); font-family: inherit; min-height: 80px; }
+    .review-box {
+      background: linear-gradient(135deg,#faf5ff,#fdf4ff); border: 2px dashed #c026d3;
+      border-radius: 18px; padding: 16px 18px; margin: 14px 0;
+    }
+    .ease-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+    .ease-chips span {
+      background: #1e293b; color: #e2e8f0; border-radius: 20px; padding: 4px 10px;
+      font-size: .78rem; font-weight: 700; border: 1px solid #475569;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта_курса.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy" />
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="Карта_курса.html">Карта курса</a> · Занятие 5.1.5</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">5.1.5</div>
+      <div>
+        <div class="module-pill">Раздел 5.1 · GUI</div>
+        <h1>🔄 Tween GUI</h1>
+        <p class="subtitle">Плавная анимация: теория → мини-игра → выезжающий инвентарь</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="scenario-box">
+    <div class="scenario-avatar">✨</div>
+    <div>
+      <strong>Меню может не просто появляться — а выезжать!</strong>
+      Сегодня — <b>Tween</b>: плавное движение и изменение размера GUI.
+      Соберём инвентарь, который выезжает сверху по кнопке.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>💡 На этом уроке ты:</h2>
+    <ul>
+      <li>поймёшь, что такое Tweening в GUI 🔄</li>
+      <li>научишься <code>TweenPosition</code>, <code>TweenSize</code>, <code>TweenSizeAndPosition</code> 📐</li>
+      <li>настроишь время и стиль движения (Easing) 🎛️</li>
+      <li>соберёшь проект «Выезжающий инвентарь» 🎒</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Теория Tween</td><td>20 мин</td><td>Методы, параметры, квиз</td></tr>
+      <tr><td>Мини-игра «Аниматор»</td><td>10 мин</td><td>Выезд панели, время, стиль</td></tr>
+      <tr><td>Проект: инвентарь</td><td>50 мин</td><td>Открыть / закрыть с Tween</td></tr>
+      <tr><td>Доп. задания</td><td>по желанию</td><td>Bounce, слоты, декор</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Рефлексия</td></tr>
+      <tr><td>Итого</td><td>90 мин + доп.</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- ===== ТЕОРИЯ ===== -->
+  <div class="card" id="theory">
+    <h2><span class="num">0</span> Теория: анимация GUI</h2>
+
+    <div class="theory-section">
+      <h3>🔁 Короткий повтор</h3>
+      <div class="review-box">
+        <div class="layer-flow">
+          <span>StarterGui</span> →
+          <span>ScreenGui</span> →
+          <span>Frame</span> →
+          <span>кнопки / метки</span>
+        </div>
+        <p style="margin:8px 0 0;">Сегодня Frame не просто <code>Visible = true</code>, а <b>плавно приезжает</b> на экран.</p>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>✨ Что такое Tween?</h3>
+      <p><b>Tween</b> (от «between» — между) — плавный переход от одного состояния к другому.</p>
+      <ul>
+        <li>было слева → стало в центре (положение)</li>
+        <li>было маленьким → стало большим (размер)</li>
+        <li>было за экраном → выехало вниз (меню)</li>
+      </ul>
+      <div class="info-callout">
+        <span class="bulb">💡</span>
+        <div>Без Tween: панель «телепортируется». С Tween: как в настоящих играх — выезжает, пружинит, увеличивается.</div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>📐 Три главных метода</h3>
+      <div class="method-grid">
+        <div class="method-card">
+          <h4>TweenPosition</h4>
+          <p>Только положение</p>
+          <code>:TweenPosition(куда)</code>
+        </div>
+        <div class="method-card">
+          <h4>TweenSize</h4>
+          <p>Только размер</p>
+          <code>:TweenSize(какой)</code>
+        </div>
+        <div class="method-card">
+          <h4>TweenSizeAndPosition</h4>
+          <p>И размер, и место</p>
+          <code>:TweenSizeAndPosition(size, pos)</code>
+        </div>
+      </div>
+      <p>Позиция и размер задаются через <b>UDim2</b> (как обычно в GUI):</p>
+      <div class="code-block">
+        UDim2.new(<span class="number">0.5</span>, <span class="number">0</span>, <span class="number">0.1</span>, <span class="number">0</span>)<br>
+        <span class="comment">-- X scale, X offset, Y scale, Y offset</span>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>▶️ Простой пример: выезд в центр</h3>
+      <div class="code-block">
+        <span class="keyword">local</span> panel = script.Parent<br>
+        panel.AnchorPoint = Vector2.new(<span class="number">0.5</span>, <span class="number">0.5</span>)<br>
+        panel.Position = UDim2.new(<span class="number">0.5</span>, <span class="number">0</span>, -<span class="number">0.5</span>, <span class="number">0</span>) <span class="comment">-- выше экрана</span><br><br>
+        <span class="func">task.wait</span>(<span class="number">1</span>)<br>
+        panel:<span class="func">TweenPosition</span>(UDim2.new(<span class="number">0.5</span>, <span class="number">0</span>, <span class="number">0.5</span>, <span class="number">0</span>))
+      </div>
+      <p>Сначала панель спрятана сверху, потом плавно едет в центр.</p>
+    </div>
+
+    <div class="theory-section">
+      <h3>🎛️ Параметры анимации</h3>
+      <p>После цели можно указать стиль:</p>
+      <div class="code-block">
+        panel:<span class="func">TweenPosition</span>(<br>
+        &nbsp;&nbsp;UDim2.new(<span class="number">0.5</span>, <span class="number">0</span>, <span class="number">0.1</span>, <span class="number">0</span>),<br>
+        &nbsp;&nbsp;Enum.EasingDirection.Out,<br>
+        &nbsp;&nbsp;Enum.EasingStyle.Quint,<br>
+        &nbsp;&nbsp;<span class="number">0.5</span> <span class="comment">-- секунды</span><br>
+        )
+      </div>
+      <table class="prop-table">
+        <tr><th>Параметр</th><th>Что делает</th></tr>
+        <tr><td><b>EasingDirection</b></td><td>In — медленный старт; Out — мягкий финиш; InOut — оба</td></tr>
+        <tr><td><b>EasingStyle</b></td><td>Характер: Linear, Quad, Quint, Bounce, Back, Elastic…</td></tr>
+        <tr><td><b>Время</b></td><td>Сколько секунд длится анимация (часто 0.3–1)</td></tr>
+      </table>
+      <p>Популярные стили для меню:</p>
+      <div class="ease-chips">
+        <span>Out + Quint — гладко</span>
+        <span>Out + Bounce — прыжок</span>
+        <span>Out + Back — чуть «отскок»</span>
+        <span>Linear — ровно</span>
+      </div>
+      <div class="info-callout purple">
+        <span class="bulb">📝</span>
+        <div>В старых примерах пишут строки <code>"Out"</code>, <code>"Quint"</code>. В новых — <code>Enum.EasingDirection.Out</code>. Оба варианта часто работают; на уроке можно копировать код с Enum.</div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h3>🎒 Идея проекта</h3>
+      <p>Инвентарь спрятан <b>над экраном</b>. Кнопка «Открыть» → Tween вниз. «Закрыть» → Tween обратно вверх.</p>
+      <div class="tree-box">
+        <span class="g">StarterGui</span><br>
+        &nbsp;&nbsp;<span class="g">BagGUI</span> (ScreenGui)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="b">Inventory</span> (Frame) ← анимируем<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">OpenBtn</span> (TextButton)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">LocalScript</span>
+      </div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz1">
+      <h3>🧠 Квиз: что делает TweenPosition?</h3>
+      <div class="choice-card" data-correct-choice="true">Плавно меняет положение GUI</div>
+      <div class="choice-card" data-correct-choice="false">Меняет только цвет</div>
+      <div class="choice-card" data-correct-choice="false">Удаляет Frame</div>
+      <button class="action-btn" onclick="checkChoices('quiz1')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz2">
+      <h3>🧠 Квиз: зачем параметр времени (duration)?</h3>
+      <div class="choice-card" data-correct-choice="false">Задаёт цвет панели</div>
+      <div class="choice-card" data-correct-choice="true">Сколько секунд длится анимация</div>
+      <div class="choice-card" data-correct-choice="false">Сколько кнопок в меню</div>
+      <button class="action-btn" onclick="checkChoices('quiz2')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="quiz-block interactive-box" id="quiz3">
+      <h3>🧠 Квиз: меню должно выехать и чуть «подпрыгнуть»</h3>
+      <div class="choice-card" data-correct-choice="false">Только Visible = true</div>
+      <div class="choice-card" data-correct-choice="true">TweenPosition + стиль Bounce</div>
+      <div class="choice-card" data-correct-choice="false">Удалить ScreenGui</div>
+      <button class="action-btn" onclick="checkChoices('quiz3')">Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="cheat-sheet">
+    <div class="cheat-grid">
+      <div class="cheat-item"><div class="title">📍 TweenPosition</div><div class="rule">движение</div></div>
+      <div class="cheat-item"><div class="title">📏 TweenSize</div><div class="rule">размер</div></div>
+      <div class="cheat-item"><div class="title">🎯 SizeAndPosition</div><div class="rule">оба сразу</div></div>
+      <div class="cheat-item"><div class="title">⏱️ Время</div><div class="rule">секунды (0.5)</div></div>
+      <div class="cheat-item"><div class="title">🌊 Out + Quint</div><div class="rule">гладкий финиш</div></div>
+      <div class="cheat-item"><div class="title">🏀 Bounce</div><div class="rule">прыжок</div></div>
+    </div>
+  </div>
+
+  <!-- ===== МИНИ-ИГРА ===== -->
+  <div class="mini-game" id="miniGame">
+    <h2>🎮 Мини-игра: Аниматор меню</h2>
+    <p style="opacity:.9;margin:0;">Панель спрятана сверху. Выбери время и стиль, нажми «Выехать» / «Спрятать» — выполни 3 задания.</p>
+
+    <div class="tween-stage">
+      <div class="phone-screen" id="phoneScreen">
+        <div class="hint-edge">↑ за экраном</div>
+        <div class="slide-panel" id="slidePanel">🎒 ИНВЕНТАРЬ</div>
+      </div>
+
+      <div class="controls-panel">
+        <div class="mission-box">
+          <div style="font-weight:800;" id="missionTitle">Задание 1 из 3</div>
+          <div id="missionText" style="margin-top:6px;">Поставь время <b>0.5 с</b> и нажми «Выехать».</div>
+          <div id="missionResult" style="margin-top:8px;font-weight:800;min-height:1.3em;color:#f0abfc;"></div>
+        </div>
+
+        <label>Время анимации: <span id="durVal">0.5</span> с</label>
+        <input type="range" id="duration" min="0.2" max="2" step="0.1" value="0.5" oninput="updateDur()" />
+
+        <label>Стиль (EasingStyle)</label>
+        <select id="easeStyle">
+          <option value="linear">Linear</option>
+          <option value="easeOutQuint" selected>Out Quint (гладко)</option>
+          <option value="easeOutBounce">Out Bounce</option>
+          <option value="easeOutBack">Out Back</option>
+        </select>
+
+        <div class="btn-row">
+          <button type="button" class="action-btn" onclick="playIn()">⬇️ Выехать</button>
+          <button type="button" class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="playOut()">⬆️ Спрятать</button>
+          <button type="button" class="action-btn" style="background:#64748b;box-shadow:0 4px 0 #334155;" onclick="resetTweenGame()">🔄 Сначала</button>
+        </div>
+        <p id="scoreLine" style="margin-top:12px;font-weight:800;">Очки: 0 / 3</p>
+        <p id="stateLine" style="font-size:.85rem;opacity:.8;">Состояние: спрятано</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,#F6FBF3,#faf5ff);border:2px solid var(--primary);border-radius:20px;padding:20px 24px;margin:20px 0;">
+    <h2 style="margin:0 0 .4rem;color:var(--primary-dark);">🗺️ С чего начать</h2>
+    <p>В Studio всё в <b>StarterGui</b>. Анимацию пиши в <b>LocalScript</b> — GUI живёт у игрока на экране.</p>
+  </div>
+
+  <!-- ===== ПРОЕКТ ===== -->
+  <div class="project-box" id="mainProject">
+    <h2>🎒 Проект «Выезжающий инвентарь»</h2>
+    <p>Кнопка открывает панель сверху плавным Tween. Внутри — слоты предметов. Закрытие — обратно вверх.</p>
+
+    <div class="path-flow">
+      <span>🖥️ GUI</span> →
+      <span>📦 Frame сверху</span> →
+      <span>⬇️ Tween открыть</span> →
+      <span>⬆️ Tween закрыть</span>
+    </div>
+
+    <div class="build-grid">
+      <div class="build-card"><div class="ico">🖼️</div><div class="nm">BagGUI</div><div class="props">ScreenGui</div></div>
+      <div class="build-card"><div class="ico">📦</div><div class="nm">Inventory</div><div class="props">Frame + Tween</div></div>
+      <div class="build-card"><div class="ico">🔘</div><div class="nm">OpenBtn</div><div class="props">открыть</div></div>
+      <div class="build-card"><div class="ico">❌</div><div class="nm">CloseBtn</div><div class="props">закрыть</div></div>
+      <div class="build-card"><div class="ico">🧩</div><div class="nm">Slots</div><div class="props">3 ячейки</div></div>
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="projectProgress"></div></div>
+    <span class="progress-label" id="projectLabel">Выполнено шагов: 0 из 18</span>
+
+    <div class="phase" id="phase0">
+      <h3>🖥️ Фаза 0 — Каркас GUI <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>StarterGui → ScreenGui <b>BagGUI</b>.</li>
+        <li>Frame <b>Inventory</b>: Size примерно {0.5, 0},{0.35, 0}, AnchorPoint = 0.5, 0.</li>
+        <li>Начальная Position: <code>{0.5, 0}, {0, -250}</code> или scale Y отрицательный — панель над экраном.</li>
+        <li>TextButton <b>OpenBtn</b> внизу экрана (отдельно от Inventory) — «🎒 Открыть».</li>
+      </ol>
+            <img src="assets/images/lesson-5.1.5/1.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> 
+     
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p0s0" onchange="updateProjectProgress()"><label for="p0s0">BagGUI + Inventory + OpenBtn созданы.</label></li>
+        <li><input type="checkbox" id="p0s1" onchange="updateProjectProgress()"><label for="p0s1">В Play панель сначала не видна (над экраном).</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase1">
+      <h3>🧩 Фаза 1 — Содержимое инвентаря <span class="phase-time">10 мин</span></h3>
+      <ol>
+        <li>В Inventory: TextLabel <b>Title</b> Text — «Инвентарь».</li>
+        <li>Три Frame или TextButton: <b>Slot1</b>, <b>Slot2</b>, <b>Slot3</b> (ячейки).</li>
+        <li>TextButton <b>CloseBtn</b> — «Закрыть» внутри Inventory.</li>
+      </ol>
+      <div class="tree-box">
+        <span class="g">BagGUI</span><br>
+        &nbsp;&nbsp;<span class="b">Inventory</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">Title, Slot1, Slot2, Slot3, CloseBtn</span><br>
+        &nbsp;&nbsp;<span class="t">OpenBtn</span><br>
+        &nbsp;&nbsp;<span class="t">LocalScript</span>
+      </div>
+      <img src="assets/images/lesson-5.1.5/2.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> 
+     
+      <img src="assets/images/lesson-5.1.5/3.png" alt="Без скрипта и со скриптом" style="max-width:100%; border-radius:12px; border:2px solid var(--line);" /> 
+     
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p1s0" onchange="updateProjectProgress()"><label for="p1s0">Title и 3 слота внутри Inventory.</label></li>
+        <li><input type="checkbox" id="p1s1" onchange="updateProjectProgress()"><label for="p1s1">CloseBtn на панели инвентаря.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase2">
+      <h3>⬇️ Фаза 2 — Tween: открыть <span class="phase-time">12 мин</span></h3>
+      <p>LocalScript в BagGUI:</p>
+      <div class="code-block">
+        <span class="keyword">local</span> gui = script.Parent<br>
+        <span class="keyword">local</span> inventory = gui:<span class="func">WaitForChild</span>(<span class="string">"Inventory"</span>)<br>
+        <span class="keyword">local</span> openBtn = gui:<span class="func">WaitForChild</span>(<span class="string">"OpenBtn"</span>)<br>
+        <span class="keyword">local</span> closeBtn = inventory:<span class="func">WaitForChild</span>(<span class="string">"CloseBtn"</span>)<br><br>
+        <span class="keyword">local</span> hidden = UDim2.new(<span class="number">0.5</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">250</span>)<br>
+        <span class="keyword">local</span> shown = UDim2.new(<span class="number">0.5</span>, <span class="number">0</span>, <span class="number">0.8</span>, <span class="number">0</span>)<br><br>
+        inventory.AnchorPoint = Vector2.new(<span class="number">0.5</span>, <span class="number">0</span>)<br>
+        inventory.Position = hidden<br><br>
+        openBtn.MouseButton1Click:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        &nbsp;&nbsp;inventory:<span class="func">TweenPosition</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;shown,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Enum.EasingDirection.Out,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Enum.EasingStyle.Quint,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="number">0.5</span><br>
+        &nbsp;&nbsp;)<br>
+        <span class="keyword">end</span>)
+      </div>
+      <div class="info-callout green">
+        <span class="bulb">⬇️</span>
+        <div>Две «точки»: <code>hidden</code> (где спрятано) и <code>shown</code> (куда выехать). Tween едет между ними.</div>
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2s0" onchange="updateProjectProgress()"><label for="p2s0">LocalScript с hidden / shown и TweenPosition.</label></li>
+        <li><input type="checkbox" id="p2s1" onchange="updateProjectProgress()"><label for="p2s1">Play → OpenBtn → панель плавно выезжает.</label></li>
+        <li><input type="checkbox" id="p2s2" onchange="updateProjectProgress()"><label for="p2s2">Время ≈ 0.5 с, стиль Out + Quint.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase3">
+      <h3>⬆️ Фаза 3 — Tween: закрыть <span class="phase-time">8 мин</span></h3>
+      <div class="code-block">
+        closeBtn.MouseButton1Click:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        &nbsp;&nbsp;inventory:<span class="func">TweenPosition</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;hidden,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Enum.EasingDirection.In,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Enum.EasingStyle.Quad,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="number">0.4</span><br>
+        &nbsp;&nbsp;)<br>
+        <span class="keyword">end</span>)
+      </div>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3s0" onchange="updateProjectProgress()"><label for="p3s0">CloseBtn уезжает панель вверх.</label></li>
+        <li><input type="checkbox" id="p3s1" onchange="updateProjectProgress()"><label for="p3s1">Можно открыть и закрыть несколько раз подряд.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase4">
+      <h3>✨ Фаза 4 — Проверка <span class="phase-time">6 мин</span></h3>
+      <ul>
+        <li>Панель не «прыгает» мгновенно — видно движение.</li>
+        <li>Слоты и заголовок на месте после выезда.</li>
+      </ul>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4s0" onchange="updateProjectProgress()"><label for="p4s0">Анимация заметна глазу.</label></li>
+        <li><input type="checkbox" id="p4s1" onchange="updateProjectProgress()"><label for="p4s1">Нет ошибок в Output.</label></li>
+      </ul>
+      <div class="space-note">🎉 Базовый инвентарь с Tween готов! Дальше — доп. фазы.</div>
+    </div>
+
+    <div class="phase" id="phase5" style="border-color:#e879f9;">
+      <h3>🏀 Фаза 5 (доп) — Bounce при открытии <span class="phase-time">6 мин</span></h3>
+      <p>В открытии замени стиль на <code>Enum.EasingStyle.Bounce</code> и время на <code>0.8</code>. Панель «подпрыгнет».</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p5s0" onchange="updateProjectProgress()"><label for="p5s0">Открытие с Bounce выглядит иначе, чем Quint.</label></li>
+        <li><input type="checkbox" id="p5s1" onchange="updateProjectProgress()"><label for="p5s1">Выбрал стиль, который тебе нравится больше.</label></li>
+      </ul>
+    </div>
+
+   <div class="phase" id="phase6" style="border-color:#38bdf8;">
+      <h3>📏 Фаза 6 (доп) — TweenSize на слоте <span class="phase-time">8 мин</span></h3>
+      <p>По клику на Slot1 он плавно увеличивается на 20% и возвращается обратно. Используй этот код в LocalScript внутри gui.</p>
+      <div class="code-block">
+        <span class="keyword">local</span> slot1 = inventory.Slot1<br>
+        <span class="keyword">local</span> normal = slot1.Size<br>
+        <span class="keyword">local</span> big = UDim2.new(<br>
+        &nbsp;&nbsp;normal.X.Scale * <span class="number">1.2</span>, normal.X.Offset * <span class="number">1.2</span>,<br>
+        &nbsp;&nbsp;normal.Y.Scale * <span class="number">1.2</span>, normal.Y.Offset * <span class="number">1.2</span><br>
+        )<br><br>
+        slot1.MouseButton1Click:<span class="func">Connect</span>(<span class="keyword">function</span>()<br>
+        &nbsp;&nbsp;slot1:<span class="func">TweenSize</span>(big, Enum.EasingDirection.Out, Enum.EasingStyle.Back, <span class="number">0.2</span>)<br>
+        &nbsp;&nbsp;<span class="func">task.wait</span>(<span class="number">0.25</span>)<br>
+        &nbsp;&nbsp;slot1:<span class="func">TweenSize</span>(normal, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, <span class="number">0.2</span>)<br>
+        &nbsp;&nbsp;<span class="func">task.wait</span>(<span class="number">0.2</span>)<br>
+        <span class="keyword">end</span>)
+      </div>
+  
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6s0" onchange="updateProjectProgress()"><label for="p6s0">Клик по слоту — лёгкое увеличение (пульс).</label></li>
+        <li><input type="checkbox" id="p6s1" onchange="updateProjectProgress()"><label for="p6s1">Размер возвращается обратно.</label></li>
+      </ul>
+    </div>
+
+    <div class="phase" id="phase7" style="border-color:#fbbf24;">
+      <h3>🎨 Фаза 7 (доп) — Укрась инвентарь <span class="phase-time">8 мин</span></h3>
+      <ul>
+        <li>Цвета слотов, иконки ImageLabel внутри слотов (повтор 5.1.2).</li>
+        <li>Текст на OpenBtn крупный, TextScaled = true.</li>
+        <li>В мире — Part «Сундук» для атмосферы (декор).</li>
+      </ul>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p7s0" onchange="updateProjectProgress()"><label for="p7s0">Слоты оформлены (цвет / картинка).</label></li>
+        <li><input type="checkbox" id="p7s1" onchange="updateProjectProgress()"><label for="p7s1">Интерфейс выглядит аккуратно.</label></li>
+        <li><input type="checkbox" id="p7s2" onchange="updateProjectProgress()"><label for="p7s2">Открыть → выбрать слот → закрыть работает.</label></li>
+      </ul>
+      <div class="space-note">🏆 Инвентарь живой: TweenPosition + TweenSize — как в настоящей игре!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💡 Сегодня ты:</h2>
+    <ul>
+      <li>узнал, что такое Tween в GUI;</li>
+      <li>использовал TweenPosition и (по желанию) TweenSize;</li>
+      <li>настроил время и EasingStyle;</li>
+      <li>собрал выезжающий инвентарь в Studio.</li>
+    </ul>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;">
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="yes"> 🚀 Меню выезжает!</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="ok"> 🤔 Почти настроил Tween</label>
+      <label style="display:flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;"><input type="radio" name="satisfaction" value="no"> 😕 Нужна помощь</label>
+    </div>
+    <textarea placeholder="Какой стиль круче — Quint или Bounce? Где ещё применишь Tween?"></textarea>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="Занятие_5.1.4_BillboardGUI.html">
+      <div class="lbl">← Назад</div>
+      <div class="ttl">5.1.4 BillboardGui</div>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 5.1.5 · Tween GUI</div>
+  </div>
+</footer>
+
+<script src="assets/js/lesson.js"></script>
+<script>
+  let missionIndex = 0;
+  let score = 0;
+  let panelShown = false;
+  let animating = false;
+  let lastAction = '';
+
+  const missions = [
+    {
+      title: 'Задание 1 из 3',
+      text: 'Поставь время <b>0.5 с</b> и нажми «Выехать».',
+      check: () => lastAction === 'in' && Math.abs(Number(document.getElementById('duration').value) - 0.5) < 0.05 && panelShown
+    },
+    {
+      title: 'Задание 2 из 3',
+      text: 'Выбери стиль <b>Out Bounce</b> и снова выехай (сначала спрячь, если открыто).',
+      check: () => lastAction === 'in' && document.getElementById('easeStyle').value === 'easeOutBounce' && panelShown
+    },
+    {
+      title: 'Задание 3 из 3',
+      text: 'Поставь время <b>≤ 0.4 с</b> и нажми «Спрятать».',
+      check: () => lastAction === 'out' && Number(document.getElementById('duration').value) <= 0.4 && !panelShown
+    }
+  ];
+
+  function updateDur() {
+    document.getElementById('durVal').textContent = Number(document.getElementById('duration').value).toFixed(1);
+  }
+
+  function easeToCss(name) {
+    const map = {
+      linear: 'linear',
+      easeOutQuint: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      easeOutBounce: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+      easeOutBack: 'cubic-bezier(0.34, 1.3, 0.64, 1)'
+    };
+    return map[name] || 'ease-out';
+  }
+
+  function movePanel(show, done) {
+    if (animating) return;
+    animating = true;
+    const panel = document.getElementById('slidePanel');
+    const dur = Number(document.getElementById('duration').value);
+    const ease = easeToCss(document.getElementById('easeStyle').value);
+    panel.style.transition = 'top ' + dur + 's ' + ease;
+    // force reflow
+    void panel.offsetHeight;
+    panel.style.top = show ? '28px' : '-130px';
+    lastAction = show ? 'in' : 'out';
+    setTimeout(function() {
+      panelShown = show;
+      animating = false;
+      document.getElementById('stateLine').textContent = 'Состояние: ' + (show ? 'на экране' : 'спрятано');
+      if (done) done();
+      tryCompleteMission();
+    }, dur * 1000 + 30);
+  }
+
+  function playIn() { movePanel(true); }
+  function playOut() { movePanel(false); }
+
+  function tryCompleteMission() {
+    const m = missions[missionIndex];
+    if (!m) return;
+    const res = document.getElementById('missionResult');
+    if (m.check()) {
+      score++;
+      res.textContent = '✅ Верно!';
+      res.style.color = '#a7f3d0';
+      document.getElementById('scoreLine').textContent = 'Очки: ' + score + ' / 3';
+      missionIndex++;
+      if (missionIndex >= missions.length) {
+        document.getElementById('missionTitle').textContent = 'Готово!';
+        document.getElementById('missionText').textContent = 'Время и стиль освоены. Пора в Studio!';
+        res.textContent = '🏆 Все 3 задания выполнены!';
+      } else {
+        setTimeout(showMission, 500);
+      }
+    }
+  }
+
+  function showMission() {
+    const m = missions[missionIndex];
+    if (!m) return;
+    document.getElementById('missionTitle').textContent = m.title;
+    document.getElementById('missionText').innerHTML = m.text;
+    document.getElementById('missionResult').textContent = '';
+  }
+
+  function resetTweenGame() {
+    missionIndex = 0;
+    score = 0;
+    lastAction = '';
+    document.getElementById('scoreLine').textContent = 'Очки: 0 / 3';
+    document.getElementById('duration').value = 0.5;
+    document.getElementById('easeStyle').value = 'easeOutQuint';
+    updateDur();
+    const panel = document.getElementById('slidePanel');
+    panel.style.transition = 'none';
+    panel.style.top = '-130px';
+    panelShown = false;
+    document.getElementById('stateLine').textContent = 'Состояние: спрятано';
+    showMission();
+  }
+
+  function updateProjectProgress() {
+    const cbs = document.querySelectorAll('#mainProject .task-steps input[type=checkbox]');
+    let done = 0;
+    cbs.forEach(cb => { if (cb.checked) done++; });
+    const total = cbs.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('projectProgress').style.width = pct + '%';
+    document.getElementById('projectLabel').textContent = 'Выполнено шагов: ' + done + ' из ' + total;
+  }
+
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const selected = container.querySelector('.choice-card.selected');
+    const resultDiv = container.querySelector('.activity-result');
+    container.querySelectorAll('.choice-card').forEach(c => c.classList.remove('correct', 'incorrect'));
+    if (!selected) {
+      resultDiv.textContent = '⚠️ Выбери вариант!';
+      resultDiv.className = 'activity-result neutral';
+      return;
+    }
+    const ok = selected.dataset.correctChoice === 'true';
+    selected.classList.add(ok ? 'correct' : 'incorrect');
+    resultDiv.textContent = ok ? '✅ Верно!' : '❌ Попробуй ещё раз.';
+    resultDiv.className = 'activity-result ' + (ok ? 'done' : 'neutral');
+  }
+
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.choice-card');
+    if (!card) return;
+    const parent = card.closest('.interactive-box') || card.parentElement;
+    parent.querySelectorAll('.choice-card').forEach(c => {
+      c.classList.remove('selected', 'correct', 'incorrect');
+    });
+    card.classList.add('selected');
+  });
+
+  updateDur();
+  showMission();
+</script>
+</body>
+</html>
