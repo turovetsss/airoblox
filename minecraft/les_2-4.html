@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2.4. Агент-воин — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+.mob-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
+  gap: 12px; 
+  margin: 12px 0; 
+}
+.mob-card { 
+  background: #fafff7; 
+  border: 2px solid #d0e8c0; 
+  border-radius: 10px; 
+  padding: 10px; 
+  text-align: center; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.mob-card .emoji { 
+  width: 100%;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.mob-card .emoji img { 
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  max-width: 80px;
+}
+.mob-card .name { 
+  font-weight: 600; 
+  color: #2b5e0e; 
+  margin-top: 4px;
+}
+.mob-card .loot { 
+  font-size: 0.8rem; 
+  color: #888; 
+}
+  </style>
+</head>
+<body class="lesson-page">
+<!-- ===== ШАПКА ===== -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 2.4</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">2.4</div>
+      <div>
+        <div class="module-pill">Раздел 2 · Программирование Агента</div>
+        <h1>Агент-воин</h1>
+        <p class="subtitle">Учим агента патрулировать территорию и сражаться с мобами</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Цели -->
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Изучить боевые команды агента: атака и сбор лута</li>
+      <li>Научиться определять наличие моба перед агентом</li>
+      <li>Создать программу для патрулирования территории 20×20 блоков</li>
+      <li>Автоматически атаковать мобов и собирать выпавшие предметы</li>
+    </ul>
+  </div>
+
+  <!-- План -->
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Приветствие, настрой на занятие</td></tr>
+      <tr><td>Боевые команды</td><td>15 мин</td><td>Изучаем атаку и сбор лута</td></tr>
+      <tr><td>Патрулирование территории</td><td>15 мин</td><td>Как обойти зону 20×20 блоков</td></tr>
+      <tr><td>Практика: патруль и бой</td><td>40 мин</td><td>Создаём программу для зачистки территории</td></tr>
+      <tr><td>Бонус: сбор лута</td><td>10 мин</td><td>Добавляем автоматический сбор предметов</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Проверяем знания</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- Часть 1: Боевые команды -->
+  <div class="card">
+    <h2><span class="num">1</span> Боевые команды агента</h2>
+    <p>У агента есть специальные команды для сражений и сбора добычи:</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Команда</th><th>Действие</th><th>Описание</th></tr>
+        <tr><td><img src="files/les_2-4_1.png"/></td><td>Ударяет моба перед агентом</td><td>Наносит урон мобу</td></tr>
+        <tr><td><img src="files/les_2-4_2.png"/></td><td>Собирает предмет с земли</td><td>Забирает лут после убийства моба</td></tr>
+        <tr><td><img src="files/les_2-4_3.png"/></td><td>Проверяет, блок ли перед агентом</td><td>Условие для боя</td></tr>
+        <tr><td><img src="files/les_2-4_4.png"/></td><td>Завершает выполнение</td><td>После завершения патруля</td></tr>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">бой_с_мобом.makecode</span>
+      </div>
+      <pre class="code"><code>
+        <img src="files/les_2-4_5.png" width="100%">
+      </code></pre>
+    </div>
+
+    <div class="note">
+      <b>⚔️ Важно:</b> для убийства моба может потребоваться несколько ударов. Поэтому мы используем цикл <code>пока [условие]</code> для нанесения атак, пока условие выполняется.
+    </div>
+
+    <!-- Интерактив: бой с мобом -->
+    <div class="interactive-box" id="combatQuiz">
+      <h3>🧠 Что сделает агент?</h3>
+      <p>Агент видит моба впереди. Какую последовательность команд он выполнит?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Атакует → собирает лут → говорит "Моб побеждён!"</div>
+        <div class="choice-card" data-correct-choice="false">Проходит мимо моба</div>
+        <div class="choice-card" data-correct-choice="false">Только атакует и идёт дальше</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('combatQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- Часть 2: Какие мобы бывают -->
+  <div class="card">
+    <h2><span class="num">2</span> Кого мы будем атаковать?</h2>
+    <p>В Minecraft Education есть разные враждебные мобы. Вот основные из них:</p>
+
+    <div class="mob-grid">
+      <div class="mob-card">
+        <div class="emoji"><img src="files/les_2-4_6.webp"/></div>
+        <div class="name">Зомби</div>
+        <div class="loot">Лут: гнилая плоть</div>
+      </div>
+      <div class="mob-card">
+        <div class="emoji"><img src="files/les_2-4_7.webp"/></div>
+        <div class="name">Скелет</div>
+        <div class="loot">Лут: кости, стрелы</div>
+      </div>
+      <div class="mob-card">
+        <div class="emoji"><img src="files/les_2-4_8.webp"/></div>
+        <div class="name">Паук</div>
+        <div class="loot">Лут: нити, паучий глаз</div>
+      </div>
+      <div class="mob-card">
+        <div class="emoji"><img src="files/les_2-4_9.webp"/></div>
+        <div class="name">Крипер</div>
+        <div class="loot">Лут: порох</div>
+      </div>
+      <div class="mob-card">
+        <div class="emoji"><img src="files/les_2-4_10.webp"/></div>
+        <div class="name">Слизень</div>
+        <div class="loot">Лут: слизь</div>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>💡 Совет:</b> некоторые мобы (например, криперы) могут взрываться! Будь осторожен и атакуй их на расстоянии.
+    </div>
+  </div>
+
+    <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BD%D0%B0%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D0%B0%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%20%D0%B0%D1%82%D0%B0%D0%BA%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%BC%D0%BE%D0%B1%D0%BE%D0%B2%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как атаковать мобов агентом?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%D0%B8%D0%B5%20%D0%BC%D0%BE%D0%B1%D1%8B%20%D0%B5%D1%81%D1%82%D1%8C%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Какие мобы есть в Minecraft?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%81%D0%B4%D0%B5%D0%BB%D0%B0%D1%82%D1%8C%20%D0%B0%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9%20%D1%81%D0%B1%D0%BE%D1%80%20%D0%BB%D1%83%D1%82%D0%B0%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как автоматически собирать лут?</a>
+    </div>
+    <div class="ai-answer">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про сражения в Minecraft.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, как защитить базу от мобов в Minecraft?»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
+  <!-- Часть 3: Патрулирование территории -->
+  <div class="card">
+    <h2><span class="num">3</span> Как Агенту обойти территорию?</h2>
+    <p>Чтобы агент мог обыскать всю территорию, нужно организовать движение по змейке:</p>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">патруль.makecode</span>
+      </div>
+      <pre class="code"><code>
+        <img src="files/les_2-4_11.png" style="width: 100%;"/>
+      </code></pre>
+    </div>
+
+    <div class="note">
+      <b>🗺️ Важно:</b> после прохода каждой строки агент разворачивается и смещается на один блок в сторону, чтобы начать следующую строку.
+    </div>
+  </div>
+
+  <!-- Часть 4: Практика -->
+  <div class="task-box" id="practiceWarrior">
+    <h2>🛠️ Практическое задание: патруль и зачистка</h2>
+    <div class="progress-track"><div class="progress-fill-minecraft" id="warriorProgressFill"></div></div>
+    <span class="progress-label" id="warriorProgressLabel">Выполнено шагов: 0 из 5</span>
+    <p>Создай в Minecraft Education программу для патрулирования территории 20×20 блоков с автоматической атакой мобов.</p>
+
+    <h3>Основное задание:</h3>
+    <ul class="task-steps">
+      <li><input type="checkbox" id="w0" onchange="updateWarriorProgress()"><label for="w0">Создай алгоритм движения по змейке на территории 20×20</label></li>
+      <li><input type="checkbox" id="w1" onchange="updateWarriorProgress()"><label for="w1">Добавь проверку: если моб впереди → атаковать</label></li>
+      <li><input type="checkbox" id="w2" onchange="updateWarriorProgress()"><label for="w2">Добавь сбор лута после убийства моба</label></li>
+      <li><input type="checkbox" id="w3" onchange="updateWarriorProgress()"><label for="w3">После завершения патруля выведи сообщение "Территория зачищена!"</label></li>
+    </ul>
+
+    <h3>⭐ Бонусное задание:</h3>
+    <ul class="task-steps">
+      <li class="bonus-step"><input type="checkbox" id="w4" onchange="updateWarriorProgress()"><label for="w4">Добавь определение моба по собранному луту в инвентаре<b>(+5 робокоинов)</b></label></li>
+      <li class="bonus-step"><input type="checkbox" id="w5" onchange="updateWarriorProgress()"><label for="w5">Добавь счётчик убитых мобов и выведи его в конце <b>(+15 робокоинов)</b></label></li>
+    </ul>
+
+    <div class="note" style="margin-top: 12px;">
+      <b>💡 Подсказка:</b> используй вложенные циклы: внешний для строк (20 раз), внутренний для шагов в строке (20 раз).
+    </div>
+
+    <div class="note" style="background: #fff8e1; border-left-color: #ffbd2e;">
+      <b>🌟 Идея:</b> для счётчика создай переменную и увеличивай её каждый раз при убийстве моба. В конце выведи: "Убито мобов: X".
+    </div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizWarrior">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="wq0" data-correct="a">
+      <p class="quiz-q-text">1. Какая команда заставляет агента атаковать моба?</p>
+      <label><input type="radio" name="wq0" value="a"> <img src="files/les_2-4_1.png"/></label>
+      <label><input type="radio" name="wq0" value="b"> <img src="files/les_1-2_6.png"/></label>
+      <label><input type="radio" name="wq0" value="c"> <img src="files/les_1-2_2.png"/></label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="wq1" data-correct="c">
+      <p class="quiz-q-text">2. Как проверить, есть ли моб перед агентом?</p>
+      <label><input type="radio" name="wq1" value="a"> посмотреть на экран</label>
+      <label><input type="radio" name="wq1" value="b"> использовать ID блока</label>
+      <label><input type="radio" name="wq1" value="c"> использовать условие <img src="files/les_2-4_3.png"/></label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="wq2" data-correct="b">
+      <p class="quiz-q-text">3. Какую команду использовать для сбора лута после боя?</p>
+      <label><input type="radio" name="wq2" value="a"> <img src="files/les_1-2_5.png"/></label>
+      <label><input type="radio" name="wq2" value="b"> <img src="files/les_2-4_2.png"/></label>
+      <label><input type="radio" name="wq2" value="c"> <img src="files/les_2-4_1.png"/></label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="wq3" data-correct="a">
+      <p class="quiz-q-text">4. Какой алгоритм движения используется в практическом задании для обхода всей территории?</p>
+      <label><input type="radio" name="wq3" value="a"> Змейка (строка за строкой)</label>
+      <label><input type="radio" name="wq3" value="b"> Круг</label>
+      <label><input type="radio" name="wq3" value="c"> Случайное движение</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="wq4" data-correct="b">
+      <p class="quiz-q-text">5. Зачем использовать цикл для атаки моба?</p>
+      <label><input type="radio" name="wq4" value="a"> Чтобы атака была красивее</label>
+      <label><input type="radio" name="wq4" value="b"> Чтобы нанести несколько ударов и убить моба</label>
+      <label><input type="radio" name="wq4" value="c"> Чтобы замедлить программу</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizWarrior')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+
+
+  <!-- Навигация -->
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_2-3.html"><div class="lbl">← Назад</div><div class="ttl">2.3 Агент-шахтёр</div></a>
+    <a class="nav-btn next" href="les_3-1.html"><div class="lbl">Далее →</div><div class="ttl">3.1 Minecraft - это 3D игра. Система координат</div></a>
+  </div>
+</main>
+
+<!-- ===== ФУТЕР ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 2.4 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  // === Интерактивные функции ===
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    let correct = 0;
+    cards.forEach(card => {
+      const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      if (isCorrect) {
+        card.classList.add('selected-correct');
+        correct++;
+      } else {
+        card.classList.add('selected-wrong');
+      }
+    });
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct === 1 ? '✅ Всё верно!' : '❌ Попробуй ещё раз. Подумай, какой ответ правильный.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      if (total === 0) {
+        resultDiv.innerHTML = 'Ответь на все вопросы.';
+      } else {
+        resultDiv.innerHTML = `Правильных ответов: ${correct} из ${questions.length}`;
+      }
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  // Прогресс практического задания
+  function updateWarriorProgress() {
+    const checkboxes = document.querySelectorAll('#practiceWarrior input[type="checkbox"]');
+    const total = checkboxes.length;
+    let checked = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    const fill = document.getElementById('warriorProgressFill');
+    const label = document.getElementById('warriorProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+  }
+</script>
+</body>
+</html>

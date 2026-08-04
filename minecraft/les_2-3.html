@@ -86,12 +86,12 @@
     <div class="data-table-wrap">
       <table class="data-table">
         <tr><th>Команда</th><th>Действие</th><th>Пример</th></tr>
-        <tr><td><code>двигаться вперёд</code></td><td>Шаг вперёд</td><td>двигаться вперёд 5 раз</td></tr>
-        <tr><td><code>разрушить блок</code></td><td>Ломает блок перед агентом</td><td>разрушить блок</td></tr>
-        <tr><td><code>подняться вверх</code></td><td>Поднимается на блок</td><td>подняться вверх</td></tr>
-        <tr><td><code>опуститься вниз</code></td><td>Опускается на блок</td><td>опуститься вниз</td></tr>
-        <tr><td><code>повернуть налево/направо</code></td><td>Поворот на 90°</td><td>повернуть налево</td></tr>
-        <tr><td><code>поставить блок</code></td><td>Ставит блок перед агентом</td><td>поставить блок (факел)</td></tr>
+        <tr><td><img src="files/les_1-2_2.png"/></td><td>Шаг вперёд</td><td>двигаться вперёд 5 раз</td></tr>
+        <tr><td><img src="files/les_1-2_6.png"/></td><td>Ломает блок перед агентом</td><td>разрушить блок</td></tr>
+        <tr><td><img src="files/les_2-1_1.png"/></td><td>Поднимается на блок</td><td>подняться вверх</td></tr>
+        <tr><td><img src="files/les_2-1_2.png"/></td><td>Опускается на блок</td><td>опуститься вниз</td></tr>
+        <tr><td><img src="files/les_1-2_3.png"/></td><td>Поворот на 90°</td><td>повернуть налево</td></tr>
+        <tr><td><img src="files/les_1-2_5.png"/></td><td>Ставит блок перед агентом</td><td>поставить блок (факел)</td></tr>
       </table>
     </div>
 
@@ -108,16 +108,11 @@
     <div class="code-block">
       <div class="code-head">
         <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
-        <span class="fname">проверка_блока.txt</span>
+        <span class="fname">проверка_блока.makecode</span>
       </div>
-      <pre class="code"><code><span class="tok-c">-- Проверяем, что за блок перед агентом</span>
-<span class="tok-k">если</span> ID_блока_перед_агентом == 1 <span class="tok-k">то</span>  <span class="tok-c">-- 1 = камень</span>
-    <span class="tok-n">сказать</span> "Это камень, копаем дальше"
-<span class="tok-k">иначе</span> <span class="tok-k">если</span> ID_блока_перед_агентом == 56 <span class="tok-k">то</span>  <span class="tok-c">-- 56 = алмазная руда</span>
-    <span class="tok-n">сказать</span> "Я нашёл алмазы! 🎉"
-    <span class="tok-n">остановить</span> программу  <span class="tok-c">-- завершаем работу</span>
-<span class="tok-k">иначе</span>
-    <span class="tok-n">сказать</span> "Что-то странное..."</code></pre>
+      <pre class="code"><code>
+        <img src="files/les_2-3_1.png"/>
+      </code></pre>
     </div>
 
     <div class="data-table-wrap">
@@ -133,21 +128,18 @@
     </div>
 
     <div class="note">
-      <b>💡 Остановка программы:</b> команда <code>остановить программу</code> (или <code>выйти</code>) завершает выполнение всех команд. Это полезно, когда агент нашёл что-то ценное.
+      <b>💡 Совет:</b> чтобы программа выполнялась пока не выполнится какое-то условие внутри, мы используем цикл <b>пока [истина] делать</b>. Чтобы остановить цикл, нужно поставить блок <b>прервать</b> в программе. Это полезно, когда агент нашёл что-то ценное.
     </div>
+    
 
     <!-- Интерактив: проверка блока -->
     <div class="interactive-box" id="blockCheckQuiz">
       <h3>🧠 Что сделает агент?</h3>
       <p>Агент видит блок с ID = 56. Какую команду он выполнит?</p>
       <div class="code-block" style="margin: 8px 0;">
-        <pre class="code"><code>если ID_блока == 1 то
-    сказать "Камень"
-иначе если ID_блока == 56 то
-    сказать "Алмаз!"
-    остановить программу
-иначе
-    сказать "Неизвестно"</code></pre>
+        <pre class="code"><code>
+          <img src="files/les_2-3_2.png"/>
+        </code></pre>
       </div>
       <div class="choice-grid">
         <div class="choice-card" data-correct-choice="false">Скажет "Камень"</div>
@@ -159,88 +151,7 @@
     </div>
   </div>
 
-  <!-- Часть 3: Практика -->
-  <div class="task-box" id="practiceMiner">
-    <h2>🛠️ Практическое задание: копка тоннеля</h2>
-    <div class="progress-track"><div class="progress-fill" id="minerProgressFill"></div></div>
-    <span class="progress-label" id="minerProgressLabel">Выполнено шагов: 0 из 5</span>
-    <p>Создай в Minecraft Education программу для автоматического копания тоннеля высотой 2 блока.</p>
-
-    <h3>Основное задание:</h3>
-    <ul class="task-steps">
-      <li><input type="checkbox" id="m0" onchange="updateMinerProgress()"><label for="m0">Агент разрушает блок на уровне головы (вверх)</label></li>
-      <li><input type="checkbox" id="m1" onchange="updateMinerProgress()"><label for="m1">Агент разрушает блок на уровне ног (вперёд)</label></li>
-      <li><input type="checkbox" id="m2" onchange="updateMinerProgress()"><label for="m2">Агент двигается вперёд на 1 блок</label></li>
-      <li><input type="checkbox" id="m3" onchange="updateMinerProgress()"><label for="m3">Агент ставит факел на стену через каждые 5 блоков</label></li>
-      <li class="bonus-step"><input type="checkbox" id="m4" onchange="updateMinerProgress()"><label for="m4"><b>⭐ Бонус:</b> добавь проверку - если перед агентом не камень (ID != 1), то написать "Я что-то нашёл!" и остановить программу <b>(+5 робокоинов)</b></label></li>
-    </ul>
-
-    <div class="note" style="margin-top: 12px;">
-      <b>💡 Подсказка:</b> для копания тоннеля используй цикл <code>повторить N раз</code>. Факелы ставь на стену с помощью <code>повернуть налево</code>, <code>поставить блок</code>, <code>повернуть направо</code>.
-    </div>
-
-    <div class="note" style="background: #fff8e1; border-left-color: #ffbd2e;">
-      <b>🌟 Идея:</b> для проверки блока используй условие с ID блока. Если блок не камень (ID != 1), значит агент нашёл руду или что-то ценное!
-    </div>
-  </div>
-
-  <!-- Опрос -->
-  <div class="quiz-wrap" id="quizMiner">
-    <h2>📝 Проверь себя</h2>
-
-    <div class="quiz-question" data-name="mq0" data-correct="b">
-      <p class="quiz-q-text">1. Какая команда ломает блок перед агентом?</p>
-      <label><input type="radio" name="mq0" value="a"> поставить блок</label>
-      <label><input type="radio" name="mq0" value="b"> разрушить блок</label>
-      <label><input type="radio" name="mq0" value="c"> двигаться вперёд</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="mq1" data-correct="c">
-      <p class="quiz-q-text">2. Как узнать, какой блок находится перед агентом?</p>
-      <label><input type="radio" name="mq1" value="a"> спросить у игрока</label>
-      <label><input type="radio" name="mq1" value="b"> посмотреть на экран</label>
-      <label><input type="radio" name="mq1" value="c"> использовать ID_блока_перед_агентом</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="mq2" data-correct="a">
-      <p class="quiz-q-text">3. Какой ID у камня (Stone)?</p>
-      <label><input type="radio" name="mq2" value="a"> 1</label>
-      <label><input type="radio" name="mq2" value="b"> 56</label>
-      <label><input type="radio" name="mq2" value="c"> 133</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="mq3" data-correct="b">
-      <p class="quiz-q-text">4. Какая команда останавливает выполнение программы?</p>
-      <label><input type="radio" name="mq3" value="a"> повторить</label>
-      <label><input type="radio" name="mq3" value="b"> остановить программу</label>
-      <label><input type="radio" name="mq3" value="c"> двигаться вперёд</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <div class="quiz-question" data-name="mq4" data-correct="b">
-      <p class="quiz-q-text">5. Что нужно сделать, чтобы поставить факел на стену?</p>
-      <label><input type="radio" name="mq4" value="a"> Просто поставить блок перед собой</label>
-      <label><input type="radio" name="mq4" value="b"> Повернуться к стене и поставить блок</label>
-      <label><input type="radio" name="mq4" value="c"> Разрушить блок на стене</label>
-      <div class="q-feedback"></div>
-    </div>
-
-    <button class="quiz-btn" onclick="checkQuiz('quizMiner')">Проверить ответы</button>
-    <div class="quiz-result"></div>
-  </div>
-
-  <!-- Рефлексия -->
-  <div class="reflection-box">
-    <h2>💭 Рефлексия</h2>
-    <p>Напиши, что тебе понравилось, а что было сложно:</p>
-    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
-  </div>
-
-  <!-- AI-помощник -->
-  <div class="ai-helper">
+<div class="ai-helper">
     <div class="ai-head">
       <span style="font-size:32px; line-height:1;">🤖</span>
       <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
@@ -262,6 +173,90 @@
       </div>
     </div>
   </div>
+
+  <!-- Часть 3: Практика -->
+  <div class="task-box" id="practiceMiner">
+    <h2>🛠️ Практическое задание: копка тоннеля</h2>
+    <div class="progress-track"><div class="progress-fill-minecraft" id="minerProgressFill"></div></div>
+    <span class="progress-label" id="minerProgressLabel">Выполнено шагов: 0 из 5</span>
+    <p>Создай в Minecraft Education программу для автоматического копания тоннеля высотой 2 блока.</p>
+
+    <h3>Основное задание:</h3>
+    <ul class="task-steps">
+      <li><input type="checkbox" id="m0" onchange="updateMinerProgress()"><label for="m0">Агент разрушает блок на уровне головы (вверх)</label></li>
+      <li><input type="checkbox" id="m1" onchange="updateMinerProgress()"><label for="m1">Агент разрушает блок на уровне ног (вперёд)</label></li>
+      <li><input type="checkbox" id="m2" onchange="updateMinerProgress()"><label for="m2">Агент двигается вперёд на 1 блок</label></li>
+      <li><input type="checkbox" id="m3" onchange="updateMinerProgress()"><label for="m3">Агент ставит факел на стену через каждые 5 блоков</label></li>
+      <li class="bonus-step"><input type="checkbox" id="m4" onchange="updateMinerProgress()"><label for="m4"><b>⭐ Бонус:</b> добавь проверку - если перед агентом не камень (ID != 1), то написать "Я что-то нашёл!" и остановить программу <b>(+5 робокоинов)</b></label></li>
+    </ul>
+
+    <div class="note" style="margin-top: 12px;">
+      <b>💡 Подсказка:</b> для копания тоннеля используй цикл <code>повторить N раз</code>. Факелы ставь на стену с помощью <code>повернуть налево</code>, <code>поставить блок</code>, <code>повернуть направо</code>.
+    </div>
+
+    <div class="note" style="background: #fff8e1; border-left-color: #ffbd2e;">
+      <b>🌟 Идея:</b> для проверки блока используй условие с ID блока. Если блок не камень (ID != 1), значит агент нашёл что-то ценное!
+    </div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizMiner">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="mq0" data-correct="b">
+      <p class="quiz-q-text">1. Какая команда ломает блок перед агентом?</p>
+      <label><input type="radio" name="mq0" value="a"> <img src="files/les_1-2_5.png"/></label>
+      <label><input type="radio" name="mq0" value="b"> <img src="files/les_1-2_6.png"/></label>
+      <label><input type="radio" name="mq0" value="c"> <img src="files/les_1-2_2.png"/></label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq1" data-correct="c">
+      <p class="quiz-q-text">2. Как узнать, какой блок находится перед агентом?</p>
+      <label><input type="radio" name="mq1" value="a"> спросить у игрока</label>
+      <label><input type="radio" name="mq1" value="b"> посмотреть на экран</label>
+      <label><input type="radio" name="mq1" value="c"> использовать <img src="files/les_2-3_3.png"/></label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq2" data-correct="a">
+      <p class="quiz-q-text">3. Какой ID у камня (Stone)?</p>
+      <label><input type="radio" name="mq2" value="a"> 1</label>
+      <label><input type="radio" name="mq2" value="b"> 56</label>
+      <label><input type="radio" name="mq2" value="c"> 133</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq3" data-correct="c">
+      <p class="quiz-q-text">4. Какая команда останавливает выполнение программы в цикле?</p>
+      <label><input type="radio" name="mq3" value="a"> <img src="files/les_1-4_2.png"/></label>
+      <label><input type="radio" name="mq3" value="b"> <img src="files/les_1-2_5.png"/></label>
+      <label><input type="radio" name="mq3" value="c"> <img src="files/les_2-3_4.png"/></label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq4" data-correct="b">
+      <p class="quiz-q-text">5. Что нужно сделать, чтобы поставить факел на стену?</p>
+      <label><input type="radio" name="mq4" value="a"> Просто поставить блок перед собой</label>
+      <label><input type="radio" name="mq4" value="b"> Повернуться к стене и поставить блок</label>
+      <label><input type="radio" name="mq4" value="c"> Разрушить блок на стене</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizMiner')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+
+
+  
 
   <!-- Навигация -->
   <div class="lesson-nav">

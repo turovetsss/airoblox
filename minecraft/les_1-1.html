@@ -350,19 +350,19 @@
   </div>
 
   <!-- Практическое задание: мышка -->
-  <div class="task-box">
+  <div class="task-box" id="practiceMinecraft">
     <h2>🛠️ Практическое задание: Тренировка мышки и клавиатуры</h2>
-    <div class="progress-track"><div class="progress-fill"></div></div>
-    <span class="progress-label">Выполнено шагов: 0 из 7</span>
+    <div class="progress-track"><div class="progress-fill-minecraft" id="practiceProgressFill"></div></div>
+    <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 7</span>
     <div class="note">Не переживай, если что-то не получается с первого раза — даже опытные программисты тренируются каждый день!</div>
     <ul class="task-steps">
-      <li><input type="checkbox" id="Тренs0" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Тренs0">Открой любую программу для рисования двойным кликом по значку</label><div><img src="../assets/images/lesson-1.1/paint.png" alt="Рисование"></div></li>
-      <li><input type="checkbox" id="Тренs1" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Тренs1">Нарисуй мышкой (зажимая ЛКМ) простой домик из 3-4 линий</label> <div><img src="../assets/images/lesson-1.1/home.png" alt="Домик"></div></li>
-      <li><input type="checkbox" id="Тренs2" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Тренs2">Попробуй правый клик на рабочем столе — посмотри, какое меню появилось</label><div><img src="../assets/images/lesson-1.1/1.png" alt="Правый клик"></div></li>
-      <li><input type="checkbox" id="Тренs3" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Тренs3">Открой текстовый файл и набери своё имя и название любимой игры</label><div><img src="../assets/images/lesson-1.1/text.png" alt="Текстовый файл"></div></li>
-      <li><input type="checkbox" id="Тренs4" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Тренs4">Выдели набранный текст и скопируй его (Ctrl+C), затем вставь ещё раз (Ctrl+V)</label></li>
-      <li><input type="checkbox" id="Тренs5" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Тренs5">Создай на рабочем столе новую папку и назови её «Мои файлы РОБОВИТА»</label><div><img src="../assets/images/lesson-1.1/create.png" alt="Создать папку"></div></li>
-      <li class="bonus-step"><input type="checkbox" id="Тренbonus" onchange="updateTaskProgress(this.closest('.task-box'))"><label for="Тренbonus">⭐ <b>Бонус:</b> запиши в текстовом документе алгоритм из 5 шагов «Как собраться в школу» и покажи преподавателю</label></li>
+      <li><input type="checkbox" id="pm0" onchange="updatePracticeProgress()"><label for="Тренs0">Открой любую программу для рисования двойным кликом по значку</label><div><img src="../assets/images/lesson-1.1/paint.png" alt="Рисование"></div></li>
+      <li><input type="checkbox" id="pm1" onchange="updatePracticeProgress()"><label for="Тренs1">Нарисуй мышкой (зажимая ЛКМ) простой домик из 3-4 линий</label> <div><img src="../assets/images/lesson-1.1/home.png" alt="Домик"></div></li>
+      <li><input type="checkbox" id="pm2" onchange="updatePracticeProgress()"><label for="Тренs2">Попробуй правый клик на рабочем столе — посмотри, какое меню появилось</label><div><img src="../assets/images/lesson-1.1/1.png" alt="Правый клик"></div></li>
+      <li><input type="checkbox" id="pm3" onchange="updatePracticeProgress()"><label for="Тренs3">Открой текстовый файл и набери своё имя и название любимой игры</label><div><img src="../assets/images/lesson-1.1/text.png" alt="Текстовый файл"></div></li>
+      <li><input type="checkbox" id="pm4" onchange="updatePracticeProgress()"><label for="Тренs4">Выдели набранный текст и скопируй его (Ctrl+C), затем вставь ещё раз (Ctrl+V)</label></li>
+      <li><input type="checkbox" id="pm5" onchange="updatePracticeProgress()"><label for="Тренs5">Создай на рабочем столе новую папку и назови её «Мои файлы РОБОВИТА»</label><div><img src="../assets/images/lesson-1.1/create.png" alt="Создать папку"></div></li>
+      <li class="bonus-step"><input type="checkbox" id="pm5" onchange="updatePracticeProgress()"><label for="Тренbonus">⭐ <b>Бонус:</b> запиши в текстовом документе алгоритм из 5 шагов «Как собраться в школу» и покажи преподавателю</label></li>
     </ul>
   </div>
 
@@ -533,6 +533,17 @@
       });
     }
   })();
+
+    function updatePracticeProgress() {
+    const checkboxes = document.querySelectorAll('#practiceMinecraft input[type="checkbox"]');
+    const total = checkboxes.length;
+    let checked = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    const fill = document.getElementById('practiceProgressFill');
+    const label = document.getElementById('practiceProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+  }
 </script>
 </body>
 </html>

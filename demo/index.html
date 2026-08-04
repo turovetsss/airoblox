@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Бесплатное занятие · Зарядка для робота | РОБОВИТА</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="https://robovita.by">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Робовита">
+        <div><div class="brand-name">РОБОВИТА</div><div class="brand-tag">робототехника и программирование</div></div>
+      </a>
+      <div style="color:#b3d0f0;">Бесплатное пробное занятие</div>
+    </div>
+    <div class="hero">
+      <div class="hero-badge">🤖</div>
+      <div>
+        <h1>Зарядка для робота</h1>
+        <div class="sub">Создай свою первую игру на Scratch за 20 минут</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- РЕГИСТРАЦИЯ -->
+  <div id="registrationSection">
+    <div class="info-banner">
+      <div>
+        <strong>🎯 Бесплатное онлайн-занятие</strong>
+        <p style="margin:0; color:#1a3c61;">Сделай свою первую игру и узнай свой уровень программирования</p>
+      </div>
+      <span style="background:#f9b93b; padding:0.3rem 1.5rem; border-radius:40px; font-weight:700;">🔥 всего 20 минут</span>
+    </div>
+    <div class="card">
+      <h2>📝 Давай познакомимся</h2>
+      <p style="margin-bottom:1.2rem;">Введи данные, чтобы мы могли отправить тебе результаты занятия</p>
+      <div class="form-group">
+        <label>👤 Имя ребёнка</label>
+        <input type="text" id="childName" placeholder="Например: Ваня" value="">
+      </div>
+      <div class="form-group">
+        <label>📱 Телефон для связи</label>
+        <input type="tel" id="childPhone" placeholder="+375 (44) 739-00-91" value="">
+      </div>
+      <div class="form-group">
+        <label>🎂 Возраст ребёнка</label>
+        <input type="number" id="childAge" placeholder="Например: 10" value="" min="5" max="18">
+      </div>
+      <button class="btn-primary gold" onclick="startLesson()">🚀 Начать занятие</button>
+      <p style="margin-top:0.8rem; font-size:0.85rem; color:#4b6a8a;">Нажимая «Начать», вы соглашаетесь на обработку данных</p>
+    </div>
+  </div>
+
+  <!-- ВЫБОР СПОСОБА (только визуальная инструкция) -->
+  <div id="choiceSection" class="hidden">
+    <div class="card" style="margin-top: 20px;">
+      <h2>🎓 Как будем проходить занятие?</h2>
+      <p style="margin-bottom:1rem;">Мы будем проходить занятие в формате <strong>пошаговой визуальной инструкции</strong>.</p>
+      <p style="margin-bottom:1rem;">Следуй шагам, повторяй в Scratch — и у тебя получится игра «Зарядка для робота»!</p>
+      <div style="text-align:center; margin-top:0.5rem;">
+        <button class="btn-primary gold" onclick="selectMode('visual')" style="margin-right:1rem;">📋 Начать инструкцию</button>
+        <button class="btn-primary outline" onclick="openScratch()">🚀 Открыть Scratch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ВИЗУАЛЬНАЯ ИНСТРУКЦИЯ -->
+  <div id="visualSection" class="hidden">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+        <h2>📋 Визуальная инструкция</h2>
+        <div>
+          <button class="btn-primary outline" onclick="openScratch()" style="margin-right:0.5rem;">🚀 Scratch</button>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="fill" id="visualProgress" style="width:0%;"></div></div>
+      <div id="visualStepsContainer">
+        <!-- шаги генерируются js -->
+      </div>
+      <div style="margin-top:1.5rem; text-align:right;">
+        <button class="btn-primary gold" id="visualCompleteBtn" onclick="visualComplete()" style="display:none;">✅ Завершить инструкцию → перейти к заданиям</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ЗАДАНИЯ -->
+  <div id="tasksSection" class="hidden">
+    <div class="card">
+      <h2>🎯 Задания для определения уровня</h2>
+      <p style="margin-bottom:1.2rem;">Отлично! Теперь попробуй улучшить свою игру. Выполняй задания по порядку.</p>
+      <div id="tasksContainer"></div>
+      <div style="margin-top:1.5rem; text-align:center; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <button class="btn-primary gold" id="finishTasksBtn" onclick="completeLesson()">🏆 Завершить занятие</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА ОТПРАВКИ ПРОЕКТА -->
+  <div class="modal-overlay" id="sendModal">
+  <div class="modal">
+    <button class="close" onclick="closeSendModal()">✕</button>
+    <h2>💾 Отправь проект</h2>
+    <p style="margin-bottom:1rem;">Скачай проект из Scratch и загрузи его сюда. Мы проверим и дадим обратную связь.</p>
+    
+    <div style="background:#eaf3fe; border-radius:16px; padding:1rem; margin:1rem 0;">
+      <p style="font-weight:600;">📥 Как сохранить проект в Scratch:</p>
+      <ol style="padding-left:1.2rem; color:#1a3c61;">
+        <li>Нажми <strong>«Файл»</strong> → <strong>«Сохранить на свой компьютер»</strong></li>
+        <li>Выбери папку и сохрани файл <strong>.sb3</strong></li>
+      </ol>
+    </div>
+    
+    <div class="file-upload-area" id="uploadArea">
+      <p style="font-size:2rem;">📤</p>
+      <p><strong>Загрузи файл проекта</strong></p>
+      <p style="font-size:0.85rem; color:#4b6a8a;">Файл .sb3 или .zip</p>
+      <input type="file" id="fileInput" accept=".sb3,.zip" onchange="handleFileUpload(event)">
+      <label for="fileInput" class="btn-primary" style="cursor:pointer;">Выбрать файл</label>
+      <div id="fileStatus" style="margin-top:0.5rem; font-weight:600;"></div>
+    </div>
+    
+    <button class="btn-primary gold" onclick="sendProject()" style="width:100%; margin-top:0.5rem;">
+      📨 Отправить проект
+    </button>
+    
+    <button class="btn-primary outline" onclick="skipSendAndShowCert()" style="width:100%; margin-top:0.5rem;">
+      🎉 Получить результаты
+    </button>
+    
+    <p style="font-size:0.8rem; color:#4b6a8a; margin-top:0.5rem;">Нажимая «Отправить», вы соглашаетесь с обработкой данных.</p>
+  </div>
+</div>
+
+  <!-- МОДАЛКА БЛОКОВ SCRATCH -->
+  <div class="modal-overlay" id="blockModal">
+    <div class="modal">
+      <button class="close" onclick="closeBlockModal()">✕</button>
+      <div id="blockModalContent"></div>
+    </div>
+  </div>
+
+<!-- ПОЗДРАВЛЕНИЕ -->
+<div id="certificateSection" class="hidden">
+  <div class="card" style="border:4px solid #d4a843; background: #faf8f5; padding: 2rem; margin-top: 20px;">
+    
+    <div class="congrats-wrapper">
+      <div class="emoji">🎉</div>
+      <h2 style="display: flex; justify-content: center;">Поздравляем, <span id="congratsName">Миша</span>!</h2>
+      <p class="subtitle">Ты создал(а) свою первую игру на Scratch!</p>
+      <p class="description">«Зарядка для робота» — это только начало твоего пути в мир программирования</p>
+      
+      <div class="divider"></div>
+      
+      <p class="message">
+        На наших занятиях ты научишься создавать игры без инструкций,<br>
+        программировать роботов и разрабатывать собственные проекты.<br>
+        <strong>Твои возможности безграничны!</strong>
+      </p>
+      
+      <div class="congrats-grid">
+        <div class="item">
+          <div class="icon">🤖</div>
+          <div class="label">Робототехника</div>
+        </div>
+        <div class="item">
+          <div class="icon">💻</div>
+          <div class="label">Программирование</div>
+        </div>
+        <div class="item">
+          <div class="icon">🔌</div>
+          <div class="label">Электроника</div>
+        </div>
+      </div>
+      
+      <div class="congrats-actions">
+        <a class="btn-primary outline" href="https://robovita.by/">Открыть сайт</a>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+  <div class="footer-note">
+    <a href="https://robovita.by"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Робовита" style="width: 15%;"></a><br>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
