@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3.3. Переменные — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+    .hint-btn {
+      background: #ffbd2e;
+      color: #2b5e0e;
+      border: none;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 8px;
+    }
+    .hint-btn:hover { background: #f0a800; transform: scale(1.05); }
+    .hint-content {
+      display: none;
+      background: #fff8e1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-top: 8px;
+      border-left: 3px solid #ffbd2e;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+    .hint-content.show { display: block; }
+    .hint-content code { background: #e8ece6; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+    .var-demo { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin: 16px 0; }
+    .var-box { background: #f0f9eb; border: 2px solid #b8d9a8; border-radius: 12px; padding: 16px 20px; text-align: center; min-width: 100px; }
+    .var-box .varname { font-weight: 700; color: #2b5e0e; font-size: 1.1rem; }
+    .var-box .varvalue { font-size: 1.5rem; font-weight: 700; color: #c678dd; }
+    .var-box .vartype { font-size: 0.8rem; color: #888; }
+    .var-box .varimg { font-size: 2.5rem; }
+    .fill-in-blank { background: #f7fcf2; border: 2px dashed #61b01f; border-radius: 8px; padding: 8px 16px; margin: 4px 0; }
+    .fill-in-blank input { border: none; border-bottom: 2px solid #61b01f; background: transparent; font-size: 1rem; width: 100px; text-align: center; font-weight: 600; color: #2b5e0e; }
+    .fill-in-blank input:focus { outline: none; border-bottom-color: #4d8c18; }
+  </style>
+</head>
+<body class="lesson-page">
+<!-- ===== ШАПКА ===== -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 3.3</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">3.3</div>
+      <div>
+        <div class="module-pill">Раздел 3 · Координаты и логика</div>
+        <h1>Переменные</h1>
+        <p class="subtitle">Храним информацию и используем её в программах</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Цели -->
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Понять, что такое переменные и зачем они нужны</li>
+      <li>Научиться создавать переменные в Minecraft Education</li>
+      <li>Изучить разные типы данных: числа, текст, логические значения</li>
+      <li>Научиться изменять значения переменных</li>
+      <li>Применить переменные в практическом проекте</li>
+    </ul>
+  </div>
+
+  <!-- План -->
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Приветствие, настрой на занятие</td></tr>
+      <tr><td>Что такое переменная?</td><td>15 мин</td><td>Теория: аналогии из жизни, примеры</td></tr>
+      <tr><td>Типы данных</td><td>15 мин</td><td>Числа, текст, логические значения</td></tr>
+      <tr><td>Создание и изменение переменных</td><td>15 мин</td><td>Как создать переменную, как изменить её значение</td></tr>
+      <tr><td>Интерактивные задания</td><td>15 мин</td><td>Закрепляем на практике</td></tr>
+      <tr><td>Практический проект</td><td>20 мин</td><td>Создаём программу с переменными</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Проверяем знания</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- Часть 1: Что такое переменная -->
+  <div class="card">
+    <h2><span class="num">1</span> Что такое переменная?</h2>
+    
+    <p><b>Переменная</b> — это как коробка с именем, в которой можно хранить какую-то информацию.</p>
+
+    <div class="var-demo">
+      <div class="var-box">
+        <div class="varimg">📦</div>
+        <div class="varname">количество_шагов</div>
+        <div class="varvalue">10</div>
+        <div class="vartype">число</div>
+      </div>
+      <div class="var-box">
+        <div class="varimg">📝</div>
+        <div class="varname">имя_игрока</div>
+        <div class="varvalue">"Алекс"</div>
+        <div class="vartype">текст</div>
+      </div>
+      <div class="var-box">
+        <div class="varimg">✅</div>
+        <div class="varname">свет_включён</div>
+        <div class="varvalue">true</div>
+        <div class="vartype">правда/ложь</div>
+      </div>
+    </div>
+
+    <h3>Аналогия из реальной жизни</h3>
+    <p>Представь, что у тебя есть <b>коробка</b> с наклейкой «Мои игрушки». Ты можешь:</p>
+    <ul>
+      <li><b>Положить</b> в неё что-то (присвоить значение)</li>
+      <li><b>Посмотреть</b>, что внутри (прочитать значение)</li>
+      <li><b>Заменить</b> содержимое на другое (изменить значение)</li>
+    </ul>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">переменные_пример.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Создаём переменную (классная коробка с именем)</span>
+<img src="files/les_3-3_1.png"/>
+
+<span class="tok-c">-- Используем переменную в программе</span>
+<img src="files/les_3-3_2.png"/>
+
+<span class="tok-c">-- Меняем значение переменной</span>
+<img src="files/les_3-3_3.png"/>
+
+<span class="tok-c">-- Теперь цикл повторится 25 раз!</span></code></pre>
+    </div>
+
+    <div class="note">
+      <b>💡 Главная идея:</b> переменные позволяют <b>сохранять информацию</b> и использовать её в разных местах программы. Если нужно изменить число — меняешь его <b>в одном месте</b>, а не во всей программе!
+    </div>
+  </div>
+
+  <!-- Часть 2: Типы данных -->
+  <div class="card">
+    <h2><span class="num">2</span> Типы данных</h2>
+    
+    <p>В переменные можно сохранять разные виды информации. Это называется <b>тип данных</b>.</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Тип</th><th>Что хранит</th><th>Примеры</th><th>Использование</th></tr>
+        <tr>
+          <td><b>Число</b><br><span style="color:#e06c75;">number</span></td>
+          <td>Любые числа</td>
+          <td><code>10, -5, 3.14, 100</code></td>
+          <td>Счётчики, координаты, количество</td>
+        </tr>
+        <tr>
+          <td><b>Текст</b><br><span style="color:#98c379;">string</span></td>
+          <td>Строка символов</td>
+          <td><code>"Привет", "Алекс", "Minecraft"</code></td>
+          <td>Имена, сообщения, названия</td>
+        </tr>
+        <tr>
+          <td><b>Логический</b><br><span style="color:#c678dd;">boolean</span></td>
+          <td>Правда или ложь</td>
+          <td><code>true, false</code></td>
+          <td>Условия, флаги, переключатели</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">типы_данных.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Примеры разных типов переменных</span>
+
+<span class="tok-c">-- Число (number)</span>
+<span class="tok-v">высота_башни</span> = 10
+<span class="tok-v">температура</span> = -5.5
+
+<span class="tok-c">-- Текст (string) — в кавычках</span>
+<span class="tok-v">имя_агента</span> = "Стив"
+<span class="tok-v">приветствие</span> = "Добро пожаловать!"
+
+<span class="tok-c">-- Логическое (boolean) — true или false</span>
+<span class="tok-v">есть_свет</span> = true
+<span class="tok-v">дождь_идёт</span> = false</code></pre>
+    </div>
+
+    <!-- Интерактив: определи тип -->
+    <div class="interactive-box" id="typeQuiz">
+      <h3>🧠 Определи тип переменной</h3>
+      <p>Какой тип данных у переменной <code>возраст = 12</code>?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Число (number)</div>
+        <div class="choice-card" data-correct-choice="false">Текст (string)</div>
+        <div class="choice-card" data-correct-choice="false">Логический (boolean)</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('typeQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="typeQuiz2">
+      <h3>🧠 Определи тип переменной</h3>
+      <p>Какой тип данных у переменной <code>игрок_онлайн = true</code>?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Число (number)</div>
+        <div class="choice-card" data-correct-choice="false">Текст (string)</div>
+        <div class="choice-card" data-correct-choice="true">Логический (boolean)</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('typeQuiz2')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- Часть 3: Создание и изменение переменных -->
+  <div class="card">
+    <h2><span class="num">3</span> Создание и изменение переменных</h2>
+    
+    <h3>Как создать переменную?</h3>
+    <p>В Minecraft Education для создания переменной используется кнопка <b>создать переменную</b> во вкладке <i>Переменные</i>.</p>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">создание_переменных.makecode</span>
+      </div>
+      <pre class="code"><code>
+        <img src="files/les_3-3_1.png" style="width: 100%;"/>
+      </code></pre>
+    </div>
+
+    <h3>Как изменить переменную?</h3>
+    <p>Чтобы изменить значение переменной, используется блок <b>«изменить [имя] на [значение]»</b>.</p>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">изменение_переменных.makecode</span>
+      </div>
+      <pre class="code"><code>
+        <img src="files/les_3-3_4.png" style="width: 100%;"/>
+      </code></pre>
+    </div>
+
+    <h3>Пример: счётчик шагов</h3>
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">счётчик_шагов.makecode</span>
+      </div>
+      <pre class="code"><code>
+        <img src="files/les_3-3_5.png" style="width: 100%;"/>
+      </code></pre>
+    </div>
+
+    <div class="note">
+      <b>📌 Важно:</b> переменные создаются один раз, а затем их можно <b>изменять</b> сколько угодно раз. В Minecraft Education блок <b>«задать»</b> создаёт переменную, а блок <b>«изменить»</b> меняет её значение.
+    </div>
+  </div>
+
+  <!-- Часть 4: Интерактивные задания -->
+  <div class="card">
+    <h2><span class="num">4</span> Интерактивные задания</h2>
+
+    <div class="interactive-box" id="varCreateQuiz">
+      <h3>🔧 Создание переменной</h3>
+      <p>Какой блок используется для создания переменной в Minecraft Education?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">кнопка "Создать переменную"</div>
+        <div class="choice-card" data-correct-choice="false">изменить [имя] на [число]</div>
+        <div class="choice-card" data-correct-choice="false">повторить [число] раз</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('varCreateQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="varChangeQuiz">
+      <h3>🔄 Изменение переменной</h3>
+      <p>Какая команда изменит значение переменной <code>шаги</code> с 5 на 10?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">задать шаги значение 5</div>
+        <div class="choice-card" data-correct-choice="true">изменить шаги на 10</div>
+        <div class="choice-card" data-correct-choice="false">шаги = 5</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('varChangeQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="varValueQuiz">
+      <h3>📊 Значение переменной</h3>
+      <p>В коде: <code>задать счётчик значение 0</code>. Затем: <code>изменить счётчик на 3</code>. Какое теперь значение у <code>счётчик</code>?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">0</div>
+        <div class="choice-card" data-correct-choice="true">3</div>
+        <div class="choice-card" data-correct-choice="false">6</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('varValueQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="varNameQuiz">
+      <h3>🏷️ Имя переменной</h3>
+      <p>Какое имя переменной подходит для хранения количества убитых мобов?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">x</div>
+        <div class="choice-card" data-correct-choice="true">количество_мобов</div>
+        <div class="choice-card" data-correct-choice="false">123</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('varNameQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- AI-помощник -->
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое переменная?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%D0%B8%D0%B5%20%D0%B1%D1%8B%D0%B2%D0%B0%D1%8E%D1%82%20%D1%82%D0%B8%D0%BF%D1%8B%20%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Какие типы данных бывают?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как использовать переменные в Minecraft?</a>
+    </div>
+    <div class="ai-answer">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про переменные.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, объясни переменные для детей»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
+  <!-- Практический проект -->
+  <div class="task-box" id="practiceVariables">
+    <h2>🛠️ Практический проект: Строитель с переменными</h2>
+    <div class="progress-track"><div class="progress-fill" id="varProgressFill"></div></div>
+    <span class="progress-label" id="varProgressLabel">Выполнено шагов: 0 из 6</span>
+    <p>Создай программу, которая строит башню, используя переменные для управления размерами.</p>
+
+    <h3>Пошаговый проект:</h3>
+    <ul class="task-steps">
+      <li>
+        <input type="checkbox" id="v0" onchange="updateVarProgress()">
+        <label for="v0">Создай переменную <code>высота</code> со значением 5</label>
+      </li>
+      <li>
+        <input type="checkbox" id="v1" onchange="updateVarProgress()">
+        <label for="v1">Создай переменную <code>ширина</code> со значением 3</label>
+      </li>
+      <li>
+        <input type="checkbox" id="v2" onchange="updateVarProgress()">
+        <label for="v2">Создай программу, которая строит квадрат с размером стороны <code>ширина</code></label>
+        <button class="hint-btn" onclick="toggleHint('hintVar1')">💡 Подсказка</button>
+        <div class="hint-content" id="hintVar1">
+          Используй вложенный цикл: внешний <code>повторить ширина раз</code>, внутренний <code>повторить ширина раз [поставить блок; двигаться вперёд]</code>
+        </div>
+      </li>
+      <li>
+        <input type="checkbox" id="v3" onchange="updateVarProgress()">
+        <label for="v3">Оберни строительство квадрата в цикл, который повторяется <code>высота</code> раз (это будет башня)</label>
+        <button class="hint-btn" onclick="toggleHint('hintVar2')">💡 Подсказка</button>
+        <div class="hint-content" id="hintVar2">
+          После каждого квадрата агент должен <code>подняться вверх</code>
+        </div>
+      </li>
+      <li>
+        <input type="checkbox" id="v4" onchange="updateVarProgress()">
+        <label for="v4">Добавь переменную <code>счётчик_этажей</code> и увеличивай её на 1 после каждого этажа</label>
+        <button class="hint-btn" onclick="toggleHint('hintVar3')">💡 Подсказка</button>
+        <div class="hint-content" id="hintVar3">
+          Используй блок <code>изменить счётчик_этажей на 1</code> внутри цикла строительства
+        </div>
+      </li>
+      <li class="bonus-step">
+        <input type="checkbox" id="v5" onchange="updateVarProgress()">
+        <label for="v5">⭐ Бонус: в конце программы выведи сообщение "Построено этажей: " + счётчик_этажей <b>(+10 робокоинов)</b></label>
+      </li>
+    </ul>
+
+    <div class="note" style="margin-top: 12px;">
+      <b>💡 Подсказка:</b> переменные позволяют легко менять размеры башни. Попробуй изменить <code>высота</code> на 10 или <code>ширина</code> на 4 — и башня изменится автоматически!
+    </div>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizVariables">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="vq0" data-correct="b">
+      <p class="quiz-q-text">1. Что такое переменная?</p>
+      <label><input type="radio" name="vq0" value="a"> Команда для движения</label>
+      <label><input type="radio" name="vq0" value="b"> Контейнер для хранения информации</label>
+      <label><input type="radio" name="vq0" value="c"> Тип блока в Minecraft</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="vq1" data-correct="c">
+      <p class="quiz-q-text">2. Какой тип данных у переменной <code>имя = "Алекс"</code>?</p>
+      <label><input type="radio" name="vq1" value="a"> Число</label>
+      <label><input type="radio" name="vq1" value="b"> Логический</label>
+      <label><input type="radio" name="vq1" value="c"> Текст</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="vq2" data-correct="a">
+      <p class="quiz-q-text">3. Какой блок создаёт переменную в Minecraft Education?</p>
+      <label><input type="radio" name="vq2" value="a"> кнопка "Создать переменную" во вкладке <i>Переменные</i></label>
+      <label><input type="radio" name="vq2" value="b"> изменить [имя] на [число]</label>
+      <label><input type="radio" name="vq2" value="c"> повторить [число] раз</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="vq3" data-correct="b">
+      <p class="quiz-q-text">4. Какой тип данных может быть только <code>true</code> или <code>false</code>?</p>
+      <label><input type="radio" name="vq3" value="a"> Число</label>
+      <label><input type="radio" name="vq3" value="b"> Логический</label>
+      <label><input type="radio" name="vq3" value="c"> Текст</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="vq4" data-correct="c">
+      <p class="quiz-q-text">5. Зачем использовать переменные в программах?</p>
+      <label><input type="radio" name="vq4" value="a"> Чтобы усложнить код</label>
+      <label><input type="radio" name="vq4" value="b"> Чтобы замедлить работу</label>
+      <label><input type="radio" name="vq4" value="c"> Чтобы легко менять значения в одном месте</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizVariables')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+
+  <!-- Навигация -->
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_3-2.html"><div class="lbl">← Назад</div><div class="ttl">3.2 Относительные координаты</div></a>
+    <a class="nav-btn next" href="les_3-4.html"><div class="lbl">Далее →</div><div class="ttl">3.4 Практика: координаты и переменные</div></a>
+  </div>
+</main>
+
+<!-- ===== ФУТЕР ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 3.3 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  // === Функция для показа/скрытия подсказки ===
+  function toggleHint(hintId) {
+    const hint = document.getElementById(hintId);
+    if (hint) {
+      hint.classList.toggle('show');
+    }
+  }
+
+  // === Интерактивные функции ===
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    let correct = 0;
+    cards.forEach(card => {
+      const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      if (isCorrect) {
+        card.classList.add('selected-correct');
+        correct++;
+      } else {
+        card.classList.add('selected-wrong');
+      }
+    });
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct === 1 ? '✅ Всё верно!' : '❌ Попробуй ещё раз. Подумай, какой ответ правильный.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      if (total === 0) {
+        resultDiv.innerHTML = 'Ответь на все вопросы.';
+      } else {
+        resultDiv.innerHTML = `Правильных ответов: ${correct} из ${questions.length}`;
+      }
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  // Прогресс практического задания
+  function updateVarProgress() {
+    const checkboxes = document.querySelectorAll('#practiceVariables input[type="checkbox"]');
+    const total = checkboxes.length;
+    let checked = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    const fill = document.getElementById('varProgressFill');
+    const label = document.getElementById('varProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+  }
+</script>
+</body>
+</html>
