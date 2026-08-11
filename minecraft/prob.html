@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Пробное занятие — Minecraft Education · РОБОВИТА</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #f0a500; color: #2b5e0e; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn, .prez-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover, .prez-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .hint-btn {
+      background: #ffbd2e; color: #2b5e0e; border: none; padding: 4px 16px;
+      border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer; margin-top: 8px;
+    }
+    .hint-content {
+      display: none; background: #fff8e1; padding: 10px 14px; border-radius: 8px;
+      margin-top: 8px; border-left: 3px solid #ffbd2e; font-size: 0.95rem;
+    }
+    .hint-content.show { display: block; }
+    .task-number {
+      display: inline-block; background: #61b01f; color: #fff; border-radius: 50%;
+      width: 28px; height: 28px; text-align: center; line-height: 28px;
+      font-weight: 700; margin-right: 10px; font-size: 0.85rem;
+    }
+    .together-box {
+      background: #e8f5e9; border: 2px solid #81c784; border-radius: 14px;
+      padding: 16px 18px; margin-top: 14px;
+    }
+    .together-box h4 { color: #2b5e0e; margin: 0 0 8px 0; }
+    .solo-box {
+      background: #fff8e1; border: 2px dashed #ffbd2e; border-radius: 14px;
+      padding: 16px 18px; margin-top: 14px;
+    }
+    .sheet-img {
+      width: 100%; border-radius: 12px; border: 2px solid #b8d9a8;
+      margin: 12px 0; box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    }
+    .key-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px; margin: 14px 0;
+    }
+    .key-card {
+      background: #f0f9eb; border: 2px solid #b8d9a8; border-radius: 12px;
+      padding: 12px; text-align: center;
+    }
+    .key-card kbd {
+      display: inline-block; background: #fff; border: 2px solid #61b01f;
+      border-radius: 8px; padding: 4px 10px; font-weight: 800; font-size: 1.1rem;
+    }
+    .prez-banner {
+      background: linear-gradient(135deg, #12274c, #244d82); color: #fff;
+      border-radius: 16px; padding: 20px 24px; margin-bottom: 20px;
+      display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between;
+    }
+    .prez-banner p { margin: 0; opacity: .95; }
+    .prez-btn { padding: 10px 20px; border-radius: 30px; font-weight: 700; text-decoration: none; display: inline-block; }
+
+    /* === Мини-игра: клавиатура === */
+    .kb-game {
+      margin-top: 20px; padding: 20px; background: #fafff7;
+      border: 2px solid #b8d9a8; border-radius: 20px;
+    }
+    .kb-game:focus { outline: 3px solid #61b01f; outline-offset: 2px; }
+    .kb-game-head {
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+      justify-content: space-between; margin-bottom: 14px;
+    }
+    .kb-game-head h3 { margin: 0; color: #2b5e0e; font-size: 1.15rem; }
+    .kb-prompt {
+      background: #fff8e1; border: 2px solid #ffbd2e; border-radius: 14px;
+      padding: 12px 16px; font-weight: 700; color: #2b5e0e; flex: 1; min-width: 200px;
+      transition: 0.25s;
+    }
+    .kb-prompt.success { background: #e8f5e9; border-color: #81c784; }
+    .kb-prompt.done-all { background: #e3f2fd; border-color: #64b5f6; }
+    .kb-layout {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;
+    }
+    @media (max-width: 720px) { .kb-layout { grid-template-columns: 1fr; } }
+    .kb-arena-wrap { position: relative; }
+    .kb-arena {
+      position: relative; height: 220px; border-radius: 16px; overflow: hidden;
+      background: linear-gradient(#87ceeb 55%, #7cbd52 55%);
+      border: 3px solid #5a9a2e; cursor: crosshair;
+    }
+    .kb-arena-label {
+      position: absolute; top: 8px; left: 10px; background: rgba(255,255,255,.85);
+      padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; color: #555;
+    }
+    .kb-player {
+      position: absolute; width: 40px; height: 48px; left: 50%; top: 50%;
+      transform: translate(-50%, -50%); transition: left 0.15s ease, top 0.15s ease;
+      font-size: 36px; line-height: 1; user-select: none; z-index: 2;
+      filter: drop-shadow(0 4px 4px rgba(0,0,0,.25));
+    }
+    .kb-player.jump { animation: kbJump 0.45s ease; }
+    @keyframes kbJump {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      40% { transform: translate(-50%, -70%) scale(1.08); }
+    }
+    .kb-toast {
+      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: #fff; border: 2px solid #61b01f; border-radius: 12px;
+      padding: 8px 14px; font-weight: 800; font-size: 0.9rem; color: #2b5e0e;
+      opacity: 0; pointer-events: none; transition: 0.3s; z-index: 5; white-space: nowrap;
+    }
+    .kb-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .kb-keys-panel { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .kb-row { display: flex; gap: 8px; justify-content: center; }
+    .kb-key {
+      min-width: 52px; height: 52px; padding: 0 10px;
+      background: #fff; border: 2px solid #b8d9a8; border-radius: 10px;
+      box-shadow: 0 4px 0 #9bc97a; font-weight: 800; font-size: 1rem; color: #2b5e0e;
+      cursor: pointer; transition: 0.1s; font-family: inherit;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .kb-key.wide { min-width: 140px; font-size: 0.85rem; }
+    .kb-key.mouse-key { min-width: 100px; font-size: 0.8rem; gap: 4px; }
+    .kb-key:hover { background: #f0f9eb; }
+    .kb-key.pressed { transform: translateY(3px); box-shadow: 0 1px 0 #9bc97a; background: #d0ebc0; }
+    .kb-key.target { border-color: #f0a500; background: #fff8e1; animation: kbPulse 1s infinite; }
+    .kb-key.learned { border-color: #81c784; background: #e8f5e9; box-shadow: 0 4px 0 #66bb6a; }
+    .kb-key.learned::after { content: '✓'; margin-left: 4px; color: #2e7d32; font-size: 0.75rem; }
+    @keyframes kbPulse {
+      0%, 100% { box-shadow: 0 4px 0 #9bc97a, 0 0 0 0 rgba(240,165,0,.4); }
+      50% { box-shadow: 0 4px 0 #9bc97a, 0 0 0 6px rgba(240,165,0,0); }
+    }
+    .kb-checklist {
+      margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px;
+    }
+    .kb-check {
+      display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 700;
+      padding: 6px 10px; background: #f0f9eb; border-radius: 8px; color: #888;
+    }
+    .kb-check.ok { color: #2b5e0e; background: #e8f5e9; }
+    .kb-check .dot {
+      width: 18px; height: 18px; border-radius: 50%; border: 2px solid #b8d9a8;
+      display: grid; place-items: center; font-size: 11px; flex-shrink: 0;
+    }
+    .kb-check.ok .dot { background: #61b01f; border-color: #61b01f; color: #fff; }
+    .kb-focus-hint {
+      text-align: center; font-size: 0.85rem; color: #888; margin-top: 10px; font-weight: 600;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Пробное занятие</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">★</div>
+      <div>
+        <div class="module-pill">Пробный урок · Minecraft Education</div>
+        <h1>Первые блоки кода в Minecraft</h1>
+        <p class="subtitle">Знакомимся с игрой, редактором и создаём первые программы вместе с педагогом</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="prez-banner">
+    <div>
+      <strong style="font-size:1.15rem;">🎬 Презентация для педагога</strong>
+      <p>Открой слайды на большом экране — там те же шаги, что и на этой странице.</p>
+    </div>
+    <a class="prez-btn" href="prez_prob.html" target="_blank">Открыть презентацию →</a>
+  </div>
+
+  <div class="objectives">
+    <h2>🎯 Цели пробного занятия</h2>
+    <ul>
+      <li>Познакомиться с курсом и Minecraft Education</li>
+      <li>Научиться управлять персонажем (мышь + клавиатура)</li>
+      <li>Открыть редактор кода и собрать первые программы из блоков</li>
+      <li>Почувствовать, что программирование — это весело и понятно</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Приветствие</td><td>10 мин</td><td>Знакомство, рассказ о курсе</td></tr>
+      <tr><td>Minecraft + управление</td><td>10 мин</td><td>Клавиши, мышь, режим игры</td></tr>
+      <tr><td>Редактор кода</td><td>10 мин</td><td>Клавиша C, MakeCode, первый блок</td></tr>
+      <tr><td>Делаем вместе (7 заданий)</td><td>45 мин</td><td>Пошагово с педагогом</td></tr>
+      <tr><td>Самостоятельно</td><td>10 мин</td><td>3 простых мини-задания</td></tr>
+      <tr><td>Итоги</td><td>5 мин</td><td>Что понравилось, вопросы родителям</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span> О курсе «РОБОВИТА»</h2>
+    <p>Это <b>пробное занятие</b> — маленькая часть большого курса. Если понравится, можно продолжить обучение!</p>
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Что изучаем</th><th>Примеры тем</th></tr>
+        <tr><td>🧩 Блочное программирование</td><td>Циклы, условия, переменные, функции</td></tr>
+        <tr><td>🤖 Агент-робот</td><td>Строит дома, фермы, шахты</td></tr>
+        <tr><td>📐 Координаты и 3D</td><td>Строим большие проекты в мире</td></tr>
+        <tr><td>🐍 Python (позже)</td><td>Настоящий язык программирования</td></tr>
+      </table>
+    </div>
+    <div class="note">
+      <b>💡 Главная идея курса:</b> мы не просто играем — мы <b>создаём</b>! Программа — это инструкция для компьютера, как рецепт для повара.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> Что такое Minecraft Education?</h2>
+    <p><b>Minecraft Education</b> — особая версия Minecraft для школ и кружков. В ней можно:</p>
+    <ul>
+      <li>Ходить, строить, исследовать мир (как в обычной игре)</li>
+      <li>Открыть <b>редактор кода</b> и управлять игрой программами</li>
+      <li>Работать с <b>агентом</b> — роботом-помощником, который строит за тебя</li>
+    </ul>
+    <p>Сегодня мы начнём с самого простого: соберём программу из цветных <b>блоков</b>, как из конструктора LEGO.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span> Клавиатура и мышь — если впервые</h2>
+    <p>Не переживай, если что-то не получается сразу. Педагог поможет! Запомни самое нужное:</p>
+    <div class="key-grid">
+      <div class="key-card"><kbd>W A S D</kbd><div style="margin-top:6px;font-size:0.9rem;">движение</div></div>
+      <div class="key-card"><kbd>Пробел</kbd><div style="margin-top:6px;font-size:0.9rem;">прыжок</div></div>
+      <div class="key-card"><kbd>🖱</kbd><div style="margin-top:6px;font-size:0.9rem;">смотреть по сторонам</div></div>
+      <div class="key-card"><kbd>C</kbd><div style="margin-top:6px;font-size:0.9rem;">открыть код</div></div>
+      <div class="key-card"><kbd>T</kbd><div style="margin-top:6px;font-size:0.9rem;">чат в игре</div></div>
+      <div class="key-card"><kbd>E</kbd><div style="margin-top:6px;font-size:0.9rem;">инвентарь</div></div>
+    </div>
+    <div class="note">
+      <b>👆 Совет:</b> одной рукой — мышь, другой — клавиши WASD. Сначала медленно, потом получится быстрее!
+    </div>
+
+    <div class="kb-game" id="kbGame" tabindex="0" aria-label="Мини-игра: учимся нажимать клавиши">
+      <div class="kb-game-head">
+        <h3>🎮 Мини-игра: «Управляем героем»</h3>
+        <div class="kb-prompt" id="kbPrompt">👆 Кликни сюда и нажимай клавиши на своей клавиатуре!</div>
+      </div>
+      <div class="progress-track" style="margin-bottom:14px;"><div class="progress-fill" id="kbProgressFill"></div></div>
+      <span class="progress-label" id="kbProgressLabel">Изучено клавиш: 0 из 9</span>
+
+      <div class="kb-layout">
+        <div class="kb-arena-wrap">
+          <div class="kb-arena" id="kbArena">
+            <span class="kb-arena-label">🖱 кликни по полю — «смотреть»</span>
+            <div class="kb-player" id="kbPlayer">🧑‍🌾</div>
+            <div class="kb-toast" id="kbToast"></div>
+          </div>
+        </div>
+
+        <div class="kb-keys-panel" id="kbKeysPanel">
+          <div class="kb-row">
+            <button type="button" class="kb-key" data-key="w" id="vkey-w">W</button>
+          </div>
+          <div class="kb-row">
+            <button type="button" class="kb-key" data-key="a" id="vkey-a">A</button>
+            <button type="button" class="kb-key" data-key="s" id="vkey-s">S</button>
+            <button type="button" class="kb-key" data-key="d" id="vkey-d">D</button>
+          </div>
+          <div class="kb-row">
+            <button type="button" class="kb-key wide" data-key=" " id="vkey-space">Пробел</button>
+          </div>
+          <div class="kb-row">
+            <button type="button" class="kb-key" data-key="c" id="vkey-c">C</button>
+            <button type="button" class="kb-key" data-key="t" id="vkey-t">T</button>
+            <button type="button" class="kb-key" data-key="e" id="vkey-e">E</button>
+          </div>
+          <div class="kb-row">
+            <button type="button" class="kb-key mouse-key" data-key="mouse" id="vkey-mouse">🖱 Мышь</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="kb-checklist" id="kbChecklist"></div>
+      <p class="kb-focus-hint">Можно нажимать на экране или на настоящей клавиатуре · WASD двигают героя</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">4</span> Как открыть редактор кода</h2>
+    <ol class="open-code-steps" style="list-style:decimal;padding-left:24px;">
+      <li>Зайди в мир Minecraft Education (преподаватель уже открыл его)</li>
+      <li>Нажми клавишу <b>C</b> на клавиатуре</li>
+      <li>Выбери <b>Microsoft MakeCode</b></li>
+      <li>Нажми <b>«Новый проект»</b> и назови его, например: <code>Супергерой_ТвоёИмя</code></li>
+      <li>Нажми зелёную кнопку <b>Play</b> (▶), когда захочешь проверить программу</li>
+    </ol>
+    <p style="margin-top:12px;">Блоки в редакторе разных цветов — у каждого цвета своя «работа»:</p>
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Цвет вкладки</th><th>Примеры блоков</th></tr>
+        <tr><td>🔵 Игрок</td><td>ходьба, чат, использование предмета</td></tr>
+        <tr><td>🟢 Блоки / Положения</td><td>поставить блок, координаты</td></tr>
+        <tr><td>🟣 Мобы</td><td>создать животное, эффекты</td></tr>
+        <tr><td>🟢 Циклы</td><td>повторить несколько раз</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="task-box" id="togetherTasks">
+    <h2>🤝 Делаем вместе с педагогом</h2>
+    <p>Эти задания мы выполняем <b>все вместе</b>, шаг за шагом. Не спеши — дождись объяснения!</p>
+
+    <div class="together-box">
+      <h4><span class="task-number">1</span> След из блоков при ходьбе</h4>
+      <ol style="padding-left:20px;margin:8px 0;">
+        <li>Вкладка <b>Игрок</b> → блок <code>при условии, что игрок ходьба</code></li>
+        <li>Вкладка <b>Блоки</b> → <code>разместить блок травы в положении ~1 ~-1 ~-1</code></li>
+        <li>Нажми <b>Play</b> и походи — под ногами появится трава!</li>
+      </ol>
+      <p><b>Дополнительно:</b> поменяй траву на алмазный блок.</p>
+      <img class="sheet-img" src="files/prob_1.png" alt="Задание 1">
+    </div>
+
+    <div class="together-box">
+      <h4><span class="task-number">2</span> Цветок мотыгой</h4>
+      <ol style="padding-left:20px;margin:8px 0;">
+        <li>Вкладка <b>Игрок</b> → <code>при использовании предмет золотая мотыга</code></li>
+        <li>Вкладка <b>Блоки</b> → <code>разместить красный мак в положении ~0 ~0 ~0</code></li>
+        <li>Play → возьми мотыгу из сундука → «используй» её в саду (ПКМ)</li>
+      </ol>
+      <p><b>Дополнительно:</b> выбери белый цветок вместо красного.</p>
+      <img class="sheet-img" src="files/prob_2.png" alt="Задание 2">
+    </div>
+
+    <div class="together-box">
+      <h4><span class="task-number">3</span> Телепорт по команде чата</h4>
+      <ol style="padding-left:20px;margin:8px 0;">
+        <li>Вкладка <b>Игрок</b> → <code>при команде чата "телепорт"</code></li>
+        <li>Вкладка <b>Положения</b> → <code>телепортироваться в мир -9 4 9</code> (координаты с таблички в мире)</li>
+        <li>Play → открой чат (<b>T</b>) → напиши <code>телепорт</code></li>
+      </ol>
+      <img class="sheet-img" src="files/prob_3.png" alt="Задание 3">
+      <button class="hint-btn" onclick="toggleHint('hintTp')">💡 Что такое координаты?</button>
+      <div class="hint-content" id="hintTp">Это «адрес» места в мире: три числа — X, Y, Z. Сегодня просто скопируй числа с таблички, которую покажет педагог.</div>
+    </div>
+
+    <div class="together-box">
+      <h4><span class="task-number">4</span> Дождь из кур (цикл!)</h4>
+      <ol style="padding-left:20px;margin:8px 0;">
+        <li><code>при команде чата "курица"</code></li>
+        <li>Вкладка <b>Цикл</b> → <code>повторить 20 раз</code></li>
+        <li>Внутри: <b>Мобы</b> → <code>создать животное (яйцо курицы)</code> в случайном месте</li>
+        <li><b>Положения</b> → <code>выбрать случайное положение от … до …</code></li>
+        <li>Play → в чате напиши <code>курица</code></li>
+      </ol>
+      <p><b>Дополнительно:</b> уничтожь всех кур (педагог подскажет как).</p>
+      <img class="sheet-img" src="files/prob_4.png" alt="Задание 4">
+    </div>
+
+    <div class="together-box">
+      <h4><span class="task-number">5</span> Супер-скорость с алмазным мечом</h4>
+      <ol style="padding-left:20px;margin:8px 0;">
+        <li>Открой программу для ввода кода (клавиша <b>C</b>)</li>
+        <li>Вкладка <b>Игрок</b> → <code>при использовании предмет алмазный меч</code></li>
+        <li>Вкладка <b>Мобы</b> → внутрь вставь блок <code>применить скорость к вы сами (@s) продолжительность 10 усиление 10</code></li>
+        <li>Нажми <b>Play</b> → возьми меч из сундука справа</li>
+        <li>«Используй» меч (ПКМ) — ты получишь эффект скорости!</li>
+      </ol>
+      <p><b>Дополнительно:</b> с эффектом скорости попрыгай по платформам!</p>
+      <img class="sheet-img" src="files/prob_5.png" alt="Задание 5">
+    </div>
+
+    <div class="together-box">
+      <h4><span class="task-number">6</span> Лук — очистка комнаты (урок 8)</h4>
+      <ol style="padding-left:20px;margin:8px 0;">
+        <li>Открой программу для ввода кода (клавиша <b>C</b>)</li>
+        <li>Вкладка <b>Игрок</b> → <code>при использовании предмет лук</code></li>
+        <li>Вкладка <b>Мобы</b> → внутрь вставь <code>убить цель все объекты (@e)</code></li>
+        <li>Нажми <b>Play</b> → возьми лук и стрелы из сундуков</li>
+        <li>«Используй» лук (ПКМ) — все мобы вокруг исчезнут!</li>
+      </ol>
+      <p><b>Дополнительно:</b> заходи в комнату по одному — проверь, как работает код.</p>
+      <img class="sheet-img" src="files/prob_6.png" alt="Задание 6">
+    </div>
+
+    <div class="together-box">
+      <h4><span class="task-number">7</span> Строим радугу 🌈 (урок 5)</h4>
+      <p>Сначала простая дуга, потом добавим все цвета. Педагог поможет на каждом шаге!</p>
+
+      <p><b>Часть 1 · Подготовка</b></p>
+      <ol style="padding-left:20px;margin:8px 0;">
+        <li>Клавиша <b>C</b> → новый проект или продолжай в том же</li>
+        <li>Вкладка <b>Циклы</b> → блок <code>при начале</code>: <img src="files/prob_7-1.png" alt="Задание 7-1"></li>
+        <li>Вкладка <b>Блоки</b> → <code>заполнить блоками травой от (~-25, 0, ~-25) до (25, 25, 25)</code> — режим «заменить»: <img src="files/prob_7-2.png" alt="Задание 7-2"></li>
+        <li>Вкладка <b>Переменные</b> → создай переменную <code>A</code> (это «Радуга») → <code>задать A значение положение игрока в мире</code>: <img src="files/prob_7-3-1.png" alt="Задание 7-3"><img src="files/prob_7-3-2.png" alt="Задание 7-3"></li>
+        <li>Теперь радуга появится там, где ты стоишь!</li>
+      </ol>
+
+
+      <p><b>Часть 2 · Первые дуги</b></p>
+      <ol style="padding-left:20px;margin:8px 0;">
+        <li>Оранжевая вкладка (Фигуры) → <code>круг из блоков</code></li>
+        <li>Замени траву на <b>красный бетон</b>, радиус <b>6</b>, центр — переменная <code>A</code>, ось X: <img src="files/prob_7-4.png" alt="Задание 7-4"></li>
+        <li>Ещё один круг: <b>оранжевый бетон</b>, радиус <b>5</b>, центр <code>A</code>: <img src="files/prob_7-5.png" alt="Задание 7-5"></li>
+        <li>Круг из <b>воздуха</b>, радиус <b>4</b>, центр <code>A</code> — получится «арка»: <img src="files/prob_7-6.png" alt="Задание 7-6"></li>
+      </ol>
+
+      <p><b>Часть 3 · Все цвета радуги</b></p>
+      <p>Подсказка: <em>Каждый охотник желает знать, где сидит фазан</em> — это цвета радуги!</p>
+      <ol style="padding-left:20px;margin:8px 0;">
+        <li>Добавь круги из бетона с центром <code>A</code>, ось X, режим «заменить»:</li>
+      <ul style="margin:8px 0 8px 24px;font-weight:600;">
+        <li>Жёлтый бетон — радиус <b>7</b></li>
+        <li>Зелёный бетон — радиус <b>8</b></li>
+        <li>Голубой бетон — радиус <b>9</b></li>
+        <li>Синий бетон — радиус <b>10</b></li>
+        <li>Фиолетовый бетон — радиус <b>11</b></li>
+      </ul>
+        <li>Нажми <b>Play</b> — посмотри на свою радугу!</li>
+      </ol>
+      <button class="hint-btn" onclick="toggleHint('hintRainbow')">💡 Подсказка</button>
+      <div class="hint-content" id="hintRainbow">Все круги используют одну переменную <code>A</code> — менять центр не нужно. Меняются только <b>цвет блока</b> и <b>радиус</b>. Каждый новый цвет — на 1 блок больше предыдущего.</div>
+    </div>
+  </div>
+
+  <div class="task-box" id="soloTasks">
+    <h2>✏️ Самостоятельно — 3 простых задания</h2>
+    <div class="progress-track"><div class="progress-fill" id="soloProgressFill"></div></div>
+    <span class="progress-label" id="soloProgressLabel">Выполнено: 0 из 3</span>
+    <p>Педагог рядом — если что-то непонятно, сразу спрашивай! Это задания попроще, чтобы попробовать самому.</p>
+
+    <div class="solo-box">
+      <h4>Задание А · Поменяй блок</h4>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="s0" onchange="updateSoloProgress()"><label for="s0">В задании 1 замени <b>траву</b> на <b>камень</b> (или другой блок на выбор)</label></li>
+      </ul>
+    </div>
+
+    <div class="solo-box">
+      <h4>Задание Б · Своя команда чата</h4>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="s1" onchange="updateSoloProgress()"><label for="s1">Придумай команду чата (например, <code>камень</code>) — при ней ставится один блок перед тобой</label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintSolo')">💡 Подсказка</button>
+      <div class="hint-content" id="hintSolo">Скопируй блок из задания 3, но измени слово в чате и поставь блок земли или камня в <code>~0 ~0 ~1</code> (перед игроком).</div>
+    </div>
+
+    <div class="solo-box">
+      <h4>Задание В · Меньше кур!</h4>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="s2" onchange="updateSoloProgress()"><label for="s2">В задании 4 измени число в цикле с <b>20</b> на <b>5</b> — запусти и сравни результат</label></li>
+      </ul>
+    </div>
+
+    <p style="margin-top:14px;"><b>🌟 Бонус для быстрых:</b> сделай погоду «ясно» при ходьбе и «дождь» при приседании (во вкладке «Игровой процесс есть блок для изменения погоды»).</p>
+  </div>
+
+  <div class="interactive-box" id="quizProb">
+    <h2>🧠 Проверь себя</h2>
+    <p>Какой клавишей открывается редактор кода?</p>
+    <div class="choice-grid">
+      <div class="choice-card" data-correct-choice="false">T</div>
+      <div class="choice-card" data-correct-choice="true">C</div>
+      <div class="choice-card" data-correct-choice="false">E</div>
+    </div>
+    <button class="action-btn" onclick="checkChoices('quizProb')">✅ Проверить</button>
+    <div class="activity-result"></div>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши или расскажи вслух:</p>
+    <textarea placeholder="Сегодня мне понравилось...&#10;Было сложно...&#10;Хочу на курсе научиться..."></textarea>
+  </div>
+
+  <div class="card">
+    <h2>🚀 Что будет дальше на курсе?</h2>
+    <ul>
+      <li>Научим <b>агента</b> строить дома и башни</li>
+      <li>Изучим <b>циклы</b> и <b>условия</b> — программы станут умнее</li>
+      <li>Создадим <b>свои мини-проекты</b>: лес, ферма, город</li>
+      <li>Позже — программирование на <b>Python</b></li>
+    </ul>
+    <div class="note green" style="background:#e8f5e9;border-left:4px solid #61b01f;">
+      <b>Спасибо за пробное занятие!</b> Задавай вопросы родителям и педагогу — мы рады видеть тебя на занятиях в Робовите.
+    </div>
+  </div>
+
+  <div class="">
+    <a class="nav-btn prev" href="index.html"><div class="ttl" style="text-align: center;">Карта курса</div></a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Пробное занятие · Minecraft Education</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  function toggleHint(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('show');
+  }
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    cards.forEach(card => {
+      const ok = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      card.classList.add(ok ? 'selected-correct' : 'selected-wrong');
+    });
+    const selected = container.querySelector('.choice-card.selected');
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      const ok = selected && selected.getAttribute('data-correct-choice') === 'true';
+      result.innerHTML = ok ? '✅ Верно!' : (selected ? '❌ Попробуй ещё.' : '⚠️ Выбери вариант.');
+      result.style.display = 'block';
+    }
+  }
+  function updateSoloProgress() {
+    const cbs = document.querySelectorAll('#soloTasks input[type="checkbox"]');
+    let n = 0;
+    cbs.forEach(cb => { if (cb.checked) n++; });
+    const fill = document.getElementById('soloProgressFill');
+    const label = document.getElementById('soloProgressLabel');
+    if (fill) fill.style.width = (n / cbs.length * 100) + '%';
+    if (label) label.textContent = `Выполнено: ${n} из ${cbs.length}`;
+  }
+
+  (function initKeyboardGame() {
+    const game = document.getElementById('kbGame');
+    const arena = document.getElementById('kbArena');
+    const player = document.getElementById('kbPlayer');
+    const prompt = document.getElementById('kbPrompt');
+    const toast = document.getElementById('kbToast');
+    const checklist = document.getElementById('kbChecklist');
+    const progressFill = document.getElementById('kbProgressFill');
+    const progressLabel = document.getElementById('kbProgressLabel');
+    if (!game || !player) return;
+
+    const quests = [
+      { key: 'w', name: 'W — вперёд', hint: '⬆️ Нажми W — герой идёт вперёд!' },
+      { key: 'a', name: 'A — влево', hint: '⬅️ Нажми A — шаг влево!' },
+      { key: 's', name: 'S — назад', hint: '⬇️ Нажми S — шаг назад!' },
+      { key: 'd', name: 'D — вправо', hint: '➡️ Нажми D — шаг вправо!' },
+      { key: ' ', name: 'Пробел — прыжок', hint: '⬆️ Нажми Пробел — прыжок!' },
+      { key: 'c', name: 'C — код', hint: '💻 Нажми C — открыть редактор кода!' },
+      { key: 't', name: 'T — чат', hint: '💬 Нажми T — открыть чат!' },
+      { key: 'e', name: 'E — инвентарь', hint: '🎒 Нажми E — открыть инвентарь!' },
+      { key: 'mouse', name: '🖱 Мышь', hint: '🖱 Кликни по зелёному полю или кнопке «Мышь»!' }
+    ];
+
+    const learned = new Set();
+    let questIndex = 0;
+    let px = 50, py = 62;
+    let toastTimer = null;
+
+    quests.forEach(q => {
+      const el = document.createElement('div');
+      el.className = 'kb-check';
+      el.dataset.key = q.key;
+      el.innerHTML = '<span class="dot"></span><span>' + q.name + '</span>';
+      checklist.appendChild(el);
+    });
+
+    function updatePlayerPos() {
+      player.style.left = px + '%';
+      player.style.top = py + '%';
+    }
+
+    function showToast(text) {
+      toast.textContent = text;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    function flashKey(key) {
+      const btn = document.querySelector('.kb-key[data-key="' + key + '"]');
+      if (!btn) return;
+      btn.classList.add('pressed');
+      setTimeout(() => btn.classList.remove('pressed'), 120);
+    }
+
+    function markLearned(key) {
+      if (learned.has(key)) return false;
+      learned.add(key);
+      const btn = document.querySelector('.kb-key[data-key="' + key + '"]');
+      if (btn) { btn.classList.remove('target'); btn.classList.add('learned'); }
+      const check = checklist.querySelector('[data-key="' + key + '"]');
+      if (check) { check.classList.add('ok'); check.querySelector('.dot').textContent = '✓'; }
+      const total = quests.length;
+      progressFill.style.width = (learned.size / total * 100) + '%';
+      progressLabel.textContent = 'Изучено клавиш: ' + learned.size + ' из ' + total;
+      while (questIndex < quests.length && learned.has(quests[questIndex].key)) questIndex++;
+      updatePrompt();
+      return true;
+    }
+
+    function updatePrompt() {
+      document.querySelectorAll('.kb-key.target').forEach(k => k.classList.remove('target'));
+      if (questIndex >= quests.length) {
+        prompt.textContent = '🎉 Отлично! Ты изучил все клавиши — можно идти в Minecraft!';
+        prompt.className = 'kb-prompt done-all';
+        return;
+      }
+      const q = quests[questIndex];
+      prompt.textContent = q.hint;
+      prompt.className = 'kb-prompt';
+      const btn = document.querySelector('.kb-key[data-key="' + q.key + '"]');
+      if (btn) btn.classList.add('target');
+    }
+
+    function move(dir) {
+      const step = 8;
+      if (dir === 'w') py = Math.max(38, py - step);
+      if (dir === 's') py = Math.min(72, py + step);
+      if (dir === 'a') px = Math.max(12, px - step);
+      if (dir === 'd') px = Math.min(88, px + step);
+      updatePlayerPos();
+    }
+
+    function jump() {
+      player.classList.remove('jump');
+      void player.offsetWidth;
+      player.classList.add('jump');
+    }
+
+    function handleKey(key) {
+      flashKey(key);
+
+      if (key === 'w') move('w');
+      else if (key === 'a') move('a');
+      else if (key === 's') move('s');
+      else if (key === 'd') move('d');
+      else if (key === ' ') jump();
+
+      if (key === 'c') showToast('💻 Code Builder открыт!');
+      else if (key === 't') showToast('💬 Чат открыт!');
+      else if (key === 'e') showToast('🎒 Инвентарь открыт!');
+      else if (key === 'mouse') showToast('👀 Смотрим по сторонам!');
+
+      const current = quests[questIndex];
+      if (current && current.key === key) {
+        const isNew = markLearned(key);
+        if (isNew) {
+          prompt.classList.add('success');
+          setTimeout(() => prompt.classList.remove('success'), 400);
+        }
+      }
+    }
+
+    game.addEventListener('click', () => game.focus());
+
+    document.addEventListener('keydown', (e) => {
+      const tag = document.activeElement && document.activeElement.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+      const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      if (k === ' ') {
+        e.preventDefault();
+        handleKey(' ');
+      } else if (['w','a','s','d','c','t','e'].includes(k)) {
+        handleKey(k);
+      }
+    });
+
+    document.querySelectorAll('.kb-key').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        game.focus();
+        handleKey(btn.dataset.key);
+      });
+    });
+
+    arena.addEventListener('click', (e) => {
+      e.stopPropagation();
+      game.focus();
+      handleKey('mouse');
+    });
+
+    updatePlayerPos();
+    updatePrompt();
+  })();
+</script>
+</body>
+</html>

@@ -139,27 +139,27 @@
 
     <div class="block-card-grid">
       <div class="block-card">
-        <div class="emoji">🪵</div>
+        <div class="emoji"><img src="files/oak_log.webp"/></div>
         <div class="name">Бревно (дуб)</div>
         <div class="use">Ствол дерева</div>
       </div>
       <div class="block-card">
-        <div class="emoji">🍃</div>
+        <div class="emoji"><img src="files/leaves.webp"/></div>
         <div class="name">Листья (дуб)</div>
         <div class="use">Крона дерева, куст</div>
       </div>
       <div class="block-card">
-        <div class="emoji">🌱</div>
+        <div class="emoji"><img src="files/grass.png"/></div>
         <div class="name">Трава / земля</div>
         <div class="use">Полянка под лесом</div>
       </div>
       <div class="block-card">
-        <div class="emoji">🌼</div>
+        <div class="emoji"><img src="files/batun.webp"/></div>
         <div class="name">Цветы</div>
         <div class="use">Украшение вокруг деревьев</div>
       </div>
       <div class="block-card">
-        <div class="emoji">🪨</div>
+        <div class="emoji"><img src="files/gravel.png"/></div>
         <div class="name">Камень / гравий</div>
         <div class="use">Дорожка через лес (бонус)</div>
       </div>
@@ -167,13 +167,8 @@
 
     <h3>Как выглядит простое дерево?</h3>
     <p>На этом занятии мы строим <b>упрощённое дерево</b>: вертикальный ствол и «шапка» из листьев сверху.</p>
-    <div class="tree-diagram">
-      &nbsp;&nbsp;🍃🍃🍃<br>
-      &nbsp;&nbsp;&nbsp;🍃🍃<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;🪵<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;🪵<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;🪵<br>
-      &nbsp;&nbsp;&nbsp;🌱🌱🌱
+    <div class="tree-diagram" style="display: flex; justify-content: center;">
+      <img src="files/tree.webp"/>
     </div>
 
     <div class="data-table-wrap">
@@ -198,13 +193,13 @@
     <div class="data-table-wrap">
       <table class="data-table">
         <tr><th>Идея</th><th>Блоки MakeCode</th></tr>
-        <tr><td>Запуск по чату</td><td><code>при получении команды чата "лес"</code></td></tr>
-        <tr><td>Высота ствола</td><td>Переменная <code>высота_ствола</code></td></tr>
-        <tr><td>Ствол вверх</td><td><code>повторить … раз</code> → <code>поставить блок</code> → <code>подняться вверх</code></td></tr>
-        <tr><td>Крона</td><td><code>выбрать слот 2</code> → несколько <code>поставить блок</code> и поворотов</td></tr>
+        <tr><td>Запуск по чату</td><td><img src="files/on_chat.png"/></td></tr>
+        <tr><td>Высота ствола</td><td>Переменная <img src="files/les_3-5_var1.png"/></td></tr>
+        <tr><td>Ствол вверх</td><td><code>повторить … раз</code> → <code>подняться вверх</code> → <code>разместить вниз</code></td></tr>
+        <tr><td>Крона</td><td><code>выбрать слот 2</code> → несколько <code>разместить вперёд</code> и поворотов</td></tr>
         <tr><td>Следующее дерево</td><td><code>двигаться вперёд</code> на несколько шагов</td></tr>
         <tr><td>Несколько деревьев</td><td>Цикл <code>повторить количество_деревьев раз</code></td></tr>
-        <tr><td>Большая поляна</td><td><code>заполнить блоками</code> (координаты из занятия 3.1)</td></tr>
+        <tr><td>Большая поляна</td><td><code>заполнить блоками</code> (координаты)</td></tr>
       </table>
     </div>
 
@@ -216,10 +211,10 @@
       <pre class="code"><code><span class="tok-c">-- Упрощённый алгоритм (словами)</span>
 <span class="tok-n">1.</span> выбрать слот <span class="tok-n">1</span> (бревно)
 <span class="tok-n">2.</span> повторить <span class="tok-n">высота_ствола</span> раз:
-       поставить блок
        подняться вверх
+       разместить вниз
 <span class="tok-n">3.</span> выбрать слот <span class="tok-n">2</span> (листья)
-<span class="tok-n">4.</span> поставить листья вокруг верхушки (крест из 5 блоков)
+<span class="tok-n">4.</span> поставить листья вокруг верхушки
 <span class="tok-n">5.</span> опуститься вниз на <span class="tok-n">высота_ствола</span> (вернуться к земле)</code></pre>
     </div>
   </div>
@@ -339,21 +334,21 @@
         <li><input type="checkbox" id="f9" onchange="updateForestProgress()"><label for="f9">Замени три копии на один цикл: <code>повторить количество_деревьев раз</code> → [код одного дерева] → <code>двигаться вперёд 6</code></label></li>
       </ul>
       <button class="hint-btn" onclick="toggleHint('hintLoop')">💡 Подсказка</button>
-      <div class="hint-content" id="hintLoop">Код дерева остаётся <b>один раз</b> внутри цикла — уже короче! Но если понадобится второй тип дерева (берёза и дуб), снова придётся дублировать… Об этом поговорим в занятии 4.1.</div>
+      <div class="hint-content" id="hintLoop">Код дерева остаётся <b>один раз</b> внутри цикла — уже короче! Но если понадобится второй тип дерева (берёза и дуб), снова придётся дублировать… Об этом поговорим на следующих занятиях.</div>
     </div>
 
     <div style="margin-top: 16px; padding: 16px; background: #fff8e1; border-radius: 12px; border: 2px dashed #ffbd2e;">
       <h3 style="margin: 0 0 8px 0; color: #b8860b;">⭐ Бонус: украшаем лес</h3>
       <ul class="task-steps">
         <li class="bonus-step"><input type="checkbox" id="f10" onchange="updateForestProgress()"><label for="f10"><b>Кусты:</b> между деревьями поставь 2–3 куста (1 блок бревна + 2 листа сбоку) <b>(+5 робокоинов)</b></label></li>
-        <li class="bonus-step"><input type="checkbox" id="f11" onchange="updateForestProgress()"><label for="f11"><b>Поляна:</b> используй <code>заполнить блоками</code> (трава) под лесом на участке 10×10 <b>(+10 робокоинов)</b></label></li>
-        <li class="bonus-step"><input type="checkbox" id="f12" onchange="updateForestProgress()"><label for="f12"><b>Дорожка:</b> ряд из камня или <code>ряд из блоков</code> через лес <b>(+10 робокоинов)</b></label></li>
-        <li class="bonus-step"><input type="checkbox" id="f13" onchange="updateForestProgress()"><label for="f13"><b>Разные деревья:</b> переменная <code>высота_ствола</code> меняется (+1 после каждого дерева) — лес «разной высоты» <b>(+15 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="f11" onchange="updateForestProgress()"><label for="f11"><b>Поляна:</b> используй <code>заполнить блоками</code> (трава) под лесом на участке 10×10 <b>(+5 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="f12" onchange="updateForestProgress()"><label for="f12"><b>Дорожка:</b> ряд из камня или <code>ряд из блоков</code> через лес <b>(+5 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="f13" onchange="updateForestProgress()"><label for="f13"><b>Разные деревья:</b> переменная <code>высота_ствола</code> меняется (+1 после каждого дерева) — лес «разной высоты» <b>(+10 робокоинов)</b></label></li>
       </ul>
     </div>
 
     <div class="note" style="margin-top: 16px;">
-      <b>✅ Готово?</b> Напиши в чат <code>лес</code>, сфотографируй поляну и покажи преподавателю. Объясни, где в коде ты <b>повторял</b> одни и те же блоки — это пригодится на занятии про функции.
+      <b>✅ Готово?</b> Напиши в чат <code>лес</code>, агент построит поляну, потом покажи преподавателю. Объясни, где в коде ты <b>повторял</b> одни и те же блоки — это пригодится на занятии про функции.
     </div>
   </div>
 
