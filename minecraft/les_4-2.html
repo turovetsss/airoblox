@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4.2. Мини-проект: Эко-патруль — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; cursor: grab; }
+    .hint-btn {
+      background: #ffbd2e; color: #2b5e0e; border: none;
+      padding: 4px 16px; border-radius: 20px; font-weight: 600;
+      font-size: 0.8rem; cursor: pointer; transition: 0.2s; margin-top: 8px;
+    }
+    .hint-btn:hover { background: #f0a800; transform: scale(1.05); }
+    .hint-content {
+      display: none; background: #fff8e1; padding: 10px 14px; border-radius: 8px;
+      margin-top: 8px; border-left: 3px solid #ffbd2e; font-size: 0.95rem; text-align: left;
+    }
+    .hint-content.show { display: block; }
+    .hint-content code { background: #e8ece6; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+    .task-number {
+      display: inline-block; background: #61b01f; color: #fff; border-radius: 50%;
+      width: 28px; height: 28px; text-align: center; line-height: 28px;
+      font-weight: 700; margin-right: 10px; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .story-box {
+      background: linear-gradient(135deg, #e8f5e9, #e0f7fa);
+      border: 2px solid #81c784; border-radius: 16px; padding: 20px 24px; margin: 16px 0;
+    }
+    .flow-steps {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 16px 0;
+    }
+    .flow-step {
+      background: #f0f9eb; border: 2px solid #b8d9a8; border-radius: 12px;
+      padding: 10px 14px; font-weight: 700; font-size: 0.9rem;
+    }
+    .flow-arrow { color: #61b01f; font-weight: 900; font-size: 1.2rem; }
+    .eco-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px; margin: 14px 0;
+    }
+    .eco-card {
+      background: #f0f9eb; border: 2px solid #b8d9a8; border-radius: 12px;
+      padding: 12px; text-align: center;
+    }
+    .eco-card.trash { background: #fff3e0; border-color: #ffcc80; }
+    .eco-card.good { background: #e8f5e9; border-color: #81c784; }
+    .eco-card .emoji { font-size: 1.8rem; }
+    .callback-box {
+      background: linear-gradient(135deg, #e3f2fd, #fafff7);
+      border: 2px solid #64b5f6; border-radius: 12px; padding: 16px 20px; margin: 16px 0;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 4.2</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">4.2</div>
+      <div>
+        <div class="module-pill">Раздел 4 · Функции</div>
+        <h1>Мини-проект: Эко-патруль</h1>
+        <p class="subtitle">Агент очищает мир, сажает деревья и возвращает животных</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Собрать мини-проект «Эко-патруль» из нескольких функций</li>
+      <li>Повторить координаты, условия, цикл «пока», переменные</li>
+      <li>Научить агента находить «мусор» и заменять его на природу</li>
+      <li>Почувствовать, как функции помогают в большом проекте</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>История квеста «Эко-патруль»</td></tr>
+      <tr><td>Теория</td><td>15 мин</td><td>Мусор, координаты, алгоритм патруля</td></tr>
+      <tr><td>Интерактив</td><td>15 мин</td><td>Закрепляем понятия</td></tr>
+      <tr><td>Мини-проект: шаги 1–5</td><td>25 мин</td><td>Функции и переменные</td></tr>
+      <tr><td>Мини-проект: шаги 6–8</td><td>25 мин</td><td>Цикл «пока» и запуск</td></tr>
+      <tr><td>Бонус и итоги</td><td>5 мин</td><td>Дополнения, рефлексия</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span> Сюжет: Экологический квест</h2>
+    <div class="story-box">
+      <p>🌍 <b>Мир загрязнён!</b> На поляне лежит «мусор» — блоки гравия и песка. Растения пропали, животные ушли.</p>
+      <p>Твой <b>агент — эко-патруль</b>. Он должен:</p>
+      <ol style="margin:10px 0 0 20px;">
+        <li>Обойти территорию и <b>найти мусор</b></li>
+        <li><b>Заменить</b> его на траву</li>
+        <li><b>Посадить дерево</b> на чистом месте</li>
+        <li><b>Выпустить животное</b></li>
+      </ol>
+    </div>
+
+    <div class="flow-steps">
+      <span class="flow-step">🔍 scanArea()</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">🌳 plantTree()</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">🐔 spawnAnimal()</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">🔁 снова, пока чисто!</span>
+    </div>
+
+    <div class="callback-box">
+      <b>🔗 Связь с прошлыми занятиями:</b> мы уже знаем <b>переменные</b> (3.3), <b>условия</b> (1.6), <b>функции</b> (4.1). Сегодня собираем всё в один проект!
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> Что такое «мусор» в Minecraft?</h2>
+    <p>В нашем проекте <b>мусор</b> — это блоки, которые не должны лежать на поляне:</p>
+    <div class="eco-grid">
+      <div class="eco-card trash"><div class="emoji">🪨</div><div><b>Гравий</b></div><div style="font-size:0.8rem;color:#666;">мусор</div></div>
+      <div class="eco-card trash"><div class="emoji">🏖️</div><div><b>Песок</b></div><div style="font-size:0.8rem;color:#666;">мусор</div></div>
+      <div class="eco-card good"><div class="emoji">🌱</div><div><b>Трава</b></div><div style="font-size:0.8rem;color:#666;">чисто</div></div>
+      <div class="eco-card good"><div class="emoji">🪵</div><div><b>Бревно</b></div><div style="font-size:0.8rem;color:#666;">дерево</div></div>
+      <div class="eco-card good"><div class="emoji">🍃</div><div><b>Листья</b></div><div style="font-size:0.8rem;color:#666;">дерево</div></div>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Идея проекта</th><th>Блоки MakeCode</th></tr>
+        <tr><td>Координаты</td><td>Проверяем блок <b>справа от агента</b>: <code>~1 ~-1 ~0</code></td></tr>
+        <tr><td>Условие</td><td><code>если</code> блок = гравий <b>или</b> песок → <code>то</code> заменить на траву</td></tr>
+        <tr><td>Переменная</td><td><code>чистота</code> — счётчик заменённых блоков</td></tr>
+        <tr><td>Цикл «пока»</td><td><code>пока чистота &lt; цель</code> → патруль продолжается</td></tr>
+        <tr><td>Функции</td><td><code>scanArea()</code>, <code>plantTree()</code>, <code>spawnAnimal()</code></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span> Алгоритм патруля (словами)</h2>
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">эко_патруль_алгоритм.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- При команде чата "эко":</span>
+<span class="tok-v">чистота</span> = 0
+<span class="tok-v">цель</span> = 5
+
+<span class="tok-k">пока</span> <span class="tok-v">чистота</span> &lt; <span class="tok-v">цель</span>:
+    <span class="tok-k">вызвать</span> <span class="tok-n">scanArea</span>      <span class="tok-c">-- ищем мусор, +1 к чистоте</span>
+    <span class="tok-k">вызвать</span> <span class="tok-n">plantTree</span>     <span class="tok-c">-- сажаем дерево</span>
+    <span class="tok-k">вызвать</span> <span class="tok-n">spawnAnimal</span>   <span class="tok-c">-- выпускаем животное</span>
+    <span class="tok-n">двигаться вперёд</span> 2
+
+<span class="tok-n">сказать</span> "Готово! Чистота: " + <span class="tok-v">чистота</span></code></pre>
+    </div>
+
+    <div class="note">
+      <b>💡 Упрощение для начала:</b> в функции <code>scanArea</code> проверяем только <b>один блок справа</b>. Бонус — проверить 4 стороны вокруг агента.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">4</span> Интерактив: закрепляем</h2>
+
+    <div class="interactive-box" id="trashQuiz">
+      <h3>🗑️ Что считаем мусором?</h3>
+      <p>Какой блок агент должен заменить на траву?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Гравий или песок</div>
+        <div class="choice-card" data-correct-choice="false">Бревно дуба</div>
+        <div class="choice-card" data-correct-choice="false">Листья</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('trashQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="funcMatch" style="margin-top:20px;">
+      <h3>🧩 Какая функция за что отвечает?</h3>
+      <p>Что делает <code>plantTree()</code>?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Ищет гравий и песок</div>
+        <div class="choice-card" data-correct-choice="true">Сажает дерево (ствол + листья)</div>
+        <div class="choice-card" data-correct-choice="false">Создаёт курицу или свинью</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('funcMatch')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="sortPatrol" style="margin-top:20px;">
+      <h3>📋 Порядок в цикле патруля</h3>
+      <p>Перетащи шаги в правильном порядке (сверху вниз):</p>
+      <ul class="sort-list" id="sortPatrolList">
+        <li class="sort-item" draggable="true" data-correct-step="3">Вызвать spawnAnimal()</li>
+        <li class="sort-item" draggable="true" data-correct-step="1">Вызвать scanArea()</li>
+        <li class="sort-item" draggable="true" data-correct-step="2">Вызвать plantTree()</li>
+      </ul>
+      <button class="action-btn" onclick="checkSequence('sortPatrol')">✅ Проверить порядок</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="task-box" id="practiceEco">
+    <h2>🌿 Мини-проект: «Эко-патруль»</h2>
+    <div class="progress-track"><div class="progress-fill" id="ecoProgressFill"></div></div>
+    <span class="progress-label" id="ecoProgressLabel">Выполнено шагов: 0 из 12</span>
+    <p>Создай мир с «грязной» поляной (педагог может подготовить участок с гравием и песком) или рассыпь несколько блоков мусора сам. Собирай проект по шагам.</p>
+
+    <div style="margin-top:20px;padding:16px;background:#f0f9eb;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#2b5e0e;"><span class="task-number">1</span> Подготовка</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="e0" onchange="updateEcoProgress()"><label for="e0">Призови агента. Слот 1 — <b>бревно</b>, слот 2 — <b>листья</b>, слот 3 — <b>трава</b></label></li>
+        <li><input type="checkbox" id="e1" onchange="updateEcoProgress()"><label for="e1">Создай переменные: <code>чистота</code> = 0, <code>цель</code> = 5</label></li>
+      </ul>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#f7fcf2;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#2b5e0e;"><span class="task-number">2</span> Функция plantTree()</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="e2" onchange="updateEcoProgress()"><label for="e2">Создай функцию <code>plantTree</code> (без аргументов)</label></li>
+        <li><input type="checkbox" id="e3" onchange="updateEcoProgress()"><label for="e3">Внутри: 3 раза [бревно + вверх], потом 3–4 блока листьев, вернуться вниз</label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintTree')">💡 Подсказка</button>
+      <div class="hint-content" id="hintTree">Можно скопировать код дерева из занятия 3.5 и вставить в функцию <code>plantTree</code> — так и задумано!</div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#f0f9eb;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#2b5e0e;"><span class="task-number">3</span> Функция spawnAnimal()</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="e4" onchange="updateEcoProgress()"><label for="e4">Создай функцию <code>spawnAnimal</code></label></li>
+        <li><input type="checkbox" id="e5" onchange="updateEcoProgress()"><label for="e5">Внутри: <code>создать животное</code> (курица или свинья) в положении <code>~0 ~0 ~1</code> перед агентом</label></li>
+      </ul>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#f7fcf2;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#2b5e0e;"><span class="task-number">4</span> Функция scanArea() — ищем мусор</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="e6" onchange="updateEcoProgress()"><label for="e6">Создай функцию <code>scanArea</code></label></li>
+        <li><input type="checkbox" id="e7" onchange="updateEcoProgress()"><label for="e7"><code>если</code> блок в <code>~1 ~-1 ~0</code> (справа) = <b>гравий</b> <code>или</code> <b>песок</code> → <code>разместить траву</code> там → <code>изменить чистота на 1</code></label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintScan')">💡 Подсказка</button>
+      <div class="hint-content" id="hintScan">Блок проверки: вкладка <i>Логика</i> + <i>Blocks</i> → «блок в позиции» или «агент обнаруживает». Координаты относительные: <code>~1</code> — один блок вправо от агента.</div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#f0f9eb;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#2b5e0e;"><span class="task-number">5</span> Команда «эко» и цикл «пока»</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="e8" onchange="updateEcoProgress()"><label for="e8"><code>при команде чата "эко"</code> → <code>задать чистота 0</code></label></li>
+        <li><input type="checkbox" id="e9" onchange="updateEcoProgress()"><label for="e9"><code>пока чистота &lt; цель</code>: вызвать scanArea → plantTree → spawnAnimal → вперёд 2</label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintWhile')">💡 Подсказка</button>
+      <div class="hint-content" id="hintWhile">Цикл «пока» — во вкладке <i>Циклы</i>. Условие: <code>чистота &lt; цель</code> (блок сравнения из <i>Логика</i>). Патруль остановится, когда заменишь 5 блоков мусора.</div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#f7fcf2;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#2b5e0e;"><span class="task-number">6</span> Запуск и проверка</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="e10" onchange="updateEcoProgress()"><label for="e10">Play → напиши в чат <code>эко</code> → агент патрулирует!</label></li>
+        <li><input type="checkbox" id="e11" onchange="updateEcoProgress()"><label for="e11">Добавь <code>сказать</code> «Чистота: » + переменная <code>чистота</code> в конце программы</label></li>
+      </ul>
+      <div class="note" style="margin-top:10px;">
+        <b>✅ Готово?</b> Покажи преподавателю поляну с деревьями и животными. Объясни, что делает каждая из трёх функций.
+      </div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#fff8e1;border-radius:12px;border:2px dashed #ffbd2e;">
+      <h3 style="margin:0 0 8px 0;color:#b8860b;">⭐ Бонусные задания</h3>
+      <ul class="task-steps">
+        <li class="bonus-step"><input type="checkbox" id="e12" onchange="updateEcoProgress()"><label for="e12"><b>4 стороны:</b> в scanArea проверяй мусор справа, слева, спереди и сзади <b>(+10 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="e13" onchange="updateEcoProgress()"><label for="e13"><b>Радиус:</b> переменная <code>радиус</code> = 3 — агент обходит квадрат 3×3 <b>(+15 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="e14" onchange="updateEcoProgress()"><label for="e14"><b>Инвентарь:</b> цикл <code>пока</code> в слоте 1 есть предмет (мусор) — продолжай патруль <b>(+15 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="e15" onchange="updateEcoProgress()"><label for="e15"><b>Разные звери:</b> аргумент у spawnAnimal — «курица» или «свинья» <b>(+10 робокоинов)</b></label></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" id="quizEco">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="eq0" data-correct="b">
+      <p class="quiz-q-text">1. Зачем переменная <code>чистота</code>?</p>
+      <label><input type="radio" name="eq0" value="a"> Чтобы агент телепортировался</label>
+      <label><input type="radio" name="eq0" value="b"> Чтобы считать, сколько блоков мусора заменили</label>
+      <label><input type="radio" name="eq0" value="c"> Чтобы выбрать цвет дерева</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="eq1" data-correct="a">
+      <p class="quiz-q-text">2. Когда патруль останавливается?</p>
+      <label><input type="radio" name="eq1" value="a"> Когда <code>чистота</code> достигла <code>цель</code></label>
+      <label><input type="radio" name="eq1" value="b"> Через 1 секунду</label>
+      <label><input type="radio" name="eq1" value="c"> Когда агент упадёт</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="eq2" data-correct="c">
+      <p class="quiz-q-text">3. Что делает scanArea()?</p>
+      <label><input type="radio" name="eq2" value="a"> Сажает дерево</label>
+      <label><input type="radio" name="eq2" value="b"> Создаёт животное</label>
+      <label><input type="radio" name="eq2" value="c"> Ищет мусор и заменяет на траву</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="eq3" data-correct="b">
+      <p class="quiz-q-text">4. Почему три функции лучше, чем один длинный код?</p>
+      <label><input type="radio" name="eq3" value="a"> Потому что так медленнее</label>
+      <label><input type="radio" name="eq3" value="b"> Код понятнее: каждая функция — одна задача</label>
+      <label><input type="radio" name="eq3" value="c"> MakeCode не позволяет длинные программы</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="eq4" data-correct="a">
+      <p class="quiz-q-text">5. Как запустить «Эко-патруль»?</p>
+      <label><input type="radio" name="eq4" value="a"> Написать в чат <code>эко</code></label>
+      <label><input type="radio" name="eq4" value="b"> Нажать F5 десять раз</label>
+      <label><input type="radio" name="eq4" value="c"> Разрушить блок травы</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizEco')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <textarea placeholder="Мой эко-патруль...&#10;Самой полезной функцией была..., потому что...&#10;Без функций было бы..., потому что..."></textarea>
+  </div>
+
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px;line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D1%86%D0%B8%D0%BA%D0%BB%20%D0%BF%D0%BE%D0%BA%D0%B0%20%D0%B2%20Minecraft%20Education%20MakeCode%3F%22%7D" target="_blank" class="alice-q-btn">Как работает цикл «пока»?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B0%D0%B3%D0%B5%D0%BD%D1%82%D1%83%20%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%B8%D1%82%D1%8C%20%D1%82%D0%B8%D0%BF%20%D0%B1%D0%BB%D0%BE%D0%BA%D0%B0%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как проверить тип блока?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%97%D0%B0%D1%87%D0%B5%D0%BC%20%D0%BD%D1%83%D0%B6%D0%BD%D0%BE%20%D0%B7%D0%B0%D1%89%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%B8%D1%80%D0%BE%D0%B4%D1%83%3F%22%7D" target="_blank" class="alice-q-btn">Зачем защищать природу?</a>
+    </div>
+    <div class="ai-answer">💬 Нажми на любой вопрос — откроется Алиса.</div>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_4-1.html"><div class="lbl">← Назад</div><div class="ttl">4.1 Функции</div></a>
+    <a class="nav-btn next" href="les_4-3.html"><div class="lbl">Далее →</div><div class="ttl">4.3 Мини-проект: Шахтёр-стратег</div></a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 4.2 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  function toggleHint(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('show');
+  }
+
+  function updateEcoProgress() {
+    const cbs = document.querySelectorAll('#practiceEco input[type="checkbox"]');
+    const total = 12;
+    let n = 0;
+    cbs.forEach((cb, i) => { if (i < total && cb.checked) n++; });
+    const fill = document.getElementById('ecoProgressFill');
+    const label = document.getElementById('ecoProgressLabel');
+    if (fill) fill.style.width = (n / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${n} из ${total}` + (n === total ? ' 🎉 Задание выполнено!' : '');
+  }
+
+  (function initSortable() {
+    const list = document.getElementById('sortPatrolList');
+    if (!list) return;
+    let dragged = null;
+    list.addEventListener('dragstart', e => {
+      dragged = e.target.closest('.sort-item');
+      if (dragged) e.dataTransfer.effectAllowed = 'move';
+    });
+    list.addEventListener('dragend', () => { dragged = null; });
+    list.addEventListener('dragover', e => e.preventDefault());
+    list.addEventListener('drop', e => {
+      e.preventDefault();
+      const target = e.target.closest('.sort-item');
+      if (dragged && target && dragged !== target) {
+        const items = Array.from(list.querySelectorAll('.sort-item'));
+        if (items.indexOf(dragged) < items.indexOf(target)) target.after(dragged);
+        else target.before(dragged);
+      }
+    });
+  })();
+</script>
+</body>
+</html>
