@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4.3. Мини-проект: Шахтёр-стратег — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; cursor: grab; }
+    .hint-btn {
+      background: #ffbd2e; color: #2b5e0e; border: none;
+      padding: 4px 16px; border-radius: 20px; font-weight: 600;
+      font-size: 0.8rem; cursor: pointer; transition: 0.2s; margin-top: 8px;
+    }
+    .hint-btn:hover { background: #f0a800; transform: scale(1.05); }
+    .hint-content {
+      display: none; background: #fff8e1; padding: 10px 14px; border-radius: 8px;
+      margin-top: 8px; border-left: 3px solid #ffbd2e; font-size: 0.95rem; text-align: left;
+    }
+    .hint-content.show { display: block; }
+    .hint-content code { background: #e8ece6; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+    .task-number {
+      display: inline-block; background: #61b01f; color: #fff; border-radius: 50%;
+      width: 28px; height: 28px; text-align: center; line-height: 28px;
+      font-weight: 700; margin-right: 10px; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .story-box {
+      background: linear-gradient(135deg, #efebe9, #fff8e1);
+      border: 2px solid #a1887f; border-radius: 16px; padding: 20px 24px; margin: 16px 0;
+    }
+    .flow-steps {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 16px 0;
+    }
+    .flow-step {
+      background: #f0f9eb; border: 2px solid #b8d9a8; border-radius: 12px;
+      padding: 10px 14px; font-weight: 700; font-size: 0.9rem;
+    }
+    .flow-arrow { color: #61b01f; font-weight: 900; font-size: 1.2rem; }
+    .ore-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 10px; margin: 14px 0;
+    }
+    .ore-card {
+      background: #f5f5f5; border: 2px solid #bdbdbd; border-radius: 12px;
+      padding: 12px; text-align: center;
+    }
+    .ore-card.valuable { background: #fff3e0; border-color: #ffb74d; }
+    .ore-card .emoji { font-size: 1.8rem; }
+    .callback-box {
+      background: linear-gradient(135deg, #e3f2fd, #fafff7);
+      border: 2px solid #64b5f6; border-radius: 12px; padding: 16px 20px; margin: 16px 0;
+    }
+    .return-box {
+      background: linear-gradient(135deg, #fce4ec, #fff8e1);
+      border: 2px solid #f48fb1; border-radius: 12px; padding: 16px 20px; margin: 16px 0;
+    }
+    .dir-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      max-width: 280px; margin: 16px auto; text-align: center;
+    }
+    .dir-cell {
+      background: #eceff1; border: 2px solid #90a4ae; border-radius: 8px;
+      padding: 12px 8px; font-size: 0.85rem; font-weight: 700;
+    }
+    .dir-cell.scan { background: #e8f5e9; border-color: #66bb6a; }
+    .dir-cell.agent { background: #e3f2fd; border-color: #42a5f5; grid-column: 2; }
+  </style>
+</head>
+<body class="lesson-page">
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 4.3</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">4.3</div>
+      <div>
+        <div class="module-pill">Раздел 4 · Функции</div>
+        <h1>Мини-проект: Шахтёр-стратег</h1>
+        <p class="subtitle">Агент копает шахту с умом — ищет руду и возвращается на базу</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Собрать мини-проект «Шахтёр-стратег» с функцией, которая возвращает значение</li>
+      <li>Научить агента выбирать направление копания по типу блока</li>
+      <li>Повторить переменные, условия, цикл «пока» и смешанные координаты</li>
+      <li>Понять, зачем сохранять координаты базы для возврата</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>История «Добыча с умом»</td></tr>
+      <tr><td>Теория</td><td>15 мин</td><td>Руды, return, алгоритм шахтёра</td></tr>
+      <tr><td>Интерактив</td><td>15 мин</td><td>Закрепляем понятия</td></tr>
+      <tr><td>Мини-проект: шаги 1–4</td><td>25 мин</td><td>Переменные, chooseDirection(), digStep()</td></tr>
+      <tr><td>Мини-проект: шаги 5–7</td><td>25 мин</td><td>Цикл «пока», возврат на базу</td></tr>
+      <tr><td>Бонус и итоги</td><td>5 мин</td><td>Дополнения, рефлексия</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span> Сюжет: Добыча с умом</h2>
+    <div class="story-box">
+      <p>⛏️ <b>Обычный шахтёр</b> копает прямо вниз — и часто пропускает богатые жилы руды.</p>
+      <p><b>Шахтёр-стратег</b> действует иначе: перед каждым ударом кирки он <b>сканирует 3 блока впереди</b> — слева, по центру и справа. Если видит уголь, железо или алмаз — копает туда. Если руды нет — спускается вниз.</p>
+      <p>Когда рюкзак полон — агент <b>возвращается на базу</b> по сохранённым координатам.</p>
+    </div>
+
+    <div class="flow-steps">
+      <span class="flow-step">🔍 chooseDirection()</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">⛏️ digStep()</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">📊 depth + oreCount</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">🏠 домой, если полон инвентарь</span>
+    </div>
+
+    <div class="callback-box">
+      <b>🔗 Связь с прошлыми занятиями:</b> копание мы учили в <b>2.3</b>, координаты — в <b>3.1–3.3</b>, функции — в <b>4.1</b>, мини-проект — в <b>4.2</b>. Сегодня добавляем <b>return</b> — функция «отдаёт» результат!
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> Руды, которые ищет агент</h2>
+    <p>В нашем проекте «ценные» блоки — это руда. Агент проверяет их <b>ID</b> (номер блока в Minecraft):</p>
+
+    <div class="ore-grid">
+      <div class="ore-card valuable"><div class="emoji">🪨</div><div><b>Уголь</b></div><div style="font-size:0.8rem;color:#666;">ID 16</div></div>
+      <div class="ore-card valuable"><div class="emoji">⚙️</div><div><b>Железо</b></div><div style="font-size:0.8rem;color:#666;">ID 15</div></div>
+      <div class="ore-card valuable"><div class="emoji">💎</div><div><b>Алмаз</b></div><div style="font-size:0.8rem;color:#666;">ID 56</div></div>
+      <div class="ore-card"><div class="emoji">🧱</div><div><b>Камень</b></div><div style="font-size:0.8rem;color:#666;">ID 1 — копаем</div></div>
+      <div class="ore-card"><div class="emoji">⬇️</div><div><b>Нет руды</b></div><div style="font-size:0.8rem;color:#666;">копаем вниз</div></div>
+    </div>
+
+    <h3>Три блока «впереди» — схема</h3>
+    <p>Агент смотрит вперёд. Мы проверяем три клетки на уровне ног:</p>
+    <div class="dir-grid">
+      <div class="dir-cell scan">~−1 ~−1 ~1<br><small>слева</small></div>
+      <div class="dir-cell scan">~0 ~−1 ~1<br><small>вперёд</small></div>
+      <div class="dir-cell scan">~1 ~−1 ~1<br><small>справа</small></div>
+      <div class="dir-cell agent" style="grid-column:2;">🤖 Агент</div>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Идея проекта</th><th>Блоки MakeCode</th></tr>
+        <tr><td>Переменные</td><td><code>depth</code> (глубина), <code>oreCount</code> (найдено руды)</td></tr>
+        <tr><td>Условие</td><td><code>если</code> ID блока = 16 <code>или</code> 15 <code>или</code> 56 → копать туда</td></tr>
+        <tr><td>Функция с return</td><td><code>chooseDirection</code> → <code>вернуть</code> «вперёд» / «влево» / «вправо» / «вниз»</td></tr>
+        <tr><td>Главный цикл</td><td><code>пока depth &lt; 30</code> — бурение продолжается</td></tr>
+        <tr><td>База (абсолютные координаты)</td><td>В начале сохранить <code>baseX</code>, <code>baseY</code>, <code>baseZ</code> → телепорт домой</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span> Новое: функция возвращает значение (return)</h2>
+    <p>Раньше функции только <b>делали</b> действия. Теперь функция может <b>ответить</b>, что выбрала:</p>
+
+    <div class="return-box">
+      <b>📤 return (вернуть)</b> — в конце функции блок <code>вернуть</code> отдаёт текст или число тому, кто вызвал функцию.<br><br>
+      Пример: <code>направление = вызвать chooseDirection</code> — переменная получит «вперёд», «влево», «вправо» или «вниз».
+    </div>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">шахтер_алгоритм.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- При команде чата "шахта":</span>
+<span class="tok-v">depth</span> = 0
+<span class="tok-v">oreCount</span> = 0
+<span class="tok-v">baseX</span>, <span class="tok-v">baseY</span>, <span class="tok-v">baseZ</span> = позиция агента (абсолютные)
+
+<span class="tok-k">пока</span> <span class="tok-v">depth</span> &lt; 30:
+    <span class="tok-v">направление</span> = <span class="tok-k">вызвать</span> <span class="tok-n">chooseDirection</span>
+    <span class="tok-k">вызвать</span> <span class="tok-n">digStep</span> <span class="tok-v">направление</span>
+    <span class="tok-v">depth</span> = <span class="tok-v">depth</span> + 1
+    <span class="tok-k">если</span> инвентарь полон → телепорт (<span class="tok-v">baseX</span>, <span class="tok-v">baseY</span>, <span class="tok-v">baseZ</span>)
+
+<span class="tok-n">сказать</span> "Глубина: " + <span class="tok-v">depth</span> + ", руда: " + <span class="tok-v">oreCount</span>
+
+<span class="tok-c">-- Функция chooseDirection:</span>
+<span class="tok-k">если</span> впереди руда → <span class="tok-k">вернуть</span> "вперёд"
+<span class="tok-k">иначе если</span> слева руда → <span class="tok-k">вернуть</span> "влево"
+<span class="tok-k">иначе если</span> справа руда → <span class="tok-k">вернуть</span> "вправо"
+<span class="tok-k">иначе</span> → <span class="tok-k">вернуть</span> "вниз"</code></pre>
+    </div>
+
+    <div class="note">
+      <b>💡 Упрощение:</b> на первом проходе достаточно проверить только блок <b>впереди</b> (~0 ~−1 ~1). Бонус — добавить сканирование слева и справа.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">4</span> Интерактив: закрепляем</h2>
+
+    <div class="interactive-box" id="oreQuiz">
+      <h3>💎 Что считаем рудой?</h3>
+      <p>К каким блокам агент должен «потянуться» в первую очередь?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Уголь, железо или алмаз</div>
+        <div class="choice-card" data-correct-choice="false">Только блок травы</div>
+        <div class="choice-card" data-correct-choice="false">Вода и лава</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('oreQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="returnQuiz" style="margin-top:20px;">
+      <h3>📤 Зачем нужен return?</h3>
+      <p>Что делает блок <code>вернуть "влево"</code> в функции chooseDirection?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Удаляет функцию из программы</div>
+        <div class="choice-card" data-correct-choice="true">Отдаёт результат «влево» тому, кто вызвал функцию</div>
+        <div class="choice-card" data-correct-choice="false">Поворачивает агента на 360°</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('returnQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="noOreQuiz" style="margin-top:20px;">
+      <h3>⬇️ Нет руды впереди</h3>
+      <p>Агент проверил 3 блока — нигде нет угля, железа и алмаза. Куда копать?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Остановиться и ждать</div>
+        <div class="choice-card" data-correct-choice="true">Копать вниз</div>
+        <div class="choice-card" data-correct-choice="false">Телепортироваться на небо</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('noOreQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="sortMiner" style="margin-top:20px;">
+      <h3>📋 Порядок одного шага бурения</h3>
+      <p>Перетащи шаги в правильном порядке:</p>
+      <ul class="sort-list" id="sortMinerList">
+        <li class="sort-item" draggable="true" data-correct-step="3">Увеличить depth на 1</li>
+        <li class="sort-item" draggable="true" data-correct-step="1">направление = вызвать chooseDirection()</li>
+        <li class="sort-item" draggable="true" data-correct-step="2">Вызвать digStep(направление)</li>
+      </ul>
+      <button class="action-btn" onclick="checkSequence('sortMiner')">✅ Проверить порядок</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="task-box" id="practiceMiner">
+    <h2>⛏️ Мини-проект: «Шахтёр-стратег»</h2>
+    <div class="progress-track"><div class="progress-fill" id="minerProgressFill"></div></div>
+    <span class="progress-label" id="minerProgressLabel">Выполнено шагов: 0 из 12</span>
+    <p>Педагог может подготовить участок с камнем и несколькими жилами руды (Creative → расставить блоки). Или копай в обычном мире. Собирай проект по шагам.</p>
+
+    <div style="margin-top:20px;padding:16px;background:#f0f9eb;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#2b5e0e;"><span class="task-number">1</span> Подготовка и переменные</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="m0" onchange="updateMinerProgress()"><label for="m0">Призови агента у входа в «шахту» (база). Дай кирку в инвентарь агента</label></li>
+        <li><input type="checkbox" id="m1" onchange="updateMinerProgress()"><label for="m1">Создай переменные: <code>depth</code> = 0, <code>oreCount</code> = 0, <code>baseX</code>, <code>baseY</code>, <code>baseZ</code></label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintVars')">💡 Подсказка</button>
+      <div class="hint-content" id="hintVars">Координаты базы: блоки <i>Positions</i> → «позиция агента по X / Y / Z» (абсолютные числа). Сохрани их в переменные при старте программы.</div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#f7fcf2;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#2b5e0e;"><span class="task-number">2</span> Функция isOre() — есть ли руда?</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="m2" onchange="updateMinerProgress()"><label for="m2">Создай функцию <code>isOre</code> с аргументом <code>позиция</code> (или проверяй один блок внутри chooseDirection)</label></li>
+        <li><input type="checkbox" id="m3" onchange="updateMinerProgress()"><label for="m3"><code>вернуть</code> <code>истина</code>, если ID блока = 16, 15 или 56; иначе <code>ложь</code></label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintOre')">💡 Подсказка</button>
+      <div class="hint-content" id="hintOre">Можно обойтись без отдельной функции: три проверки <code>если ID блока в ~0 ~−1 ~1 = 16</code> прямо в chooseDirection. Функция isOre — для аккуратного кода.</div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#f0f9eb;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#2b5e0e;"><span class="task-number">3</span> Функция chooseDirection() — с return!</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="m4" onchange="updateMinerProgress()"><label for="m4">Создай функцию <code>chooseDirection</code></label></li>
+        <li><input type="checkbox" id="m5" onchange="updateMinerProgress()"><label for="m5"><code>если</code> впереди (~0 ~−1 ~1) руда → <code>вернуть</code> «вперёд»; <code>иначе если</code> слева руда → «влево»; <code>иначе если</code> справа → «вправо»; <code>иначе</code> → «вниз»</label></li>
+      </ul>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#f7fcf2;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#2b5e0e;"><span class="task-number">4</span> Функция digStep(направление)</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="m6" onchange="updateMinerProgress()"><label for="m6">Создай функцию <code>digStep</code> с параметром <code>направление</code></label></li>
+        <li><input type="checkbox" id="m7" onchange="updateMinerProgress()"><label for="m7"><code>если направление = "вперёд"</code> → разрушить блок впереди и шаг; <code>"влево"</code> → поворот + копание; <code>"вправо"</code> → поворот + копание; <code>"вниз"</code> → опуститься и разрушить блок под собой</label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintDig')">💡 Подсказка</button>
+      <div class="hint-content" id="hintDig">После разрушения руды: <code>изменить oreCount на 1</code>. Для тоннеля высотой 2 блока: сначала разруши блок на уровне головы, потом на уровне ног (как в занятии 2.3).</div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#f0f9eb;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#2b5e0e;"><span class="task-number">5</span> Команда «шахта» и цикл «пока»</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="m8" onchange="updateMinerProgress()"><label for="m8"><code>при команде чата "шахта"</code> → сохранить baseX/Y/Z, <code>depth = 0</code>, <code>oreCount = 0</code></label></li>
+        <li><input type="checkbox" id="m9" onchange="updateMinerProgress()"><label for="m9"><code>пока depth &lt; 30</code>: <code>направление = вызвать chooseDirection</code> → <code>вызвать digStep направление</code> → <code>depth + 1</code></label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintWhile')">💡 Подсказка</button>
+      <div class="hint-content" id="hintWhile">Блок «задать переменной значение вызова функции» — в <i>Переменные</i>. Цикл остановится, когда <code>depth</code> станет 30.</div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#f7fcf2;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#2b5e0e;"><span class="task-number">6</span> Возврат на базу и запуск</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="m10" onchange="updateMinerProgress()"><label for="m10">Внутри цикла: <code>если</code> слот 1 инвентаря агента <b>не пуст</b> (или полон) → <code>телепортировать агента</code> на (baseX, baseY, baseZ) → <code>сказать</code> «Рюкзак полон!»</label></li>
+        <li><input type="checkbox" id="m11" onchange="updateMinerProgress()"><label for="m11">Play → чат <code>шахта</code> → проверь! В конце: <code>сказать</code> depth и oreCount</label></li>
+      </ul>
+      <div class="note" style="margin-top:10px;">
+        <b>✅ Готово?</b> Покажи преподавателю шахту и объясни, как chooseDirection выбирает путь и зачем нужны baseX, baseY, baseZ.
+      </div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#fff8e1;border-radius:12px;border:2px dashed #ffbd2e;">
+      <h3 style="margin:0 0 8px 0;color:#b8860b;">⭐ Бонусные задания</h3>
+      <ul class="task-steps">
+        <li class="bonus-step"><input type="checkbox" id="m12"><label for="m12"><b>Приоритет руды:</b> сначала алмаз (56), потом железо (15), потом уголь (16) <b>(+10 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="m13"><label for="m13"><b>Факелы:</b> функция <code>placeTorch</code> — каждые 5 шагов ставить факел на стену <b>(+10 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="m14"><label for="m14"><b>Стороны света:</b> return «North» / «South» / «East» / «West» вместо «вперёд» <b>(+15 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="m15"><label for="m15"><b>Умный возврат:</b> телепорт только если <code>oreCount ≥ 5</code> и инвентарь полон <b>(+10 робокоинов)</b></label></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" id="quizMiner">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="mq0" data-correct="b">
+      <p class="quiz-q-text">1. Зачем переменная <code>depth</code>?</p>
+      <label><input type="radio" name="mq0" value="a"> Чтобы выбрать цвет факела</label>
+      <label><input type="radio" name="mq0" value="b"> Чтобы считать, сколько шагов копания сделал агент</label>
+      <label><input type="radio" name="mq0" value="c"> Чтобы телепортировать игрока</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq1" data-correct="c">
+      <p class="quiz-q-text">2. Что делает chooseDirection()?</p>
+      <label><input type="radio" name="mq1" value="a"> Сажает дерево</label>
+      <label><input type="radio" name="mq1" value="b"> Считает алмазы в мире</label>
+      <label><input type="radio" name="mq1" value="c"> Возвращает, куда копать: вперёд, влево, вправо или вниз</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq2" data-correct="a">
+      <p class="quiz-q-text">3. Когда главный цикл бурения останавливается?</p>
+      <label><input type="radio" name="mq2" value="a"> Когда <code>depth</code> достиг 30</label>
+      <label><input type="radio" name="mq2" value="b"> Через 3 секунды</label>
+      <label><input type="radio" name="mq2" value="c"> Когда агент найдёт траву</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq3" data-correct="b">
+      <p class="quiz-q-text">4. Зачем сохранять baseX, baseY, baseZ?</p>
+      <label><input type="radio" name="mq3" value="a"> Чтобы агент копал быстрее</label>
+      <label><input type="radio" name="mq3" value="b"> Чтобы вернуться на базу по абсолютным координатам</label>
+      <label><input type="radio" name="mq3" value="c"> Чтобы изменить погоду</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="mq4" data-correct="a">
+      <p class="quiz-q-text">5. Как запустить «Шахтёр-стратег»?</p>
+      <label><input type="radio" name="mq4" value="a"> Написать в чат <code>шахта</code></label>
+      <label><input type="radio" name="mq4" value="b"> Нажать Esc пять раз</label>
+      <label><input type="radio" name="mq4" value="c"> Разрушить алмазный блок</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizMiner')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <textarea placeholder="Мой шахтёр-стратег...&#10;chooseDirection помогает..., потому что...&#10;Без return было бы..., потому что..."></textarea>
+  </div>
+
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px;line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82%20return%20%D0%B2%20%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D1%8F%D1%85%20MakeCode%3F%22%7D" target="_blank" class="alice-q-btn">Что такое return в функции?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BD%D0%B0%D0%B9%D1%82%D0%B8%20%D0%B0%D0%BB%D0%BC%D0%B0%D0%B7%D1%8B%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="alice-q-btn">Где искать алмазы?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%97%D0%B0%D1%87%D0%B5%D0%BC%20%D0%BD%D1%83%D0%B6%D0%BD%D1%8B%20%D0%B0%D0%B1%D1%81%D0%BE%D0%BB%D1%8E%D1%82%D0%BD%D1%8B%D0%B5%20%D0%BA%D0%BE%D0%BE%D1%80%D0%B4%D0%B8%D0%BD%D0%B0%D1%82%D1%8B%20%D0%B4%D0%BB%D1%8F%20%D0%B2%D0%BE%D0%B7%D0%B2%D1%80%D0%B0%D1%82%D0%B0%20%D0%BD%D0%B0%20%D0%B1%D0%B0%D0%B7%D1%83%3F%22%7D" target="_blank" class="alice-q-btn">Зачем координаты базы?</a>
+    </div>
+    <div class="ai-answer">💬 Нажми на любой вопрос — откроется Алиса.</div>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_4-2.html"><div class="lbl">← Назад</div><div class="ttl">4.2 Эко-патруль</div></a>
+    <a class="nav-btn next" href="les_4-4.html"><div class="lbl">Далее →</div><div class="ttl">4.4 Итоговый проект, ч.1</div></a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 4.3 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  function toggleHint(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('show');
+  }
+
+  function updateMinerProgress() {
+    const cbs = document.querySelectorAll('#practiceMiner input[type="checkbox"]');
+    const total = 12;
+    let n = 0;
+    cbs.forEach((cb, i) => { if (i < total && cb.checked) n++; });
+    const fill = document.getElementById('minerProgressFill');
+    const label = document.getElementById('minerProgressLabel');
+    if (fill) fill.style.width = (n / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${n} из ${total}` + (n === total ? ' 🎉 Задание выполнено!' : '');
+  }
+
+  (function initSortable() {
+    const list = document.getElementById('sortMinerList');
+    if (!list) return;
+    let dragged = null;
+    list.addEventListener('dragstart', e => {
+      dragged = e.target.closest('.sort-item');
+      if (dragged) e.dataTransfer.effectAllowed = 'move';
+    });
+    list.addEventListener('dragend', () => { dragged = null; });
+    list.addEventListener('dragover', e => e.preventDefault());
+    list.addEventListener('drop', e => {
+      e.preventDefault();
+      const target = e.target.closest('.sort-item');
+      if (dragged && target && dragged !== target) {
+        const items = Array.from(list.querySelectorAll('.sort-item'));
+        if (items.indexOf(dragged) < items.indexOf(target)) target.after(dragged);
+        else target.before(dragged);
+      }
+    });
+  })();
+</script>
+</body>
+</html>

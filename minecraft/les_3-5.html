@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3.5. Мини-проект: Строим лес — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+    .hint-btn {
+      background: #ffbd2e;
+      color: #2b5e0e;
+      border: none;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 8px;
+    }
+    .hint-btn:hover { background: #f0a800; transform: scale(1.05); }
+    .hint-content {
+      display: none;
+      background: #fff8e1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-top: 8px;
+      border-left: 3px solid #ffbd2e;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+    .hint-content.show { display: block; }
+    .hint-content code { background: #e8ece6; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+    .task-number { display: inline-block; background: #61b01f; color: #fff; border-radius: 50%; width: 28px; height: 28px; text-align: center; line-height: 28px; font-weight: 700; margin-right: 10px; font-size: 0.85rem; flex-shrink: 0; }
+    .block-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .block-card {
+      background: #f0f9eb;
+      border: 2px solid #b8d9a8;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .block-card .emoji { font-size: 2rem; line-height: 1.2; }
+    .block-card .name { font-weight: 700; color: #2b5e0e; margin-top: 6px; }
+    .block-card .use { font-size: 0.85rem; color: #555; margin-top: 4px; }
+    .tree-diagram {
+      font-family: 'Courier New', monospace;
+      background: #f0f9eb;
+      padding: 16px;
+      border-radius: 12px;
+      line-height: 1.4;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    .teaser-box {
+      background: linear-gradient(135deg, #e8f5e9, #fafff7);
+      border: 2px solid #61b01f;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 3.5</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">3.5</div>
+      <div>
+        <div class="module-pill">Раздел 3 · Координаты и логика</div>
+        <h1>Мини-проект: Строим лес</h1>
+        <p class="subtitle">Агент сажает деревья, кусты и создаёт зелёную поляну</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Вспомнить блоки Minecraft, из которых строят деревья и кусты</li>
+      <li>Повторить команды агента, циклы и переменные</li>
+      <li>Создать программу, которая строит небольшой лес</li>
+      <li>Почувствовать, почему повторять один и тот же код неудобно (подготовка к теме «функции»)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Обсуждаем, из чего состоит лес в Minecraft</td></tr>
+      <tr><td>Теория: блоки и постройки</td><td>15 мин</td><td>Блоки для ствола, листвы, земли, декора</td></tr>
+      <tr><td>Интерактив</td><td>15 мин</td><td>Игры и вопросы на закрепление</td></tr>
+      <tr><td>Разбор алгоритма дерева</td><td>10 мин</td><td>Как агент строит одно дерево по шагам</td></tr>
+      <tr><td>Мини-проект «Лес»</td><td>40 мин</td><td>Пошаговая практика в Minecraft Education</td></tr>
+      <tr><td>Бонус и итоги</td><td>15 мин</td><td>Дополнительные украшения, рефлексия</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span> Из каких блоков состоит лес?</h2>
+    <p>В Minecraft лес — это не только высокие деревья. Чтобы полянка выглядела живой, мы используем <b>разные блоки</b> для разных частей постройки.</p>
+
+    <div class="block-card-grid">
+      <div class="block-card">
+        <div class="emoji"><img src="files/oak_log.webp"/></div>
+        <div class="name">Бревно (дуб)</div>
+        <div class="use">Ствол дерева</div>
+      </div>
+      <div class="block-card">
+        <div class="emoji"><img src="files/leaves.webp"/></div>
+        <div class="name">Листья (дуб)</div>
+        <div class="use">Крона дерева, куст</div>
+      </div>
+      <div class="block-card">
+        <div class="emoji"><img src="files/grass.png"/></div>
+        <div class="name">Трава / земля</div>
+        <div class="use">Полянка под лесом</div>
+      </div>
+      <div class="block-card">
+        <div class="emoji"><img src="files/batun.webp"/></div>
+        <div class="name">Цветы</div>
+        <div class="use">Украшение вокруг деревьев</div>
+      </div>
+      <div class="block-card">
+        <div class="emoji"><img src="files/gravel.png"/></div>
+        <div class="name">Камень / гравий</div>
+        <div class="use">Дорожка через лес (бонус)</div>
+      </div>
+    </div>
+
+    <h3>Как выглядит простое дерево?</h3>
+    <p>На этом занятии мы строим <b>упрощённое дерево</b>: вертикальный ствол и «шапка» из листьев сверху.</p>
+    <div class="tree-diagram" style="display: flex; justify-content: center;">
+      <img src="files/tree.webp"/>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Часть леса</th><th>Блок в игре</th><th>Кто ставит</th></tr>
+        <tr><td>Ствол</td><td>Бревно дуба</td><td>Агент (слот 1)</td></tr>
+        <tr><td>Крона</td><td>Листья дуба</td><td>Агент (слот 2)</td></tr>
+        <tr><td>Куст</td><td>1–2 блока листьев у земли</td><td>Агент</td></tr>
+        <tr><td>Поляна</td><td>Трава или земля</td><td>Агент или <code>заполнить блоками</code></td></tr>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>💡 Важно:</b> перед программой положи в инвентарь агента нужные блоки: в <b>слот 1</b> — бревно, в <b>слот 2</b> — листья. Блок <code>выбрать слот инвентаря</code> мы уже изучали в занятии 1.5.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> Какие команды понадобятся?</h2>
+    <p>Мини-проект собирается из знакомых «кирпичиков» — блоков MakeCode:</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Идея</th><th>Блоки MakeCode</th></tr>
+        <tr><td>Запуск по чату</td><td><img src="files/on_chat.png"/></td></tr>
+        <tr><td>Высота ствола</td><td>Переменная <img src="files/les_3-5_var1.png"/></td></tr>
+        <tr><td>Ствол вверх</td><td><code>повторить … раз</code> → <code>подняться вверх</code> → <code>разместить вниз</code></td></tr>
+        <tr><td>Крона</td><td><code>выбрать слот 2</code> → несколько <code>разместить вперёд</code> и поворотов</td></tr>
+        <tr><td>Следующее дерево</td><td><code>двигаться вперёд</code> на несколько шагов</td></tr>
+        <tr><td>Несколько деревьев</td><td>Цикл <code>повторить количество_деревьев раз</code></td></tr>
+        <tr><td>Большая поляна</td><td><code>заполнить блоками</code> (координаты)</td></tr>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">алгоритм_одного_дерева.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Упрощённый алгоритм (словами)</span>
+<span class="tok-n">1.</span> выбрать слот <span class="tok-n">1</span> (бревно)
+<span class="tok-n">2.</span> повторить <span class="tok-n">высота_ствола</span> раз:
+       подняться вверх
+       разместить вниз
+<span class="tok-n">3.</span> выбрать слот <span class="tok-n">2</span> (листья)
+<span class="tok-n">4.</span> поставить листья вокруг верхушки
+<span class="tok-n">5.</span> опуститься вниз на <span class="tok-n">высота_ствола</span> (вернуться к земле)</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span> Интерактив: закрепляем теорию</h2>
+
+    <div class="interactive-box" id="matchBlocks">
+      <h3>🧩 Что чем строим?</h3>
+      <p>Выбери правильный ответ: чем лучше всего сделать <b>ствол</b> дерева?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Листья дуба</div>
+        <div class="choice-card" data-correct-choice="true">Бревно дуба</div>
+        <div class="choice-card" data-correct-choice="false">Стекло</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('matchBlocks')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="matchBush" style="margin-top: 20px;">
+      <h3>🌿 Маленький куст</h3>
+      <p>Куст на полянке — это обычно…</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Несколько блоков листьев у земли</div>
+        <div class="choice-card" data-correct-choice="false">Башня из камня высотой 10 блоков</div>
+        <div class="choice-card" data-correct-choice="false">Ряд из бревён длиной 20 блоков</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('matchBush')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="sortTree" style="margin-top: 20px;">
+      <h3>📋 Порядок действий</h3>
+      <p>Какой порядок шагов правильный, чтобы агент построил дерево?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Сначала ствол, потом листья, потом шаг к следующему месту</div>
+        <div class="choice-card" data-correct-choice="false">Сначала листья на земле, потом ствол поверх них</div>
+        <div class="choice-card" data-correct-choice="false">Только листья, без ствола</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('sortTree')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B8%D1%82%D1%8C%20%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BE%20%D1%81%20%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E%20%D0%B0%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как построить дерево агентом?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%97%D0%B0%D1%87%D0%B5%D0%BC%20%D0%BD%D1%83%D0%B6%D0%BD%D1%8B%20%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B5%3F%22%7D" target="_blank" class="alice-q-btn">Зачем нужны переменные?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9F%D0%BE%D1%87%D0%B5%D0%BC%D1%83%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%20%D0%BD%D0%B5%20%D1%85%D0%BE%D1%87%D0%B5%D1%82%D1%81%D1%8F%20%D0%BF%D0%BE%D0%B2%D1%82%D0%BE%D1%80%D1%8F%D1%82%D1%8C%20%D0%BE%D0%B4%D0%B8%D0%BD%20%D0%B8%20%D1%82%D0%BE%D1%82%20%D0%B6%D0%B5%20%D0%BA%D0%BE%D0%B4%3F%22%7D" target="_blank" class="alice-q-btn">Почему не хочется повторять код?</a>
+    </div>
+    <div class="ai-answer">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Спроси Алису про лес, агента или блоки в Minecraft Education.<br>
+      <span class="prompt-example">Например: «Алиса, как сделать куст из листьев в Minecraft?»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
+  <div class="task-box" id="practiceForest">
+    <h2>🌲 Мини-проект: программа «Лес»</h2>
+    <div class="progress-track"><div class="progress-fill" id="forestProgressFill"></div></div>
+    <span class="progress-label" id="forestProgressLabel">Выполнено шагов: 0 из 10</span>
+    <p>Открой <b>Minecraft Education</b>, создай мир (лучше плоский или пустой участок) и собери программу по шагам. Не спеши — сначала одно дерево, потом весь лес.</p>
+
+    <div style="margin-top: 20px; padding: 16px; background: #f0f9eb; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">1</span> Подготовка</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="f0" onchange="updateForestProgress()"><label for="f0">Призови агента и встань с ним на месте, где будет лес</label></li>
+        <li><input type="checkbox" id="f1" onchange="updateForestProgress()"><label for="f1">Положи в слот 1 — <b>бревно</b>, в слот 2 — <b>листья</b></label></li>
+        <li><input type="checkbox" id="f2" onchange="updateForestProgress()"><label for="f2">Создай переменные: <code>высота_ствола</code> = 4, <code>количество_деревьев</code> = 3</label></li>
+      </ul>
+    </div>
+
+    <div style="margin-top: 16px; padding: 16px; background: #f7fcf2; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">2</span> Команда запуска</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="f3" onchange="updateForestProgress()"><label for="f3">Добавь блок <code>при получении команды чата "лес"</code></label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintChat')">💡 Подсказка</button>
+      <div class="hint-content" id="hintChat">Команда находится во вкладке <i>Игрок</i>. В чате игры напиши <code>лес</code>, чтобы запустить программу.</div>
+    </div>
+
+    <div style="margin-top: 16px; padding: 16px; background: #f0f9eb; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">3</span> Одно дерево (без цикла)</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="f4" onchange="updateForestProgress()"><label for="f4"><code>выбрать слот 1</code> → цикл <code>повторить высота_ствола раз</code>: <code>поставить блок</code>, <code>подняться вверх</code></label></li>
+        <li><input type="checkbox" id="f5" onchange="updateForestProgress()"><label for="f5"><code>выбрать слот 2</code> → поставь 3–5 блоков листьев вокруг верхушки (поворачивай агента и ставь блоки)</label></li>
+        <li><input type="checkbox" id="f6" onchange="updateForestProgress()"><label for="f6"><code>опуститься вниз</code> столько раз, сколько блоков в стволе (вернись на землю)</label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintOneTree')">💡 Подсказка для кроны</button>
+      <div class="hint-content" id="hintOneTree">Простой вариант «креста»: на верхушке поставь блок → поверни налево → шаг вперёд → блок → поверни налево → шаг → блок. Или поставь один блок листьев прямо над последним бревном и 4 блока по сторонам.</div>
+    </div>
+
+    <div style="margin-top: 16px; padding: 16px; background: #f7fcf2; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">4</span> Второе и третье дерево (повтор кода)</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="f7" onchange="updateForestProgress()"><label for="f7">После первого дерева: <code>двигаться вперёд 6</code> (или 5–7 — как удобно)</label></li>
+        <li><input type="checkbox" id="f8" onchange="updateForestProgress()"><label for="f8"><b>Скопируй</b> те же блоки, что строят одно дерево, и вставь ещё 2 раза — получится 3 дерева подряд</label></li>
+      </ul>
+      <div class="teaser-box">
+        <b>🤔 Замечание преподавателя:</b> сейчас один и тот же набор блоков приходится <b>копировать</b> много раз. Программа становится длинной и легко ошибиться. На следующем занятии в разделе 4 мы узнаем, как <b>не повторять код</b> — с помощью <b>функций</b>. Запомни это ощущение!
+      </div>
+    </div>
+
+    <div style="margin-top: 16px; padding: 16px; background: #f0f9eb; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">5</span> Цикл вместо копирования (упрощение)</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="f9" onchange="updateForestProgress()"><label for="f9">Замени три копии на один цикл: <code>повторить количество_деревьев раз</code> → [код одного дерева] → <code>двигаться вперёд 6</code></label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintLoop')">💡 Подсказка</button>
+      <div class="hint-content" id="hintLoop">Код дерева остаётся <b>один раз</b> внутри цикла — уже короче! Но если понадобится второй тип дерева (берёза и дуб), снова придётся дублировать… Об этом поговорим на следующих занятиях.</div>
+    </div>
+
+    <div style="margin-top: 16px; padding: 16px; background: #fff8e1; border-radius: 12px; border: 2px dashed #ffbd2e;">
+      <h3 style="margin: 0 0 8px 0; color: #b8860b;">⭐ Бонус: украшаем лес</h3>
+      <ul class="task-steps">
+        <li class="bonus-step"><input type="checkbox" id="f10" onchange="updateForestProgress()"><label for="f10"><b>Кусты:</b> между деревьями поставь 2–3 куста (1 блок бревна + 2 листа сбоку) <b>(+5 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="f11" onchange="updateForestProgress()"><label for="f11"><b>Поляна:</b> используй <code>заполнить блоками</code> (трава) под лесом на участке 10×10 <b>(+5 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="f12" onchange="updateForestProgress()"><label for="f12"><b>Дорожка:</b> ряд из камня или <code>ряд из блоков</code> через лес <b>(+5 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="f13" onchange="updateForestProgress()"><label for="f13"><b>Разные деревья:</b> переменная <code>высота_ствола</code> меняется (+1 после каждого дерева) — лес «разной высоты» <b>(+10 робокоинов)</b></label></li>
+      </ul>
+    </div>
+
+    <div class="note" style="margin-top: 16px;">
+      <b>✅ Готово?</b> Напиши в чат <code>лес</code>, агент построит поляну, потом покажи преподавателю. Объясни, где в коде ты <b>повторял</b> одни и те же блоки — это пригодится на занятии про функции.
+    </div>
+  </div>
+
+  <div class="quiz-wrap" id="quizForest">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="fq0" data-correct="b">
+      <p class="quiz-q-text">1. Какой блок лучше подходит для ствола?</p>
+      <label><input type="radio" name="fq0" value="a"> Листья</label>
+      <label><input type="radio" name="fq0" value="b"> Бревно</label>
+      <label><input type="radio" name="fq0" value="c"> Вода</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq1" data-correct="a">
+      <p class="quiz-q-text">2. Зачем переменная <code>высота_ствола</code>?</p>
+      <label><input type="radio" name="fq1" value="a"> Чтобы легко менять высоту всех стволов</label>
+      <label><input type="radio" name="fq1" value="b"> Чтобы агент телепортировался</label>
+      <label><input type="radio" name="fq1" value="c"> Чтобы отключить циклы</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq2" data-correct="c">
+      <p class="quiz-q-text">3. Что делать после постройки одного дерева, если следующее — в 6 блоках?</p>
+      <label><input type="radio" name="fq2" value="a"> Удалить агента</label>
+      <label><input type="radio" name="fq2" value="b"> Повернуться на 360°</label>
+      <label><input type="radio" name="fq2" value="c"> Двигаться вперёд на несколько блоков</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq3" data-correct="b">
+      <p class="quiz-q-text">4. Почему в этом уроке мы копировали код дерева несколько раз?</p>
+      <label><input type="radio" name="fq3" value="a"> Потому что функции запрещены в Minecraft</label>
+      <label><input type="radio" name="fq3" value="b"> Потому что мы ещё не учили функции — но скоро научимся не повторять код</label>
+      <label><input type="radio" name="fq3" value="c"> Потому что циклы не работают с агентом</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq4" data-correct="a">
+      <p class="quiz-q-text">5. Как запустить программу «Лес»?</p>
+      <label><input type="radio" name="fq4" value="a"> Написать в чат команду <code>лес</code></label>
+      <label><input type="radio" name="fq4" value="b"> Нажать клавишу F5 десять раз</label>
+      <label><input type="radio" name="fq4" value="c"> Разрушить блок земли</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizForest')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что получилось, и что было неудобно в коде:</p>
+    <textarea placeholder="Мой лес получился...&#10;Самым сложным было...&#10;Мне не понравилось повторять одни и те же блоки, потому что..."></textarea>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_3-4.html"><div class="lbl">← Назад</div><div class="ttl">3.4 Строим с переменными</div></a>
+    <a class="nav-btn next" href="les_4-1.html"><div class="lbl">Далее →</div><div class="ttl">4.1 Функции</div></a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 3.5 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  function toggleHint(hintId) {
+    const hint = document.getElementById(hintId);
+    if (hint) hint.classList.toggle('show');
+  }
+
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    cards.forEach(card => {
+      const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      if (isCorrect) {
+        card.classList.add('selected-correct');
+      } else {
+        card.classList.add('selected-wrong');
+      }
+    });
+    const selected = container.querySelector('.choice-card.selected');
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      const ok = selected && selected.getAttribute('data-correct-choice') === 'true';
+      result.innerHTML = ok ? '✅ Всё верно!' : (selected ? '❌ Попробуй ещё раз. Подумай, какой ответ правильный.' : '⚠️ Сначала нажми на вариант ответа.');
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      if (total === 0) {
+        resultDiv.innerHTML = 'Ответь на все вопросы.';
+      } else {
+        resultDiv.innerHTML = `Правильных ответов: ${correct} из ${questions.length}`;
+      }
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  function updateForestProgress() {
+    const checkboxes = document.querySelectorAll('#practiceForest input[type="checkbox"]');
+    const total = 10;
+    let checked = 0;
+    checkboxes.forEach((cb, i) => { if (i < total && cb.checked) checked++; });
+    const fill = document.getElementById('forestProgressFill');
+    const label = document.getElementById('forestProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3.4. Строим с переменными — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+    .hint-btn {
+      background: #ffbd2e;
+      color: #2b5e0e;
+      border: none;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 8px;
+    }
+    .hint-btn:hover { background: #f0a800; transform: scale(1.05); }
+    .hint-content {
+      display: none;
+      background: #fff8e1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-top: 8px;
+      border-left: 3px solid #ffbd2e;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+    .hint-content.show { display: block; }
+    .hint-content code { background: #e8ece6; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+    .var-demo { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin: 16px 0; }
+    .var-box { background: #f0f9eb; border: 2px solid #b8d9a8; border-radius: 12px; padding: 16px 20px; text-align: center; min-width: 100px; }
+    .var-box .varname { font-weight: 700; color: #2b5e0e; font-size: 1.1rem; }
+    .var-box .varvalue { font-size: 1.5rem; font-weight: 700; color: #c678dd; }
+    .var-box .vartype { font-size: 0.8rem; color: #888; }
+    .var-box .varimg { font-size: 2.5rem; }
+    .task-number { display: inline-block; background: #61b01f; color: #fff; border-radius: 50%; width: 28px; height: 28px; text-align: center; line-height: 28px; font-weight: 700; margin-right: 10px; font-size: 0.85rem; flex-shrink: 0; }
+  </style>
+</head>
+<body class="lesson-page">
+<!-- ===== ШАПКА ===== -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 3.4</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">3.4</div>
+      <div>
+        <div class="module-pill">Раздел 3 · Координаты и логика</div>
+        <h1>Строим с переменными</h1>
+        <p class="subtitle">Применяем переменные в строительных проектах</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Цели -->
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Повторить, что такое переменные и зачем они нужны</li>
+      <li>Вспомнить типы данных и способы создания переменных</li>
+      <li>Научиться использовать переменные в строительных проектах</li>
+      <li>Закрепить навыки через 7 практических заданий</li>
+    </ul>
+  </div>
+
+  <!-- План -->
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Приветствие, настрой на занятие</td></tr>
+      <tr><td>Повторение: переменные</td><td>15 мин</td><td>Вспоминаем теорию о переменных</td></tr>
+      <tr><td>Практика: задания 1-3</td><td>20 мин</td><td>Простые задания на переменные</td></tr>
+      <tr><td>Практика: задания 4-5</td><td>20 мин</td><td>Задания средней сложности</td></tr>
+      <tr><td>Бонус: задания 6-7</td><td>15 мин</td><td>Сложные задания для продвинутых</td></tr>
+      <tr><td>Итоги</td><td>15 мин</td><td>Проверяем знания</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- Часть 1: Повторение теории -->
+  <div class="card">
+    <h2><span class="num">1</span> Повторяем: переменные</h2>
+    
+    <p><b>Переменная</b> — это контейнер для хранения информации. У неё есть <b>имя</b> и <b>значение</b>.</p>
+
+    <div class="var-demo">
+      <div class="var-box">
+        <div class="varimg">📦</div>
+        <div class="varname">высота</div>
+        <div class="varvalue">10</div>
+        <div class="vartype">число</div>
+      </div>
+      <div class="var-box">
+        <div class="varimg">📝</div>
+        <div class="varname">имя</div>
+        <div class="varvalue">"Стив"</div>
+        <div class="vartype">текст</div>
+      </div>
+      <div class="var-box">
+        <div class="varimg">✅</div>
+        <div class="varname">готово</div>
+        <div class="varvalue">false</div>
+        <div class="vartype">логический</div>
+      </div>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Тип данных</th><th>Пример</th><th>Использование</th></tr>
+        <tr><td>Число (number)</td><td><code>10, -5, 3.14</code></td><td>Счётчики, размеры, координаты</td></tr>
+        <tr><td>Текст (string)</td><td><code>"Привет", "Башня"</code></td><td>Имена, сообщения, названия</td></tr>
+        <tr><td>Логический (boolean)</td><td><code>true, false</code></td><td>Условия, флаги, переключатели</td></tr>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>💡 Важно:</b> переменные создаются один раз, а затем их можно <b>изменять</b>. В Minecraft Education переменные создаются через кнопку <b>"Создать переменную"</b> во вкладке <i>Переменные</i>.
+    </div>
+
+    <div class="interactive-box" id="reviewQuiz">
+      <h3>🧠 Проверь себя</h3>
+      <p>Какой блок изменяет значение уже существующей переменной?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">задать [имя] значение [число]</div>
+        <div class="choice-card" data-correct-choice="true">изменить [имя] на [число]</div>
+        <div class="choice-card" data-correct-choice="false">повторить [число] раз</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('reviewQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- Часть 2: Практические задания -->
+  <div class="task-box" id="practiceBuild">
+    <h2>🛠️ Практические задания: строим с переменными</h2>
+    <div class="progress-track"><div class="progress-fill" id="buildProgressFill"></div></div>
+    <span class="progress-label" id="buildProgressLabel">Выполнено заданий: 0 из 7</span>
+    <p>Запусти Minecraft Education и выполни задания, используя переменные для управления строительством.</p>
+
+    <!-- Задание 1 -->
+    <div style="margin-top: 20px; padding: 16px; background: #f0f9eb; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">1</span> Квадрат с переменной стороной</h3>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="b0" onchange="updateBuildProgress()">
+          <label for="b0">Создай переменную <code>сторона</code> со значением 4</label>
+        </li>
+        <li>
+          <input type="checkbox" id="b1" onchange="updateBuildProgress()">
+          <label for="b1">Построй квадрат со стороной, равной значению переменной <code>сторона</code> (используй вложенный цикл)</label>
+        </li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintB1')">💡 Подсказка</button>
+      <div class="hint-content" id="hintB1">
+        Внешний цикл: <code>повторить сторона раз</code>, внутренний: <code>повторить сторона раз [поставить блок; двигаться вперёд]</code>
+      </div>
+    </div>
+
+    <!-- Задание 2 -->
+    <div style="margin-top: 16px; padding: 16px; background: #f7fcf2; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">2</span> Прямоугольник с разными сторонами</h3>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="b2" onchange="updateBuildProgress()">
+          <label for="b2">Создай переменные <code>ширина</code> = 6 и <code>высота</code> = 3</label>
+        </li>
+        <li>
+          <input type="checkbox" id="b3" onchange="updateBuildProgress()">
+          <label for="b3">Построй прямоугольник с размерами <code>ширина</code> × <code>высота</code></label>
+        </li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintB2')">💡 Подсказка</button>
+      <div class="hint-content" id="hintB2">
+        Внешний цикл: <code>повторить высота раз</code>, внутренний: <code>повторить ширина раз [поставить блок; двигаться вперёд]</code>
+      </div>
+    </div>
+
+    <!-- Задание 3 -->
+    <div style="margin-top: 16px; padding: 16px; background: #f0f9eb; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">3</span> Башня с переменной высотой</h3>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="b4" onchange="updateBuildProgress()">
+          <label for="b4">Создай переменную <code>этажи</code> = 5</label>
+        </li>
+        <li>
+          <input type="checkbox" id="b5" onchange="updateBuildProgress()">
+          <label for="b5">Построй башню высотой <code>этажи</code> блоков (каждый этаж — квадрат 3×3, после каждого этажа поднимайся вверх)</label>
+        </li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintB3')">💡 Подсказка</button>
+      <div class="hint-content" id="hintB3">
+        Сначала построй квадрат 3×3, затем <code>подняться вверх</code>. Всё это оберни в цикл <code>повторить этажи раз</code>
+      </div>
+    </div>
+
+    <!-- Задание 4 -->
+    <div style="margin-top: 16px; padding: 16px; background: #f7fcf2; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">4</span> Ступеньки с переменным размером</h3>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="b6" onchange="updateBuildProgress()">
+          <label for="b6">Создай переменную <code>ступени</code> = 4</label>
+        </li>
+        <li>
+          <input type="checkbox" id="b7" onchange="updateBuildProgress()">
+          <label for="b7">Построй лестницу-ступеньки: 1 блок, 2 блока, 3 блока, ... <code>ступени</code> блоков (используй цикл, где число повторений увеличивается)</label>
+        </li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintB4')">💡 Подсказка</button>
+      <div class="hint-content" id="hintB4">
+        Используй <b>вложенный цикл</b>, где количество повторений внутреннего цикла зависит от номера шага.<br>
+        <code>повторить ступени раз [<br>
+        &nbsp;&nbsp;повторить [номер_шага] раз [поставить блок; двигаться вперёд]<br>
+        &nbsp;&nbsp;повернуть налево; двигаться вперёд; повернуть налево<br>
+        ]</code>
+      </div>
+    </div>
+
+    <!-- Задание 5 -->
+    <div style="margin-top: 16px; padding: 16px; background: #f0f9eb; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">5</span> Пирамида с переменным размером</h3>
+      <ul class="task-steps">
+        <li>
+          <input type="checkbox" id="b8" onchange="updateBuildProgress()">
+          <label for="b8">Создай переменную <code>размер</code> = 5</label>
+        </li>
+        <li>
+          <input type="checkbox" id="b9" onchange="updateBuildProgress()">
+          <label for="b9">Построй пирамиду: нижний слой — квадрат <code>размер</code>×<code>размер</code>, каждый следующий слой на 2 блока меньше</label>
+        </li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintB5')">💡 Подсказка</button>
+      <div class="hint-content" id="hintB5">
+        Создай переменную <code>текущий_размер = размер</code>.<br>
+        В цикле: построй квадрат <code>текущий_размер</code>×<code>текущий_размер</code>, затем <code>изменить текущий_размер на -2</code>, <code>подняться вверх</code>.<br>
+        Повторяй, пока <code>текущий_размер > 0</code>
+      </div>
+    </div>
+
+    <!-- Бонусное задание 6 -->
+    <div style="margin-top: 16px; padding: 16px; background: #fff8e1; border-radius: 12px; border: 2px dashed #ffbd2e;">
+      <h3 style="margin: 0 0 8px 0; color: #b8860b;">⭐ Бонус 6: Дом с переменными</h3>
+      <ul class="task-steps">
+        <li class="bonus-step">
+          <input type="checkbox" id="b10" onchange="updateBuildProgress()">
+          <label for="b10">Создай переменные <code>ширина_дома</code> = 5, <code>высота_дома</code> = 4, <code>материал</code> = "камень"</label>
+        </li>
+        <li class="bonus-step">
+          <input type="checkbox" id="b11" onchange="updateBuildProgress()">
+          <label for="b11">Построй дом: стены из <code>материал</code>, крышу из дерева, дверь и окна <b>(+15 робокоинов)</b></label>
+        </li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintB6')">💡 Подсказка</button>
+      <div class="hint-content" id="hintB6">
+        Стены: заполни область от (0, 64, 0) до (<code>ширина_дома</code>, 64 + <code>высота_дома</code>, <code>ширина_дома</code>) материалом.<br>
+        Крыша: заполни область от (0, 64 + <code>высота_дома</code>, 0) до (<code>ширина_дома</code>, 64 + <code>высота_дома</code> + 1, <code>ширина_дома</code>) деревом.<br>
+        Окна и дверь размести вручную.
+      </div>
+    </div>
+
+    <!-- Бонусное задание 7 -->
+    <div style="margin-top: 16px; padding: 16px; background: #fff8e1; border-radius: 12px; border: 2px dashed #ffbd2e;">
+      <h3 style="margin: 0 0 8px 0; color: #b8860b;">⭐ Бонус 7: Город с переменными</h3>
+      <ul class="task-steps">
+        <li class="bonus-step">
+          <input type="checkbox" id="b12" onchange="updateBuildProgress()">
+          <label for="b12">Создай переменные <code>количество_домов</code> = 4, <code>расстояние</code> = 10</label>
+        </li>
+        <li class="bonus-step">
+          <input type="checkbox" id="b13" onchange="updateBuildProgress()">
+          <label for="b13">Построй <code>количество_домов</code> домов, расположенных на расстоянии <code>расстояние</code> друг от друга <b>(+20 робокоинов)</b></label>
+        </li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintB7')">💡 Подсказка</button>
+      <div class="hint-content" id="hintB7">
+        Создай программу, которая в цикле строит дом, затем перемещается на <code>расстояние</code> блоков вперёд и строит следующий дом.<br>
+        Используй переменную <code>счётчик</code> для отслеживания количества построенных домов.
+      </div>
+    </div>
+
+    <div class="note" style="margin-top: 16px;">
+      <b>💡 Совет:</b> меняй значения переменных и смотри, как меняются постройки. Это главное преимущество переменных — легко изменять размеры, не переписывая весь код!
+    </div>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizBuild">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="bq0" data-correct="b">
+      <p class="quiz-q-text">1. Что такое переменная?</p>
+      <label><input type="radio" name="bq0" value="a"> Команда для движения</label>
+      <label><input type="radio" name="bq0" value="b"> Контейнер для хранения информации</label>
+      <label><input type="radio" name="bq0" value="c"> Тип блока в Minecraft</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="bq1" data-correct="a">
+      <p class="quiz-q-text">2. Какой блок создаёт переменную в Minecraft Education?</p>
+      <label><input type="radio" name="bq1" value="a"> Кнопка "Создать переменную" во вкладке <i>Переменные</i></label>
+      <label><input type="radio" name="bq1" value="b"> изменить [имя] на [число]</label>
+      <label><input type="radio" name="bq1" value="c"> повторить [число] раз</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="bq2" data-correct="c">
+      <p class="quiz-q-text">3. Какой тип данных у переменной <code>имя = "Алекс"</code>?</p>
+      <label><input type="radio" name="bq2" value="a"> Число</label>
+      <label><input type="radio" name="bq2" value="b"> Логический</label>
+      <label><input type="radio" name="bq2" value="c"> Текст</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="bq3" data-correct="b">
+      <p class="quiz-q-text">4. Зачем использовать переменные в строительных проектах?</p>
+      <label><input type="radio" name="bq3" value="a"> Чтобы усложнить код</label>
+      <label><input type="radio" name="bq3" value="b"> Чтобы легко менять размеры построек</label>
+      <label><input type="radio" name="bq3" value="c"> Чтобы замедлить работу агента</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="bq4" data-correct="a">
+      <p class="quiz-q-text">5. Что произойдёт, если изменить значение переменной <code>сторона</code> с 4 на 8 в квадрате?</p>
+      <label><input type="radio" name="bq4" value="a"> Квадрат станет в 2 раза больше</label>
+      <label><input type="radio" name="bq4" value="b"> Квадрат станет в 2 раза меньше</label>
+      <label><input type="radio" name="bq4" value="c"> Квадрат не изменится</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizBuild')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- AI-помощник -->
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5%20%D0%B2%20Minecraft%20Education%20%D0%B4%D0%BB%D1%8F%20%D1%81%D1%82%D1%80%D0%BE%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D1%82%D0%B2%D0%B0%3F%22%7D" target="_blank" class="alice-q-btn">Как использовать переменные в строительстве?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%D0%B8%D0%B5%20%D0%B1%D1%8B%D0%B2%D0%B0%D1%8E%D1%82%20%D1%82%D0%B8%D0%BF%D1%8B%20%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Какие типы данных бывают?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B8%D1%82%D1%8C%20%D0%BF%D0%B8%D1%80%D0%B0%D0%BC%D0%B8%D0%B4%D1%83%20%D0%B2%20Minecraft%20Education%20%D1%81%20%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E%20%D1%86%D0%B8%D0%BA%D0%BB%D0%BE%D0%B2%3F%22%7D" target="_blank" class="alice-q-btn">Как построить пирамиду?</a>
+    </div>
+    <div class="ai-answer">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про переменные или строительство.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, как построить дом с переменными в Minecraft Education?»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_3-3.html"><div class="lbl">← Назад</div><div class="ttl">3.3 Переменные</div></a>
+    <a class="nav-btn next" href="les_3-4.html"><div class="lbl">Далее →</div><div class="ttl">3.4 Строим с переменными</div></a>
+  </div>
+</main>
+
+<!-- ===== ФУТЕР ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 3.4 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  // === Функция для показа/скрытия подсказки ===
+  function toggleHint(hintId) {
+    const hint = document.getElementById(hintId);
+    if (hint) {
+      hint.classList.toggle('show');
+    }
+  }
+
+  // === Интерактивные функции ===
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    let correct = 0;
+    cards.forEach(card => {
+      const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      if (isCorrect) {
+        card.classList.add('selected-correct');
+        correct++;
+      } else {
+        card.classList.add('selected-wrong');
+      }
+    });
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct === 1 ? '✅ Всё верно!' : '❌ Попробуй ещё раз. Подумай, какой ответ правильный.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      if (total === 0) {
+        resultDiv.innerHTML = 'Ответь на все вопросы.';
+      } else {
+        resultDiv.innerHTML = `Правильных ответов: ${correct} из ${questions.length}`;
+      }
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  // Прогресс практического задания
+  function updateBuildProgress() {
+    const checkboxes = document.querySelectorAll('#practiceBuild input[type="checkbox"]');
+    const total = checkboxes.length;
+    let checked = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    const fill = document.getElementById('buildProgressFill');
+    const label = document.getElementById('buildProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено заданий: ${checked} из ${total}`;
+  }
+</script>
+</body>
+</html>

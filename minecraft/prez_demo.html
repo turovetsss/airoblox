@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Пробное занятие · Minecraft Education · РОБОВИТА</title>
+  <link rel="icon" href="files/logo.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #61B01F; --green-dark: #2E4A17; --green-light: #E8F5E0;
+      --purple: #6C3F9B; --purple-light: #F4EAFA;
+      --orange: #F0A500; --orange-light: #FFF4DB; --orange-ink: #875B00;
+      --navy: #12274C; --white: #FFFFFF;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #fff; overflow: hidden; height: 100vh; color: var(--green-dark); }
+    .presentation { display: flex; flex-direction: column; height: 100vh; }
+    .slide-stage { flex: 1; position: relative; overflow: hidden; }
+    .slide {
+      display: none; width: 100%; height: 100%; padding: 20px 30px;
+      position: absolute; top: 0; left: 0; overflow-y: auto; background: #fff;
+      animation: fade .4s ease;
+    }
+    .slide.active { display: flex; align-items: center; justify-content: center; }
+    .slide-inner {
+      width: 100%; max-width: 1280px; margin: auto;
+      display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 20px;
+      align-items: center; max-height: 85vh;
+    }
+    .slide-inner.full, .slide-inner.stack { grid-template-columns: 1fr; max-width: 960px; }
+
+    .title-slide { background: var(--navy); color: #fff; }
+    .title-slide h1 { font-size: clamp(24px, 3.8vw, 44px); font-weight: 900; line-height: 1.05; }
+    .title-slide h2 { font-size: clamp(18px, 2.5vw, 30px); font-weight: 800; color: #b9eb8d; margin: 10px 0; }
+    .title-slide p { font-size: clamp(14px, 1.6vw, 18px); font-weight: 700; opacity: .95; }
+
+    .eyebrow {
+      display: inline-block; padding: 6px 16px; border-radius: 99px;
+      font-size: 13px; font-weight: 900; text-transform: uppercase;
+      background: var(--green-light); color: var(--green-dark);
+    }
+    h2 { font-size: clamp(24px, 3.2vw, 38px); font-weight: 900; line-height: 1.1; margin: 10px 0 8px; }
+    .lead { font-weight: 800; font-size: clamp(14px, 1.3vw, 18px); line-height: 1.45; }
+    .list { margin-top: 12px; display: grid; gap: 8px; font-size: clamp(13px, 1.2vw, 17px); font-weight: 800; }
+    .list span { display: flex; align-items: flex-start; gap: 10px; }
+    .tick {
+      width: 26px; height: 26px; border-radius: 50%; background: var(--green-light);
+      display: grid; place-items: center; color: var(--green); font-size: 14px; flex-shrink: 0;
+    }
+    .note {
+      padding: 12px 16px; border-radius: 16px; background: var(--orange-light); color: var(--orange-ink);
+      font-weight: 800; font-size: clamp(13px, 1.1vw, 16px); margin-top: 12px;
+    }
+    .note.green { background: var(--green-light); color: var(--green-dark); }
+    .discuss {
+      margin-top: 12px; padding: 12px 16px; border-radius: 16px; border: 2px dashed var(--purple);
+      background: #faf5ff; color: var(--purple); font-weight: 800; font-size: clamp(13px, 1.1vw, 16px);
+    }
+    .steps { display: grid; gap: 8px; margin-top: 12px; }
+    .step {
+      display: grid; grid-template-columns: 38px 1fr; gap: 10px; align-items: start;
+      background: var(--green-light); border-radius: 14px; padding: 10px 12px; font-weight: 800;
+      font-size: clamp(13px, 1.1vw, 16px);
+    }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%; background: var(--green); color: #fff;
+      display: grid; place-items: center; font-weight: 900;
+    }
+    .step.alt { background: var(--purple-light); }
+    .step.alt .step-num { background: var(--purple); }
+    .step.warn { background: var(--orange-light); }
+    .step.warn .step-num { background: var(--orange); color: #3E2C0B; }
+
+    .key-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .key {
+      background: #fff; border: 2px solid var(--green); border-radius: 10px;
+      padding: 8px 14px; font-weight: 900; font-size: 15px; box-shadow: 0 3px 0 #4a8a18;
+    }
+
+    .sheet-shot {
+      width: 100%; max-height: 72vh; object-fit: contain; border-radius: 16px;
+      border: 3px solid #d8e8d1; box-shadow: 0 12px 28px rgba(0,0,0,.12);
+    }
+    .browser {
+      background: #fff; border-radius: 20px; box-shadow: 0 12px 28px rgba(17,53,76,0.12);
+      overflow: hidden; border: 3px solid #d8e8d1; width: 100%;
+    }
+    .browser-top { background: #e9f6e2; padding: 10px 16px; display: flex; gap: 8px; }
+    .browser-top .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--orange); }
+    .browser-top .dot:nth-child(2) { background: #a8d985; }
+    .browser-top .dot:nth-child(3) { background: #7e65a8; }
+    .browser-content { padding: 16px; font-weight: 800; font-size: 14px; line-height: 1.5; }
+
+    .task-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+    .task-card {
+      background: var(--green-light); border-radius: 14px; padding: 12px; font-weight: 800;
+      font-size: clamp(12px, 1vw, 15px);
+    }
+    .task-card .n { display: block; color: var(--purple); font-weight: 900; margin-bottom: 4px; }
+
+    .check-list { margin-top: 12px; display: grid; gap: 8px; }
+    .check-item {
+      display: flex; gap: 10px; align-items: flex-start; font-weight: 800;
+      font-size: clamp(13px, 1.15vw, 17px); background: var(--green-light);
+      padding: 10px 14px; border-radius: 14px;
+    }
+    .check-item .ok { color: var(--green); font-size: 20px; }
+
+    .illustration { position: relative; display: flex; align-items: center; justify-content: center; min-height: 240px; }
+    .blob {
+      position: absolute; width: 75%; aspect-ratio: 1; border-radius: 45% 55% 60% 40%;
+      background: var(--green-light); transform: rotate(-12deg); opacity: 0.5;
+    }
+    .title-slide .blob { background: #244d82; opacity: 0.35; }
+    .mc-block { font-size: 72px; position: relative; z-index: 2; filter: drop-shadow(0 8px 12px rgba(0,0,0,.15)); }
+
+    .teacher-toggle {
+      position: fixed; bottom: 90px; right: 20px; z-index: 999;
+      background: var(--purple); color: #fff; border: none; border-radius: 40px;
+      padding: 12px 20px; font-weight: 900; font-size: 14px; cursor: pointer;
+      font-family: inherit; box-shadow: 0 8px 20px rgba(108,63,155,.4);
+    }
+    .teacher-panel {
+      position: fixed; bottom: 150px; right: 20px; width: 340px; max-height: 55vh;
+      overflow-y: auto; background: #fff; border-radius: 24px; padding: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.2); z-index: 998; display: none;
+      border: 3px solid var(--purple-light); font-size: 14px; line-height: 1.5;
+    }
+    .teacher-panel.open { display: block; }
+    .teacher-panel h4 { color: var(--purple); margin-bottom: 8px; }
+    .teacher-panel .meta { color: var(--orange-ink); font-weight: 700; }
+
+    .footer-nav {
+      height: 76px; background: white; border-top: 1px solid #e6eee1;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .nav-inner {
+      width: 100%; max-width: 1280px; display: flex; align-items: center;
+      justify-content: space-between; gap: 12px; padding: 0 16px;
+    }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border: 0;
+      border-radius: 30px; font-weight: 900; font-size: 15px; cursor: pointer;
+      background: var(--green-light); color: var(--green-dark); font-family: inherit;
+    }
+    .nav-btn.primary { background: var(--green); color: white; }
+    .nav-btn:disabled { opacity: .4; pointer-events: none; }
+    .progress-wrap { flex: 1; max-width: 420px; }
+    .progress-track { height: 8px; border-radius: 99px; background: #e7eee5; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); transition: width .3s; }
+    .dots { display: flex; gap: 4px; justify-content: center; margin-top: 6px; flex-wrap: wrap; }
+    .nav-dot { border: 0; width: 7px; height: 7px; border-radius: 50%; background: #cad7c4; cursor: pointer; }
+    .nav-dot.active { background: var(--purple); transform: scale(1.35); }
+    .counter { font-size: 13px; font-weight: 900; color: #61715c; min-width: 56px; text-align: center; }
+
+    .cta-link {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
+      background: var(--green); color: #fff; padding: 10px 20px; border-radius: 30px;
+      font-weight: 900; text-decoration: none; font-size: 15px;
+    }
+
+    @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 760px) {
+      .slide-inner { grid-template-columns: 1fr; }
+      .task-cards { grid-template-columns: 1fr; }
+      .progress-wrap { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="presentation">
+  <main class="slide-stage">
+
+    <section class="slide title-slide active">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow" style="background:#F0A500;color:#12274C;">РОБОВИТА · Пробный урок</span>
+          <h1>ПРОГРАММИРОВАНИЕ В MINECRAFT EDUCATION</h1>
+          <h2>Первые блоки кода</h2>
+          <p>⛏ Сегодня: игра + код + первые программы своими руками!</p>
+          <a class="cta-link" href="prob.html" target="_blank">📄 Страница занятия</a>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div class="mc-block"><img src="files/agent_prez.avif" alt="Агент"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Привет!</span>
+          <h2>Рады видеть тебя!</h2>
+          <p class="lead">Это <strong>пробное занятие</strong>. Мы познакомимся, поиграем и напишем первые программы.</p>
+          <div class="discuss">❓ Как тебя зовут? Играл(а) ли в Minecraft раньше?</div>
+          <div class="note green">Не бойся ошибок — сегодня всё можно исправить и попробовать снова!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="font-size:80px;z-index:2;">👋🧒</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner full">
+        <div>
+          <span class="eyebrow">О курсе</span>
+          <h2>Курс «РОБОВИТА» — что нас ждёт?</h2>
+          <div class="list">
+            <span><span class="tick">🧩</span> Блочное программирование — собираем код как LEGO</span>
+            <span><span class="tick">🤖</span> Агент-робот строит дома, фермы, лабиринты</span>
+            <span><span class="tick">🔁</span> Циклы, условия, переменные, функции</span>
+            <span><span class="tick">🐍</span> Позже — настоящий Python</span>
+          </div>
+          <div class="note">40 занятий · от «ни разу не программировал» до своих проектов</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Minecraft Education</span>
+          <h2>Что это за Minecraft?</h2>
+          <p class="lead">Особая версия игры для обучения. Можно <strong>строить</strong> и <strong>программировать</strong>!</p>
+          <div class="list">
+            <span><span class="tick">🌍</span> Мир из блоков — как огромный конструктор</span>
+            <span><span class="tick">⌨️</span> Клавиша <strong>C</strong> — открывает редактор кода</span>
+            <span><span class="tick">📦</span> Программа = набор инструкций для игры</span>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="browser">
+            <div class="browser-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <div class="browser-content">
+              <div style="color:var(--purple);">Microsoft MakeCode</div>
+              <div style="margin-top:8px;background:#eef3f0;border-radius:10px;padding:10px;">
+                <img src="files/prob_prez_makecode.png" style="width: 100%;"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Управление</span>
+          <h2>Клавиатура и мышь</h2>
+          <p class="lead">Если впервые за компьютером — не страшно, поможем!</p>
+          <div class="key-row">
+            <span class="key">W A S D</span>
+            <span class="key">Пробел</span>
+            <span class="key">🖱 Мышь</span>
+            <span class="key">C — код</span>
+            <span class="key">T — чат</span>
+          </div>
+          <div class="note warn" style="background:var(--orange-light);">Попробуй прямо сейчас: походи по комнате в Minecraft!</div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="z-index:2;font-size:64px;">⌨️🖱</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Редактор</span>
+          <h2>Открываем MakeCode</h2>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Нажми <strong>C</strong> в игре</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>Выбери <strong>Microsoft MakeCode</strong></div></div>
+            <div class="step warn"><div class="step-num">3</div><div>Новый проект → имя: <em>Супергерой_ТвоёИмя</em></div></div>
+            <div class="step"><div class="step-num">4</div><div>Зелёная кнопка <strong>Play ▶</strong> — проверить код</div></div>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="z-index:2;background:var(--green);color:#fff;padding:16px 24px;border-radius:20px;font-weight:900;font-size:28px;">C → MakeCode</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Вместе · 1</span>
+          <h2>След из травы при ходьбе</h2>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>🔵 <strong>Игрок</strong> → «при условии, что игрок <em>ходьба</em>»</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>🟢 <strong>Блоки</strong> → «разместить траву в ~1 ~-1 ~-1»</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>Play → походи! ⭐ Бонус: алмазный блок</div></div>
+          </div>
+        </div>
+        <img class="sheet-shot" src="files/prob_1.png" alt="Задание 1" style="width: 100%;">
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Вместе · 2</span>
+          <h2>Цветок мотыгой</h2>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>🔵 «при использовании предмет <em>золотая мотыга</em>»</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>🟢 «разместить красный мак в ~0 ~0 ~0»</div></div>
+            <div class="step"><div class="step-num">3</div><div>Мотыга из сундука → ПКМ в саду</div></div>
+          </div>
+        </div>
+        <img class="sheet-shot" src="files/prob_2.png" alt="Задание 2" style="width: 100%;">
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Вместе · 3</span>
+          <h2>Телепорт по чату</h2>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>🔵 «при команде чата <em>телепорт</em>»</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>🟢 «телепортироваться в мир -9 4 9» (с таблички)</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>Чат (T) → напиши <strong>телепорт</strong></div></div>
+          </div>
+        </div>
+        <img class="sheet-shot" src="files/prob_3.png" alt="Задание 3" style="width: 100%;">
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Вместе · 4</span>
+          <h2>Дождь из кур 🐔</h2>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>«при команде чата <em>курица</em>»</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>🟡 «повторить 20 раз»</div></div>
+            <div class="step"><div class="step-num">3</div><div>🟣 «создать курицу» + случайное положение</div></div>
+            <div class="step warn"><div class="step-num">4</div><div>Чат → <strong>курица</strong> 🎉</div></div>
+          </div>
+        </div>
+        <img class="sheet-shot" src="files/prob_4.png" alt="Задание 4" style="width: 100%;">
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Вместе · 5</span>
+          <h2>Супер-скорость с мечом ⚔️</h2>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>🔵 «при использовании предмет <em>алмазный меч</em>»</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>🟣 «применить скорость к вы сами (@s)» — длительность 10, усиление 10</div></div>
+            <div class="step"><div class="step-num">3</div><div>Play → меч из сундука → используй (ПКМ)</div></div>
+            <div class="step warn"><div class="step-num">4</div><div>⭐ Бонус: попрыгай по платформам!</div></div>
+          </div>
+        </div>
+        <img class="sheet-shot" src="files/prob_5.png" alt="Задание 5" style="width: 100%;">
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Вместе · 6</span>
+          <h2>Лук — очистка комнаты 🏹</h2>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>🔵 «при использовании предмет <em>лук</em>»</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>🟣 «убить цель все объекты (@e)»</div></div>
+            <div class="step"><div class="step-num">3</div><div>Play → лук и стрелы из сундуков → ПКМ</div></div>
+            <div class="step warn"><div class="step-num">4</div><div>⭐ Бонус: заходи в комнату по одному</div></div>
+          </div>
+        </div>
+        <img class="sheet-shot" src="files/prob_6.png" alt="Задание 6" style="width: 50%;">
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Вместе · 7 · часть 1</span>
+          <h2>Строим радугу 🌈</h2>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>🟡 <code>при начале</code></div></div>
+            <div class="step alt"><div class="step-num">2</div><div>🟢 <code>заполнить</code> область травой</div></div>
+            <div class="step"><div class="step-num">3</div><div>🔴 переменная <strong>A</strong> = положение игрока</div></div>
+            <div class="step warn"><div class="step-num">4</div><div>🟠 <code>круг из блоков</code>, центр A, радиус 6</div></div>
+          </div>
+        </div>
+        <div style="display: flex; justify-content:center;">
+        <img class="sheet-shot" src="files/prob_7-1.png" alt="Радуга часть 1" style="width: 30%;">
+        <img class="sheet-shot" src="files/prob_7-2.png" alt="Радуга часть 2" style="width: 30%;">
+        </div>
+        <div style="display: flex; justify-content:center;">
+        <img class="sheet-shot" src="files/prob_7-3-1.png" alt="Радуга часть 3-1" style="width: 40%;">
+        <img class="sheet-shot" src="files/prob_7-3-2.png" alt="Радуга часть 3-2" style="width: 40%;">
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Вместе · 7 · часть 2</span>
+          <h2>Добавляем все цвета</h2>
+          <p class="lead" style="margin-bottom:10px;"><em>Каждый охотник желает знать, где сидит фазан</em> 🌈</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Красный (5) + воздух (4) → арка</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>Жёлтый 7 → Зелёный 8 → Голубой 9</div></div>
+            <div class="step"><div class="step-num">3</div><div>Синий 10 → Фиолетовый 11</div></div>
+            <div class="step warn"><div class="step-num">4</div><div>Play → любуйся радугой!</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner full">
+        <div>
+          <span class="eyebrow">Бонус · если успеем</span>
+          <h2>Погода при ходьбе ☀️🌧️</h2>
+          <div class="list">
+            <span><span class="tick">🚶</span> Ходьба → погода «ясно»</span>
+            <span><span class="tick">🦆</span> Присед → погода «дождь»</span>
+          </div>
+          <img class="sheet-shot" src="files/prob_prez_weather.png" alt="Погода" style="margin-top:12px;max-height:45vh;">
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner stack">
+        <div>
+          <span class="eyebrow">Самостоятельно</span>
+          <h2>3 простых задания</h2>
+          <div class="task-cards">
+            <div class="task-card"><span class="n">А</span>Поменяй траву на камень в задании 1</div>
+            <div class="task-card"><span class="n">Б</span>Своя команда чата → один блок</div>
+            <div class="task-card"><span class="n">В</span>Цикл кур: 20 → 5 раз</div>
+          </div>
+          <div class="discuss">⏱ 10 минут · педагог помогает, но пробуй сам!</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Итоги</span>
+          <h2>Что мы сегодня сделали?</h2>
+          <div class="check-list">
+            <div class="check-item"><span class="ok">✔️</span> Управляли персонажем</div>
+            <div class="check-item"><span class="ok">✔️</span> Открыли редактор кода</div>
+            <div class="check-item"><span class="ok">✔️</span> Собрали программы из блоков</div>
+            <div class="check-item"><span class="ok">✔️</span> Использовали чат, цикл, эффекты и построили радугу</div>
+          </div>
+          <p style="font-weight:900;color:var(--purple);font-size:22px;margin-top:14px;">🎉 Ты уже программист!</p>
+        </div>
+        <div class="illustration">
+          <div class="blob"></div>
+          <div style="font-size:80px;z-index:2;">🏆⛏</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Дальше</span>
+          <h2>Хочешь продолжить?</h2>
+          <div class="list">
+            <span><span class="tick">🏠</span> Агент построит дом за тебя</span>
+            <span><span class="tick">🌲</span> Создадим лес и город</span>
+            <span><span class="tick">🧠</span> Научимся думать как разработчик</span>
+          </div>
+          <div class="note green">Спасибо за пробное занятие! Вопросы — родителям и педагогу 💚</div>
+          <a class="cta-link" href="index.html">🗺 Карта курса</a>
+        </div>
+        <div class="illustration">
+          <div style="font-size:100px;transform:rotate(15deg);">🚀</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer-nav">
+    <nav class="nav-inner">
+      <button class="nav-btn" id="prevBtn" type="button">← Назад</button>
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="dots" id="dots"></div>
+      </div>
+      <span class="counter" id="counter">1 / 18</span>
+      <button class="nav-btn primary" id="nextBtn" type="button">Вперёд →</button>
+    </nav>
+  </footer>
+</div>
+
+<!--
+<button class="teacher-toggle" id="teacherToggle" type="button">📘 Заметки</button>
+<div class="teacher-panel" id="teacherPanel">
+  <h4>Методические заметки</h4>
+  <div id="teacherNotes">
+    <p><span class="meta">1–2:</span> Приветствие, ice-breaker. Не перегружать теорией. 5–7 мин.</p>
+    <p><span class="meta">3:</span> Кратко о курсе — акцент «строим и программируем». 3 мин.</p>
+    <p><span class="meta">4–5:</span> Minecraft Education + клавиши. Дать походить 2–3 мин каждому.</p>
+    <p><span class="meta">6:</span> Открыть MakeCode всем одновременно. Помочь с названием проекта.</p>
+    <p><span class="meta">7–12:</span> Задания 1–6 по порядку. Задание 6 — лук, заходить в комнату по одному.</p>
+    <p><span class="meta">13–14:</span> Задание 7 (радуга) — только если осталось время, делать частями с листами 4–6.</p>
+    <p><span class="meta">15:</span> Бонус: погода (урок 6).</p>
+    <p><span class="meta">16–18:</span> Самостоятельно, итоги, приглашение на курс.</p>
+  </div>
+</div>-->
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progressFill = document.getElementById('progressFill');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let current = 0;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => showSlide(i));
+    dots.appendChild(dot);
+  });
+
+  function showSlide(index) {
+    current = Math.max(0, Math.min(index, slides.length - 1));
+    slides.forEach((s, i) => s.classList.toggle('active', i === current));
+    document.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progressFill.style.width = ((current + 1) / slides.length * 100) + '%';
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+    document.querySelectorAll('#teacherNotes p').forEach((p, i) => {
+      p.style.background = i === current ? 'var(--green-light)' : 'transparent';
+      p.style.padding = i === current ? '4px 8px' : '0';
+      p.style.borderRadius = i === current ? '8px' : '0';
+    });
+  }
+
+  prevBtn.addEventListener('click', () => showSlide(current - 1));
+  nextBtn.addEventListener('click', () => showSlide(current + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); showSlide(current + 1); }
+    if (e.key === 'ArrowLeft') showSlide(current - 1);
+  });
+
+  document.getElementById('teacherToggle').addEventListener('click', () => {
+    document.getElementById('teacherPanel').classList.toggle('open');
+  });
+
+  showSlide(0);
+</script>
+</body>
+</html>

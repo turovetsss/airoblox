@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4.1. Функции — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; cursor: grab; }
+    .hint-btn {
+      background: #ffbd2e; color: #2b5e0e; border: none;
+      padding: 4px 16px; border-radius: 20px; font-weight: 600;
+      font-size: 0.8rem; cursor: pointer; transition: 0.2s; margin-top: 8px;
+    }
+    .hint-btn:hover { background: #f0a800; transform: scale(1.05); }
+    .hint-content {
+      display: none; background: #fff8e1; padding: 10px 14px; border-radius: 8px;
+      margin-top: 8px; border-left: 3px solid #ffbd2e; font-size: 0.95rem; text-align: left;
+    }
+    .hint-content.show { display: block; }
+    .hint-content code { background: #e8ece6; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+    .task-number {
+      display: inline-block; background: #61b01f; color: #fff; border-radius: 50%;
+      width: 28px; height: 28px; text-align: center; line-height: 28px;
+      font-weight: 700; margin-right: 10px; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .compare-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;
+    }
+    @media (max-width: 700px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-card {
+      border-radius: 12px; padding: 14px; border: 2px solid #b8d9a8;
+    }
+    .compare-card.bad { background: #ffebee; border-color: #ef9a9a; }
+    .compare-card.good { background: #e8f5e9; border-color: #81c784; }
+    .compare-card h4 { margin: 0 0 8px 0; }
+    .func-demo {
+      display: flex; gap: 16px; flex-wrap: wrap; align-items: center; justify-content: center;
+      margin: 16px 0; padding: 16px; background: #f0f9eb; border-radius: 12px;
+    }
+    .func-box {
+      background: #fff; border: 2px dashed #61b01f; border-radius: 10px;
+      padding: 12px 16px; text-align: center; min-width: 120px;
+    }
+    .func-box .label { font-size: 0.8rem; color: #666; }
+    .func-box .name { font-weight: 700; color: #2b5e0e; font-size: 1.1rem; }
+    .func-arrow { font-size: 1.5rem; color: #61b01f; }
+    .callback-box {
+      background: linear-gradient(135deg, #e3f2fd, #fafff7);
+      border: 2px solid #64b5f6; border-radius: 12px; padding: 16px 20px; margin: 16px 0;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 4.1</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">4.1</div>
+      <div>
+        <div class="module-pill">Раздел 4 · Функции</div>
+        <h1>Функции</h1>
+        <p class="subtitle">Пишем код один раз — используем сколько угодно раз</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Понять, зачем нужны функции и чем они лучше копирования кода</li>
+      <li>Научиться создавать и вызывать свои функции в MakeCode</li>
+      <li>Освоить аргументы — «настройки», которые мы передаём в функцию</li>
+      <li>Выполнить 6 практических заданий с агентом</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Вспоминаем занятие 3.5: повторяли код дерева</td></tr>
+      <tr><td>Теория: функции</td><td>15 мин</td><td>Что такое функция, вызов, аргументы</td></tr>
+      <tr><td>Интерактив</td><td>15 мин</td><td>Сравниваем подходы, отвечаем на вопросы</td></tr>
+      <tr><td>Практика: задания 1–3</td><td>25 мин</td><td>Простые функции и первый аргумент</td></tr>
+      <tr><td>Практика: задания 4–6</td><td>25 мин</td><td>Функции со строительством и лесом</td></tr>
+      <tr><td>Бонус и итоги</td><td>5 мин</td><td>Сложные функции, рефлексия</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span> Проблема: один и тот же код снова и снова</h2>
+
+    <div class="callback-box">
+      <b>🔗 Связь с занятием 3.5:</b> когда мы строили лес, код одного дерева приходилось <b>копировать</b> несколько раз. Программа становилась длинной, а если нужно было изменить высоту ствола — править приходилось во всех копиях. Сегодня мы научимся решать это по-умному!
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card bad">
+        <h4>❌ Копирование кода</h4>
+        <pre class="code" style="margin:0;font-size:0.85rem;"><code>[код дерева — 15 блоков]
+двигаться вперёд 6
+[код дерева — те же 15 блоков]
+двигаться вперёд 6
+[код дерева — снова 15 блоков]</code></pre>
+        <p style="font-size:0.9rem;margin:8px 0 0;">≈ 45 блоков. Ошибка в одном месте — ломается всё.</p>
+      </div>
+      <div class="compare-card good">
+        <h4>✅ Функция</h4>
+        <pre class="code" style="margin:0;font-size:0.85rem;"><code>функция дерево:
+  [код дерева — 15 блоков]
+
+вызвать дерево
+двигаться вперёд 6
+вызвать дерево
+двигаться вперёд 6
+вызвать дерево</code></pre>
+        <p style="font-size:0.9rem;margin:8px 0 0;">Код дерева написан <b>один раз</b>. Вызов — одна строка.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> Что такое функция?</h2>
+
+    <p><b>Функция</b> — это именованный набор команд, который мы описываем один раз, а потом <b>вызываем</b> когда нужно.</p>
+
+    <div class="func-demo">
+      <div class="func-box">
+        <div class="label">Шаг 1 · Описание</div>
+        <div class="name">функция столбик</div>
+        <div style="font-size:0.85rem;margin-top:6px;">«Рецепт» — что делать</div>
+      </div>
+      <div class="func-arrow">→</div>
+      <div class="func-box">
+        <div class="label">Шаг 2 · Вызов</div>
+        <div class="name">вызвать столбик</div>
+        <div style="font-size:0.85rem;margin-top:6px;">«Приготовить по рецепту»</div>
+      </div>
+    </div>
+
+    <h3>Аналогия из жизни</h3>
+    <p>Функция — как <b>карточка с инструкцией</b> «Как поставить чайник». Ты один раз записал шаги на карточку. Когда хочешь чай — просто берёшь карточку и выполняешь. Не нужно каждый раз заново придумывать, как включать чайник.</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Термин</th><th>Что значит</th><th>Блок MakeCode</th></tr>
+        <tr><td><b>Функция</b></td><td>Именованный кусок программы</td><td><code>кнопка "создать функцию"</code> (вкладка <i>Функции</i>)</td></tr>
+        <tr><td><b>Вызов</b></td><td>Запуск функции</td><td><code>вызвать имя_функции</code></td></tr>
+        <tr><td><b>Аргумент</b></td><td>Значение, которое мы «передаём» в функцию</td><td>Параметр в вызове функции (например, высота: 3)</td></tr>
+        <tr><td><b>Параметр</b></td><td>«Пустое место» в функции для аргумента</td><td>Добавляем при создании функции (например, высота)</td></tr>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>💡 Где искать блоки:</b> открой вкладку <b>Функции</b> → нажми <b>«Сделать функцию»</b>. После создания появится зелёный блок-«шапка» на рабочей области — туда вкладываешь команды. Вызов — из той же вкладки, блок <code>вызвать …</code>.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span> Аргументы: одна функция — разные настройки</h2>
+
+    <p>Без аргументов функция всегда делает одно и то же. С <b>аргументами</b> мы можем менять поведение, не переписывая код.</p>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">столбик_с_аргументом.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Функция с параметром "высота"</span>
+<img src="files/func_stolb.png" alt="Функция с параметром">
+
+<span class="tok-c">-- Вызовы с разными аргументами:</span>
+<img src="files/call_stolb.png" alt="Вызовы с разными аргументами"></code>
+    </div>
+
+    <p><b>Как добавить аргумент к существующей функции в MakeCode:</b></p>
+    <ol>
+      <li>Нажми правой кнопкой мыши на блок <code>твоей функции</code></li>
+      <li>Нажми на кнопку <b>Изменить функцию</b> в выпадающем меню: <img src="files/change_params_func.png" alt="Изменить функцию"></li>
+      <li>Выбери тип параметра в <b>«Добавить параметр»</b> и назови его (например, <code>высота</code>)</li>
+      <li>Внутри функции используй этот параметр вместо числа в цикле</li>
+    </ol>
+
+    <div class="note">
+      <b>📌 Запомни:</b> <b>параметр</b> — имя «дырки» в функции (<code>высота</code>). <b>Аргумент</b> — конкретное число при вызове (<code>3</code>, <code>7</code>). Одна функция — много разных аргументов!
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">4</span> Интерактив: закрепляем теорию</h2>
+
+    <div class="interactive-box" id="compareQuiz">
+      <h3>🧩 Что удобнее?</h3>
+      <p>Нужно построить 5 одинаковых столбиков. Какой способ лучше?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Скопировать код столбика 5 раз подряд</div>
+        <div class="choice-card" data-correct-choice="true">Написать функцию «столбик» и вызвать её 5 раз</div>
+        <div class="choice-card" data-correct-choice="false">Удалить агента и строить вручную</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('compareQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="argQuiz" style="margin-top: 20px;">
+      <h3>🔢 Аргумент или параметр?</h3>
+      <p>В записи <code>вызвать столбик высота: 5</code> число <code>5</code> — это…</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Аргумент (конкретное значение при вызове)</div>
+        <div class="choice-card" data-correct-choice="false">Параметр (имя внутри функции)</div>
+        <div class="choice-card" data-correct-choice="false">Переменная игрока</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('argQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="callQuiz" style="margin-top: 20px;">
+      <h3>📞 Вызов функции</h3>
+      <p>Какой блок запускает уже созданную функцию?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">повторить 10 раз</div>
+        <div class="choice-card" data-correct-choice="true">вызвать [имя функции]</div>
+        <div class="choice-card" data-correct-choice="false">при получении команды чата</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('callQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="sortFunc" style="margin-top: 20px;">
+      <h3>📋 Правильный порядок</h3>
+      <p>Перетащи шаги в логичном порядке (сверху вниз — от первого к последнему):</p>
+      <ul class="sort-list" id="sortFuncList">
+        <li class="sort-item" draggable="true" data-correct-step="2">Вызвать функцию в программе</li>
+        <li class="sort-item" draggable="true" data-correct-step="1">Создать функцию и написать внутри команды</li>
+        <li class="sort-item" draggable="true" data-correct-step="3">Запустить программу и проверить результат</li>
+      </ul>
+      <button class="action-btn" onclick="checkSequence('sortFunc')">✅ Проверить порядок</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D1%8F%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%20%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%8B%D0%BC%D0%B8%20%D1%81%D0%BB%D0%BE%D0%B2%D0%B0%D0%BC%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое функция?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D0%B5%D0%BC%20%D0%B0%D1%80%D0%B3%D1%83%D0%BC%D0%B5%D0%BD%D1%82%20%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B0%D0%B5%D1%82%D1%81%D1%8F%20%D0%BE%D1%82%20%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80%D0%B0%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Аргумент и параметр — в чём разница?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D1%82%D1%8C%20%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D1%8E%20%D1%81%20%D0%B0%D1%80%D0%B3%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%BE%D0%BC%20%D0%B2%20Minecraft%20Education%20MakeCode%3F%22%7D" target="_blank" class="alice-q-btn">Как создать функцию в MakeCode?</a>
+    </div>
+    <div class="ai-answer">💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.</div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Спроси Алису про функции, аргументы или MakeCode.<br>
+      <span class="prompt-example">Например: «Алиса, зачем программисты используют функции?»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли).
+      </div>
+    </div>
+  </div>
+
+  <div class="task-box" id="practiceFunc">
+    <h2>🛠️ Практика: 6 заданий с функциями</h2>
+    <div class="progress-track"><div class="progress-fill" id="funcProgressFill"></div></div>
+    <span class="progress-label" id="funcProgressLabel">Выполнено заданий: 0 из 12</span>
+    <p>Открой Minecraft Education и MakeCode. После каждого задания запускай программу и смотри, что делает агент.</p>
+
+    <!-- Задание 1 -->
+    <div style="margin-top: 20px; padding: 16px; background: #f0f9eb; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">1</span> Первая функция (без аргументов)</h3>
+      <p>Создай функцию <code>столбик</code>: агент 3 раза ставит блок и поднимается вверх.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p0" onchange="updateFuncProgress()"><label for="p0">Создай функцию <code>столбик</code> через «Сделать функцию» и добавь внутрь цикл из 3 шагов</label></li>
+        <li><input type="checkbox" id="p1" onchange="updateFuncProgress()"><label for="p1">Вызови <code>столбик</code> один раз по команде чата <code>тест</code></label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hint1')">💡 Подсказка</button>
+      <div class="hint-content" id="hint1">Внутри функции: <code>повторить 3 раза → [подняться вверх, поставить блок]</code>. Снаружи: <code>при команде "тест" → вызвать столбик</code>.</div>
+    </div>
+
+    <!-- Задание 2 -->
+    <div style="margin-top: 16px; padding: 16px; background: #f7fcf2; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">2</span> Несколько вызовов — видим разницу!</h3>
+      <p>Вызови <code>столбик</code> 3 раза с паузой «шаг вперёд» между ними. Сравни длину программы с тремя копиями кода.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p2" onchange="updateFuncProgress()"><label for="p2">Напиши: <code>вызвать столбик</code> → <code>вперёд 4</code> → <code>вызвать столбик</code> → <code>вперёд 4</code> → <code>вызвать столбик</code></label></li>
+        <li><input type="checkbox" id="p3" onchange="updateFuncProgress()"><label for="p3">Объясни преподавателю: сколько блоков сэкономила функция по сравнению с копированием?</label></li>
+      </ul>
+    </div>
+
+    <!-- Задание 3 -->
+    <div style="margin-top: 16px; padding: 16px; background: #f0f9eb; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">3</span> Первый аргумент: высота столбика</h3>
+      <p>Добавь параметр <code>высота</code> в функцию <code>столбик</code>. Цикл внутри: <code>повторить высота раз</code>.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p4" onchange="updateFuncProgress()"><label for="p4">Добавь параметр через изменение функции и используй его в цикле</label></li>
+        <li><input type="checkbox" id="p5" onchange="updateFuncProgress()"><label for="p5">Вызови: <code>столбик высота: 3</code>, потом <code>столбик высота: 6</code>, потом <code>столбик высота: 2</code></label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hint3')">💡 Подсказка</button>
+      <div class="hint-content" id="hint3">Между вызовами добавь <code>двигаться вперёд</code>, чтобы столбики не слились. Один код функции — три разные высоты!</div>
+    </div>
+
+    <!-- Задание 4 -->
+    <div style="margin-top: 16px; padding: 16px; background: #f7fcf2; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">4</span> Функция «квадрат» с аргументом</h3>
+      <p>Создай функцию <code>квадрат</code> с параметром <code>сторона</code>. Внутри — вложенный цикл, как в занятии 3.4.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6" onchange="updateFuncProgress()"><label for="p6">Функция строит квадрат со стороной = аргументу <code>сторона</code></label></li>
+        <li><input type="checkbox" id="p7" onchange="updateFuncProgress()"><label for="p7">Вызови <code>квадрат сторона: 3</code> и <code>квадрат сторона: 5</code> в разных местах</label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hint4')">💡 Подсказка</button>
+      <div class="hint-content" id="hint4">Внешний цикл: <code>повторить сторона раз</code> (строка). Внутренний: <code>повторить сторона раз [поставить блок, вперёд]</code>. Не забудь повороты в конце строки!</div>
+    </div>
+
+    <!-- Задание 5 -->
+    <div style="margin-top: 16px; padding: 16px; background: #f0f9eb; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">5</span> Функция «дерево» — возвращаемся к лесу!</h3>
+      <p>Перенеси код одного дерева из занятия 3.5 в функцию <code>дерево</code> с аргументом <code>высота_ствола</code>.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p8" onchange="updateFuncProgress()"><label for="p8">Внутри: ствол (цикл по <code>высота_ствола</code>) + несколько блоков листьев + вернуться вниз</label></li>
+        <li><input type="checkbox" id="p9" onchange="updateFuncProgress()"><label for="p9">Вызови <code>дерево высота_ствола: 4</code> и <code>дерево высота_ствола: 6</code></label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hint5')">💡 Подсказка</button>
+      <div class="hint-content" id="hint5">Слот 1 — бревно, слот 2 — листья. После кроны: <code>опуститься вниз</code> столько раз, сколько было <code>высота_ствола</code>.</div>
+    </div>
+
+    <!-- Задание 6 -->
+    <div style="margin-top: 16px; padding: 16px; background: #f7fcf2; border-radius: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #2b5e0e;"><span class="task-number">6</span> Мини-лес из функций</h3>
+      <p>Собери всё вместе: команда чата <code>лес</code> вызывает деревья в цикле.</p>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p10" onchange="updateFuncProgress()"><label for="p10"><code>повторить 4 раза</code>: <code>вызвать дерево высота_ствола: 4</code> → <code>вперёд 6</code></label></li>
+        <li><input type="checkbox" id="p11" onchange="updateFuncProgress()"><label for="p11">Сравни с кодом из 3.5: программа стала короче? Где теперь менять высоту — в одном месте или во многих?</label></li>
+      </ul>
+      <div class="note" style="margin-top: 10px;">
+        <b>🎉 Поздравляем!</b> Ты перешёл от «копировать-вставить» к настоящему программированию. Так пишут код настоящие разработчики!
+      </div>
+    </div>
+
+    <!-- Бонусы -->
+    <div style="margin-top: 16px; padding: 16px; background: #fff8e1; border-radius: 12px; border: 2px dashed #ffbd2e;">
+      <h3 style="margin: 0 0 8px 0; color: #b8860b;">⭐ Бонусные задания</h3>
+      <ul class="task-steps">
+        <li class="bonus-step"><input type="checkbox" id="p12" onchange="updateFuncProgress()"><label for="p12"><b>Два аргумента:</b> функция <code>прямоугольник</code> с параметрами <code>ширина</code> и <code>высота</code> <b>(+5 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="p13" onchange="updateFuncProgress()"><label for="p13"><b>Функция «куст»:</b> отдельная маленькая функция, вызывается между деревьями <b>(+5 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="p14" onchange="updateFuncProgress()"><label for="p14"><b>Разная высота в цикле:</b> переменная <code>рост</code> = 3, после каждого дерева <code>изменить рост на 1</code>, вызывать <code>дерево высота_ствола: рост</code> <b>(+10 робокоинов)</b></label></li>
+        <li class="bonus-step"><input type="checkbox" id="p15" onchange="updateFuncProgress()"><label for="p15"><b>Две команды чата:</b> <code>лес</code> строит деревья, <code>поляна</code> — функция с заливкой травой <b>(+5 робокоинов)</b></label></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" id="quizFunc">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="fn0" data-correct="b">
+      <p class="quiz-q-text">1. Зачем нужны функции?</p>
+      <label><input type="radio" name="fn0" value="a"> Чтобы программа работала медленнее</label>
+      <label><input type="radio" name="fn0" value="b"> Чтобы не повторять один и тот же код много раз</label>
+      <label><input type="radio" name="fn0" value="c"> Чтобы удалить агента из игры</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fn1" data-correct="a">
+      <p class="quiz-q-text">2. Где в MakeCode создать новую функцию?</p>
+      <label><input type="radio" name="fn1" value="a"> Вкладка «Функции» → «Сделать функцию»</label>
+      <label><input type="radio" name="fn1" value="b"> Вкладка «Loops» → «repeat»</label>
+      <label><input type="radio" name="fn1" value="c"> Вкладка «Blocks» → «grass»</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fn2" data-correct="c">
+      <p class="quiz-q-text">3. Что такое аргумент?</p>
+      <label><input type="radio" name="fn2" value="a"> Имя функции</label>
+      <label><input type="radio" name="fn2" value="b"> Команда чата</label>
+      <label><input type="radio" name="fn2" value="c"> Конкретное значение, которое передаём в функцию при вызове</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fn3" data-correct="b">
+      <p class="quiz-q-text">4. В функции <code>дерево (высота_ствола)</code> слово <code>высота_ствола</code> — это…</p>
+      <label><input type="radio" name="fn3" value="a"> Аргумент</label>
+      <label><input type="radio" name="fn3" value="b"> Параметр</label>
+      <label><input type="radio" name="fn3" value="c"> Блок Minecraft</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fn4" data-correct="a">
+      <p class="quiz-q-text">5. Что изменится, если в функции «столбик» поменять цикл на «повторить высота раз» и вызывать с разными числами?</p>
+      <label><input type="radio" name="fn4" value="a"> Столбики будут разной высоты без переписывания функции</label>
+      <label><input type="radio" name="fn4" value="b"> Программа перестанет работать</label>
+      <label><input type="radio" name="fn4" value="c"> Агент исчезнет</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizFunc')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Сравни опыт занятий 3.5 и 4.1:</p>
+    <textarea placeholder="На 3.5 мне было неудобно..., потому что...&#10;С функциями стало..., потому что...&#10;Аргументы помогают..., когда..."></textarea>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_3-5.html"><div class="lbl">← Назад</div><div class="ttl">3.5 Мини-проект: Строим лес</div></a>
+    <a class="nav-btn next" href="les_4-2.html"><div class="lbl">Далее →</div><div class="ttl">4.2 Мини-проект: Эко-патруль</div></a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 4.1 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  function toggleHint(hintId) {
+    const hint = document.getElementById(hintId);
+    if (hint) hint.classList.toggle('show');
+  }
+
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    cards.forEach(card => {
+      const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      if (isCorrect) card.classList.add('selected-correct');
+      else card.classList.add('selected-wrong');
+    });
+    const selected = container.querySelector('.choice-card.selected');
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      const ok = selected && selected.getAttribute('data-correct-choice') === 'true';
+      result.innerHTML = ok ? '✅ Всё верно!' : (selected ? '❌ Попробуй ещё раз.' : '⚠️ Сначала нажми на вариант ответа.');
+      result.style.display = 'block';
+    }
+  }
+
+  function checkSequence(blockId) {
+    const block = document.getElementById(blockId);
+    if (!block) return;
+    const list = block.querySelector('.sort-list');
+    if (!list) return;
+    const items = Array.from(list.querySelectorAll('.sort-item'));
+    const result = block.querySelector('.activity-result');
+    let ok = true;
+    items.forEach(function (item, index) {
+      const good = String(index + 1) === item.dataset.correctStep;
+      item.classList.toggle('correct', good);
+      if (!good) ok = false;
+    });
+    if (result) {
+      result.innerHTML = ok ? '🎉 Порядок верный!' : 'Проверь порядок: сначала создаём функцию, потом вызываем, потом проверяем.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      resultDiv.innerHTML = total === 0 ? 'Ответь на все вопросы.' : `Правильных ответов: ${correct} из ${questions.length}`;
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  function updateFuncProgress() {
+    const checkboxes = document.querySelectorAll('#practiceFunc input[type="checkbox"]');
+    const total = 12;
+    let checked = 0;
+    checkboxes.forEach((cb, i) => { if (i < total && cb.checked) checked++; });
+    const fill = document.getElementById('funcProgressFill');
+    const label = document.getElementById('funcProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено заданий: ${checked} из ${total}`;
+  }
+
+  (function initSortable() {
+    const list = document.getElementById('sortFuncList');
+    if (!list) return;
+    let dragged = null;
+    list.addEventListener('dragstart', function(e) {
+      dragged = e.target.closest('.sort-item');
+      if (dragged) e.dataTransfer.effectAllowed = 'move';
+    });
+    list.addEventListener('dragend', function() { dragged = null; });
+    list.addEventListener('dragover', function(e) { e.preventDefault(); });
+    list.addEventListener('drop', function(e) {
+      e.preventDefault();
+      const target = e.target.closest('.sort-item');
+      if (dragged && target && dragged !== target) {
+        const items = Array.from(list.querySelectorAll('.sort-item'));
+        const from = items.indexOf(dragged);
+        const to = items.indexOf(target);
+        if (from < to) target.after(dragged);
+        else target.before(dragged);
+      }
+    });
+  })();
+</script>
+</body>
+</html>

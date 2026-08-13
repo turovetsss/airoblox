@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3.1. Система координат — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: #f0f9eb; border-bottom: 3px solid #61b01f; }
+    .site-footer { background: #f0f9eb; border-top: 3px solid #61b01f; }
+    .brand-name { color: #2b5e0e; }
+    .module-pill { background: #61b01f; color: #fff; }
+    .hex-badge { background: #61b01f; color: #fff; }
+    .data-table th { background: #61b01f; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #61b01f; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4d8c18; }
+    .task-box { border-left: 4px solid #61b01f; }
+    .code-block { border: 1px solid #b8d9a8; background: #f6fcf2; }
+    .alice-btn { background: #61b01f; color: #fff; }
+    .alice-btn:hover { background: #4d8c18; }
+    .alice-q-btn { background: #e8f5e0; border: 1px solid #61b01f; color: #2b5e0e; }
+    .alice-q-btn:hover { background: #d0ebc0; }
+    .interactive-box { background: #fafff7; border: 1px solid #b8d9a8; }
+    .choice-card.selected-correct { border-color: #2e7d32; background: #e8f5e9; }
+    .choice-card.selected-wrong { border-color: #c62828; background: #ffebee; }
+    .sort-item { background: #f0f9eb; border: 1px solid #b8d9a8; }
+    .coord-demo { display: flex; justify-content: center; gap: 20px; margin: 16px 0; flex-wrap: wrap; }
+    .coord-demo .axis { display: flex; flex-direction: column; align-items: center; padding: 12px 20px; background: #f0f9eb; border-radius: 12px; border: 2px solid #d0e8c0; }
+    .coord-demo .axis .label { font-weight: 700; font-size: 1.2rem; }
+    .coord-demo .axis .desc { font-size: 0.85rem; color: #555; }
+    .axis-x .label { color: #e74c3c; }
+    .axis-y .label { color: #2ecc71; }
+    .axis-z .label { color: #3498db; }
+    .hint-btn {
+      background: #ffbd2e;
+      color: #2b5e0e;
+      border: none;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 8px;
+    }
+    .hint-btn:hover { background: #f0a800; transform: scale(1.05); }
+    .hint-content {
+      display: none;
+      background: #fff8e1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-top: 8px;
+      border-left: 3px solid #ffbd2e;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+    .hint-content.show { display: block; }
+    .hint-content code { background: #e8ece6; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+  </style>
+</head>
+<body class="lesson-page">
+<!-- ===== ШАПКА ===== -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 3.1</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">3.1</div>
+      <div>
+        <div class="module-pill">Раздел 3 · Координаты и логика</div>
+        <h1>Система координат</h1>
+        <p class="subtitle">Учимся ориентироваться в 3D-мире Minecraft</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Цели -->
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Понять разницу между 2D и 3D играми</li>
+      <li>Узнать, что такое система координат в Minecraft</li>
+      <li>Научиться использовать абсолютные координаты</li>
+      <li>Изучить блоки: заполнить, ряд из блоков, разместить блок, сфера</li>
+    </ul>
+  </div>
+
+  <!-- План -->
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Приветствие, настрой на занятие</td></tr>
+      <tr><td>2D vs 3D игры</td><td>10 мин</td><td>Разбираем разницу между плоскими и объёмными играми</td></tr>
+      <tr><td>Система координат</td><td>15 мин</td><td>Что такое координаты, оси X, Y, Z</td></tr>
+      <tr><td>Абсолютные координаты</td><td>15 мин</td><td>Как использовать точные координаты в Minecraft</td></tr>
+      <tr><td>Блоки для работы с координатами</td><td>15 мин</td><td>Изучаем: заполнить, ряд, разместить, сфера</td></tr>
+      <tr><td>Практика</td><td>20 мин</td><td>Применяем новые блоки на практике</td></tr>
+      <tr><td>Итоги</td><td>10 мин</td><td>Проверяем знания</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <!-- Часть 1: 2D vs 3D -->
+  <div class="card">
+    <h2><span class="num">1</span> 2D и 3D игры — в чём разница?</h2>
+    
+    <p>Все игры можно разделить на <b>двумерные (2D)</b> и <b>трёхмерные (3D)</b>.</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>2D игры (плоские)</th><th>3D игры (объёмные)</th></tr>
+        <tr>
+          <td>🔹 Есть только ширина и высота (X и Y)</td>
+          <td>🔹 Есть ширина, высота и глубина (X, Y, Z)</td>
+        </tr>
+        <tr>
+          <td>🔹 Персонажи плоские</td>
+          <td>🔹 Персонажи объёмные</td>
+        </tr>
+        <tr>
+          <td>🔹 Примеры: Pac-Man, Тетрис, Mario (старые)</td>
+          <td>🔹 Примеры: Minecraft, Roblox, GTA</td>
+        </tr>
+        <tr>
+          <td>🔹 Можно двигаться: вверх/вниз, влево/вправо</td>
+          <td>🔹 Можно двигаться: вперёд/назад, влево/вправо, вверх/вниз</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>🎮 Minecraft — это 3D игра!</b> Здесь у нас есть три измерения: длина, ширина и высота. Это значит, что мы можем перемещаться не только по земле, но и строить вверх, копать вниз, создавать объёмные постройки.
+    </div>
+
+    <!-- Интерактив: 2D или 3D? -->
+    <div class="interactive-box" id="dimensionQuiz">
+      <h3>🧠 2D или 3D?</h3>
+      <p>Какая игра является трёхмерной (3D)?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Тетрис</div>
+        <div class="choice-card" data-correct-choice="true">Minecraft</div>
+        <div class="choice-card" data-correct-choice="false">Pac-Man</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('dimensionQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <!-- Часть 2: Система координат -->
+  <div class="card">
+    <h2><span class="num">2</span> Система координат в Minecraft</h2>
+    
+    <p>В Minecraft, как и в любой 3D игре, есть <b>система координат</b>. Это способ указать точное положение любого объекта в мире.</p>
+
+    <h3>Три оси координат</h3>
+    <div class="coord-demo">
+      <div class="axis axis-x">
+        <div class="label">🔴 Ось X</div>
+        <div class="desc">Восток / Запад</div>
+        <div class="desc">(ширина)</div>
+      </div>
+      <div class="axis axis-y">
+        <div class="label">🟢 Ось Y</div>
+        <div class="desc">Вверх / Вниз</div>
+        <div class="desc">(высота)</div>
+      </div>
+      <div class="axis axis-z">
+        <div class="label">🔵 Ось Z</div>
+        <div class="desc">Север / Юг</div>
+        <div class="desc">(глубина)</div>
+      </div>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Ось</th><th>Направление</th><th>Что означает</th></tr>
+        <tr><td><b>X</b></td><td>Восток (+) / Запад (-)</td><td>Движение влево и вправо</td></tr>
+        <tr><td><b>Y</b></td><td>Вверх (+) / Вниз (-)</td><td>Высота (уровень земли = 64)</td></tr>
+        <tr><td><b>Z</b></td><td>Юг (+) / Север (-)</td><td>Движение вперёд и назад</td></tr>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>📍 Координаты записываются как три числа: (X, Y, Z)</b><br>
+      Например: <code>(100, 64, -50)</code> — это точка на 100 блоков восточнее, на высоте 64, и на 50 блоков южнее.
+    </div>
+
+    <h3>Зачем нужны координаты?</h3>
+    <ul>
+      <li><b>📍 Телепортация</b> — можно мгновенно переместиться в любую точку мира</li>
+      <li><b>🏗️ Строительство</b> — можно ставить блоки в точных местах без перемещения агента</li>
+      <li><b>🔍 Поиск</b> — можно найти биомы, деревни или сундуки по координатам</li>
+      <li><b>📐 Создание фигур</b> — можно строить сферы, кубы, цилиндры по формулам</li>
+    </ul>
+  </div>
+
+  <!-- Часть 3: Абсолютные координаты -->
+  <div class="card">
+    <h2><span class="num">3</span> Абсолютные координаты</h2>
+    
+    <p><b>Абсолютные координаты</b> — это точные координаты в мире Minecraft. Они не зависят от положения игрока или агента.</p>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">абсолютные_координаты.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Примеры абсолютных координат</span>
+(0, 64, 0)     <span class="tok-c">-- Центр мира, на уровне земли</span>
+(100, 70, -50) <span class="tok-c">-- Восточнее, выше, южнее</span>
+(-200, 30, 150)<span class="tok-c">-- Западнее, глубже под землёй, севернее</span>
+
+<span class="tok-c">-- Где я сейчас? (координаты игрока)</span>
+<span class="tok-n">Координаты игрока</span> → (X, Y, Z)
+
+<span class="tok-c">-- Где агент?</span>
+<span class="tok-n">Координаты агента</span> → (X, Y, Z)</code></pre>
+    </div>
+
+    <div class="note">
+      <b>📌 Как узнать свои координаты в игре?</b><br>
+      Нажми клавишу <b>F3</b> (на компьютере) или посмотри в правом верхнем углу экрана в Minecraft Education — там отображаются координаты.
+    </div>
+
+    <div class="interactive-box" id="coordQuiz">
+      <h3>🧠 Понимание координат</h3>
+      <p>Где находится точка с координатами <code>(50, 70, 30)</code>?</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">На 50 блоков выше, на 70 блоков восточнее, на 30 блоков южнее</div>
+        <div class="choice-card" data-correct-choice="true">На 50 блоков восточнее, на 70 блоков выше, на 30 блоков южнее</div>
+        <div class="choice-card" data-correct-choice="false">На 50 блоков западнее, на 70 блоков ниже, на 30 блоков севернее</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('coordQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <h3>Относительные координаты (кратко)</h3>
+    <p><b>Относительные координаты</b> — это координаты относительно текущего положения. В Minecraft Education они часто используются для агента.</p>
+    <div class="note">
+      <b>Пример:</b> <code>~5 ~ ~-3</code> означает «на 5 блоков вперёд, на той же высоте, на 3 блока левее» от текущей позиции.
+    </div>
+  </div>
+
+  <!-- Часть 4: Блоки для работы с координатами -->
+  <div class="card">
+    <h2><span class="num">4</span> Блоки для работы с координатами</h2>
+    <p>В Minecraft Education есть специальные блоки, которые используют координаты для строительства:</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <tr><th>Блок</th><th>Что делает</th><th>Как использовать</th></tr>
+        <tr>
+          <td><code>заполнить блоками</code></td>
+          <td>Заполняет область между двумя точками</td>
+          <td>Укажи координаты начала и конца, выбери блок</td>
+        </tr>
+        <tr>
+          <td><code>ряд из блоков</code></td>
+          <td>Создаёт линию из блоков</td>
+          <td>Укажи начальную точку, направление и длину</td>
+        </tr>
+        <tr>
+          <td><code>разместить блок в положении</code></td>
+          <td>Ставит один блок в указанную точку</td>
+          <td>Укажи координаты и выбери блок</td>
+        </tr>
+        <tr>
+          <td><code>сфера из блоков</code></td>
+          <td>Создаёт сферу (шар) из блоков</td>
+          <td>Укажи центр, радиус и выбери блок</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">координатные_блоки.makecode</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- Примеры использования блоков с координатами</span>
+
+<span class="tok-c">-- 1. Поставить блок в точку (10, 64, 20)</span>
+<span class="tok-n">разместить блок</span> <span class="tok-n">земля</span> <span class="tok-k">в положении</span> (10, 64, 20)
+
+<span class="tok-c">-- 2. Заполнить область от (0, 64, 0) до (10, 68, 10)</span>
+<span class="tok-n">заполнить блоками</span> <span class="tok-n">камень</span> <span class="tok-k">от</span> (0, 64, 0) <span class="tok-k">до</span> (10, 68, 10)
+
+<span class="tok-c">-- 3. Создать ряд из 5 блоков земли от (0, 64, 0) на восток</span>
+<span class="tok-n">ряд из блоков</span> <span class="tok-n">земля</span> <span class="tok-k">от</span> (0, 64, 0) <span class="tok-n">длиной</span> 5 <span class="tok-k">в направлении</span> <span class="tok-n">восток</span>
+
+<span class="tok-c">-- 4. Создать сферу радиусом 3 из стекла в центре (20, 70, 20)</span>
+<span class="tok-n">сфера из блоков</span> <span class="tok-n">стекло</span> <span class="tok-k">в центре</span> (20, 70, 20) <span class="tok-n">радиусом</span> 3</code></pre>
+    </div>
+
+    <div class="note">
+      <b>💡 Совет:</b> эти блоки позволяют строить без перемещения агента! Это очень удобно для создания больших конструкций.
+    </div>
+  </div>
+
+  <!-- AI-помощник -->
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px; line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0%20%D0%BA%D0%BE%D0%BE%D1%80%D0%B4%D0%B8%D0%BD%D0%B0%D1%82%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="alice-q-btn">Что такое система координат?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%83%D0%B7%D0%BD%D0%B0%D1%82%D1%8C%20%D1%81%D0%B2%D0%BE%D0%B8%20%D0%BA%D0%BE%D0%BE%D1%80%D0%B4%D0%B8%D0%BD%D0%B0%D1%82%D1%8B%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="alice-q-btn">Как узнать свои координаты?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B8%D1%82%D1%8C%20%D1%81%D1%84%D0%B5%D1%80%D1%83%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="alice-q-btn">Как построить сферу в Minecraft?</a>
+    </div>
+    <div class="ai-answer">
+      💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+    </div>
+    <div class="ai-real-tip">
+      <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про координаты или строительство.<br>
+      <span class="prompt-example">Просто скажи: «Алиса, объясни координаты в Minecraft для детей»</span>
+      <div style="margin-top:10px; font-size:14px; color:#BFE8D6;">
+        ⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.
+      </div>
+    </div>
+  </div>
+
+  <!-- Практическое задание -->
+  <div class="task-box" id="practiceCoords">
+    <h2>🛠️ Практическое задание: строим с координатами</h2>
+    <div class="progress-track"><div class="progress-fill" id="coordProgressFill"></div></div>
+    <span class="progress-label" id="coordProgressLabel">Выполнено шагов: 0 из 5</span>
+    <p>Запусти Minecraft Education, создай плоский мир и выполни задания, используя блоки с координатами.</p>
+
+    <h3>Основное задание:</h3>
+    <ul class="task-steps">
+      <li>
+        <input type="checkbox" id="c0" onchange="updateCoordProgress()">
+        <label for="c0">Размести один блок земли в точке (5, 64, 5) с помощью блока <code>разместить блок в положении</code></label>
+      </li>
+      <li>
+        <input type="checkbox" id="c1" onchange="updateCoordProgress()">
+        <label for="c1">Создай ряд из 5 блоков камня от (0, 64, 0) на восток (длиной 5) с помощью блока <code>ряд из блоков</code></label>
+      </li>
+      <li>
+        <input type="checkbox" id="c2" onchange="updateCoordProgress()">
+        <label for="c2">Заполни область от (-10, 64, -10) до (10, 66, 10) блоками земли с помощью блока <code>заполнить блоками</code></label>
+      </li>
+      <li>
+        <input type="checkbox" id="c3" onchange="updateCoordProgress()">
+        <label for="c3">Создай сферу радиусом 3 из стекла в центре (0, 70, 0) с помощью блока <code>сфера из блоков</code></label>
+      </li>
+    </ul>
+
+    <h3>⭐ Бонусное задание:</h3>
+    <ul class="task-steps">
+      <li class="bonus-step">
+        <input type="checkbox" id="c4" onchange="updateCoordProgress()">
+        <label for="c4">Создай дом: стены из камня (заполнить), крышу из дерева, укрась стеклянными окнами <b>(+10 робокоинов)</b></label>
+        <button class="hint-btn" onclick="toggleHint('hintHouse')">💡 Подсказка</button>
+        <div class="hint-content" id="hintHouse">
+          <b>План дома:</b><br>
+          1. Заполни область от (-3, 64, -3) до (3, 67, 3) камнем — это стены<br>
+          2. Заполни область от (-2, 67, -2) до (2, 67, 2) деревом — это потолок<br>
+          3. Размести стекло в положении (-2, 65, 3) и (2, 65, 3) — это окна<br>
+          4. Размести дверь (дерево) в положении (0, 64, 3)
+        </div>
+      </li>
+    </ul>
+
+    <div class="note" style="margin-top: 12px;">
+      <b>💡 Подсказка:</b> используй координаты из таблицы выше. Не забывай проверять результаты в игре!
+    </div>
+  </div>
+
+  <!-- Опрос -->
+  <div class="quiz-wrap" id="quizCoords">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="cq0" data-correct="c">
+      <p class="quiz-q-text">1. Какие оси есть в 3D-мире Minecraft?</p>
+      <label><input type="radio" name="cq0" value="a"> Только X и Y</label>
+      <label><input type="radio" name="cq0" value="b"> Только Y и Z</label>
+      <label><input type="radio" name="cq0" value="c"> X, Y и Z</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq1" data-correct="a">
+      <p class="quiz-q-text">2. Что означает координата Y = 64?</p>
+      <label><input type="radio" name="cq1" value="a"> Уровень земли (высота)</label>
+      <label><input type="radio" name="cq1" value="b"> На 64 блока восточнее</label>
+      <label><input type="radio" name="cq1" value="c"> На 64 блока южнее</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq2" data-correct="b">
+      <p class="quiz-q-text">3. Какой блок создаёт шар из блоков?</p>
+      <label><input type="radio" name="cq2" value="a"> заполнить блоками</label>
+      <label><input type="radio" name="cq2" value="b"> сфера из блоков</label>
+      <label><input type="radio" name="cq2" value="c"> ряд из блоков</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq3" data-correct="b">
+      <p class="quiz-q-text">4. Что такое абсолютные координаты?</p>
+      <label><input type="radio" name="cq3" value="a"> Координаты относительно агента</label>
+      <label><input type="radio" name="cq3" value="b"> Точные координаты в мире Minecraft</label>
+      <label><input type="radio" name="cq3" value="c"> Координаты только игрока</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="cq4" data-correct="c">
+      <p class="quiz-q-text">5. Какой блок позволяет заполнить прямоугольную область?</p>
+      <label><input type="radio" name="cq4" value="a"> разместить блок в положении</label>
+      <label><input type="radio" name="cq4" value="b"> сфера из блоков</label>
+      <label><input type="radio" name="cq4" value="c"> заполнить блоками</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizCoords')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <!-- Рефлексия -->
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <p>Напиши, что тебе понравилось, а что было сложно:</p>
+    <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+  </div>
+
+  <!-- Навигация -->
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_2-4.html"><div class="lbl">← Назад</div><div class="ttl">2.4 Агент-воин</div></a>
+    <a class="nav-btn next" href="les_3-2.html"><div class="lbl">Далее →</div><div class="ttl">3.2 Относительные координаты</div></a>
+  </div>
+</main>
+
+<!-- ===== ФУТЕР ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 3.1 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  // === Функция для показа/скрытия подсказки ===
+  function toggleHint(hintId) {
+    const hint = document.getElementById(hintId);
+    if (hint) {
+      hint.classList.toggle('show');
+    }
+  }
+
+  // === Интерактивные функции ===
+  function checkChoices(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.choice-card');
+    let correct = 0;
+    cards.forEach(card => {
+      const isCorrect = card.getAttribute('data-correct-choice') === 'true';
+      card.classList.remove('selected-correct', 'selected-wrong');
+      if (isCorrect) {
+        card.classList.add('selected-correct');
+        correct++;
+      } else {
+        card.classList.add('selected-wrong');
+      }
+    });
+    const result = container.querySelector('.activity-result');
+    if (result) {
+      result.innerHTML = correct === 1 ? '✅ Всё верно!' : '❌ Попробуй ещё раз. Подумай, какой ответ правильный.';
+      result.style.display = 'block';
+    }
+  }
+
+  function checkQuiz(containerId) {
+    const container = document.getElementById(containerId);
+    const questions = container.querySelectorAll('.quiz-question');
+    let total = 0, correct = 0;
+    questions.forEach(q => {
+      const correctVal = q.getAttribute('data-correct');
+      const selected = q.querySelector('input[type="radio"]:checked');
+      const feedback = q.querySelector('.q-feedback');
+      if (selected) {
+        total++;
+        if (selected.value === correctVal) {
+          correct++;
+          feedback.innerHTML = '✅ Верно!';
+          feedback.style.color = '#2e7d32';
+        } else {
+          feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+          feedback.style.color = '#c62828';
+        }
+      } else {
+        feedback.innerHTML = '⚠️ Выбери вариант.';
+        feedback.style.color = '#f57c00';
+      }
+    });
+    const resultDiv = container.querySelector('.quiz-result');
+    if (resultDiv) {
+      if (total === 0) {
+        resultDiv.innerHTML = 'Ответь на все вопросы.';
+      } else {
+        resultDiv.innerHTML = `Правильных ответов: ${correct} из ${questions.length}`;
+      }
+      resultDiv.style.display = 'block';
+    }
+  }
+
+  // Прогресс практического задания
+  function updateCoordProgress() {
+    const checkboxes = document.querySelectorAll('#practiceCoords input[type="checkbox"]');
+    const total = checkboxes.length;
+    let checked = 0;
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    const fill = document.getElementById('coordProgressFill');
+    const label = document.getElementById('coordProgressLabel');
+    if (fill) fill.style.width = (checked / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+  }
+</script>
+</body>
+</html>
