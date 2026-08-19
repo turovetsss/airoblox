@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ИИ-Творец · Занятие 0 · Как проходит курс</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #61B01F;
+      --green-dark: #2E4A17;
+      --green-light: #E8F5E0;
+      --purple: #6C3F9B;
+      --purple-light: #F4EAFA;
+      --orange: #F0A500;
+      --orange-light: #FFF4DB;
+      --orange-ink: #875B00;
+      --navy: #12274C;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #fff;
+      overflow: hidden;
+      height: 100vh;
+      color: var(--green-dark);
+    }
+    .presentation { display: flex; flex-direction: column; height: 100vh; }
+    .slide-stage { flex: 1; position: relative; overflow: hidden; }
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      padding: 28px 48px 20px;
+      position: absolute;
+      top: 0; left: 0;
+      overflow-y: auto;
+      background: #fff;
+      animation: fade .25s ease;
+    }
+    .slide.active { display: flex; align-items: center; justify-content: center; }
+    .slide-inner {
+      width: 100%;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 32px;
+      align-items: center;
+      height: 100%;
+      padding: 0 1.5vw;
+    }
+    .slide-inner.full { grid-template-columns: 1fr; }
+
+    .title-slide { background: var(--navy); color: #fff; }
+    .title-slide .slide-inner { grid-template-columns: 1.1fr 0.9fr; }
+    .title-slide h1 {
+      font-size: clamp(34px, 5.3vw, 64px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: #fff;
+    }
+    .title-slide h2 {
+      font-size: clamp(26px, 3.6vw, 44px);
+      font-weight: 800;
+      color: #b9eb8d;
+      margin: 10px 0;
+    }
+    .title-slide p {
+      font-size: clamp(18px, 2.1vw, 28px);
+      font-weight: 700;
+      opacity: .95;
+    }
+
+    h2 { font-size: clamp(34px, 4.2vw, 58px); font-weight: 900; line-height: 1.1; margin: 10px 0 8px; color: var(--green-dark); }
+    .lead { font-weight: 800; font-size: clamp(19px, 2vw, 28px); line-height: 1.45; }
+    .eyebrow {
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: 99px;
+      font-size: 15px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: var(--green-light);
+      color: var(--green-dark);
+    }
+
+    .list { margin-top: 16px; display: grid; gap: 12px; font-size: clamp(18px, 2vw, 26px); font-weight: 800; }
+    .list span { display: flex; align-items: flex-start; gap: 10px; }
+    .tick {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--green-light);
+      display: grid; place-items: center;
+      color: var(--green);
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .cardish {
+      background: #fff;
+      border: 2px solid var(--green-light);
+      border-radius: 18px;
+      padding: 18px 20px;
+      box-shadow: 0 10px 24px rgba(46,74,23,.06);
+    }
+
+    .illustration {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+    }
+    .blob {
+      position: absolute;
+      width: 78%;
+      aspect-ratio: 1;
+      border-radius: 45% 55% 60% 40%;
+      background: var(--green-light);
+      transform: rotate(-12deg);
+      opacity: 0.65;
+      filter: saturate(1.1);
+    }
+
+    .big-emoji {
+      position: relative;
+      z-index: 2;
+      font-size: 120px;
+      line-height: 1;
+      transform: translateY(4px);
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.08));
+    }
+    .mini-pill {
+      position: absolute;
+      bottom: 14%;
+      left: 10%;
+      background: #fff;
+      border-radius: 16px;
+      padding: 10px 14px;
+      font-weight: 900;
+      box-shadow: 0 6px 16px rgba(0,0,0,.08);
+      color: var(--purple);
+      font-size: 22px;
+      z-index: 3;
+    }
+
+    /* Footer / навигация */
+    .footer-nav {
+      height: 76px;
+      background: white;
+      border-top: 1px solid #e6eee1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+    .nav-inner {
+      width: 100%;
+      max-width: none;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 20px;
+      border: 0;
+      border-radius: 30px;
+      font-weight: 900;
+      font-size: 15px;
+      cursor: pointer;
+      transition: .2s;
+      background: var(--green-light);
+      color: var(--green-dark);
+      font-family: inherit;
+    }
+    .nav-btn:hover { transform: translateY(-2px); background: #d8efc7; }
+    .nav-btn.primary { background: var(--green); color: #fff; }
+    .nav-btn.primary:hover { background: #52991a; }
+    .nav-btn:disabled { opacity: .4; pointer-events: none; }
+
+    .progress-wrap { flex: 1; max-width: 420px; }
+    .progress-track {
+      height: 8px; border-radius: 99px;
+      background: #e7eee5; overflow: hidden;
+      margin-top: 0px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: inherit;
+      transition: width .25s;
+    }
+    .dots { display: flex; gap: 4px; justify-content: center; margin-top: 6px; flex-wrap: wrap; }
+    .nav-dot {
+      border: 0; padding: 0;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #cad7c4; cursor: pointer;
+      transition: .2s;
+    }
+    .nav-dot.active { background: var(--purple); transform: scale(1.35); }
+
+    .counter { font-weight: 900; font-size: 18px; white-space: nowrap; min-width: 72px; text-align: center; }
+
+    @keyframes fade { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+
+    @media (max-width: 760px) {
+      .slide { padding: 16px; }
+      .slide-inner { grid-template-columns: 1fr; gap: 14px; }
+      .illustration { min-height: 180px; order: -1; }
+      .footer-nav { height: 68px; }
+      .progress-wrap { display: none; }
+      .nav-inner { padding: 0 14px; }
+      .nav-btn { padding: 8px 14px; font-size: 13px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="presentation">
+    <main class="slide-stage">
+
+      <!-- 1. Титульный -->
+      <section class="slide title-slide active">
+        <div class="stars" style="position:absolute;inset:0;opacity:.25;pointer-events:none;background:
+          radial-gradient(2px 2px at 20% 30%, #fff, transparent),
+          radial-gradient(2px 2px at 70% 20%, #fff, transparent),
+          radial-gradient(1.5px 1.5px at 40% 70%, #9cf, transparent),
+          radial-gradient(2px 2px at 85% 60%, #fff, transparent),
+          radial-gradient(1px 1px at 10% 80%, #fff, transparent);">
+        </div>
+
+        <div class="slide-inner">
+          <div>
+            <span class="eyebrow" style="background:#F0A500;color:#12274C;">Курс · Занятие 0</span>
+            <h1>ИИ-Творец</h1>
+            <h2>Как проходит курс</h2>
+            <p>🤖 Ты узнаешь, что такое ИИ и как пройти путь до “своего помощника”.</p>
+            <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+              <span class="cardish" style="border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.08); color:#fff;">
+                0 → старт
+              </span>
+              <span class="cardish" style="border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.08); color:#fff;">
+                1–6 → миссии
+              </span>
+            </div>
+          </div>
+
+          <div class="illustration">
+            <div class="blob" style="background: rgba(232,245,224,.45);"></div>
+            <div class="big-emoji">🧠</div>
+            <div class="mini-pill">Миссии + чипы</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Что внутри курса -->
+      <section class="slide">
+        <div class="slide-inner">
+          <div>
+            <span class="eyebrow">Путь</span>
+            <h2>Что будет в программе</h2>
+            <div class="list">
+              <span><span class="tick">⭐</span> Пробное занятие (знакомство с форматом)</span>
+              <span><span class="tick">1</span> Занятие 1: что такое ИИ и как отличать от программы</span>
+              <span><span class="tick">2</span> Занятие 2: промпты (как правильно писать запросы)</span>
+              <span><span class="tick">3</span> Занятие 3: безопасность в сети</span>
+              <span><span class="tick">4</span> Занятие 4: правда, фейки и этика</span>
+              <span><span class="tick">5</span> Занятие 5: умный поиск и исследование</span>
+              <span><span class="tick">6</span> Занятие 6: финальная практика “агент ИИ”</span>
+            </div>
+          </div>
+
+          <div class="illustration">
+            <div class="blob"></div>
+            <div class="big-emoji">🗺️</div>
+            <div class="mini-pill" style="left:auto; right:10%;">7 шагов</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Миссии и прогресс -->
+      <section class="slide">
+        <div class="slide-inner">
+          <div>
+            <span class="eyebrow">Прогресс</span>
+            <h2>Миссии и чипы</h2>
+            <div class="cardish">
+              <p class="lead" style="font-size:clamp(18px,2vw,26px); margin-top:6px;">
+                Каждое занятие — это набор миссий. За выполненные задания ты получаешь <b>чипы</b>.
+              </p>
+              <div class="list" style="margin-top:14px;">
+                <span><span class="tick">✅</span> выполняешь задания на странице</span>
+                <span><span class="tick">🏅</span> отмечаешь прогресс</span>
+                <span><span class="tick">🏆</span> в конце получаешь сертификат</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="illustration">
+            <div class="blob" style="background: var(--purple-light); opacity:.7;"></div>
+            <div class="big-emoji">🏅</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Интерактивы -->
+      <section class="slide">
+        <div class="slide-inner">
+          <div>
+            <span class="eyebrow">Игры на странице</span>
+            <h2>Учим через практику</h2>
+            <div class="list">
+              <span><span class="tick">🧩</span> сортировки и “битвы” вопросов</span>
+              <span><span class="tick">🖱️</span> перетаскивание и мини-пазлы</span>
+              <span><span class="tick">💬</span> тренируем диалоги с нейросетью</span>
+              <span><span class="tick">📌</span> мини-проекты по теме занятия</span>
+            </div>
+            <p style="margin-top:16px; font-weight:900; color:var(--purple); font-size:clamp(18px,2vw,26px);">
+              Ты не просто читаешь — ты пробуешь и проверяешь себя.
+            </p>
+          </div>
+
+          <div class="illustration">
+            <div class="blob" style="background: var(--orange-light); opacity:.75;"></div>
+            <div class="big-emoji">🎮</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Главные темы -->
+      <section class="slide">
+        <div class="slide-inner">
+          <div class="slide-inner full">
+            <div>
+              <span class="eyebrow">Темы курса</span>
+              <h2>О чём весь курс</h2>
+              <div class="list">
+                <span><span class="tick">🤖</span> ИИ vs обычные алгоритмы</span>
+                <span><span class="tick">✍️</span> промпты: роль, задача, формат</span>
+                <span><span class="tick">🛡️</span> безопасность и личные данные</span>
+                <span><span class="tick">🔎</span> правда, фейки и фактчекинг</span>
+                <span><span class="tick">🧠</span> умный поиск и финальная практика</span>
+              </div>
+
+              <p style="margin-top:18px; font-weight:900; color:var(--green-dark); font-size:clamp(18px,2vw,26px);">
+                И главное: ИИ — это инструмент. Ты управляешь им.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Как начать -->
+      <section class="slide">
+        <div class="slide-inner">
+          <div>
+            <span class="eyebrow">Старт!</span>
+            <h2>Готов начать?</h2>
+            <p class="lead">
+              Открой <b>пробное занятие</b> и попробуй первые миссии. Это поможет понять механику курса
+              и сделать свой мини-проект.
+            </p>
+            <div class="cardish" style="margin-top:16px;">
+              <div class="list" style="margin-top:10px;">
+                <span><span class="tick">1</span> Выполни игры на странице</span>
+                <span><span class="tick">2</span> Собери мини-проект</span>
+                <span><span class="tick">3</span> Возьми “карточку помощника”</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="illustration">
+            <div class="blob"></div>
+            <div class="big-emoji">🚀</div>
+            <div class="mini-pill">Поехали!</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="footer-nav">
+      <nav class="nav-inner">
+        <button class="nav-btn" id="prevBtn" type="button">← Назад</button>
+
+        <div class="progress-wrap">
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="dots" id="dots"></div>
+        </div>
+
+        <span class="counter" id="counter">1 / 6</span>
+        <button class="nav-btn primary" id="nextBtn" type="button">Вперёд →</button>
+      </nav>
+    </footer>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const dotsContainer = document.getElementById('dots');
+    const counter = document.getElementById('counter');
+    const progressFill = document.getElementById('progressFill');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let current = 0;
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', 'Слайд ' + (i + 1));
+      dot.addEventListener('click', () => showSlide(i));
+      dotsContainer.appendChild(dot);
+    });
+
+    function showSlide(index) {
+      current = Math.max(0, Math.min(index, slides.length - 1));
+
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+      document.querySelectorAll('.nav-dot').forEach((dot, i) => dot.classList.toggle('active', i === current));
+
+      counter.textContent = (current + 1) + ' / ' + slides.length;
+      progressFill.style.width = ((current + 1) / slides.length * 100) + '%';
+
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === slides.length - 1;
+    }
+
+    prevBtn.addEventListener('click', () => showSlide(current - 1));
+    nextBtn.addEventListener('click', () => showSlide(current + 1));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); showSlide(current + 1); }
+      if (e.key === 'ArrowLeft') showSlide(current - 1);
+      if (e.key === 'Home') showSlide(0);
+      if (e.key === 'End') showSlide(slides.length - 1);
+    });
+
+    showSlide(0);
+  </script>
+</body>
+</html>+

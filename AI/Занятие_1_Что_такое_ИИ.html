@@ -239,7 +239,19 @@
         <div class="achieve-rail" id="achieveRail">
             <div class="achieve-rail-title">
                 <span>🏅 Достижения занятия</span>
-                <span style="opacity:.7;font-size:.85rem;">справа</span>
+
+                
+
+
+
+
+
+
+
+
+
+
+
             </div>
             <div id="progressProfileHost"></div>
             <div class="chip-progress" id="chipProgressBar">
@@ -316,6 +328,58 @@
         </div>
 
      <div class="card">
+
+        <!-- Миссия 4 -->
+<div class="card" id="quizAlgNet">
+  <h2>⚡ Миссия 4: Алгоритм или нейросеть? <span style="font-size:0.9rem; color:gray;">(+1 чип)</span></h2>
+  <p>
+    Выбери для каждого случая: это <b>алгоритм</b> (обычная программа по правилам) или
+    <b>нейросеть</b> (ИИ, который учится на примерах).
+    Нужно выбрать правильно <b>с первого клика</b>.
+  </p>
+
+  <!-- Раунд 1 -->
+  <div class="battle-round" data-round="0" data-correct="a">
+    <p class="battle-topic">Калькулятор: «2+2» всегда равно одному и тому же ответу</p>
+    <div class="row">
+      <div class="col battle-option" data-choice="a"><p>⚙️ Алгоритм</p></div>
+      <div class="col battle-option" data-choice="b"><p>🧠 Нейросеть</p></div>
+    </div>
+    <div class="battle-feedback"></div>
+  </div>
+
+  <!-- Раунд 2 -->
+  <div class="battle-round" data-round="1" data-correct="b">
+    <p class="battle-topic">Face ID: узнаёт лицо, даже если свет/угол отличаются</p>
+    <div class="row">
+      <div class="col battle-option" data-choice="a"><p>⚙️ Алгоритм</p></div>
+      <div class="col battle-option" data-choice="b"><p>🧠 Нейросеть</p></div>
+    </div>
+    <div class="battle-feedback"></div>
+  </div>
+
+  <!-- Раунд 3 -->
+  <div class="battle-round" data-round="2" data-correct="a">
+    <p class="battle-topic">Google Translate: переводит текст на другой язык</p>
+    <div class="row">
+      <div class="col battle-option" data-choice="a"><p>🧠 Нейросеть</p></div>
+      <div class="col battle-option" data-choice="b"><p>⚙️ Алгоритм</p></div>
+    </div>
+    <div class="battle-feedback"></div>
+  </div>
+
+  <!-- Раунд 4 -->
+  <div class="battle-round" data-round="3" data-correct="b">
+    <p class="battle-topic">Рекомендации YouTube: подбирает видео “как тебе нравится”</p>
+    <div class="row">
+      <div class="col battle-option" data-choice="a"><p>⚙️ Алгоритм</p></div>
+      <div class="col battle-option" data-choice="b"><p>🧠 Нейросеть</p></div>
+    </div>
+    <div class="battle-feedback"></div>
+  </div>
+
+  <p id="algNetScore" style="font-weight:700; margin-top:10px;">Верных с первой попытки: 0 из 4</p>
+</div>
     <h2>📚 Теория: Алгоритм против нейросети — в чём разница?</h2>
     
     <p><strong>Обычная программа</strong> работает как очень точный исполнитель. Ей заранее написали список команд — <strong>алгоритм</strong>. Она всегда действует одинаково, потому что не умеет думать или учиться. Пример — калькулятор: нажал «2+2» → всегда получишь «4», хоть днём, хоть ночью.</p>
@@ -387,7 +451,7 @@
                 </ul>
             </div>
             <div style="margin-top:16px; display:flex; gap:10px;">
-                <a href="https://classroom.google.com/c/ODcwMjQxMzEwNTA0/a/ODcxMzU1MjI1MDk3/details " target="_blank" class="action-btn">📤 Перейти в Classroom</a>
+                <a href="https://classroom.google.com/u/1/c/ODc1MDkzODIyMjYx" target="_blank" class="action-btn">📤 Перейти в Classroom</a>
                 <button class="action-btn" onclick="completeMission(7)">Я выполнил</button>
             </div>
         </div>
@@ -457,7 +521,7 @@
             <p id="reflectionResult" style="font-weight:700;margin-top:10px;"></p>
         </div>
         <div class="card"><h2>🏁 Домашнее задание</h2><p>⭐ Лёгкое: Попроси ИИ рассказать 5 фактов. Скрин.</p><p>⭐⭐ Среднее: Попроси ИИ придумать сказку. Скрин.</p><p>⭐⭐⭐ Сложное: Попроси ИИ сыграть роль. Скрин + описание.</p>
-            <a href="https://classroom.google.com/c/ODcwMjQxMzEwNTA0/a/ODcxMzU0Mjk3Mjkx/details" target="_blank" class="action-btn">📤 Сдать в Classroom</a></div>
+            <a href="https://classroom.google.com/u/1/c/ODc1MDkzODIyMjYx/a/ODc1MDk0OTAxODM3/submissions/by-status/and-sort-name/all/all" target="_blank" class="action-btn">📤 Сдать в Classroom</a></div>
         <div class="lesson-nav">
             <span class="nav-btn prev" style="opacity:.5;pointer-events:none;">← Начало курса</span>
         </div>
