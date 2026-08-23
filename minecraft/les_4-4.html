@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4.4. Итоговый проект, ч.1 — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: linear-gradient(135deg, #f3e5f5, #f0f9eb); border-bottom: 3px solid #9c27b0; }
+    .site-footer { background: #f3e5f5; border-top: 3px solid #9c27b0; }
+    .brand-name { color: #4a148c; }
+    .module-pill { background: #9c27b0; color: #fff; }
+    .hex-badge { background: linear-gradient(155deg, #9c27b0, #e1bee7); color: #fff; }
+    .data-table th { background: #7b1fa2; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #9c27b0; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #7b1fa2; }
+    .task-box { border-left: 4px solid #9c27b0; }
+    .code-block { border: 1px solid #ce93d8; background: #faf5fc; }
+    .alice-q-btn { background: #f3e5f5; border: 1px solid #9c27b0; color: #4a148c; }
+    .alice-q-btn:hover { background: #e1bee7; }
+    .interactive-box { background: #faf5fc; border: 1px solid #ce93d8; }
+    .sort-item { background: #f3e5f5; border: 1px solid #ce93d8; cursor: grab; }
+    .hint-btn {
+      background: #ffbd2e; color: #4a148c; border: none;
+      padding: 4px 16px; border-radius: 20px; font-weight: 600;
+      font-size: 0.8rem; cursor: pointer; transition: 0.2s; margin-top: 8px;
+    }
+    .hint-btn:hover { background: #f0a800; transform: scale(1.05); }
+    .hint-content {
+      display: none; background: #fff8e1; padding: 10px 14px; border-radius: 8px;
+      margin-top: 8px; border-left: 3px solid #ffbd2e; font-size: 0.95rem; text-align: left;
+    }
+    .hint-content.show { display: block; }
+    .hint-content code { background: #e8ece6; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+    .task-number {
+      display: inline-block; background: #9c27b0; color: #fff; border-radius: 50%;
+      width: 28px; height: 28px; text-align: center; line-height: 28px;
+      font-weight: 700; margin-right: 10px; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .final-banner {
+      background: linear-gradient(135deg, #f3e5f5, #fff8e1);
+      border: 3px solid #9c27b0; border-radius: 20px; padding: 24px 28px; margin: 16px 0;
+      text-align: center;
+    }
+    .final-banner h3 { margin: 0 0 8px 0; color: #4a148c; font-size: 1.4rem; }
+    .req-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px; margin: 16px 0;
+    }
+    .req-card {
+      background: #f3e5f5; border: 2px solid #ce93d8; border-radius: 14px;
+      padding: 16px; text-align: center;
+    }
+    .req-card .emoji { font-size: 2rem; }
+    .req-card .name { font-weight: 700; color: #4a148c; margin-top: 6px; }
+    .theme-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px; margin: 16px 0;
+    }
+    .theme-card {
+      background: #fff; border: 2px solid #e1bee7; border-radius: 14px;
+      padding: 16px 18px; transition: 0.2s;
+    }
+    .theme-card:hover { border-color: #9c27b0; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(156,39,176,.15); }
+    .theme-card h4 { margin: 0 0 6px 0; color: #4a148c; }
+    .theme-card p { margin: 0 0 8px 0; font-size: 0.92rem; color: #555; }
+    .theme-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .theme-tag {
+      background: #f3e5f5; color: #6a1b9a; font-size: 0.72rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 10px;
+    }
+    .plan-box {
+      background: #fff; border: 2px dashed #9c27b0; border-radius: 12px;
+      padding: 16px 20px; margin: 12px 0;
+    }
+    .callback-box {
+      background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+      border: 2px solid #64b5f6; border-radius: 12px; padding: 16px 20px; margin: 16px 0;
+    }
+    .card h2 .num { background: #f3e5f5; color: #4a148c; }
+  </style>
+</head>
+<body class="lesson-page">
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 4.4</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">4.4</div>
+      <div>
+        <div class="module-pill">Раздел 4 · Функции</div>
+        <h1>Итоговый проект, часть 1</h1>
+        <p class="subtitle">Придумай и создай свою мини-игру в Minecraft Education</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="final-banner">
+    <h3>🏆 Финал первой половины курса!</h3>
+    <p style="margin:0;color:#555;">Сегодня ты — настоящий разработчик игр. Выбери тему, спланируй проект и напиши программу. На следующем занятии мы исправим баги и покажем игру классу.</p>
+  </div>
+
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Выбрать тему мини-игры (из списка или свою)</li>
+      <li>Спланировать алгоритм и список переменных</li>
+      <li>Создать мир и программу с условиями, циклами, переменными и координатами</li>
+      <li>Получить рабочий прототип игры к концу занятия</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Правила итогового проекта</td></tr>
+      <tr><td>Выбор темы</td><td>15 мин</td><td>10 идей или своя тема</td></tr>
+      <tr><td>Планирование</td><td>15 мин</td><td>Алгоритм на бумаге, переменные</td></tr>
+      <tr><td>Строим мир</td><td>20 мин</td><td>Арена, старт, финиш</td></tr>
+      <tr><td>Пишем код</td><td>30 мин</td><td>Условия, циклы, координаты</td></tr>
+      <tr><td>Первый тест</td><td>5 мин</td><td>Play и быстрая проверка</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span> Что такое итоговый проект?</h2>
+    <p><b>Мини-игра</b> — это небольшой игровой сценарий в Minecraft: у игрока есть <b>цель</b>, есть <b>правила</b> и <b>программа агента</b>, которая помогает или создаёт вызов.</p>
+    <p>Примеры: «собери 10 блоков золота», «построй мост за 30 секунд», «агент охраняет замок от мобов».</p>
+
+    <h3>Обязательные элементы программы</h3>
+    <p>В твоём проекте <b>обязательно</b> должны быть все четыре блока — это проверит преподаватель:</p>
+    <div class="req-grid">
+      <div class="req-card"><div class="emoji">🔀</div><div class="name">Условия</div><div style="font-size:0.85rem;color:#666;"><code>если … то</code></div></div>
+      <div class="req-card"><div class="emoji">🔁</div><div class="name">Циклы</div><div style="font-size:0.85rem;color:#666;"><code>повторить</code> или <code>пока</code></div></div>
+      <div class="req-card"><div class="emoji">📊</div><div class="name">Переменные</div><div style="font-size:0.85rem;color:#666;">счёт, очки, шаги</div></div>
+      <div class="req-card"><div class="emoji">📍</div><div class="name">Координаты</div><div style="font-size:0.85rem;color:#666;"><code>~</code> или X, Y, Z</div></div>
+    </div>
+
+    <div class="callback-box">
+      <b>⭐ Бонус (не обязательно, но круто):</b> используй <b>функции</b> из прошлых занятий — так код будет аккуратнее, и это +робокоины на презентации!
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> 10 тем на выбор</h2>
+    <p>Выбери одну тему или предложи <b>свою</b> (согласуй с преподавателем). Под каждой темой — подсказка, какие блоки использовать.</p>
+
+    <div class="theme-grid">
+      <div class="theme-card">
+        <h4>1. 🏰 Охранник замка</h4>
+        <p>Агент обходит стены. Если видит моба — сообщает «Тревога!» и ставит факел.</p>
+        <div class="theme-tags"><span class="theme-tag">условие</span><span class="theme-tag">цикл</span><span class="theme-tag">~координаты</span></div>
+      </div>
+      <div class="theme-card">
+        <h4>2. 💎 Охота за сокровищами</h4>
+        <p>Игрок ищет блоки золота/изумруда. Агент сканирует поле и подсказывает «Горячо!» / «Холодно!».</p>
+        <div class="theme-tags"><span class="theme-tag">переменная score</span><span class="theme-tag">условие</span><span class="theme-tag">координаты</span></div>
+      </div>
+      <div class="theme-card">
+        <h4>3. 🌾 Авто-ферма</h4>
+        <p>Агент собирает урожай (пшеница, морковь) по рядам и считает собранное.</p>
+        <div class="theme-tags"><span class="theme-tag">цикл</span><span class="theme-tag">счётчик</span><span class="theme-tag">~1 ~0 ~0</span></div>
+      </div>
+      <div class="theme-card">
+        <h4>4. 🌉 Строитель моста</h4>
+        <p>По команде чата «мост» агент строит мост через пропасть заданной длины.</p>
+        <div class="theme-tags"><span class="theme-tag">переменная длина</span><span class="theme-tag">повторить N</span><span class="theme-tag">координаты</span></div>
+      </div>
+      <div class="theme-card">
+        <h4>5. 🔦 Ночной светильник</h4>
+        <p>Агент идёт по тоннелю и ставит факелы каждые N шагов, пока не дойдёт до конца.</p>
+        <div class="theme-tags"><span class="theme-tag">пока</span><span class="theme-tag">условие</span><span class="theme-tag">шаги</span></div>
+      </div>
+      <div class="theme-card">
+        <h4>6. 🌀 Спасатель в лабиринте</h4>
+        <p>Агент ищет выход: если стена — поворот, если проход — вперёд. Считает шаги.</p>
+        <div class="theme-tags"><span class="theme-tag">если блок</span><span class="theme-tag">цикл</span><span class="theme-tag">depth</span></div>
+      </div>
+      <div class="theme-card">
+        <h4>7. 🦁 Зоопарк</h4>
+        <p>Агент строит загоны по координатам и выпускает животных. Счётчик «животных».</p>
+        <div class="theme-tags"><span class="theme-tag">абсолютные XYZ</span><span class="theme-tag">функция</span><span class="theme-tag">цикл</span></div>
+      </div>
+      <div class="theme-card">
+        <h4>8. 🧹 Уборщик пещеры</h4>
+        <p>Заменить гравий и песок на камень — «уборка» пещеры (как Эко-патруль, но свой мир).</p>
+        <div class="theme-tags"><span class="theme-tag">условие</span><span class="theme-tag">пока</span><span class="theme-tag">чистота</span></div>
+      </div>
+      <div class="theme-card">
+        <h4>9. 🌈 Радужная дорожка</h4>
+        <p>Агент кладёт блоки шерсти разных цветов по кругу. Переменная «номер цвета».</p>
+        <div class="theme-tags"><span class="theme-tag">переменная</span><span class="theme-tag">повторить</span><span class="theme-tag">~координаты</span></div>
+      </div>
+      <div class="theme-card">
+        <h4>10. 🛡️ Защитник деревни</h4>
+        <p>По команде «защита» агент строит стену вокруг деревни. Длина стены — переменная.</p>
+        <div class="theme-tags"><span class="theme-tag">цикл</span><span class="theme-tag">условие</span><span class="theme-tag">координаты</span></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>💡 Своя тема?</b> Главное — чтобы в игре была <b>понятная цель</b> и все 4 обязательных элемента. Примеры: «гонки на лодках», «паркур с агентом-помощником», «сортировка сундуков».
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span> Как спланировать игру</h2>
+    <p>Перед кодом ответь на 5 вопросов (можно в тетради):</p>
+
+    <div class="plan-box">
+      <ol style="margin:0 0 0 20px;line-height:1.8;">
+        <li><b>Название игры:</b> _______________________</li>
+        <li><b>Цель игрока:</b> что нужно сделать, чтобы победить?</li>
+        <li><b>Роль агента:</b> строит / копает / охраняет / подсказывает?</li>
+        <li><b>Команда старта:</b> какое слово в чат? (например: <code>старт</code>, <code>игра</code>)</li>
+        <li><b>Переменные:</b> какие числа будем считать? (очки, шаги, время)</li>
+      </ol>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">шаблон_алгоритма.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-c">-- При команде чата "старт":</span>
+<span class="tok-v">очки</span> = 0
+<span class="tok-v">шаги</span> = 0
+
+<span class="tok-k">пока</span> <span class="tok-v">очки</span> &lt; <span class="tok-n">10</span>:
+    <span class="tok-k">если</span> <span class="tok-c">/* условие победы или действия */</span>:
+        <span class="tok-c">/* действие агента в ~координатах */</span>
+        <span class="tok-v">очки</span> = <span class="tok-v">очки</span> + 1
+    <span class="tok-v">шаги</span> = <span class="tok-v">шаги</span> + 1
+
+<span class="tok-n">сказать</span> "Победа! Очки: " + <span class="tok-v">очки</span></code></pre>
+    </div>
+  </div>
+
+    <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px;line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос — Алиса подскажет идеи!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9F%D1%80%D0%B8%D0%B4%D1%83%D0%BC%D0%B0%D0%B9%20%D0%B8%D0%B4%D0%B5%D0%B8%20%D0%BC%D0%B8%D0%BD%D0%B8-%D0%B8%D0%B3%D1%80%D1%8B%20%D0%B2%20Minecraft%20Education%20%D0%B4%D0%BB%D1%8F%20%D0%B4%D0%B5%D1%82%D0%B5%D0%B9%22%7D" target="_blank" class="alice-q-btn">Идеи для мини-игры</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%81%D0%BF%D0%BB%D0%B0%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%20%D0%B8%D0%B3%D1%80%D1%8B%20%D0%B4%D0%BB%D1%8F%20%D0%B4%D0%B5%D1%82%D0%B5%D0%B9%3F%22%7D" target="_blank" class="alice-q-btn">Как спланировать игру?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D1%8B%20%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%8B%D0%BC%D0%B8%20%D1%81%D0%BB%D0%BE%D0%B2%D0%B0%D0%BC%D0%B8%3F%22%7D" target="_blank" class="alice-q-btn">Что такое алгоритм?</a>
+    </div>
+    <div class="ai-answer">💬 Нажми на любой вопрос — откроется Алиса.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">4</span> Интерактив: готов ли проект?</h2>
+
+    <div class="interactive-box" id="reqQuiz">
+      <h3>✅ Что обязательно в программе?</h3>
+      <p>Отметь всё, что <b>обязательно</b> должно быть в итоговом проекте:</p>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="true">Условие «если … то»</div>
+        <div class="choice-card" data-correct-choice="true">Цикл «повторить» или «пока»</div>
+        <div class="choice-card" data-correct-choice="true">Переменная (очки, счётчик)</div>
+        <div class="choice-card" data-correct-choice="true">Координаты (~ или X, Y, Z)</div>
+        <div class="choice-card" data-correct-choice="false">Только один блок «сказать»</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('reqQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="sortCreate" style="margin-top:20px;">
+      <h3>📋 Порядок работы над проектом</h3>
+      <p>Перетащи шаги в правильном порядке:</p>
+      <ul class="sort-list" id="sortCreateList">
+        <li class="sort-item" draggable="true" data-correct-step="3">Пишем код в MakeCode</li>
+        <li class="sort-item" draggable="true" data-correct-step="1">Выбираем тему и цель игры</li>
+        <li class="sort-item" draggable="true" data-correct-step="4">Нажимаем Play и тестируем</li>
+        <li class="sort-item" draggable="true" data-correct-step="2">Рисуем алгоритм и строим мир</li>
+      </ul>
+      <button class="action-btn" onclick="checkSequence('sortCreate')">✅ Проверить порядок</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="task-box" id="practiceFinal">
+    <h2>🎮 Создаём итоговый проект</h2>
+    <div class="progress-track"><div class="progress-fill-minecraft" id="finalProgressFill"></div></div>
+    <span class="progress-label" id="finalProgressLabel">Выполнено шагов: 0 из 14</span>
+    <p>Работай по шагам. К концу занятия у тебя должен быть <b>рабочий прототип</b> — его доработаем на следующем занятии.</p>
+
+    <div style="margin-top:20px;padding:16px;background:#f3e5f5;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#4a148c;"><span class="task-number">1</span> Выбор и план</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="f0" onchange="updateFinalProgress()"><label for="f0">Выбрал тему (из 10 или свою) — записал название игры</label></li>
+        <li><input type="checkbox" id="f1" onchange="updateFinalProgress()"><label for="f1">Заполнил план: цель, роль агента, команда чата, переменные</label></li>
+        <li><input type="checkbox" id="f2" onchange="updateFinalProgress()"><label for="f2">Нарисовал алгоритм на бумаге (блок-схема или список шагов)</label></li>
+      </ul>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#faf5fc;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#4a148c;"><span class="task-number">2</span> Мир игры</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="f3" onchange="updateFinalProgress()"><label for="f3">Построил арену / поле / пещеру для игры (если нужно)</label></li>
+        <li><input type="checkbox" id="f4" onchange="updateFinalProgress()"><label for="f4">Отметил старт и финиш (блоки, таблички или координаты; если нужно)</label></li>
+        <li><input type="checkbox" id="f5" onchange="updateFinalProgress()"><label for="f5">Призвал агента, настроил инвентарь (блоки, инструменты; если нужно)</label></li>
+      </ul>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#f3e5f5;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#4a148c;"><span class="task-number">3</span> Программа — обязательные блоки</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="f6" onchange="updateFinalProgress()"><label for="f6"><code>при команде чата "___"</code> — запуск игры</label></li>
+        <li><input type="checkbox" id="f7" onchange="updateFinalProgress()"><label for="f7"><b>Условие:</b> минимум один блок <code>если … то</code> (или <code>иначе</code>)</label></li>
+        <li><input type="checkbox" id="f8" onchange="updateFinalProgress()"><label for="f8"><b>Цикл:</b> минимум один <code>повторить N раз</code> или <code>пока …</code></label></li>
+        <li><input type="checkbox" id="f9" onchange="updateFinalProgress()"><label for="f9"><b>Переменная:</b> минимум одна (очки, шаги, счётчик…) с изменением в коде</label></li>
+        <li><input type="checkbox" id="f10" onchange="updateFinalProgress()"><label for="f10"><b>Координаты:</b> относительные <code>~</code> или абсолютные X, Y, Z</label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintBlocks')">💡 Подсказка</button>
+      <div class="hint-content" id="hintBlocks">Не знаешь, с чего начать? Открой прошлые мини-проекты — можно взять кусок кода и переделать под свою тему!</div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#faf5fc;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#4a148c;"><span class="task-number">4</span> Финал прототипа</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="f11" onchange="updateFinalProgress()"><label for="f11">Есть сообщение о победе или результате (<code>сказать</code> + переменная)</label></li>
+        <li><input type="checkbox" id="f12" onchange="updateFinalProgress()"><label for="f12">Нажал Play — игра запускается и доходит до конца (хотя бы один раз)</label></li>
+        <li><input type="checkbox" id="f13" onchange="updateFinalProgress()"><label for="f13">Показал преподавателю прототип — записал 1–2 идеи, что доработать на следующем занятии</label></li>
+      </ul>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#fff8e1;border-radius:12px;border:2px dashed #ffbd2e;">
+      <h3 style="margin:0 0 8px 0;color:#b8860b;">⭐ Бонус до презентации</h3>
+      <ul class="task-steps">
+        <li class="bonus-step"><input type="checkbox" id="f14"><label for="f14"><b>Функции:</b> вынеси повторяющийся код в 1–2 функции</label></li>
+        <li class="bonus-step"><input type="checkbox" id="f15"><label for="f15"><b>Две команды:</b> «старт» и «стоп» или «сброс»</label></li>
+        <li class="bonus-step"><input type="checkbox" id="f16"><label for="f16"><b>Табличка в мире:</b> правила игры на табличке у входа</label></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" id="quizFinal">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="fq0" data-correct="b">
+      <p class="quiz-q-text">1. Что такое итоговый проект?</p>
+      <label><input type="radio" name="fq0" value="a"> Только постройка дома без кода</label>
+      <label><input type="radio" name="fq0" value="b"> Мини-игра с программой агента и понятной целью</label>
+      <label><input type="radio" name="fq0" value="c"> Копирование кода соседа</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq1" data-correct="c">
+      <p class="quiz-q-text">2. Сколько обязательных типов блоков нужно в программе?</p>
+      <label><input type="radio" name="fq1" value="a"> Только циклы</label>
+      <label><input type="radio" name="fq1" value="b"> Два: условие и переменная</label>
+      <label><input type="radio" name="fq1" value="c"> Четыре: условие, цикл, переменная, координаты</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="fq2" data-correct="a">
+      <p class="quiz-q-text">3. С чего лучше начать работу?</p>
+      <label><input type="radio" name="fq2" value="a"> Выбрать тему и записать цель игры</label>
+      <label><input type="radio" name="fq2" value="b"> Сразу писать код без плана</label>
+      <label><input type="radio" name="fq2" value="c"> Удалить весь мир</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizFinal')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия</h2>
+    <textarea placeholder="Моя игра называется...&#10;Самое сложное было..., потому что...&#10;На следующем занятии хочу доработать..."></textarea>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_4-3.html"><div class="lbl">← Назад</div><div class="ttl">4.3 Шахтёр-стратег</div></a>
+    <a class="nav-btn next" href="les_4-5.html"><div class="lbl">Далее →</div><div class="ttl">4.5 Итоговый проект, ч.2</div></a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 4.4 · офлайн-курс по Minecraft Education и Python</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  function toggleHint(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('show');
+  }
+
+  function updateFinalProgress() {
+    const cbs = document.querySelectorAll('#practiceFinal input[type="checkbox"]');
+    const total = 14;
+    let n = 0;
+    cbs.forEach((cb, i) => { if (i < total && cb.checked) n++; });
+    const fill = document.getElementById('finalProgressFill');
+    const label = document.getElementById('finalProgressLabel');
+    if (fill) fill.style.width = (n / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${n} из ${total}` + (n === total ? ' 🎉 Прототип готов!' : '');
+  }
+
+  (function initSortable() {
+    const list = document.getElementById('sortCreateList');
+    if (!list) return;
+    let dragged = null;
+    list.addEventListener('dragstart', e => {
+      dragged = e.target.closest('.sort-item');
+      if (dragged) e.dataTransfer.effectAllowed = 'move';
+    });
+    list.addEventListener('dragend', () => { dragged = null; });
+    list.addEventListener('dragover', e => e.preventDefault());
+    list.addEventListener('drop', e => {
+      e.preventDefault();
+      const target = e.target.closest('.sort-item');
+      if (dragged && target && dragged !== target) {
+        const items = Array.from(list.querySelectorAll('.sort-item'));
+        if (items.indexOf(dragged) < items.indexOf(target)) target.after(dragged);
+        else target.before(dragged);
+      }
+    });
+  })();
+</script>
+</body>
+</html>
