@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.3. Условные операторы — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #eef2ff; border-bottom: 3px solid #4f46e5; }
+        .site-footer { background: #eef2ff; border-top: 3px solid #4f46e5; }
+        .brand-name { color: #312e81; }
+        .module-pill { background: #4f46e5; color: #fff; }
+        .hex-badge { background: #4f46e5; color: #fff; }
+        .data-table th { background: #4f46e5; color: #fff; }
+        .match-btn, .quiz-btn, .action-btn { background: #4f46e5; color: #fff; border: none; }
+        .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4338ca; }
+        .task-box { border-left: 4px solid #4f46e5; }
+        .code-block { border: 1px solid #c7d2fe; background: #f5f7ff; }
+        .interactive-box { background: #f8faff; border: 1px solid #c7d2fe; }
+        .syntax-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 10px; }
+        .syntax-card b { color: #4f46e5; }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .feature-grid .feature-item {
+            background: #f5f7ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .feature-grid .feature-item .icon { font-size: 32px; display: block; margin-bottom: 8px; }
+        .feature-grid .feature-item .title { font-weight: 700; color: #312e81; }
+        .code-block .code-head { background: #1e1e2e; color: #c7d2fe; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .code-block .code-head .dots { display: flex; gap: 6px; }
+        .code-block .code-head .dots .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .code-block .code-head .dots .dot.r { background: #d93b3b; }
+        .code-block .code-head .dots .dot.y { background: #ffb238; }
+        .code-block .code-head .dots .dot.g { background: #4f46e5; }
+        .code-block .code-head .fname { font-family: 'JetBrains Mono', monospace; font-size: 13px; opacity: 0.8; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; margin: 0; padding: 16px 20px; overflow-x: auto; font-size: 14px; line-height: 1.8; }
+        .code-block pre.code code { font-family: 'JetBrains Mono', Consolas, monospace; }
+        .tok-c { color: #7fcf9e; font-style: italic; }
+        .tok-k { color: #ffb238; font-weight: 700; }
+        .tok-s { color: #8fd7ff; }
+        .tok-f { color: #ffd08a; }
+        .tok-n { color: #ff9aae; }
+        .tok-v { color: #ff9aae; }
+        .tok-o { color: #ffb238; }
+        .note { background: #eef2ff; border-left: 6px solid #4f46e5; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.warn { background: #fef3c7; border-left-color: #f59e0b; }
+        .note.danger { background: #fde8e8; border-left-color: #d93b3b; }
+        .task-box .task-item {
+            background: #f5f7ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .task-box .task-item .task-title { font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; }
+        .task-box .task-item .task-title .badge {
+            background: #4f46e5;
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 99px;
+        }
+        .task-box .task-item .task-title .badge.bonus { background: #ffb238; color: #312e81; }
+        .task-box .task-item .task-code { margin-top: 10px; }
+        .task-box .task-item .task-code .code-block { margin: 0; }
+        .interactive-box .match-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .interactive-box .match-row .match-key {
+            background: #4f46e5;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            min-width: 120px;
+            text-align: center;
+        }
+        .interactive-box .match-row select {
+            flex: 1;
+            min-width: 150px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #c7d2fe;
+            font-family: 'Nunito', sans-serif;
+            background: #fff;
+        }
+        .interactive-box .match-row select.correct { border-color: #4f46e5; background: #eef2ff; }
+        .interactive-box .match-row select.incorrect { border-color: #d93b3b; background: #fde8e8; }
+        .interactive-box .match-result { margin-top: 12px; font-weight: 700; }
+        .progress-track {
+            background: #e8f5e9;
+            border-radius: 99px;
+            height: 20px;
+            overflow: hidden;
+            margin: 12px 0 6px;
+        }
+        .progress-fill-minecraft {
+            background: linear-gradient(90deg, #4f46e5, #4338ca);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 99px;
+        }
+        .progress-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #312e81;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .task-steps {
+            list-style: none;
+            margin: 10px 0 0;
+            padding: 0;
+        }
+        .task-steps li {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 12px 16px;
+            align-items: start;
+            padding: 10px 12px;
+            border-radius: 10px;
+            margin-bottom: 4px;
+        }
+        .task-steps li:hover { background: #f5f7ff; }
+        .task-steps input[type=checkbox] {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            accent-color: #4f46e5;
+            cursor: pointer;
+        }
+        .task-steps label {
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e2a3a;
+        }
+        .task-steps .bonus-step {
+            background: #f0edff;
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1px dashed #4f46e5;
+        }
+
+        /* AI помощник */
+        .ai-helper {
+            background: #1e1e2e;
+            color: #e4f5da;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-helper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.15), transparent 60%);
+            pointer-events: none;
+        }
+        .ai-head {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        .ai-head .ai-icon { font-size: 36px; line-height: 1; }
+        .ai-head .t {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 22px;
+        }
+        .ai-head .t span { color: #8fd7ff; }
+        .ai-sub {
+            color: #b8d9a8;
+            font-size: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .ai-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .ai-q-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e4f5da;
+            padding: 10px 18px;
+            border-radius: 99px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .ai-q-btn:hover {
+            background: rgba(79, 70, 229, 0.25);
+            border-color: rgba(79, 70, 229, 0.4);
+            transform: translateY(-2px);
+        }
+        .ai-answer {
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 4px solid #4f46e5;
+            border-radius: 0 12px 12px 0;
+            padding: 16px 20px;
+            font-size: 15px;
+            min-height: 44px;
+            position: relative;
+            color: #e4f5da;
+        }
+        .ai-real-tip {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.12);
+            font-size: 14px;
+            color: #b8d9a8;
+            position: relative;
+        }
+        .prompt-example {
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #ffd08a;
+        }
+        .ai-real-tip .warning {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #b8d9a8;
+            opacity: 0.7;
+        }
+
+        /* Стили для игры "Найди ошибку" */
+        .error-game .clickable-line {
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            display: inline-block;
+            margin: 0 -4px;
+            position: relative;
+        }
+        .error-game .clickable-line:hover {
+            background: rgba(79, 70, 229, 0.12);
+        }
+        .error-game .clickable-line .line-text {
+            display: inline;
+        }
+        .error-game .clickable-line .check-mark {
+            display: none;
+            margin-left: 6px;
+            font-weight: 700;
+        }
+        .error-game .clickable-line.found {
+            background: rgba(79, 70, 229, 0.12);
+            border-radius: 4px;
+        }
+        .error-game .clickable-line.found .check-mark {
+            display: inline;
+            color: #4f46e5;
+        }
+        .error-game .clickable-line.wrong {
+            background: rgba(217, 59, 59, 0.12);
+            border-radius: 4px;
+            animation: shake 0.3s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+        .error-game .error-feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            min-height: 50px;
+        }
+        .error-game .error-feedback.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+        .error-game .error-feedback.fail {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef5350;
+        }
+        .error-game .error-feedback.info {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #42a5f5;
+        }
+        .error-game .error-feedback.attempt {
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffa726;
+        }
+        .error-game .error-counter {
+            font-size: 14px;
+            color: #4a6a3a;
+            margin-top: 8px;
+            font-weight: 700;
+        }
+        .error-game .level-block {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: #eef2ff;
+            border-radius: 8px;
+            border-left: 4px solid #4f46e5;
+        }
+        .error-game .level-block h4 {
+            margin: 0 0 8px 0;
+            color: #312e81;
+            font-size: 16px;
+        }
+        .error-game .level-block .code-block {
+            margin: 0;
+        }
+        .error-game .level-block .hint {
+            font-size: 14px;
+            color: #4a6a3a;
+            margin-top: 4px;
+        }
+        .error-game .level-block .hint strong {
+            color: #312e81;
+        }
+
+        /* Стили для сопоставления */
+        .interactive-box .match-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .interactive-box .match-row .match-key {
+            background: #4f46e5;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            min-width: 120px;
+            text-align: center;
+        }
+        .interactive-box .match-row select {
+            flex: 1;
+            min-width: 150px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #c7d2fe;
+            font-family: 'Nunito', sans-serif;
+            background: #fff;
+        }
+        .interactive-box .match-row select.correct { border-color: #4f46e5; background: #eef2ff; }
+        .interactive-box .match-row select.incorrect { border-color: #d93b3b; background: #fde8e8; }
+        .interactive-box .match-result { margin-top: 12px; font-weight: 700; }
+
+        /* Стили для сборки кода */
+        .code-sort .sort-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f5f7ff;
+            border: 2px solid #c7d2fe;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            cursor: grab;
+            transition: all 0.2s;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+        }
+        .code-sort .sort-item:hover {
+            border-color: #4f46e5;
+            transform: translateX(4px);
+        }
+        .code-sort .sort-item.dragging {
+            opacity: 0.5;
+            border-style: dashed;
+        }
+        .code-sort .sort-item .drag-handle {
+            color: #c7d2fe;
+            font-size: 18px;
+            cursor: grab;
+        }
+        .code-sort .sort-item .line-num {
+            color: #4a6a3a;
+            font-size: 12px;
+            min-width: 20px;
+            font-weight: 700;
+        }
+        .code-sort .sort-item.correct-order {
+            border-color: #4f46e5;
+            background: #eef2ff;
+        }
+        .code-sort .sort-item.wrong-order {
+            border-color: #d93b3b;
+            background: #ffebee;
+        }
+        .code-sort .sort-feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            min-height: 40px;
+        }
+        .code-sort .sort-feedback.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+        .code-sort .sort-feedback.fail {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef5350;
+        }
+        .code-sort .sort-feedback.info {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #42a5f5;
+        }
+
+        @media (max-width: 768px) {
+            .name-rules { grid-template-columns: 1fr; }
+            .variable-demo { flex-direction: column; }
+            .ai-helper { padding: 20px 16px; }
+        }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div>
+                    <div class="brand-name">РОБОВИТА</div>
+                    <div class="brand-tag">учимся программировать роботов и игры</div>
+                </div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 1.3 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">1.3</div>
+            <div>
+                <div class="module-pill">Раздел 1 · Основы Python</div>
+                <h1>Условные операторы</h1>
+                <p class="subtitle">Учим компьютер принимать решения</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <!-- Цели -->
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Узнать, что такое условные операторы и зачем они нужны</li>
+            <li>Познакомиться с операторами <code>if</code>, <code>else</code> и <code>elif</code></li>
+            <li>Научиться использовать сравнения и логические выражения</li>
+            <li>Понять, как компьютер принимает решения на основе условий</li>
+            <li>Написать программы с условными операторами в Minecraft</li>
+        </ul>
+    </div>
+
+    <!-- План занятия -->
+    <div class="card">
+        <h2>📋 План занятия</h2>
+        <table class="timetable">
+            <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>Что такое условные операторы</td><td>12 мин</td><td>Как компьютер принимает решения</td></tr>
+            <tr><td>Операторы if, else, elif</td><td>12 мин</td><td>Разные способы проверки условий</td></tr>
+            <tr><td>Операции сравнения</td><td>10 мин</td><td>Равно, больше, меньше</td></tr>
+            <tr><td>Интерактив: Сопоставление</td><td>8 мин</td><td>Закрепляем знания</td></tr>
+            <tr><td>AI-помощник</td><td>5 мин</td><td>Спроси у Алисы</td></tr>
+            <tr><td>Практика: Условные операторы</td><td>35 мин</td><td>Пишем программы с условиями</td></tr>
+            <tr><td>Итоги и рефлексия</td><td>8 мин</td><td>Проверяем знания</td></tr>
+            <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+        </table>
+    </div>
+
+    <!-- Часть 1: Что такое условные операторы -->
+    <div class="card">
+        <h2><span class="num">1</span> Что такое условные операторы?</h2>
+        <p>В жизни мы постоянно принимаем решения: «Если идёт дождь, я возьму зонтик», «Если я голоден, я поем». В программировании тоже есть такие решения — это <b>условные операторы</b>.</p>
+
+        <div class="note">
+            <b>🤔 Условный оператор</b> — это конструкция, которая позволяет программе выполнять разные действия в зависимости от выполнения условия.
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin: 16px 0; padding: 16px; background: #f5f7ff; border-radius: 12px; border: 2px solid #c7d2fe;">
+            <img src="files/cond.png"/>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-item">
+                <span class="icon">🧠</span>
+                <div class="title">Принятие решений</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Программа выбирает, что делать, в зависимости от условий</div>
+            </div>
+            <div class="feature-item">
+                <span class="icon">🔄</span>
+                <div class="title">Разные пути</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Одна программа может работать по-разному для разных ситуаций</div>
+            </div>
+            <div class="feature-item">
+                <span class="icon">🎮</span>
+                <div class="title">Интерактивность</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Условные операторы делают игры и программы живыми</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Часть 2: Операторы if, else, elif -->
+    <div class="card">
+        <h2><span class="num">2</span> Операторы if, else, elif</h2>
+        <p>В Python есть три основных условных оператора. Давай разберём их на примерах из Minecraft!</p>
+
+        <h3>1. Оператор <code>if</code> — «Если»</h3>
+        <p>Проверяет условие. Если оно верно (True), выполняет команды внутри блока.</p>
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">if_demo.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Если игрок онлайн — приветствуем</span>
+is_online = <span class="tok-n">True</span>
+<span class="tok-k">if</span> is_online:
+    player.say(<span class="tok-s">"Добро пожаловать!"</span>)</code></pre>
+        </div>
+
+        <h3>2. Оператор <code>else</code> — «Иначе»</h3>
+        <p>Выполняется, если условие в <code>if</code> неверно (False).</p>
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">if_else_demo.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Проверяем, день или ночь</span>
+is_day = <span class="tok-n">True</span>
+<span class="tok-k">if</span> is_day:
+    player.say(<span class="tok-s">"Доброе утро!"</span>)
+<span class="tok-k">else</span>:
+    player.say(<span class="tok-s">"Спокойной ночи!"</span>)</code></pre>
+        </div>
+
+        <h3>3. Оператор <code>elif</code> — «Иначе если»</h3>
+        <p>Позволяет проверить несколько условий подряд. Сокращение от "else if".</p>
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">elif_demo.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Проверяем время суток</span>
+time = <span class="tok-n">12</span>
+<span class="tok-k">if</span> time < <span class="tok-n">12</span>:
+    player.say(<span class="tok-s">"Доброе утро!"</span>)
+<span class="tok-k">elif</span> time < <span class="tok-n">18</span>:
+    player.say(<span class="tok-s">"Добрый день!"</span>)
+<span class="tok-k">else</span>:
+    player.say(<span class="tok-s">"Добрый вечер!"</span>)</code></pre>
+        </div>
+
+        <div class="note warn">
+            <b>⚠️ Важно!</b> После <code>if</code>, <code>elif</code> и <code>else</code> всегда ставится двоеточие <code>:</code>, а блок кода внутри должен иметь отступ (4 пробела или Tab).
+        </div>
+    </div>
+
+    <!-- Часть 3: Операции сравнения -->
+    <div class="card">
+        <h2><span class="num">3</span> Операции сравнения</h2>
+        <p>Чтобы проверить условия, мы используем операции сравнения. Вот основные из них:</p>
+
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <tr><th>Операция</th><th>Значение</th><th>Пример</th></tr>
+                <tr><td><code>==</code></td><td>Равно</td><td><code>age == 10</code> — возраст равен 10</td></tr>
+                <tr><td><code>!=</code></td><td>Не равно</td><td><code>name != "Алекс"</code> — имя не Алекс</td></tr>
+                <tr><td><code>&gt;</code></td><td>Больше</td><td><code>count > 5</code> — количество больше 5</td></tr>
+                <tr><td><code>&lt;</code></td><td>Меньше</td><td><code>count < 10</code> — количество меньше 10</td></tr>
+                <tr><td><code>&gt;=</code></td><td>Больше или равно</td><td><code>score >= 100</code> — очков не меньше 100</td></tr>
+                <tr><td><code>&lt;=</code></td><td>Меньше или равно</td><td><code>score <= 50</code> — очков не больше 50</td></tr>
+            </table>
+        </div>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">comparison_demo.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Примеры сравнений в Minecraft</span>
+block_count = <span class="tok-n">15</span>
+
+<span class="tok-k">if</span> block_count >= <span class="tok-n">10</span>:
+    player.say(<span class="tok-s">"У тебя много блоков!"</span>)
+
+player_name = <span class="tok-s">"Алекс"</span>
+<span class="tok-k">if</span> player_name == <span class="tok-s">"Алекс"</span>:
+    player.say(<span class="tok-s">"Привет, Алекс!"</span>)
+<span class="tok-k">else</span>:
+    player.say(<span class="tok-s">"Привет, гость!"</span>)</code></pre>
+        </div>
+    </div>
+
+    <!-- ИНТЕРАКТИВ: Сопоставление -->
+    <div class="interactive-box" id="matchConditions">
+        <h2>🔑 Сопоставь условие и его описание</h2>
+        <p>Выбери правильное описание для каждого условия:</p>
+
+        <div class="match-row">
+            <div class="match-key">age == 10</div>
+            <select data-correct="Возраст равен 10">
+                <option value="">— выбери —</option>
+                <option value="Возраст равен 10">Возраст равен 10</option>
+                <option value="Возраст не равен 10">Возраст не равен 10</option>
+                <option value="Возраст больше 10">Возраст больше 10</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">count > 5</div>
+            <select data-correct="Количество больше 5">
+                <option value="">— выбери —</option>
+                <option value="Количество больше 5">Количество больше 5</option>
+                <option value="Количество меньше 5">Количество меньше 5</option>
+                <option value="Количество равно 5">Количество равно 5</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">name != "Стив"</div>
+            <select data-correct="Имя не равно Стив">
+                <option value="">— выбери —</option>
+                <option value="Имя равно Стив">Имя равно Стив</option>
+                <option value="Имя не равно Стив">Имя не равно Стив</option>
+                <option value="Имя содержит Стив">Имя содержит Стив</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">score >= 100</div>
+            <select data-correct="Очков не меньше 100">
+                <option value="">— выбери —</option>
+                <option value="Очков больше 100">Очков больше 100</option>
+                <option value="Очков меньше 100">Очков меньше 100</option>
+                <option value="Очков не меньше 100">Очков не меньше 100</option>
+            </select>
+        </div>
+
+        <button class="action-btn" onclick="checkMatch('matchConditions')">✅ Проверить</button>
+        <div class="match-result" id="matchResultConditions"></div>
+    </div>
+
+    <!-- ИНТЕРАКТИВ: Найди ошибку -->
+    <div class="interactive-box error-game" id="errorGameIf">
+        <h2>🧠 Найди ошибку в условном операторе</h2>
+        <p>В каждом уровне есть ровно <b>одна</b> ошибка. Кликни на строку с ошибкой!</p>
+
+        <!-- Уровень 1 -->
+        <div class="level-block">
+            <h4>Уровень 1: Пропущено двоеточие</h4>
+            <div class="code-block">
+                <div class="code-head" style="background: #1e1e2e; color: #c7d2fe;">
+                    <span class="fname">if_error_1.py</span>
+                </div>
+                <pre class="code" style="position: relative;"><code><span class="tok-k">if</span> player.is_online <span class="clickable-line" data-level="1" data-error="colon" onclick="checkErrorLineIf(this, 1)"><span class="line-text">        </span><span class="check-mark">✅</span></span>
+    player.say(<span class="tok-s">"Привет!"</span>)</code></pre>
+            </div>
+            <div class="hint">💡 <strong>Подсказка:</strong> После условия всегда ставится двоеточие.</div>
+        </div>
+
+        <!-- Уровень 2 -->
+        <div class="level-block">
+            <h4>Уровень 2: Пропущен отступ</h4>
+            <div class="code-block">
+                <div class="code-head" style="background: #1e1e2e; color: #c7d2fe;">
+                    <span class="fname">if_error_2.py</span>
+                </div>
+                <pre class="code" style="position: relative;"><code><span class="tok-k">if</span> is_day:
+<span class="clickable-line" data-level="2" data-error="indent" onclick="checkErrorLineIf(this, 2)"><span class="line-text">player.say(<span class="tok-s">"Доброе утро!"</span>)</span><span class="check-mark">✅</span></span></code></pre>
+            </div>
+            <div class="hint">💡 <strong>Подсказка:</strong> Команды внутри условия должны иметь отступ.</div>
+        </div>
+
+        <!-- Уровень 3 -->
+        <div class="level-block">
+            <h4>Уровень 3: Неправильная операция сравнения</h4>
+            <div class="code-block">
+                <div class="code-head" style="background: #1e1e2e; color: #c7d2fe;">
+                    <span class="fname">if_error_3.py</span>
+                </div>
+                <pre class="code" style="position: relative;"><code><span class="tok-k">if</span> age <span class="clickable-line" data-level="3" data-error="comparison" onclick="checkErrorLineIf(this, 3)"><span class="line-text">=</span><span class="check-mark">✅</span></span> <span class="tok-n">10</span>:
+    player.say(<span class="tok-s">"Тебе 10 лет!"</span>)</code></pre>
+            </div>
+            <div class="hint">💡 <strong>Подсказка:</strong> Для сравнения на равенство используется два знака равно.</div>
+        </div>
+
+        <div id="errorFeedbackIf" class="error-feedback info">
+            👆 Кликни на строку с ошибкой в каждом уровне
+        </div>
+        <div class="error-counter" id="errorCounterIf">Найдено ошибок: 0 из 3</div>
+    </div>
+
+    <!-- ИНТЕРАКТИВ: Собери код -->
+    <div class="interactive-box code-sort" id="codeSortIf">
+        <h2>🧩 Собери код с условием</h2>
+        <p>Перетащи строки кода мышкой, чтобы они шли в правильном порядке.</p>
+        <p style="font-size: 14px; color: #4a6a3a;">Задача: если игрок онлайн — сказать «Привет!», иначе — «Пока!».</p>
+
+        <div id="sortContainerIf" style="margin-top: 12px;"></div>
+
+        <button class="action-btn" onclick="checkSortOrderIf()" style="margin-top: 12px;">✅ Проверить порядок</button>
+        <div class="sort-feedback info" id="sortFeedbackIf">
+            💡 Перетащи строки в правильном порядке
+        </div>
+    </div>
+
+    <!-- AI-помощник -->
+    <div class="ai-helper">
+        <div class="ai-head">
+            <span class="ai-icon">🤖</span>
+            <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+        </div>
+        <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+
+        <div class="ai-buttons">
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%BD%D1%8B%D0%B9%20%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Что такое if?</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20else%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Как работает else?</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%D0%B8%D0%B5%20%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8%20%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F%20%D0%B5%D1%81%D1%82%D1%8C%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Операции сравнения</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D1%8F%20%D0%B2%20Minecraft%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Условия в Minecraft</a>
+        </div>
+
+        <div class="ai-answer">
+            💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+        </div>
+
+        <div class="ai-real-tip">
+            <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про условные операторы.<br>
+            <span class="prompt-example">Просто скажи: «Алиса, как проверить, что число больше 10 в Python?»</span>
+            <div class="warning">⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.</div>
+        </div>
+    </div>
+
+    <!-- Часть 4: Практические задания -->
+    <div class="task-box" id="ifPractice">
+        <h2>🛠️ Практика: Условные операторы в Minecraft</h2>
+        <p>Теперь давай применим знания об условных операторах в Minecraft Education! Открой редактор кода (клавиша <code>C</code>) и выбери Python.</p>
+
+        <!-- Прогресс-бар -->
+        <div class="progress-track">
+            <div class="progress-fill-minecraft" id="practiceProgressFill" style="width: 0%;"></div>
+        </div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 6</span>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 1</span>
+                Проверка дня и ночи
+                <input type="checkbox" id="task1" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Создай переменную <code>is_day</code> со значением <b>True</b>. Напиши условие: если <code>is_day</code> равно True, выведи в чат <b>«Доброе утро!»</b>, иначе выведи <b>«Спокойной ночи!»</b>.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 2</span>
+                Проверка количества блоков
+                <input type="checkbox" id="task2" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Создай переменную <code>block_count</code> со значением <b>15</b>. Напиши условие: если блоков больше или равно 10, выведи <b>«У тебя много блоков!»</b>, иначе выведи <b>«Собери ещё блоков!»</b>.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 3</span>
+                Приветствие по имени
+                <input type="checkbox" id="task3" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Создай переменную <code>player_name</code> со значением <b>твоего имени</b>. Напиши условие: если имя равно «*твоё имя*», выведи <b>«Привет, *твоё имя*!»</b>, иначе выведи <b>«Привет, гость!»</b>.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 4</span>
+                Проверка возраста
+                <input type="checkbox" id="task4" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Создай переменную <code>age</code> со значением <b>12</b>. Напиши условие: если возраст меньше 18, выведи <b>«Ты ещё ребёнок!»</b>, иначе выведи <b>«Ты взрослый!»</b>.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">⭐ Задание 5</span>
+                Множественные условия (elif)
+                <input type="checkbox" id="task5" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Создай переменную <code>time</code> со значением <b>14</b>. Напиши условие: если <code>time &lt; 12</code> — «Доброе утро!», если <code>time &lt; 18</code> — «Добрый день!», иначе — «Добрый вечер!».</p>
+        </div>
+
+        <div class="task-item" style="border: 2px dashed #4f46e5; background: #f0edff;">
+            <div class="task-title">
+                <span class="badge bonus">🚀 Бонус</span>
+                Свой проект с условиями
+                <input type="checkbox" id="task6" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Придумай программу с условными операторами в Minecraft: например, проверяй, есть ли у игрока определённый предмет, или сравнивай количество блоков. Поделись результатом с преподавателем!</p>
+        </div>
+    </div>
+
+    <!-- Опрос -->
+    <div class="quiz-wrap" id="quizIf">
+        <h2>📝 Проверь себя</h2>
+
+        <div class="quiz-question" data-name="if1" data-correct="b">
+            <p class="quiz-q-text">1. Что делает условный оператор <code>if</code>?</p>
+            <label><input type="radio" name="if1" value="a"> Повторяет код несколько раз</label>
+            <label><input type="radio" name="if1" value="b"> Проверяет условие и выполняет код, если оно верно</label>
+            <label><input type="radio" name="if1" value="c"> Создаёт новую переменную</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="if2" data-correct="b">
+            <p class="quiz-q-text">2. Какой оператор используется для проверки нескольких условий?</p>
+            <label><input type="radio" name="if2" value="a"> else</label>
+            <label><input type="radio" name="if2" value="b"> elif</label>
+            <label><input type="radio" name="if2" value="c"> if</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="if3" data-correct="c">
+            <p class="quiz-q-text">3. Какая операция проверяет «равно» в Python?</p>
+            <label><input type="radio" name="if3" value="a"> =</label>
+            <label><input type="radio" name="if3" value="b"> !=</label>
+            <label><input type="radio" name="if3" value="c"> ==</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="if4" data-correct="b">
+            <p class="quiz-q-text">4. Что нужно ставить после условия в <code>if</code>?</p>
+            <label><input type="radio" name="if4" value="a"> Точку с запятой ;</label>
+            <label><input type="radio" name="if4" value="b"> Двоеточие :</label>
+            <label><input type="radio" name="if4" value="c"> Запятую ,</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="if5" data-correct="a">
+            <p class="quiz-q-text">5. Какой результат даст условие <code>10 &gt; 5</code>?</p>
+            <label><input type="radio" name="if5" value="a"> True (правда)</label>
+            <label><input type="radio" name="if5" value="b"> False (ложь)</label>
+            <label><input type="radio" name="if5" value="c"> Ошибка</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <button class="quiz-btn" onclick="checkQuiz('quizIf')">Проверить ответы</button>
+        <div class="quiz-result"></div>
+    </div>
+
+    <!-- Рефлексия -->
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <p>Напиши, что тебе понравилось, а что было сложно:</p>
+        <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+    </div>
+
+    <!-- Навигация -->
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_1-2.html"><div class="lbl">← Назад</div><div class="ttl">1.2 Переменные и типы данных</div></a>
+        <a class="nav-btn next" href="les_python_1-4.html"><div class="lbl">Далее →</div><div class="ttl">1.4 Циклы и повторения</div></a>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Занятие 1.3 · Условные операторы · офлайн-курс по Minecraft Education и Python</div>
+    </div>
+</footer>
+
+<script>
+    // ===== СОПОСТАВЛЕНИЕ =====
+    function checkMatch(containerId) {
+        const container = document.getElementById(containerId);
+        const selects = container.querySelectorAll('select[data-correct]');
+        let correct = 0;
+        selects.forEach(sel => {
+            const correctVal = sel.getAttribute('data-correct');
+            sel.classList.remove('correct', 'incorrect');
+            if (sel.value === correctVal) {
+                sel.classList.add('correct');
+                correct++;
+            } else if (sel.value !== '') {
+                sel.classList.add('incorrect');
+            }
+        });
+        const resultDiv = container.querySelector('.match-result');
+        if (resultDiv) {
+            resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${selects.length}`;
+            resultDiv.style.display = 'block';
+        }
+    }
+
+    // ===== ИГРА "НАЙДИ ОШИБКУ" =====
+    let errorFoundIf = { 1: false, 2: false, 3: false };
+    const errorMessagesIf = {
+        1: { fail: '❌ Неверно! Посмотри, чего не хватает в конце строки с условием.', 
+             success: '✅ Правильно! После условия всегда ставится двоеточие (:).' },
+        2: { fail: '❌ Неверно! Вспомни, что команды внутри условия должны иметь отступ.', 
+             success: '✅ Правильно! Здесь нужен отступ в 4 пробела.' },
+        3: { fail: '❌ Неверно! Проверь операцию сравнения. Для равенства нужно два знака равно.', 
+             success: '✅ Правильно! Для сравнения на равенство используется ==.' }
+    };
+
+    function checkErrorLineIf(element, level) {
+        if (errorFoundIf[level]) return;
+
+        const isError = element.dataset.error !== undefined;
+        const feedback = document.getElementById('errorFeedbackIf');
+        const counter = document.getElementById('errorCounterIf');
+
+        if (element.classList.contains('found')) return;
+
+        if (isError) {
+            element.classList.add('found');
+            errorFoundIf[level] = true;
+            feedback.className = 'error-feedback success';
+            feedback.textContent = errorMessagesIf[level].success;
+        } else {
+            element.classList.add('wrong');
+            feedback.className = 'error-feedback attempt';
+            feedback.textContent = errorMessagesIf[level].fail + ' Попробуй ещё раз!';
+            setTimeout(() => {
+                element.classList.remove('wrong');
+            }, 800);
+        }
+
+        const found = Object.values(errorFoundIf).filter(v => v === true).length;
+        counter.textContent = `Найдено ошибок: ${found} из 3`;
+
+        if (found === 3) {
+            feedback.className = 'error-feedback success';
+            feedback.textContent = '🎉 Поздравляю! Ты нашёл все 3 ошибки! Отличная работа!';
+        }
+    }
+
+    // ===== ИГРА "СОБЕРИ КОД" =====
+    const codeLinesIf = [
+        { id: 0, text: 'if is_online:', order: 0 },
+        { id: 1, text: '    player.say("Привет!")', order: 1 },
+        { id: 2, text: 'else:', order: 2 },
+        { id: 3, text: '    player.say("Пока!")', order: 3 }
+    ];
+
+    function shuffleArrayIf(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function renderSortItemsIf() {
+        const container = document.getElementById('sortContainerIf');
+        const shuffled = shuffleArrayIf([...codeLinesIf]);
+
+        container.innerHTML = '';
+        shuffled.forEach((line, index) => {
+            const div = document.createElement('div');
+            div.className = 'sort-item';
+            div.draggable = true;
+            div.dataset.id = line.id;
+            div.dataset.order = line.order;
+            div.innerHTML = `
+                <span class="drag-handle">⠿</span>
+                <span class="line-num">${index + 1}</span>
+                <span style="font-family: 'JetBrains Mono', monospace;">${line.text}</span>
+            `;
+            container.appendChild(div);
+        });
+
+        const items = container.querySelectorAll('.sort-item');
+        let dragItem = null;
+
+        items.forEach(item => {
+            item.addEventListener('dragstart', function(e) {
+                dragItem = this;
+                this.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', '');
+            });
+
+            item.addEventListener('dragend', function(e) {
+                this.classList.remove('dragging');
+                dragItem = null;
+                items.forEach(el => el.classList.remove('correct-order', 'wrong-order'));
+            });
+
+            item.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            });
+
+            item.addEventListener('drop', function(e) {
+                e.preventDefault();
+                if (!dragItem || dragItem === this) return;
+
+                const parent = container;
+                const children = Array.from(parent.children);
+                const dragIndex = children.indexOf(dragItem);
+                const targetIndex = children.indexOf(this);
+
+                if (dragIndex < targetIndex) {
+                    parent.insertBefore(dragItem, this.nextSibling);
+                } else {
+                    parent.insertBefore(dragItem, this);
+                }
+            });
+        });
+    }
+
+    function checkSortOrderIf() {
+        const container = document.getElementById('sortContainerIf');
+        const items = container.querySelectorAll('.sort-item');
+        const feedback = document.getElementById('sortFeedbackIf');
+
+        let correct = true;
+        let expectedOrder = 0;
+
+        items.forEach(item => {
+            const order = parseInt(item.dataset.order);
+            item.classList.remove('correct-order', 'wrong-order');
+
+            if (order === expectedOrder) {
+                item.classList.add('correct-order');
+                expectedOrder++;
+            } else {
+                item.classList.add('wrong-order');
+                correct = false;
+            }
+        });
+
+        if (correct) {
+            feedback.className = 'sort-feedback success';
+            feedback.textContent = '✅ Отлично! Код собран в правильном порядке! Сначала условие if, затем else.';
+        } else {
+            feedback.className = 'sort-feedback fail';
+            feedback.textContent = '❌ Порядок нарушен. Вспомни: сначала идёт if, потом его блок, затем else и его блок.';
+        }
+    }
+
+    // ===== ВИКТОРИНА =====
+    function checkQuiz(containerId) {
+        const container = document.getElementById(containerId);
+        const questions = container.querySelectorAll('.quiz-question');
+        let total = 0, correct = 0;
+        questions.forEach(q => {
+            const correctVal = q.getAttribute('data-correct');
+            const selected = q.querySelector('input[type="radio"]:checked');
+            const feedback = q.querySelector('.q-feedback');
+            if (selected) {
+                total++;
+                if (selected.value === correctVal) {
+                    correct++;
+                    feedback.innerHTML = '✅ Верно!';
+                    feedback.style.color = '#2e7d32';
+                } else {
+                    feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+                    feedback.style.color = '#c62828';
+                }
+            } else {
+                feedback.innerHTML = '⚠️ Выбери вариант.';
+                feedback.style.color = '#f57c00';
+            }
+        });
+        const resultDiv = container.querySelector('.quiz-result');
+        if (resultDiv) {
+            if (total === 0) {
+                resultDiv.innerHTML = '⚠️ Ответь на все вопросы.';
+            } else {
+                resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${questions.length}`;
+            }
+            resultDiv.style.display = 'block';
+        }
+    }
+
+    // ===== ПРОГРЕСС ПРАКТИЧЕСКИХ ЗАДАНИЙ =====
+    function updatePracticeProgress() {
+        const checkboxes = document.querySelectorAll('#ifPractice input[type="checkbox"]');
+        const total = checkboxes.length;
+        let checked = 0;
+        checkboxes.forEach(cb => { if (cb.checked) checked++; });
+        const fill = document.getElementById('practiceProgressFill');
+        const label = document.getElementById('practiceProgressLabel');
+        if (fill) fill.style.width = (checked / total * 100) + '%';
+        if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+    }
+
+    // ===== АВТОМАТИЧЕСКАЯ ПРОВЕРКА СОПОСТАВЛЕНИЯ =====
+    document.querySelectorAll('.interactive-box select[data-correct]').forEach(sel => {
+        sel.addEventListener('change', function() {
+            const container = this.closest('.interactive-box');
+            if (container && container.id === 'matchConditions') {
+                const allSelected = container.querySelectorAll('select[data-correct]');
+                let allFilled = true;
+                allSelected.forEach(s => { if (s.value === '') allFilled = false; });
+                if (allFilled) {
+                    checkMatch('matchConditions');
+                }
+            }
+        });
+    });
+
+    // ===== ИНИЦИАЛИЗАЦИЯ =====
+    renderSortItemsIf();
+    updatePracticeProgress();
+</script>
+</body>
+</html>

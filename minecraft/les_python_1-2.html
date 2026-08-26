@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.2. Переменные и типы данных — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #eef2ff; border-bottom: 3px solid #4f46e5; }
+        .site-footer { background: #eef2ff; border-top: 3px solid #4f46e5; }
+        .brand-name { color: #312e81; }
+        .module-pill { background: #4f46e5; color: #fff; }
+        .hex-badge { background: #4f46e5; color: #fff; }
+        .data-table th { background: #4f46e5; color: #fff; }
+        .match-btn, .quiz-btn, .action-btn { background: #4f46e5; color: #fff; border: none; }
+        .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4338ca; }
+        .task-box { border-left: 4px solid #4f46e5; }
+        .code-block { border: 1px solid #c7d2fe; background: #f5f7ff; }
+        .interactive-box { background: #f8faff; border: 1px solid #c7d2fe; }
+        .syntax-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 10px; }
+        .syntax-card b { color: #4f46e5; }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .feature-grid .feature-item {
+            background: #f5f7ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .feature-grid .feature-item .icon { font-size: 32px; display: block; margin-bottom: 8px; }
+        .feature-grid .feature-item .title { font-weight: 700; color: #312e81; }
+        .code-block .code-head { background: #1e1e2e; color: #c7d2fe; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .code-block .code-head .dots { display: flex; gap: 6px; }
+        .code-block .code-head .dots .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .code-block .code-head .dots .dot.r { background: #d93b3b; }
+        .code-block .code-head .dots .dot.y { background: #ffb238; }
+        .code-block .code-head .dots .dot.g { background: #4f46e5; }
+        .code-block .code-head .fname { font-family: 'JetBrains Mono', monospace; font-size: 13px; opacity: 0.8; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; margin: 0; padding: 16px 20px; overflow-x: auto; font-size: 14px; line-height: 1.8; }
+        .code-block pre.code code { font-family: 'JetBrains Mono', Consolas, monospace; }
+        .tok-c { color: #7fcf9e; font-style: italic; }
+        .tok-k { color: #ffb238; font-weight: 700; }
+        .tok-s { color: #8fd7ff; }
+        .tok-f { color: #ffd08a; }
+        .tok-n { color: #ff9aae; }
+        .tok-v { color: #ff9aae; }
+        .tok-o { color: #ffb238; }
+        .note { background: #eef2ff; border-left: 6px solid #4f46e5; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.warn { background: #fef3c7; border-left-color: #f59e0b; }
+        .note.danger { background: #fde8e8; border-left-color: #d93b3b; }
+        .task-box .task-item {
+            background: #f5f7ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .task-box .task-item .task-title { font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; }
+        .task-box .task-item .task-title .badge {
+            background: #4f46e5;
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 99px;
+        }
+        .task-box .task-item .task-title .badge.bonus { background: #ffb238; color: #312e81; }
+        .task-box .task-item .task-code { margin-top: 10px; }
+        .task-box .task-item .task-code .code-block { margin: 0; }
+        .interactive-box .match-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .interactive-box .match-row .match-key {
+            background: #4f46e5;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            min-width: 120px;
+            text-align: center;
+        }
+        .interactive-box .match-row select {
+            flex: 1;
+            min-width: 150px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #c7d2fe;
+            font-family: 'Nunito', sans-serif;
+            background: #fff;
+        }
+        .interactive-box .match-row select.correct { border-color: #4f46e5; background: #eef2ff; }
+        .interactive-box .match-row select.incorrect { border-color: #d93b3b; background: #fde8e8; }
+        .interactive-box .match-result { margin-top: 12px; font-weight: 700; }
+        .progress-track {
+            background: #e8f5e9;
+            border-radius: 99px;
+            height: 20px;
+            overflow: hidden;
+            margin: 12px 0 6px;
+        }
+        .progress-fill-minecraft {
+            background: linear-gradient(90deg, #4f46e5, #4338ca);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 99px;
+        }
+        .progress-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #312e81;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .task-steps {
+            list-style: none;
+            margin: 10px 0 0;
+            padding: 0;
+        }
+        .task-steps li {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 12px 16px;
+            align-items: start;
+            padding: 10px 12px;
+            border-radius: 10px;
+            margin-bottom: 4px;
+        }
+        .task-steps li:hover { background: #f5f7ff; }
+        .task-steps input[type=checkbox] {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            accent-color: #4f46e5;
+            cursor: pointer;
+        }
+        .task-steps label {
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e2a3a;
+        }
+        .task-steps .bonus-step {
+            background: #f0edff;
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1px dashed #4f46e5;
+        }
+        .variable-demo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 16px;
+            background: #f5f7ff;
+            border-radius: 12px;
+            border: 2px solid #c7d2fe;
+            margin: 16px 0;
+        }
+        .variable-demo .box {
+            background: #fff;
+            border: 2px solid #4f46e5;
+            border-radius: 10px;
+            padding: 16px 24px;
+            text-align: center;
+            min-width: 100px;
+        }
+        .variable-demo .box .label { font-weight: 700; color: #312e81; font-size: 14px; }
+        .variable-demo .box .value { font-family: 'JetBrains Mono', monospace; font-size: 24px; color: #4f46e5; }
+        .variable-demo .arrow { font-size: 28px; color: #c7d2fe; }
+        .variable-demo .box-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .type-grid .type-card {
+            background: #f5f7ff;
+            border: 2px solid #c7d2fe;
+            border-radius: 10px;
+            padding: 14px 16px;
+            text-align: center;
+        }
+        .type-grid .type-card .type-name {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            color: #4f46e5;
+            font-size: 18px;
+        }
+        .type-grid .type-card .type-example {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: #312e81;
+            background: #fff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+        .type-grid .type-card .type-desc {
+            font-size: 13px;
+            color: #4a6a3a;
+            margin-top: 4px;
+        }
+        .name-rules {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .name-rules .rule-card {
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 2px solid;
+        }
+        .name-rules .rule-card.good { border-color: #4caf50; background: #e8f5e9; }
+        .name-rules .rule-card.bad { border-color: #d93b3b; background: #ffebee; }
+        .name-rules .rule-card .rule-title { font-weight: 700; }
+        .name-rules .rule-card.good .rule-title { color: #2e7d32; }
+        .name-rules .rule-card.bad .rule-title { color: #c62828; }
+        .name-rules .rule-card .rule-example { font-family: 'JetBrains Mono', monospace; font-size: 14px; margin-top: 4px; }
+        .name-rules .rule-card .rule-example code { background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; }
+        .name-rules .rule-card.bad .rule-example code { background: rgba(217, 59, 59, 0.1); }
+        .name-rules .rule-card.good .rule-example code { background: rgba(76, 175, 80, 0.1); }
+
+        /* AI помощник */
+        .ai-helper {
+            background: #1e1e2e;
+            color: #e4f5da;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-helper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.15), transparent 60%);
+            pointer-events: none;
+        }
+        .ai-head {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        .ai-head .ai-icon { font-size: 36px; line-height: 1; }
+        .ai-head .t {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 22px;
+        }
+        .ai-head .t span { color: #8fd7ff; }
+        .ai-sub {
+            color: #b8d9a8;
+            font-size: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .ai-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .ai-q-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e4f5da;
+            padding: 10px 18px;
+            border-radius: 99px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .ai-q-btn:hover {
+            background: rgba(79, 70, 229, 0.25);
+            border-color: rgba(79, 70, 229, 0.4);
+            transform: translateY(-2px);
+        }
+        .ai-answer {
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 4px solid #4f46e5;
+            border-radius: 0 12px 12px 0;
+            padding: 16px 20px;
+            font-size: 15px;
+            min-height: 44px;
+            position: relative;
+            color: #e4f5da;
+        }
+        .ai-real-tip {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.12);
+            font-size: 14px;
+            color: #b8d9a8;
+            position: relative;
+        }
+        .prompt-example {
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #ffd08a;
+        }
+        .ai-real-tip .warning {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #b8d9a8;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .name-rules { grid-template-columns: 1fr; }
+            .variable-demo { flex-direction: column; }
+            .ai-helper { padding: 20px 16px; }
+        }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div>
+                    <div class="brand-name">РОБОВИТА</div>
+                    <div class="brand-tag">учимся программировать роботов и игры</div>
+                </div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 1.2 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">1.2</div>
+            <div>
+                <div class="module-pill">Раздел 1 · Основы Python</div>
+                <h1>Переменные и типы данных</h1>
+                <p class="subtitle">Учимся хранить информацию в программах</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <!-- Цели -->
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Узнать, что такое переменная и зачем она нужна в программировании</li>
+            <li>Научиться объявлять переменные и присваивать им значения</li>
+            <li>Познакомиться с базовыми типами данных: числа, строки, логический тип</li>
+            <li>Узнать правила именования переменных в Python</li>
+            <li>Написать программы с использованием переменных в Minecraft</li>
+        </ul>
+    </div>
+
+    <!-- План занятия -->
+    <div class="card">
+        <h2>📋 План занятия</h2>
+        <table class="timetable">
+            <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>Что такое переменная</td><td>12 мин</td><td>Коробки для данных в программе</td></tr>
+            <tr><td>Типы данных</td><td>12 мин</td><td>Числа, строки, правда/ложь</td></tr>
+            <tr><td>Правила именования</td><td>10 мин</td><td>Как называть переменные правильно</td></tr>
+            <tr><td>Интерактив: Сопоставление</td><td>8 мин</td><td>Закрепляем знания</td></tr>
+            <tr><td>AI-помощник</td><td>5 мин</td><td>Спроси у Алисы</td></tr>
+            <tr><td>Практика: Переменные в Minecraft</td><td>35 мин</td><td>Пишем программы с переменными</td></tr>
+            <tr><td>Итоги и рефлексия</td><td>8 мин</td><td>Проверяем знания</td></tr>
+            <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+        </table>
+    </div>
+
+    <!-- Часть 1: Что такое переменная -->
+    <div class="card">
+        <h2><span class="num">1</span> Что такое переменная?</h2>
+        <p>Представь, что ты играешь в Minecraft и тебе нужно запомнить, сколько у тебя алмазов. Ты можешь записать это на листочке. В программировании для этого есть <b>переменные</b>.</p>
+
+        <div class="note">
+            <b>📦 Переменная</b> — это как коробка с именем, в которую можно положить какие-то данные (число, текст, и т.д.) и потом использовать их в программе.
+        </div>
+
+        <div class="variable-demo">
+            <div class="box-container">
+                <div class="box">
+                    <div class="label">Имя переменной</div>
+                    <div class="value" style="font-size: 18px; color: #312e81;">player_name</div>
+                </div>
+                <span class="arrow">=</span>
+                <div class="box" style="border-color: #ffb238;">
+                    <div class="label">Значение</div>
+                    <div class="value" style="color: #ffb238; font-size: 20px;">"Алекс"</div>
+                </div>
+            </div>
+            <div style="font-size: 14px; color: #4a6a3a;">⬅️ Переменная хранит текст</div>
+        </div>
+
+        <h3>Как объявить переменную в Python?</h3>
+        <p>В Python объявить переменную очень просто — нужно придумать имя и присвоить ей значение через знак <code>=</code>.</p>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">variables.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Объявление переменных</span>
+player_name = <span class="tok-s">"Алекс"</span>          <span class="tok-c"># Текст (строка)</span>
+player_age = <span class="tok-n">12</span>               <span class="tok-c"># Целое число</span>
+is_online = <span class="tok-n">True</span>             <span class="tok-c"># Логическое значение (правда)</span>
+speed = <span class="tok-n">5.5</span>                 <span class="tok-c"># Число с плавающей точкой</span>
+
+<span class="tok-c"># Использование переменной</span>
+player.say(<span class="tok-s">"Привет, я "</span> + player_name)</code></pre>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-item">
+                <span class="icon">📝</span>
+                <div class="title">Хранение данных</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Переменные запоминают информацию для использования в программе</div>
+            </div>
+            <div class="feature-item">
+                <span class="icon">🔄</span>
+                <div class="title">Изменение значений</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Значение переменной можно менять в процессе работы программы</div>
+            </div>
+            <div class="feature-item">
+                <span class="icon">🧩</span>
+                <div class="title">Упрощение кода</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Вместо повторения чисел/текста используем переменные</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Часть 2: Типы данных -->
+    <div class="card">
+        <h2><span class="num">2</span> Типы данных</h2>
+        <p>В Python данные бывают разных видов. Это называется <b>типами данных</b>. Представь, что у тебя есть коробки для разных вещей: для книг, для игрушек, для еды. Так и в программировании — для разных данных есть свои типы.</p>
+
+        <h3>Основные типы данных в Python</h3>
+        <div class="type-grid">
+            <div class="type-card">
+                <div class="type-name">int</div>
+                <div class="type-example">age = 12</div>
+                <div class="type-desc">Целые числа<br>без дробной части</div>
+            </div>
+            <div class="type-card">
+                <div class="type-name">float</div>
+                <div class="type-example">speed = 5.5</div>
+                <div class="type-desc">Числа с плавающей точкой<br>с дробной частью</div>
+            </div>
+            <div class="type-card">
+                <div class="type-name">str</div>
+                <div class="type-example">name = "Алекс"</div>
+                <div class="type-desc">Строки (текст)<br>в кавычках</div>
+            </div>
+            <div class="type-card">
+                <div class="type-name">bool</div>
+                <div class="type-example">is_online = True</div>
+                <div class="type-desc">Логический тип<br>True (правда) или False (ложь)</div>
+            </div>
+        </div>
+
+        <h3>Зачем нужны типы данных?</h3>
+        <p>Типы данных нужны, чтобы компьютер знал, как обрабатывать информацию. Например, с числами можно складывать, а с текстом — соединять (склеивать).</p>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">types_demo.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Работа с разными типами данных</span>
+<span class="tok-c"># Числа</span>
+count = <span class="tok-n">10</span>
+new_count = count + <span class="tok-n">5</span>      <span class="tok-c"># 15</span>
+
+<span class="tok-c"># Строки (текст)</span>
+name = <span class="tok-s">"Алекс"</span>
+greeting = <span class="tok-s">"Привет, "</span> + name   <span class="tok-c"># "Привет, Алекс"</span>
+
+<span class="tok-c"># Логический тип</span>
+is_day = <span class="tok-n">True</span>
+<span class="tok-k">if</span> is_day:
+    player.say(<span class="tok-s">"Доброе утро!"</span>)</code></pre>
+        </div>
+
+        <div class="note warn">
+            <b>⚠️ Важно!</b> Нельзя складывать числа и текст напрямую. Python выдаст ошибку!<br>
+            <code>age = 12</code> — число, <code>age + " лет"</code> — ❌ ошибка!<br>
+            <code>str(age) + " лет"</code> — ✅ правильно (преобразуем число в текст)
+        </div>
+    </div>
+
+    <!-- Часть 3: Правила именования -->
+    <div class="card">
+        <h2><span class="num">3</span> Правила именования переменных</h2>
+        <p>Придумывая имя для переменной, нужно соблюдать правила. Представь, что ты подписываешь коробку — имя должно быть понятным и правильным.</p>
+
+        <div class="name-rules">
+            <div class="rule-card good">
+                <div class="rule-title">✅ Правильные имена</div>
+                <div class="rule-example"><code>player_name</code></div>
+                <div class="rule-example"><code>age</code></div>
+                <div class="rule-example"><code>speed</code></div>
+                <div class="rule-example"><code>is_online</code></div>
+                <div style="font-size: 13px; color: #2e7d32; margin-top: 4px;">Понятные, на английском, с подчёркиванием</div>
+            </div>
+            <div class="rule-card bad">
+                <div class="rule-title">❌ Неправильные имена</div>
+                <div class="rule-example"><code>1player</code> — нельзя начинать с цифры</div>
+                <div class="rule-example"><code>player name</code> — нельзя использовать пробел</div>
+                <div class="rule-example"><code>def</code> — зарезервированное слово</div>
+                <div class="rule-example"><code>Имя_игрока</code> — лучше использовать английский</div>
+                <div style="font-size: 13px; color: #c62828; margin-top: 4px;">Начинаются с цифры, содержат пробелы, используют зарезервированные слова</div>
+            </div>
+        </div>
+
+        <div class="note">
+            <b>📌 Правила для имён переменных в Python:</b>
+            <ul>
+                <li>Имя может содержать только <b>буквы (a-z, A-Z)</b>, <b>цифры (0-9)</b> и <b>подчёркивание (_)</b></li>
+                <li>Имя <b>не может начинаться с цифры</b></li>
+                <li>Имя <b>не может содержать пробелы</b> (используй подчёркивание)</li>
+                <li>Используй <b>осмысленные имена</b> — чтобы было понятно, что хранит переменная</li>
+                <li>В Python принято использовать <b>строчные буквы</b> и подчёркивание: <code>player_name</code>, <code>block_count</code></li>
+                <li>Нельзя использовать <b>зарезервированные слова</b> (ключевые слова Python): <code>if</code>, <code>for</code>, <code>def</code>, <code>while</code>, <code>True</code>, <code>False</code> и другие</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ИНТЕРАКТИВ: Сопоставление типов данных -->
+    <div class="interactive-box" id="matchTypes">
+        <h2>🔑 Сопоставь значение и его тип</h2>
+        <p>Выбери правильный тип данных для каждого значения:</p>
+
+        <div class="match-row">
+            <div class="match-key">"Привет, мир!"</div>
+            <select data-correct="str">
+                <option value="">— выбери —</option>
+                <option value="int">int (целое число)</option>
+                <option value="float">float (дробное число)</option>
+                <option value="str">str (строка/текст)</option>
+                <option value="bool">bool (правда/ложь)</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">42</div>
+            <select data-correct="int">
+                <option value="">— выбери —</option>
+                <option value="int">int (целое число)</option>
+                <option value="float">float (дробное число)</option>
+                <option value="str">str (строка/текст)</option>
+                <option value="bool">bool (правда/ложь)</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">3.14</div>
+            <select data-correct="float">
+                <option value="">— выбери —</option>
+                <option value="int">int (целое число)</option>
+                <option value="float">float (дробное число)</option>
+                <option value="str">str (строка/текст)</option>
+                <option value="bool">bool (правда/ложь)</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">True</div>
+            <select data-correct="bool">
+                <option value="">— выбери —</option>
+                <option value="int">int (целое число)</option>
+                <option value="float">float (дробное число)</option>
+                <option value="str">str (строка/текст)</option>
+                <option value="bool">bool (правда/ложь)</option>
+            </select>
+        </div>
+
+        <button class="action-btn" onclick="checkMatch('matchTypes')">✅ Проверить</button>
+        <div class="match-result" id="matchResultTypes"></div>
+    </div>
+
+    <!-- ИНТЕРАКТИВ: Правильные имена -->
+    <div class="interactive-box" id="namesGame">
+        <h2>🧠 Выбери правильные имена переменных</h2>
+        <p>Отметь все имена, которые <b>можно</b> использовать в Python:</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 12px 0;">
+            <div style="background: #f5f7ff; border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; border: 2px solid #c7d2fe;" onclick="toggleNameChoice(this)" data-correct="true" data-checked="false">
+                <span style="font-size: 20px;">⬜</span>
+                <span style="font-family: 'JetBrains Mono', monospace;">player_name</span>
+            </div>
+            <div style="background: #f5f7ff; border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; border: 2px solid #c7d2fe;" onclick="toggleNameChoice(this)" data-correct="false" data-checked="false">
+                <span style="font-size: 20px;">⬜</span>
+                <span style="font-family: 'JetBrains Mono', monospace;">2player</span>
+            </div>
+            <div style="background: #f5f7ff; border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; border: 2px solid #c7d2fe;" onclick="toggleNameChoice(this)" data-correct="true" data-checked="false">
+                <span style="font-size: 20px;">⬜</span>
+                <span style="font-family: 'JetBrains Mono', monospace;">speed</span>
+            </div>
+            <div style="background: #f5f7ff; border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; border: 2px solid #c7d2fe;" onclick="toggleNameChoice(this)" data-correct="false" data-checked="false">
+                <span style="font-size: 20px;">⬜</span>
+                <span style="font-family: 'JetBrains Mono', monospace;">player name</span>
+            </div>
+            <div style="background: #f5f7ff; border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; border: 2px solid #c7d2fe;" onclick="toggleNameChoice(this)" data-correct="true" data-checked="false">
+                <span style="font-size: 20px;">⬜</span>
+                <span style="font-family: 'JetBrains Mono', monospace;">is_online</span>
+            </div>
+            <div style="background: #f5f7ff; border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; border: 2px solid #c7d2fe;" onclick="toggleNameChoice(this)" data-correct="false" data-checked="false">
+                <span style="font-size: 20px;">⬜</span>
+                <span style="font-family: 'JetBrains Mono', monospace;">def</span>
+            </div>
+        </div>
+        <button class="action-btn" onclick="checkNames()">✅ Проверить</button>
+        <div class="match-result" id="namesResult"></div>
+    </div>
+
+    <!-- AI-помощник -->
+    <div class="ai-helper">
+        <div class="ai-head">
+            <span class="ai-icon">🤖</span>
+            <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+        </div>
+        <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+
+        <div class="ai-buttons">
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Что такое переменная?</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%D0%B8%D0%B5%20%D0%B1%D1%8B%D0%B2%D0%B0%D1%8E%D1%82%20%D1%82%D0%B8%D0%BF%D1%8B%20%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Типы данных в Python</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D1%8C%D0%BD%D0%BE%20%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D1%82%D1%8C%20%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%83%D1%8E%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Правила именования</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="ai-q-btn">Переменные в Minecraft</a>
+        </div>
+
+        <div class="ai-answer">
+            💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+        </div>
+
+        <div class="ai-real-tip">
+            <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про переменные или программирование.<br>
+            <span class="prompt-example">Просто скажи: «Алиса, как создать переменную с именем игрока в Python?»</span>
+            <div class="warning">⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.</div>
+        </div>
+    </div>
+
+    <!-- Часть 4: Практические задания -->
+    <div class="task-box" id="variablesPractice">
+        <h2>🛠️ Практика: Переменные в Minecraft</h2>
+        <p>Теперь давай применим знания о переменных в Minecraft Education! Открой редактор кода (клавиша <code>C</code>) и выбери Python.</p>
+
+        <!-- Прогресс-бар -->
+        <div class="progress-track">
+            <div class="progress-fill-minecraft" id="practiceProgressFill" style="width: 0%;"></div>
+        </div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 6</span>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 1</span>
+                Приветствие с переменной
+                <input type="checkbox" id="task1" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Создай переменную <code>player_name</code> со значением <b>«Алекс»</b> и выведи в чат приветствие: <b>«Привет, Алекс!»</b>.</p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">hello_variable.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-c"># Объяви переменную с именем игрока</span>
+<span class="tok-c"># Выведи приветствие в чат</span>
+player_name = <span class="tok-s">"Алекс"</span>
+player.say(<span class="tok-s">"Привет, "</span> + player_name)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 2</span>
+                Счётчик блоков
+                <input type="checkbox" id="task2" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Создай переменную <code>block_count</code> со значением <b>10</b>. Затем создай переменную <code>new_count</code>, которая будет равна <code>block_count + 5</code>. Выведи в чат: <b>«У меня 15 блоков!»</b> (используй <code>str()</code> для преобразования числа в текст).</p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">blocks.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-c"># Создай переменные</span>
+block_count = <span class="tok-n">10</span>
+new_count = block_count + <span class="tok-n">5</span>
+player.say(<span class="tok-s">"У меня "</span> + str(new_count) + <span class="tok-s">" блоков!"</span>)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 3</span>
+                Переменная для команды чата
+                <input type="checkbox" id="task3" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Создай переменную <code>command_name</code> со значением <b>«hello»</b>. Напиши функцию, которая выводит в чат <b>«Привет от Python!»</b>, и привяжи её к команде чата, используя переменную <code>command_name</code>.</p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">command_var.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-c"># Создай переменную для команды</span>
+command_name = <span class="tok-s">"hello"</span>
+
+<span class="tok-k">def</span> <span class="tok-f">on_chat_hello</span>():
+    player.say(<span class="tok-s">"Привет от Python!"</span>)
+
+player.on_chat(command_name, on_chat_hello)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 4</span>
+                Имя и возраст
+                <input type="checkbox" id="task4" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Создай две переменные: <code>name</code> со значением <b>«Стив»</b> и <code>age</code> со значением <b>25</b>. Выведи в чат сообщение: <b>«Стиву 25 лет!»</b> (используй <code>str()</code> для числа).</p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">name_age.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-c"># Создай переменные для имени и возраста</span>
+name = <span class="tok-s">"Стив"</span>
+age = <span class="tok-n">25</span>
+player.say(name + <span class="tok-s">"у "</span> + str(age) + <span class="tok-s">" лет!"</span>)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 5</span>
+                Булевый тип (правда/ложь)
+                <input type="checkbox" id="task5" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Создай переменную <code>is_day</code> со значением <b>True</b>. Напиши условие: если <code>is_day</code> равно True, выведи в чат <b>«Доброе утро!»</b>, иначе выведи <b>«Спокойной ночи!»</b>.</p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">bool_demo.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-c"># Создай переменную is_day</span>
+is_day = <span class="tok-n">True</span>
+<span class="tok-k">if</span> is_day:
+    player.say(<span class="tok-s">"Доброе утро!"</span>)
+<span class="tok-k">else</span>:
+    player.say(<span class="tok-s">"Спокойной ночи!"</span>)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item" style="border: 2px dashed #4f46e5; background: #f0edff;">
+            <div class="task-title">
+                <span class="badge bonus">🚀 Бонус</span>
+                Свой проект с переменными
+                <input type="checkbox" id="task6" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Придумай программу с переменными в Minecraft: например, создай переменную для количества шагов Агента, для имени игрока или для цвета блоков. Поделись результатом с преподавателем!</p>
+        </div>
+
+        <!-- <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="action-btn" onclick="alert('✅ Отлично! Ты освоил переменные и типы данных!')">✅ Я всё сделал(а)!</button>
+        </div> -->
+    </div>
+
+    <!-- Опрос -->
+    <div class="quiz-wrap" id="quizVariables">
+        <h2>📝 Проверь себя</h2>
+
+        <div class="quiz-question" data-name="vq1" data-correct="b">
+            <p class="quiz-q-text">1. Что такое переменная в программировании?</p>
+            <label><input type="radio" name="vq1" value="a"> Это команда для вывода текста</label>
+            <label><input type="radio" name="vq1" value="b"> Это «коробка» с именем для хранения данных</label>
+            <label><input type="radio" name="vq1" value="c"> Это тип данных</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="vq2" data-correct="c">
+            <p class="quiz-q-text">2. Как объявить переменную с именем «age» и значением 10 в Python?</p>
+            <label><input type="radio" name="vq2" value="a"> var age = 10</label>
+            <label><input type="radio" name="vq2" value="b"> age = "10"</label>
+            <label><input type="radio" name="vq2" value="c"> age = 10</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="vq3" data-correct="a">
+            <p class="quiz-q-text">3. Какой тип данных у значения <code>3.14</code>?</p>
+            <label><input type="radio" name="vq3" value="a"> float (дробное число)</label>
+            <label><input type="radio" name="vq3" value="b"> int (целое число)</label>
+            <label><input type="radio" name="vq3" value="c"> str (строка)</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="vq4" data-correct="c">
+            <p class="quiz-q-text">4. Какое имя переменной написано <b>правильно</b>?</p>
+            <label><input type="radio" name="vq4" value="a"> 1player</label>
+            <label><input type="radio" name="vq4" value="b"> player name</label>
+            <label><input type="radio" name="vq4" value="c"> player_name</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="vq5" data-correct="b">
+            <p class="quiz-q-text">5. Какое значение у логического типа <code>bool</code>?</p>
+            <label><input type="radio" name="vq5" value="a"> Только числа</label>
+            <label><input type="radio" name="vq5" value="b"> True или False (правда или ложь)</label>
+            <label><input type="radio" name="vq5" value="c"> Только текст</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <button class="quiz-btn" onclick="checkQuiz('quizVariables')">Проверить ответы</button>
+        <div class="quiz-result"></div>
+    </div>
+
+    <!-- Рефлексия -->
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <p>Напиши, что тебе понравилось, а что было сложно:</p>
+        <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+    </div>
+
+    <!-- Навигация -->
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_1-1.html"><div class="lbl">← Назад</div><div class="ttl">1.1 Знакомство с Python</div></a>
+        <a class="nav-btn next" href="les_python_1-3.html"><div class="lbl">Далее →</div><div class="ttl">1.3 Условный оператор if</div></a>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Занятие 1.2 · Переменные и типы данных · офлайн-курс по Minecraft Education и Python</div>
+    </div>
+</footer>
+
+<script>
+    // ===== СОПОСТАВЛЕНИЕ ТИПОВ =====
+    function checkMatch(containerId) {
+        const container = document.getElementById(containerId);
+        const selects = container.querySelectorAll('select[data-correct]');
+        let correct = 0;
+        selects.forEach(sel => {
+            const correctVal = sel.getAttribute('data-correct');
+            sel.classList.remove('correct', 'incorrect');
+            if (sel.value === correctVal) {
+                sel.classList.add('correct');
+                correct++;
+            } else if (sel.value !== '') {
+                sel.classList.add('incorrect');
+            }
+        });
+        const resultDiv = container.querySelector('.match-result');
+        if (resultDiv) {
+            resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${selects.length}`;
+            resultDiv.style.display = 'block';
+        }
+    }
+
+    // ===== ИГРА С ИМЕНАМИ ПЕРЕМЕННЫХ =====
+    function toggleNameChoice(element) {
+        const isChecked = element.dataset.checked === 'true';
+        element.dataset.checked = isChecked ? 'false' : 'true';
+        const icon = element.querySelector('span:first-child');
+        if (isChecked) {
+            icon.textContent = '⬜';
+            element.style.borderColor = '#c7d2fe';
+            element.style.background = '#f5f7ff';
+        } else {
+            icon.textContent = '☑️';
+            element.style.borderColor = '#4f46e5';
+            element.style.background = '#eef2ff';
+        }
+        document.getElementById('namesResult').innerHTML = '';
+        document.getElementById('namesResult').style.display = 'none';
+    }
+
+    function checkNames() {
+        const items = document.querySelectorAll('#namesGame [data-correct]');
+        let selectedCorrect = 0;
+        let selectedIncorrect = 0;
+
+        items.forEach(item => {
+            const isCorrect = item.dataset.correct === 'true';
+            const isChecked = item.dataset.checked === 'true';
+            const icon = item.querySelector('span:first-child');
+
+            if (isChecked) {
+                if (isCorrect) {
+                    selectedCorrect++;
+                    item.style.borderColor = '#4caf50';
+                    item.style.background = '#e8f5e9';
+                    icon.textContent = '✅';
+                } else {
+                    selectedIncorrect++;
+                    item.style.borderColor = '#d93b3b';
+                    item.style.background = '#ffebee';
+                    icon.textContent = '❌';
+                }
+            } else {
+                if (isCorrect) {
+                    item.style.borderColor = '#ffb238';
+                    item.style.background = '#fff3e0';
+                    icon.textContent = '⚠️';
+                } else {
+                    item.style.borderColor = '#c7d2fe';
+                    item.style.background = '#f5f7ff';
+                    icon.textContent = '⬜';
+                }
+            }
+        });
+
+        const resultDiv = document.getElementById('namesResult');
+        resultDiv.style.display = 'block';
+        if (selectedIncorrect === 0 && selectedCorrect > 0 && selectedCorrect === document.querySelectorAll('#namesGame [data-correct="true"]').length) {
+            resultDiv.innerHTML = '🎉 Отлично! Все правильные имена найдены!';
+            resultDiv.style.color = '#2e7d32';
+        } else if (selectedIncorrect > 0) {
+            resultDiv.innerHTML = '❌ Некоторые выбранные имена неправильные. Вспомни правила!';
+            resultDiv.style.color = '#c62828';
+        } else if (selectedCorrect === 0) {
+            resultDiv.innerHTML = '💡 Выбери правильные имена переменных.';
+            resultDiv.style.color = '#f57c00';
+        } else {
+            const totalCorrect = document.querySelectorAll('#namesGame [data-correct="true"]').length;
+            resultDiv.innerHTML = `✅ Найдено ${selectedCorrect} из ${totalCorrect} правильных имён. Попробуй найти все!`;
+            resultDiv.style.color = '#4f46e5';
+        }
+    }
+
+    // ===== ВИКТОРИНА =====
+    function checkQuiz(containerId) {
+        const container = document.getElementById(containerId);
+        const questions = container.querySelectorAll('.quiz-question');
+        let total = 0, correct = 0;
+        questions.forEach(q => {
+            const correctVal = q.getAttribute('data-correct');
+            const selected = q.querySelector('input[type="radio"]:checked');
+            const feedback = q.querySelector('.q-feedback');
+            if (selected) {
+                total++;
+                if (selected.value === correctVal) {
+                    correct++;
+                    feedback.innerHTML = '✅ Верно!';
+                    feedback.style.color = '#2e7d32';
+                } else {
+                    feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+                    feedback.style.color = '#c62828';
+                }
+            } else {
+                feedback.innerHTML = '⚠️ Выбери вариант.';
+                feedback.style.color = '#f57c00';
+            }
+        });
+        const resultDiv = container.querySelector('.quiz-result');
+        if (resultDiv) {
+            if (total === 0) {
+                resultDiv.innerHTML = '⚠️ Ответь на все вопросы.';
+            } else {
+                resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${questions.length}`;
+            }
+            resultDiv.style.display = 'block';
+        }
+    }
+
+    // ===== ПРОГРЕСС ПРАКТИЧЕСКИХ ЗАДАНИЙ =====
+    function updatePracticeProgress() {
+        const checkboxes = document.querySelectorAll('#variablesPractice input[type="checkbox"]');
+        const total = checkboxes.length;
+        let checked = 0;
+        checkboxes.forEach(cb => { if (cb.checked) checked++; });
+        const fill = document.getElementById('practiceProgressFill');
+        const label = document.getElementById('practiceProgressLabel');
+        if (fill) fill.style.width = (checked / total * 100) + '%';
+        if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+    }
+
+    // ===== АВТОМАТИЧЕСКАЯ ПРОВЕРКА СОПОСТАВЛЕНИЯ =====
+    document.querySelectorAll('.interactive-box select[data-correct]').forEach(sel => {
+        sel.addEventListener('change', function() {
+            const container = this.closest('.interactive-box');
+            if (container && container.id === 'matchTypes') {
+                const allSelected = container.querySelectorAll('select[data-correct]');
+                let allFilled = true;
+                allSelected.forEach(s => { if (s.value === '') allFilled = false; });
+                if (allFilled) {
+                    checkMatch('matchTypes');
+                }
+            }
+        });
+    });
+
+    // ===== ИНИЦИАЛИЗАЦИЯ =====
+    updatePracticeProgress();
+</script>
+</body>
+</html>
