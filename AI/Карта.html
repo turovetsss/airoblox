@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Траектория курса ИИ — Учебный центр «РОБОВИТА»</title>
+<title>Траектория курса «ИИ-творец» — Учебный центр «РОБОВИТА»</title>
 <link rel="stylesheet" href="../assets/css/styles.css">
 <style>
   .map-legend {
@@ -27,7 +27,7 @@
   }
   .path-strip {
     display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0 0;
-    font-weight: 800; font-size: .9rem;
+    font-weight: 800; font-size: .88rem;
   }
   .path-strip span {
     background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 6px 10px;
@@ -38,28 +38,25 @@
     display: block; margin-top: 4px; font-size: .9rem; font-weight: 600;
     color: #64748b; line-height: 1.4;
   }
-  /* ссылочные строки — кликабельны, как в карте курса Roblox */
-  a.lrow {
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
+  .lrow .meta {
+    display: block; margin-top: 6px; font-size: .82rem; font-weight: 700;
+    color: #475569; line-height: 1.35;
   }
-  a.lrow:hover {
-    transform: translateY(-1px);
-    border-color: var(--primary);
+  /* карта только для наглядности — без переходов */
+  .lrow.locked {
+    cursor: default;
+    pointer-events: none;
+    opacity: .92;
+    user-select: none;
+  }
+  .lrow.locked:hover {
+    transform: none;
+    border-color: var(--line);
     background: #F6FBF3;
   }
-  /* добавим стиль для нулевого занятия, чтобы выделить */
-  .lrow.promo {
-    border-color: var(--gold);
-    background: #FFFBEB;
-  }
-  .lrow.promo:hover {
-    background: #FEF3C7;
-  }
-  .lrow.promo .code {
-    background: var(--gold);
-    color: #1a1a1a;
+  .goal-box {
+    margin-top: 12px; padding: 12px 14px; border-radius: 12px;
+    background: #fff; border: 1px dashed #9CC97A; font-weight: 700; color: #334155; line-height: 1.45;
   }
 </style>
 </head>
@@ -72,15 +69,15 @@
         <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
         <div>
           <div class="brand-name">РОБОВИТА</div>
-          <div class="brand-tag">курс искусственного интеллекта</div>
+          <div class="brand-tag">курс «ИИ-творец»</div>
         </div>
       </div>
     </div>
     <div class="hero">
       <div>
-        <div class="module-pill">Курс · Искусственный интеллект</div>
-        <h1>Траектория курса</h1>
-        <p class="subtitle">От «что такое ИИ» — к безопасному поиску, проверке фактов и финальной миссии</p>
+        <div class="module-pill">Курс · 36 занятий · 6 модулей</div>
+        <h1>Траектория курса «ИИ-творец»</h1>
+        <p class="subtitle">От первого знакомства с ИИ — до своего помощника и защиты проекта на конференции «ИИ-старт»</p>
       </div>
     </div>
   </div>
@@ -91,117 +88,392 @@
   <div class="card" style="background:linear-gradient(135deg,var(--primary-light),#F2FCE9);border:none;">
     <h2 style="color:var(--primary-dark);">👋 Как устроена программа</h2>
     <p>
-      Курс из <b>7 занятий</b> (включая бесплатное пробное): сначала знакомимся с ИИ и учимся говорить с ним,
-      потом безопасность и правда в сети, умный поиск и финальная миссия агента.
-      Это обзор траектории — <b>кликайте на занятия для просмотра</b>.
+      Курс из <b>36 занятий</b> в <b>6 модулях</b>: от AI-грамотности и безопасности —
+      к промптам, мультимедиа, учёбе с ИИ, автоматизации и финальному проекту.
     </p>
     <div class="path-strip">
-      <span>0. Пробное</span> →
-      <span>1. Что такое ИИ</span> →
-      <span>2. Промпты</span> →
-      <span>3. Кибербезопасность</span> →
-      <span>4. Правда и фейки</span> →
-      <span>5. Умный поиск</span> →
-      <span>6. Агент ИИ</span>
-    </div>
-    <div class="map-legend">
-      <span><span class="st done" style="padding:4px 10px;border-radius:99px;">✅ В программе</span> тема входит в курс</span>
-      <span><span style="background:var(--gold);color:#1a1a1a;padding:4px 10px;border-radius:99px;">⭐ Пробное</span> бесплатное знакомство</span>
+      <span>М1 · Безопасность</span> →
+      <span>М2 · Промпты</span> →
+      <span>М3 · Мультимедиа</span> →
+      <span>М4 · Учёба</span> →
+      <span>М5 · Агенты</span> →
+      <span>М6 · Проект</span>
     </div>
     <div class="map-progress">
-      Занятий в траектории: <b>7</b>
+      Занятий в траектории: <b>36</b>
       <div class="bar"><div class="fill"></div></div>
     </div>
   </div>
 
-  <!-- Нулевое пробное занятие -->
-  <div class="card module-card" style="border-color:var(--gold);">
-    <h2>⭐ Пробное занятие · знакомство с форматом <span class="mod-count">1 занятие</span></h2>
-    <p class="section-note">Бесплатное ознакомительное занятие: компьютер, алгоритм, игры и мини-проект с ИИ.</p>
-    <div class="lrows">
-      <a class="lrow promo" href="Пробное.html">
-        <span class="code">0</span>
-        <span class="ttl-wrap">
-          <span class="ttl">Лаборатория старта: компьютер и ИИ</span>
-          <span class="desc">Теория, алгоритм, 5 мини-игр, запросы к ИИ и создание карточки «Мой умный помощник».</span>
-        </span>
-        <span class="st" style="background:var(--gold);color:#1a1a1a;padding:4px 12px;border-radius:99px;">⭐ Пробное</span>
-      </a>
-    </div>
-  </div>
-
+  <!-- МОДУЛЬ 1 -->
   <div class="card module-card">
-    <h2>Модуль · Знакомство с ИИ <span class="mod-count">2 занятия</span></h2>
-    <p class="section-note">База: что умеет ИИ и как с ним правильно общаться.</p>
+    <h2>Модуль 1 · Знакомство с ИИ и безопасность <span class="mod-count">занятия 1–6</span></h2>
+    <p class="section-note">Снять страх перед технологией, дать базовые навыки безопасной работы и привычку проверять ответы ИИ.</p>
     <div class="lrows">
-      <!-- Занятие 1 -->
-      <a class="lrow" href="Занятие_1_Что_такое_ИИ.html">
+      <div class="lrow locked">
         <span class="code">1</span>
         <span class="ttl-wrap">
-          <span class="ttl">Что такое искусственный интеллект?</span>
-          <span class="desc">Лаборатория будущего: миссии про ИИ, чипы знаний и сертификат знакомства.</span>
+          <span class="ttl">Что такое ИИ?</span>
+          <span class="desc">Игра «Быстро, рисуй!»; примеры из жизни (T9, рекомендации); регистрация в ChatGPT/DeepSeek.</span>
+          <span class="meta">🛠 ChatGPT, DeepSeek · Итог: аккаунт + первый диалог</span>
         </span>
-        <span class="st done">✅ В программе</span>
-      </a>
-      <!-- Занятие 2 -->
-      <a class="lrow" href="Занятие_2_Мастер_Промтов.html">
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
         <span class="code">2</span>
         <span class="ttl-wrap">
-          <span class="ttl">Как общаться с ИИ? (промпты)</span>
-          <span class="desc">Мастер промптов: чёткие запросы, роли, ограничения и практика диалога с ИИ.</span>
+          <span class="ttl">Как общаться с ИИ?</span>
+          <span class="desc">Понятие промпта; сравнение простого и сложного запроса.</span>
+          <span class="meta">🛠 ChatGPT, DeepSeek · Итог: разница плохого и хорошего запроса</span>
         </span>
-        <span class="st done">✅ В программе</span>
-      </a>
-    </div>
-  </div>
-
-  <div class="card module-card">
-    <h2>Модуль · Безопасность и правда <span class="mod-count">2 занятия</span></h2>
-    <p class="section-note">Защита в цифровой среде и умение отличать правду от обмана.</p>
-    <div class="lrows">
-      <!-- Занятие 3 -->
-      <a class="lrow" href="Занятие_3.html">
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
         <span class="code">3</span>
         <span class="ttl-wrap">
-          <span class="ttl">Академия кибердетективов</span>
-          <span class="desc">Фишинг, вирусы, пароли и правила безопасного поведения в сети.</span>
+          <span class="ttl">Безопасность в интернете</span>
+          <span class="desc">Пароли, фишинг, кибербуллинг; чек-лист безопасности.</span>
+          <span class="meta">🛠 — · Итог: чек-лист «Как безопасно общаться с ИИ»</span>
         </span>
-        <span class="st done">✅ В программе</span>
-      </a>
-      <!-- Занятие 4 -->
-      <a class="lrow" href="Занятие_4.html">
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
         <span class="code">4</span>
         <span class="ttl-wrap">
-          <span class="ttl">Академия детективов правды</span>
-          <span class="desc">Фейки, проверка фактов, этика ИИ — учимся не верить всему подряд.</span>
+          <span class="ttl">Этические нормы</span>
+          <span class="desc">Дипфейки, авторское право, «галлюцинации»; фактчекинг.</span>
+          <span class="meta">🛠 ChatGPT · Итог: навык критической оценки текста от ИИ</span>
         </span>
-        <span class="st done">✅ В программе</span>
-      </a>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">5</span>
+        <span class="ttl-wrap">
+          <span class="ttl">ИИ-поисковики</span>
+          <span class="desc">Поиск с ИИ; подготовка доклада по школьной теме.</span>
+          <span class="meta">🛠 Perplexity AI · Итог: структурированный доклад</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">6</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Итог модуля 1</span>
+          <span class="desc">Создание «Памятки по безопасности в ИИ».</span>
+          <span class="meta">🛠 Gamma · Итог: презентация-памятка</span>
+        </span>
+        <span class="st" style="background:#E0E7FF;color:#3730A3;">🏁 Итог модуля</span>
+      </div>
     </div>
   </div>
 
+  <!-- МОДУЛЬ 2 -->
   <div class="card module-card">
-    <h2>Модуль · Поиск и итог <span class="mod-count">2 занятия</span></h2>
-    <p class="section-note">Умный поиск с ИИ и финальная практическая миссия.</p>
+    <h2>Модуль 2 · Мастер промптов: текст и изображения <span class="mod-count">занятия 7–12</span></h2>
+    <p class="section-note">От «хочу картинку» — к осознанному навыку сильных промптов для текста и графики.</p>
     <div class="lrows">
-      <!-- Занятие 5 -->
-      <a class="lrow" href="Занятие_5.html">
-        <span class="code">5</span>
+      <div class="lrow locked">
+        <span class="code">7</span>
         <span class="ttl-wrap">
-          <span class="ttl">Экспедиция в мир умного поиска</span>
-          <span class="desc">Perplexity и исследование темы: как собрать надёжный доклад с помощью ИИ.</span>
+          <span class="ttl">Структура промпта</span>
+          <span class="desc">Формула «Роль + Задача + Контекст + Формат»; тексты в разных стилях.</span>
+          <span class="meta">🛠 ChatGPT, DeepSeek · Итог: текст в 3 стилях</span>
         </span>
-        <span class="st done">✅ В программе</span>
-      </a>
-      <!-- Занятие 6 -->
-      <a class="lrow" href="Занятие_6.html">
-        <span class="code">6</span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">8</span>
         <span class="ttl-wrap">
-          <span class="ttl">Агент безопасности ИИ</span>
-          <span class="desc">Финальная миссия: помочь героям, применить всё изученное и закрепить роль эксперта.</span>
+          <span class="ttl">Управление контекстом</span>
+          <span class="desc">Ролевое моделирование; интервью с исторической личностью.</span>
+          <span class="meta">🛠 ChatGPT / DeepSeek · Итог: диалог-ролеплей</span>
         </span>
-        <span class="st done">✅ В программе</span>
-      </a>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">9</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Генерация изображений</span>
+          <span class="desc">Промпт для картинки: объект, стиль, окружение, свет.</span>
+          <span class="meta">🛠 Kandinsky, Шедеврум · Итог: готовая открытка</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">10</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Продвинутая графика</span>
+          <span class="desc">Inpainting / Outpainting — «волшебный ластик».</span>
+          <span class="meta">🛠 Kandinsky, Remove.bg · Итог: отредактированное фото</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">11</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Смешение концепций</span>
+          <span class="desc">Креативные миксы: «смартфон в стиле да Винчи» и другие связки идей.</span>
+          <span class="meta">🛠 Kandinsky, Ideogram · Итог: креативное изображение</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">12</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Итог модуля 2</span>
+          <span class="desc">Комикс из 4 кадров: текст + единый стиль иллюстраций.</span>
+          <span class="meta">🛠 ChatGPT + Kandinsky · Итог: готовый комикс</span>
+        </span>
+        <span class="st" style="background:#E0E7FF;color:#3730A3;">🏁 Итог модуля</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДУЛЬ 3 -->
+  <div class="card module-card">
+    <h2>Модуль 3 · ИИ-мультимедиа: музыка, видео, анимация <span class="mod-count">занятия 13–18</span></h2>
+    <p class="section-note">ИИ работает не только с текстом и картинками — со звуком и движением тоже.</p>
+    <div class="lrows">
+      <div class="lrow locked">
+        <span class="code">13</span>
+        <span class="ttl-wrap">
+          <span class="ttl">ИИ-музыка</span>
+          <span class="desc">Создание песни по жанру и настроению.</span>
+          <span class="meta">🛠 Suno AI · Итог: готовая песня</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">14</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Звуковой дизайн</span>
+          <span class="desc">Озвучивание персонажа голосовой нейросетью.</span>
+          <span class="meta">🛠 D-ID / голосовые ИИ · Итог: озвученный персонаж</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">15</span>
+        <span class="ttl-wrap">
+          <span class="ttl">ИИ-видео</span>
+          <span class="desc">Видео с переходами и эффектами.</span>
+          <span class="meta">🛠 CapCut · Итог: короткое видео</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">16</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Анимация</span>
+          <span class="desc">«Оживление» рисунка.</span>
+          <span class="meta">🛠 RunwayML / Pika · Итог: анимированный рисунок</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">17</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Создание мультфильма</span>
+          <span class="desc">Сборка 30-секундного мультфильма по сценарию из модуля 2.</span>
+          <span class="meta">🛠 CapCut + Pika · Итог: мультфильм 30 сек</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">18</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Итог модуля 3</span>
+          <span class="desc">Презентация клипа / мультфильма.</span>
+          <span class="meta">🛠 — · Итог: медиапродукт в портфолио</span>
+        </span>
+        <span class="st" style="background:#E0E7FF;color:#3730A3;">🏁 Итог модуля</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДУЛЬ 4 -->
+  <div class="card module-card">
+    <h2>Модуль 4 · ИИ-помощник в учёбе <span class="mod-count">занятия 19–24</span></h2>
+    <p class="section-note">Перенести творческие навыки в практику: ИИ как помощник по школьной программе.</p>
+    <div class="lrows">
+      <div class="lrow locked">
+        <span class="code">19</span>
+        <span class="ttl-wrap">
+          <span class="ttl">ИИ-репетитор</span>
+          <span class="desc">Объяснение сложной темы «простыми словами».</span>
+          <span class="meta">🛠 ChatGPT / DeepSeek · Итог: простое объяснение темы</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">20</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Генерация квизов</span>
+          <span class="desc">Тест для самопроверки по теме.</span>
+          <span class="meta">🛠 ChatGPT · Итог: тест с ответами</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">21</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Работа с текстом</span>
+          <span class="desc">Саммаризация и сравнение источников.</span>
+          <span class="meta">🛠 ChatGPT, NotebookLM · Итог: краткий пересказ статьи</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">22</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Математика / физика</span>
+          <span class="desc">Распознавание рукописной задачи, поиск ошибок.</span>
+          <span class="meta">🛠 Photomath / Solvely · Итог: разобранная задача</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">23</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Иностранный язык</span>
+          <span class="desc">Диалог с ИИ на английском по сценарию.</span>
+          <span class="meta">🛠 ChatGPT · Итог: диалог на иностранном языке</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">24</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Итог модуля 4</span>
+          <span class="desc">«ИИ-шпаргалка» по любимому предмету.</span>
+          <span class="meta">🛠 Gamma · Итог: готовая шпаргалка</span>
+        </span>
+        <span class="st" style="background:#E0E7FF;color:#3730A3;">🏁 Итог модуля</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДУЛЬ 5 (инструменты/итоги исправлены по смыслу тем) -->
+  <div class="card module-card">
+    <h2>Модуль 5 · Автоматизация и ИИ-агенты <span class="mod-count">занятия 25–30</span></h2>
+    <p class="section-note">Логика «если — то», связка сервисов и первые ИИ-агенты для полезных задач.</p>
+    <div class="lrows">
+      <div class="lrow locked">
+        <span class="code">25</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Что такое автоматизация?</span>
+          <span class="desc">Сценарий «если — то».</span>
+          <span class="meta">🛠 Make / визуальный конструктор · Итог: сценарий автоматизации</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">26</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Связка сервисов</span>
+          <span class="desc">Автоотправка уведомления в Telegram.</span>
+          <span class="meta">🛠 Make + Telegram · Итог: настроенная автоотправка</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">27</span>
+        <span class="ttl-wrap">
+          <span class="ttl">ИИ-агенты</span>
+          <span class="desc">Понятие агента; постановка задачи и наблюдение.</span>
+          <span class="meta">🛠 Конструктор агентов / ChatGPT · Итог: работающий агент</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">28</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Декомпозиция задач</span>
+          <span class="desc">Разбивка сложной задачи на шаги для агента.</span>
+          <span class="meta">🛠 ChatGPT + схема · Итог: схема шагов</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">29</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Агент-ассистент</span>
+          <span class="desc">Создание агента для работы с учебными материалами.</span>
+          <span class="meta">🛠 Make / агент-конструктор · Итог: агент-ассистент</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">30</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Итог модуля 5</span>
+          <span class="desc">«ИИ-ассистент» для класса.</span>
+          <span class="meta">🛠 Make + Telegram · Итог: работающий класс-ассистент</span>
+        </span>
+        <span class="st" style="background:#E0E7FF;color:#3730A3;">🏁 Итог модуля</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДУЛЬ 6 -->
+  <div class="card module-card">
+    <h2>Модуль 6 · Финальный проект <span class="mod-count">занятия 31–36</span></h2>
+    <p class="section-note">Собрать все навыки в авторский проект и защитить его на конференции «ИИ-старт».</p>
+    <div class="lrows">
+      <div class="lrow locked">
+        <span class="code">31</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Выбор идеи</span>
+          <span class="desc">Мозговой штурм; паспорт проекта.</span>
+          <span class="meta">🛠 Gamma · Итог: паспорт проекта</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">32</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Сбор материалов</span>
+          <span class="desc">Генерация текстов, изображений и промптов.</span>
+          <span class="meta">🛠 ChatGPT, Kandinsky · Итог: набор материалов</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">33</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Прототипирование</span>
+          <span class="desc">Сборка первой версии (MVP).</span>
+          <span class="meta">🛠 Все изученные · Итог: MVP проекта</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">34</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Тестирование</span>
+          <span class="desc">Фактчекинг, исправление ошибок, краш-тест.</span>
+          <span class="meta">🛠 — · Итог: доработанный продукт</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">35</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Упаковка проекта</span>
+          <span class="desc">Презентация + подготовка выступления.</span>
+          <span class="meta">🛠 Gamma · Итог: готовая презентация</span>
+        </span>
+        <span class="st soon">🔒 Закрыто</span>
+      </div>
+      <div class="lrow locked">
+        <span class="code">36</span>
+        <span class="ttl-wrap">
+          <span class="ttl">Конференция «ИИ-старт»</span>
+          <span class="desc">Публичная защита проектов, голосование.</span>
+          <span class="meta">🛠 — · Итог: портфолио + защищённый проект</span>
+        </span>
+        <span class="st" style="background:#E0E7FF;color:#3730A3;">🏁 Итог курса</span>
+      </div>
     </div>
   </div>
 
@@ -213,7 +485,7 @@
       <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
       Учебный центр «РОБОВИТА»
     </div>
-    <div>Траектория курса · Искусственный интеллект</div>
+    <div>Траектория · «ИИ-творец» · 36 занятий</div>
   </div>
 </footer>
 

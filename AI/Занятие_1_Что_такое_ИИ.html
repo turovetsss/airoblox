@@ -814,5 +814,18 @@
 
         updateChipProgress();
     </script>
+    <script src="group-access.js"></script>
+    <script>
+(async function () {
+  const ctx = await GroupAccess.guardLessonPage({ lessonId: 1 }); // 2, 3, 4...
+  if (!ctx) return;
+  // дальше ваш существующий код с RobovitaProgress.mount:
+  RobovitaProgress.mount({
+    key: ctx.progressKey,  // или lessonId: 1 — патч сам соберёт ключ
+    lessonId: 1,
+    // ... остальное без изменений
+  });
+})();
+</script>
 </body>
 </html>

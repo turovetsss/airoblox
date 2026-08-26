@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мои занятия · ИИ-творец</title>
+<link rel="stylesheet" href="../assets/css/styles.css">
+<style>
+  .lrow.open { cursor: pointer; text-decoration: none; color: inherit; }
+  .lrow.open:hover { border-color: var(--primary); background: #F6FBF3; transform: translateY(-1px); }
+  .lrow.locked { opacity: .65; pointer-events: none; }
+  .lrow .meta { display: block; margin-top: 4px; font-size: .85rem; color: #64748b; font-weight: 600; }
+</style>
+</head>
+<body class="course-map">
+<main class="wrap">
+  <div class="card">
+    <h2 id="pageTitle">Мои занятия</h2>
+    <p id="pageSub"></p>
+    <div class="lrows" id="lessonList"></div>
+    <p style="margin-top:16px;">
+      <a href="vhod.html" style="font-weight:700;">↺ Сменить группу / имя</a>
+    </p>
+  </div>
+</main>
+<script src="group-access.js"></script>
+<script>
+(async function () {
+  const profile = GroupAccess.getProfile();
+  if (!profile) { location.href = 'vhod.html'; return; }
+
+  const cfg = await GroupAccess.loadConfig();
+  const group = cfg.groups[profile.groupId];
+  if (!group) { GroupAccess.clearProfile(); location.href = 'vhod.html'; return; }
+
+  document.getElementById('pageTitle').textContent = '👋 ' + profile.studentName + ' · ' + group.title;
+  document.getElementById('pageSub').textContent = group.scheduleLabel + ' · старт ' + GroupAccess.formatDate(GroupAccess.parseDate(group.startDate));
+
+  const list = document.getElementById('lessonList');
+  cfg.lessons.forEach(lesson => {
+    const unlocked = GroupAccess.isLessonUnlocked(group, lesson.id);
+    const unlockDate = GroupAccess.getLessonUnlockDate(group, lesson.id);
+    const el = document.createElement(unlocked ? 'a' : 'div');
+    el.className = 'lrow ' + (unlocked ? 'open' : 'locked');
+    if (unlocked) el.href = lesson.file;
+    el.innerHTML = `
+      <span class="code">${lesson.id}</span>
+      <span class="ttl-wrap">
+        <span class="ttl">${lesson.title}</span>
+        <span class="meta">${unlocked ? '✅ Открыто' : '🔒 Откроется ' + GroupAccess.formatDate(unlockDate)}</span>
+      </span>
+      <span class="st ${unlocked ? 'done' : 'soon'}">${unlocked ? 'Перейти' : 'Скоро'}</span>`;
+    list.appendChild(el);
+  });
+})();
+</script>
+</body>
+</html>

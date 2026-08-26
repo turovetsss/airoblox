@@ -21,6 +21,12 @@
 
     mount(opts) {
       this._opts = opts || {};
+      if (global.GroupAccess) {
+  const profile = global.GroupAccess.getProfile();
+  if (profile && opts.lessonId) {
+    opts.key = global.GroupAccess.progressKey(profile.groupId, opts.lessonId, profile.studentName);
+  }
+}
       const host = document.querySelector(opts.host || '#progressProfileHost');
       if (!host) {
         console.warn('RobovitaProgress: host not found');

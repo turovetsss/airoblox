@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вход в группу · ИИ-творец</title>
+<link rel="stylesheet" href="../assets/css/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Nunito', sans-serif; }
+  .login-card { max-width: 440px; margin: 40px auto; padding: 28px; }
+  .login-card label { display: block; font-weight: 800; margin: 14px 0 6px; }
+  .login-card input, .login-card select {
+    width: 100%; padding: 12px 14px; border: 2px solid var(--line);
+    border-radius: 12px; font-size: 1rem; font-family: inherit;
+  }
+  .login-btn {
+    width: 100%; margin-top: 20px; padding: 14px;
+    background: var(--primary); color: #fff; border: none;
+    border-radius: 30px; font-weight: 900; font-size: 1.1rem; cursor: pointer;
+  }
+  .group-info { background: var(--primary-light); border-radius: 12px; padding: 12px; margin-top: 12px; font-weight: 700; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="card login-card">
+    <h1 style="font-size:1.8rem;margin-bottom:8px;">👋 Вход в курс</h1>
+    <p>Выбери свою группу и введи имя. Так откроются только ваши занятия.</p>
+
+    <label for="groupSelect">Группа</label>
+    <select id="groupSelect">
+      <option value="">— выбери группу —</option>
+      <option value="sb-1330">Сб 13:30–15:00 (старт 05.09)</option>
+      <option value="sb-1515">Сб 15:15–16:45 (старт 05.09)</option>
+      <option value="sun-1345">Вс 13:45–15:15 (старт 06.09)</option>
+    </select>
+
+    <div class="group-info" id="groupInfo" style="display:none;"></div>
+
+    <label for="studentName">Твоё имя</label>
+    <input id="studentName" type="text" maxlength="40" placeholder="Например: Маша" autocomplete="nickname">
+
+    <button class="login-btn" type="button" id="enterBtn">Войти →</button>
+  </div>
+</main>
+
+<script src="group-access.js"></script>
+<script>
+(async function () {
+  const params = new URLSearchParams(location.search);
+  const preGroup = params.get('g');
+  const select = document.getElementById('groupSelect');
+  const info = document.getElementById('groupInfo');
+  const cfg = await GroupAccess.loadConfig();
+
+  if (preGroup && cfg.groups[preGroup]) select.value = preGroup;
+
+  function updateInfo() {
+    const g = cfg.groups[select.value];
+    if (!g) { info.style.display = 'none'; return; }
+    info.style.display = 'block';
+    info.innerHTML = `📅 Старт: <b>${GroupAccess.formatDate(GroupAccess.parseDate(g.startDate))}</b><br>${g.scheduleLabel}`;
+  }
+  select.addEventListener('change', updateInfo);
+  updateInfo();
+
+  document.getElementById('enterBtn').addEventListener('click', () => {
+    const groupId = select.value;
+    const name = document.getElementById('studentName').value.trim();
+    if (!groupId) { alert('Выбери группу'); return; }
+    if (!name) { alert('Введи имя'); return; }
+    GroupAccess.setProfile(groupId, name);
+    location.href = 'karta-gruppy.html';
+  });
+})();
+</script>
+</body>
+</html>
