@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4.2. ИИ и Minecraft — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #d5def1; border-bottom: 3px solid #06b6d4; }
+        .site-footer { background: #0f172a; border-top: 3px solid #06b6d4; }
+        .site-footer, .site-footer .foot-brand { color: #e2e8f0; }
+        .brand-name { color: #312e81; }
+        .lesson-page .hero h1 { color: #1e1b4b; }
+        .module-pill { background: #0891b2; color: #fff; }
+        .hex-badge { background: linear-gradient(135deg, #06b6d4, #6366f1); color: #fff; }
+        .match-btn, .quiz-btn, .action-btn { background: #4f46e5; color: #fff; border: none; cursor: pointer; padding: 10px 20px; border-radius: 8px; font-weight: 700; }
+        .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4338ca; }
+        .action-btn.outline { background: transparent; border: 2px solid #4f46e5; color: #312e81; }
+        .task-box { border-left: 4px solid #06b6d4; }
+        .code-block { border: 1px solid #c7d2fe; background: #f5f7ff; }
+        .interactive-box { background: #f8faff; border: 1px solid #c7d2fe; }
+        .code-block .code-head { background: #1e1e2e; color: #c7d2fe; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .code-block .code-head .dots { display: flex; gap: 6px; }
+        .code-block .code-head .dots .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .code-block .code-head .dots .dot.r { background: #d93b3b; }
+        .code-block .code-head .dots .dot.y { background: #ffb238; }
+        .code-block .code-head .dots .dot.g { background: #06b6d4; }
+        .code-block .code-head .fname { font-family: 'JetBrains Mono', monospace; font-size: 13px; opacity: 0.8; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; margin: 0; padding: 16px 20px; overflow-x: auto; font-size: 14px; line-height: 1.8; }
+        .tok-c { color: #7fcf9e; font-style: italic; }
+        .tok-k { color: #ffb238; font-weight: 700; }
+        .tok-s { color: #8fd7ff; }
+        .tok-f { color: #ffd08a; }
+        .note { background: #ecfeff; border-left: 6px solid #06b6d4; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.warn { background: #fef3c7; border-left-color: #f59e0b; }
+        .note.indigo { background: #eef2ff; border-left-color: #4f46e5; }
+        .note.danger { background: #fde8e8; border-left-color: #c62828; }
+        .task-box .task-item { background: #f5f7ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .task-box .task-item .task-title { font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .task-box .task-item .task-title .badge { background: #4f46e5; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 99px; }
+        .interactive-box .match-row { display: flex; gap: 16px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
+        .interactive-box .match-row .match-key { background: #4f46e5; color: #fff; padding: 8px 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; min-width: 160px; text-align: center; }
+        .interactive-box .match-row select { flex: 1; min-width: 150px; padding: 8px 12px; border-radius: 8px; border: 2px solid #c7d2fe; background: #fff; }
+        .interactive-box .match-row select.correct { border-color: #4f46e5; background: #eef2ff; }
+        .interactive-box .match-row select.incorrect { border-color: #d93b3b; background: #fde8e8; }
+        .interactive-box .match-result { margin-top: 12px; font-weight: 700; }
+        .progress-track { background: #e0f2fe; border-radius: 99px; height: 20px; overflow: hidden; margin: 12px 0 6px; }
+        .progress-fill-minecraft { background: linear-gradient(90deg, #06b6d4, #6366f1); height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 99px; }
+        .progress-label { font-size: 15px; font-weight: 700; color: #312e81; display: block; margin-bottom: 8px; }
+        .story-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 45%, #164e63 100%);
+            color: #e0f2fe; border-radius: 16px; padding: 24px 28px; margin: 16px 0;
+            border: 1px solid rgba(6, 182, 212, 0.35);
+        }
+        .story-banner h3 { margin: 0 0 10px; color: #67e8f9; font-family: 'Fredoka', sans-serif; }
+        .flow-steps { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 16px 0; }
+        .flow-steps span { background: rgba(255,255,255,0.1); padding: 8px 14px; border-radius: 99px; font-size: 14px; font-weight: 600; }
+        .llm-panel {
+            background: #1e1e2e; color: #e4f5da; border-radius: 16px; padding: 24px 28px; margin: 20px 0;
+        }
+        .llm-panel h3 { margin: 0 0 12px; color: #67e8f9; font-family: 'Fredoka', sans-serif; }
+        .llm-buttons { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+        .llm-btn {
+            display: inline-flex; align-items: center; gap: 10px; padding: 12px 22px; border-radius: 12px;
+            font-weight: 700; font-size: 15px; text-decoration: none; border: 2px solid transparent; transition: transform 0.2s;
+        }
+        .llm-btn:hover { transform: translateY(-2px); }
+        .llm-btn.deepseek { background: #1d4ed8; color: #fff; }
+        .llm-btn.chatgpt { background: #10a37f; color: #fff; }
+        .llm-btn.prompt { background: rgba(79, 70, 229, 0.35); color: #fff; border-color: rgba(255,255,255,0.2); cursor: pointer; font-family: 'Nunito', sans-serif; }
+        .prompt-box {
+            background: rgba(0,0,0,0.35); border-radius: 12px; padding: 16px; font-family: 'JetBrains Mono', monospace;
+            font-size: 13px; line-height: 1.6; color: #ffd08a; white-space: pre-wrap; margin-top: 12px;
+        }
+        .copy-toast {
+            display: none; margin-top: 10px; padding: 10px 14px; background: #065f46; border-radius: 8px; font-size: 14px;
+        }
+        .copy-toast.show { display: block; }
+        .vpn-card { border: 2px solid #f59e0b; background: #fffbeb; }
+        .vpn-card h2 { color: #92400e; }
+        .vpn-figure { margin: 16px 0 0; text-align: center; }
+        .vpn-figure img { max-width: 100%; width: 560px; border-radius: 12px; border: 2px solid #fcd34d; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+        .vpn-figure figcaption { font-size: 14px; color: #78350f; margin-top: 10px; }
+        .ai-helper {
+            background: #1e1e2e; color: #e4f5da; border-radius: 16px; padding: 28px 32px; margin: 20px 0; position: relative; overflow: hidden;
+        }
+        .ai-helper::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 100% 0%, rgba(6, 182, 212, 0.18), transparent 60%); pointer-events: none;
+        }
+        .ai-head { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; position: relative; }
+        .ai-head .ai-icon { font-size: 36px; }
+        .ai-head .t { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 22px; }
+        .ai-head .t span { color: #67e8f9; }
+        .ai-sub { color: #b8d9a8; font-size: 16px; margin-bottom: 16px; position: relative; }
+        .ai-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; position: relative; }
+        .ai-q-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e4f5da; padding: 10px 18px; border-radius: 99px; font-size: 14px; font-weight: 600;
+            cursor: pointer; font-family: 'Nunito', sans-serif; text-decoration: none; transition: all 0.2s;
+        }
+        .ai-q-btn:hover { background: rgba(6, 182, 212, 0.25); transform: translateY(-2px); }
+        .ai-answer { background: rgba(255, 255, 255, 0.04); border-left: 4px solid #06b6d4; border-radius: 0 12px 12px 0; padding: 16px 20px; font-size: 15px; position: relative; }
+        .ai-real-tip { margin-top: 16px; padding-top: 16px; border-top: 1px dashed rgba(255,255,255,0.12); font-size: 14px; color: #b8d9a8; position: relative; }
+        .ai-real-tip .warning { margin-top: 8px; font-size: 13px; opacity: 0.75; }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div>
+                    <div class="brand-name">РОБОВИТА</div>
+                    <div class="brand-tag">учимся программировать роботов и игры</div>
+                </div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 4.2 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">4.2</div>
+            <div>
+                <div class="module-pill">Раздел 4 · Искусственный интеллект</div>
+                <h1>ИИ и Minecraft</h1>
+                <p class="subtitle">ИИ-помощник в Python: просим нейросеть написать код и встраиваем его в игру</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Понять, как <b>ИИ помогает писать код</b>, а не заменяет мышление программиста</li>
+            <li>Научиться составлять <b>чёткий запрос (промпт)</b> для функции в Minecraft Education</li>
+            <li>Попросить ИИ написать функцию <b>постройки дома</b> и встроить её в проект</li>
+            <li>Проверить, исправить и протестировать сгенерированный код в мире</li>
+            <li>Освоить безопасные правила работы с ChatGPT и DeepSeek</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📋 План занятия</h2>
+        <table class="timetable">
+            <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>ИИ в разработке</td><td>10 мин</td><td>Как программисты используют нейросети</td></tr>
+            <tr><td>VPN и сервисы</td><td>10 мин</td><td>DeepSeek, ChatGPT, правила</td></tr>
+            <tr><td>Промпт для дома</td><td>15 мин</td><td>Разбираем хороший запрос</td></tr>
+            <tr><td>Интеграция в Minecraft</td><td>15 мин</td><td>on_chat + функция от ИИ</td></tr>
+            <tr><td>Проект</td><td>35 мин</td><td>Генерация, вставка, тест</td></tr>
+            <tr><td>Итоги</td><td>5 мин</td><td>Викторина и рефлексия</td></tr>
+            <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+        </table>
+    </div>
+
+    <div class="story-banner">
+        <h3>💡 ИИ-помощник в Python</h3>
+        <p>В Minecraft Education код ты пишешь в редакторе Python (<code>C</code>). <b>Нейросеть</b> (DeepSeek, ChatGPT и др.) не запускается внутри игры — ты открываешь её в браузере, получаешь <b>черновик кода</b>, вставляешь в проект и <b>проверяешь</b> сам: работает ли, нет ли ошибок, подходит ли место постройки.</p>
+        <div class="flow-steps">
+            <span>1. Промпт</span><span>→</span><span>2. Код от ИИ</span><span>→</span><span>3. Вставка</span><span>→</span><span>4. Тест в мире</span><span>→</span><span>5. Правки</span>
+        </div>
+        <p style="font-size: 14px; opacity: 0.95;"><b>Результат занятия:</b> программа, которая по команде в чате строит дом — функцию дома ты получаешь с помощью ИИ и дорабатываешь вместе с преподавателем.</p>
+    </div>
+
+    <div class="card vpn-card">
+        <h2>🌐 ChatGPT и VPN</h2>
+        <p>Сайт <b>ChatGPT</b> в Беларуси и рядом регионов часто открывается только через <b>VPN</b>. Подключай VPN <b>только с разрешения родителей</b> и по инструкции преподавателя центра «РОБОВИТА». Не используй неизвестные бесплатные VPN без взрослых.</p>
+        <p><b>DeepSeek</b> (<a href="https://chat.deepseek.com/" target="_blank" rel="noopener">chat.deepseek.com</a>) обычно доступен без VPN — с него удобно начать занятие. ChatGPT можно попробовать после включения VPN.</p>
+        <figure class="vpn-figure">
+            <img src="files/vpn-instruction.gif" alt="Пошаговая инструкция: как включить VPN для доступа к ChatGPT" loading="lazy" width="560">
+            <figcaption>Включи VPN по инструкции центра → открой ChatGPT в браузере → вставь скопированный промпт.</figcaption>
+        </figure>
+    </div>
+
+    <div class="llm-panel" id="llmHouse">
+        <h3>🚀 Открыть ИИ и скопировать задание «Дом»</h3>
+        <p style="margin: 0 0 8px; color: #b8d9a8;">Кнопка «Скопировать промпт» сохранит текст в буфер и откроет выбранный сервис. В чате нажми <b>Ctrl+V</b> (вставить).</p>
+        <div class="llm-buttons">
+            <button type="button" class="llm-btn prompt" onclick="copyAndOpenLlm('deepseek', PROMPT_HOUSE)">📋 Промпт + DeepSeek</button>
+            <button type="button" class="llm-btn prompt" onclick="copyAndOpenLlm('chatgpt', PROMPT_HOUSE)">📋 Промпт + ChatGPT</button>
+            <a href="https://chat.deepseek.com/" target="_blank" rel="noopener" class="llm-btn deepseek">DeepSeek</a>
+            <a href="https://chatgpt.com/" target="_blank" rel="noopener" class="llm-btn chatgpt">ChatGPT</a>
+        </div>
+        <div class="prompt-box" id="promptHouseDisplay"></div>
+        <div class="copy-toast" id="copyToast">✅ Промпт скопирован! Вставь его в чат ИИ (Ctrl+V).</div>
+    </div>
+
+    <div class="note danger">
+        <b>⚠️ Правила безопасности</b>
+        <ul style="margin: 8px 0 0;">
+            <li>Не пиши в ИИ <b>ФИО, адрес, телефон, пароли</b>, название школы и логины.</li>
+            <li>Код от ИИ <b>всегда проверяй</b>: иногда он выдумывает команды, которых нет в Minecraft Education.</li>
+            <li>Спорные места показывай <b>преподавателю</b> до запуска в общем мире.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">1</span> Хороший промпт для дома</h2>
+        <p>ИИ лучше отвечает, если ты указал: <b>где</b> (Minecraft Education Python), <b>что</b> (функция без лишних библиотек), <b>как</b> (blocks.fill, HOLLOW, player.position или world), <b>размер</b> и <b>запуск</b> (отдельная функция <code>build_house()</code>).</p>
+        <p>В готовом промпте ниже уже есть эти детали — можешь изменить размер дома или блоки, но сохрани структуру запроса.</p>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">2</span> Интеграция ИИ в проект Minecraft</h2>
+        <p>После ответа ИИ скопируй только нужные функции в свой файл. Обязательно добавь «обёртку» — запуск из чата:</p>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">ai_house_integration.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-k">def</span> <span class="tok-f">build</span>():
+    player.say(<span class="tok-s">"Строю дом (код с помощью ИИ)..."</span>)
+    build_house()
+    player.say(<span class="tok-s">"Готово!"</span>)
+
+<span class="tok-c"># --- сюда вставь функцию build_house() от DeepSeek / ChatGPT ---</span>
+
+<span class="tok-k">def</span> <span class="tok-f">build_house</span>():
+    <span class="tok-c"># код от нейросети</span>
+    <span class="tok-k">pass</span>
+
+player.on_chat(<span class="tok-s">"house"</span>, build)</code></pre>
+        </div>
+
+        <div class="note warn">
+            <b>💡 Проверка:</b> в чате игры набери <code>house</code>. Если дом не там — попроси ИИ «сместить постройку на +5 по X от player.position()» или поправь координаты сам.
+        </div>
+    </div>
+
+    <div class="interactive-box" id="matchAiFlow">
+        <h2>🔑 Сопоставь шаг и смысл</h2>
+        <div class="match-row">
+            <div class="match-key">Промпт</div>
+            <select data-correct="Текст задания для ИИ">
+                <option value="">— выбери —</option>
+                <option value="Текст задания для ИИ">Текст задания для ИИ</option>
+                <option value="Готовый мир Minecraft">Готовый мир Minecraft</option>
+                <option value="Пароль от Wi‑Fi">Пароль от Wi‑Fi</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">player.on_chat</div>
+            <select data-correct="Запуск кода из чата">
+                <option value="">— выбери —</option>
+                <option value="Запуск кода из чата">Запуск кода из чата</option>
+                <option value="Открыть DeepSeek">Открыть DeepSeek</option>
+                <option value="Включить VPN">Включить VPN</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">Проверка кода</div>
+            <select data-correct="Обязанность программиста">
+                <option value="">— выбери —</option>
+                <option value="Обязанность программиста">Обязанность программиста</option>
+                <option value="Не нужна, ИИ всегда прав">Не нужна, ИИ всегда прав</option>
+                <option value="Делает только учитель">Делает только учитель</option>
+            </select>
+        </div>
+        <button class="action-btn" onclick="checkMatch('matchAiFlow')">✅ Проверить</button>
+        <div class="match-result"></div>
+    </div>
+
+    <div class="ai-helper">
+        <div class="ai-head">
+            <span class="ai-icon">🤖</span>
+            <div class="t">Спроси Алису <span>(дополнительно)</span></div>
+        </div>
+        <p class="ai-sub">Алиса — другой ИИ-помощник, если DeepSeek или ChatGPT заняты.</p>
+        <div class="ai-buttons">
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%98%D0%98%20%D0%B4%D0%BB%D1%8F%20%D1%83%D1%87%D1%91%D0%B1%D1%8B%3F%22%7D" target="_blank" rel="noopener" class="ai-q-btn">ИИ для учёбы</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20FillOperation.HOLLOW%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" rel="noopener" class="ai-q-btn">HOLLOW дом</a>
+        </div>
+        <div class="ai-answer">💬 Для кода дома на занятии лучше DeepSeek или ChatGPT с нашим промптом — там удобнее вставлять длинные программы.</div>
+        <div class="ai-real-tip">
+            <div class="warning">⚠️ Не отправляй Алисе личные данные.</div>
+        </div>
+    </div>
+
+    <div class="task-box" id="projectAiHouse">
+        <h2>🛠️ Проект: дом с помощью ИИ</h2>
+        <p>Открой Python в Minecraft (<code>C</code>). Используй кнопки DeepSeek / ChatGPT выше.</p>
+
+        <div class="progress-track">
+            <div class="progress-fill-minecraft" id="practiceProgressFill" style="width: 0%;"></div>
+        </div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 7</span>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 1</span>
+                Промпт
+                <input type="checkbox" id="task1" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Скопируй промпт «Дом» через кнопку на странице. При необходимости добавь в конец: «используй OAK_PLANKS и стекло для окна».</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 2</span>
+                Ответ ИИ
+                <input type="checkbox" id="task2" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Получи функцию <code>build_house()</code>. Прочитай код глазами: есть ли <code>blocks.fill</code> или циклы? Спроси ИИ объяснить непонятные строки.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 3</span>
+                Вставка
+                <input type="checkbox" id="task3" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Вставь код в Minecraft. Добавь <code>build()</code> и <code>player.on_chat("house", build)</code> как в примере.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 4</span>
+                Первый тест
+                <input type="checkbox" id="task4" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Тест в <b>своём</b> мире. Команда чата: <code>house</code>. Запиши ошибку из чата, если есть.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 5</span>
+                Исправление
+                <input type="checkbox" id="task5" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Исправь сам или отправь ИИ текст ошибки: «В Minecraft Education Python ошибка: … исправь функцию».</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 6</span>
+                Доработка
+                <input type="checkbox" id="task6" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Добавь одну деталь: дверь, факел, другой блок крыши — снова через короткий запрос к ИИ или вручную.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 7</span>
+                Презентация
+                <input type="checkbox" id="task7" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Расскажи преподавателю: что попросил у ИИ, что пришлось исправить самому.</p>
+        </div>
+    </div>
+
+    <div class="quiz-wrap" id="quizAiHouse">
+        <h2>📝 Проверь себя</h2>
+        <div class="quiz-question" data-name="ah1" data-correct="b">
+            <p class="quiz-q-text">1. Где выполняется код Python для Minecraft?</p>
+            <label><input type="radio" name="ah1" value="a"> Внутри ChatGPT</label>
+            <label><input type="radio" name="ah1" value="b"> В редакторе Minecraft Education (C)</label>
+            <label><input type="radio" name="ah1" value="c"> Только на телефоне</label>
+            <div class="q-feedback"></div>
+        </div>
+        <div class="quiz-question" data-name="ah2" data-correct="a">
+            <p class="quiz-q-text">2. Зачем нужен VPN для ChatGPT?</p>
+            <label><input type="radio" name="ah2" value="a"> Чтобы открыть сайт, если он заблокирован в регионе</label>
+            <label><input type="radio" name="ah2" value="b"> Чтобы Minecraft работал быстрее</label>
+            <label><input type="radio" name="ah2" value="c"> Чтобы ИИ не ошибался</label>
+            <div class="q-feedback"></div>
+        </div>
+        <div class="quiz-question" data-name="ah3" data-correct="c">
+            <p class="quiz-q-text">3. Что делает программист после получения кода от ИИ?</p>
+            <label><input type="radio" name="ah3" value="a"> Сразу сдаёт без чтения</label>
+            <label><input type="radio" name="ah3" value="b"> Удаляет все комментарии</label>
+            <label><input type="radio" name="ah3" value="c"> Проверяет, тестирует и исправляет</label>
+            <div class="q-feedback"></div>
+        </div>
+        <button class="quiz-btn" onclick="checkQuiz('quizAiHouse')">Проверить ответы</button>
+        <div class="quiz-result"></div>
+    </div>
+
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <textarea placeholder="ИИ помог мне с...&#10;Я сам исправил...&#10;Без ИИ я бы..."></textarea>
+    </div>
+
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_4-1.html"><div class="lbl">← Назад</div><div class="ttl">4.1 Исследователь мира</div></a>
+        <a class="nav-btn next" href="les_python_4-3.html"><div class="lbl">Далее →</div><div class="ttl">4.3 ИИ в программировании</div></a>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Занятие 4.2 · ИИ и Minecraft · Minecraft Education и Python</div>
+    </div>
+</footer>
+
+<script>
+    const PROMPT_HOUSE = `Напиши код на Python для Minecraft Education (MakeCode Python API).
+
+Нужна одна функция:
+def build_house():
+    ...
+
+Требования:
+- Дом 7×5×7 блоков (ширина × высота × глубина), полый внутри (FillOperation.HOLLOW или аналог).
+- Стены OAK_PLANKS, крыша SPRUCE_PLANKS.
+- Одно «окно» из GLASS (можно заменить один блок в стене).
+- Угол дома: возьми player.position(), сдвинь X и Z на +5 от игрока, Y — как у игрока.
+- Используй blocks.fill и world(...) или pos из position — как принято в Minecraft Education.
+- Без import, без файлов, без input() — только API Minecraft.
+- В конце ответа только код Python, без пояснений вне комментариев #.
+
+Добавь в начале build_house() строку player.say("Строю дом...").`;
+
+    document.getElementById('promptHouseDisplay').textContent = PROMPT_HOUSE;
+
+    const LLM_URLS = {
+        deepseek: 'https://chat.deepseek.com/',
+        chatgpt: 'https://chatgpt.com/'
+    };
+
+    function copyAndOpenLlm(service, text) {
+        const toast = document.getElementById('copyToast');
+        const done = () => {
+            window.open(LLM_URLS[service], '_blank', 'noopener,noreferrer');
+            if (toast) {
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 5000);
+            }
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done).catch(() => {
+                fallbackCopy(text);
+                done();
+            });
+        } else {
+            fallbackCopy(text);
+            done();
+        }
+    }
+
+    function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) { /* ignore */ }
+        document.body.removeChild(ta);
+    }
+
+    function checkMatch(containerId) {
+        const container = document.getElementById(containerId);
+        const selects = container.querySelectorAll('select[data-correct]');
+        let correct = 0;
+        selects.forEach(sel => {
+            const cv = sel.getAttribute('data-correct');
+            sel.classList.remove('correct', 'incorrect');
+            if (sel.value === cv) { sel.classList.add('correct'); correct++; }
+            else if (sel.value !== '') sel.classList.add('incorrect');
+        });
+        const resultDiv = container.querySelector('.match-result');
+        if (resultDiv) resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${selects.length}`;
+    }
+
+    function checkQuiz(containerId) {
+        const container = document.getElementById(containerId);
+        const questions = container.querySelectorAll('.quiz-question');
+        let correct = 0, total = 0;
+        questions.forEach(q => {
+            const cv = q.getAttribute('data-correct');
+            const sel = q.querySelector('input[type="radio"]:checked');
+            const fb = q.querySelector('.q-feedback');
+            if (sel) {
+                total++;
+                if (sel.value === cv) {
+                    correct++;
+                    fb.innerHTML = '✅ Верно!';
+                    fb.style.color = '#2e7d32';
+                } else {
+                    fb.innerHTML = '❌ Неверно.';
+                    fb.style.color = '#c62828';
+                }
+            } else {
+                fb.innerHTML = '⚠️ Выбери вариант.';
+                fb.style.color = '#f57c00';
+            }
+        });
+        const rd = container.querySelector('.quiz-result');
+        rd.innerHTML = total ? `✅ Правильных: ${correct} из ${questions.length}` : '⚠️ Ответь на все вопросы.';
+        rd.style.display = 'block';
+    }
+
+    function updateProjectProgress() {
+        const cbs = document.querySelectorAll('#projectAiHouse input[type="checkbox"]');
+        let n = 0;
+        cbs.forEach(c => { if (c.checked) n++; });
+        const fill = document.getElementById('practiceProgressFill');
+        const label = document.getElementById('practiceProgressLabel');
+        if (fill) fill.style.width = (n / cbs.length * 100) + '%';
+        if (label) label.textContent = `Выполнено шагов: ${n} из ${cbs.length}`;
+    }
+
+    updateProjectProgress();
+</script>
+</body>
+</html>

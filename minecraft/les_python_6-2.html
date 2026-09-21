@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6.2. Пиксель-арт с массивами — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #ecfdf5; border-bottom: 3px solid #059669; }
+        .site-footer { background: #064e3b; border-top: 3px solid #059669; }
+        .site-footer, .site-footer .foot-brand { color: #ecfdf5; }
+        .brand-name { color: #312e81; }
+        .module-pill { background: #059669; color: #fff; }
+        .hex-badge { background: #059669; color: #fff; }
+        .action-btn { background: #4f46e5; color: #fff; border: none; cursor: pointer; padding: 10px 20px; border-radius: 8px; font-weight: 700; }
+        .task-box { border-left: 4px solid #059669; }
+        .code-block { border: 1px solid #a7f3d0; background: #f0fdf4; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; padding: 16px; overflow-x: auto; font-size: 14px; }
+        .note { background: #ecfdf5; border-left: 6px solid #059669; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.warn { background: #fef3c7; border-left-color: #f59e0b; }
+        .ext-steps { counter-reset: step; list-style: none; padding: 0; margin: 16px 0; }
+        .ext-steps li { counter-increment: step; background: #f0fdf4; border: 1px solid #a7f3d0; border-radius: 12px; padding: 14px 14px 14px 48px; margin-bottom: 10px; position: relative; }
+        .ext-steps li::before { content: counter(step); position: absolute; left: 14px; top: 14px; background: #059669; color: #fff; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+        .ui-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 16px 0; }
+        .ui-grid .ui-card { background: #fff; border: 2px solid #c7d2fe; border-radius: 12px; padding: 16px; }
+        .ui-grid .ui-card h4 { margin: 0 0 8px; color: #312e81; font-family: 'Fredoka', sans-serif; }
+        .task-box .task-item { background: #f5f7ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .task-box .task-item .task-title { font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .task-box .task-item .task-title .badge { background: #059669; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 99px; }
+        .progress-track { background: #d1fae5; border-radius: 99px; height: 20px; overflow: hidden; margin: 12px 0 6px; }
+        .progress-fill-minecraft { background: linear-gradient(90deg, #059669, #4f46e5); height: 100%; width: 0%; transition: width 0.3s; border-radius: 99px; }
+        .progress-label { font-weight: 700; color: #312e81; margin-bottom: 8px; display: block; }
+        .pixel-demo { font-family: monospace; line-height: 1.2; letter-spacing: 2px; background: #1e1e2e; color: #67e8f9; padding: 16px; border-radius: 12px; text-align: center; font-size: 18px; }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div><div class="brand-name">РОБОВИТА</div><div class="brand-tag">учимся программировать роботов и игры</div></div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 6.2 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">6.2</div>
+            <div>
+                <div class="module-pill">Раздел 6 · Массивы и итоговый проект</div>
+                <h1>Пиксель-арт с массивами</h1>
+                <p class="subtitle">Рисуем по клеткам в MakeCode и строим картинку в мире</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Повторить <b>списки</b> и связь «строка пикселей = данные»</li>
+            <li>Установить расширение <b>Pixel Art</b> в MakeCode для Minecraft</li>
+            <li>Разобрать интерфейс: холст, палитра, постройка в игре</li>
+            <li>Нарисовать и построить <b>животное</b> в Pixel Art</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">1</span> Списки и пиксель-арт</h2>
+        <p>Картинка из блоков — это <b>двумерная сетка</b>. Каждая клетка — цвет (тип блока). В коде строки и столбцы часто хранят в <b>списках</b> или списках списков; расширение Pixel Art делает то же визуально: ты рисуешь, программа запоминает «массив» цветов и ставит блоки в Minecraft.</p>
+        <div class="pixel-demo">🟩🟩⬛🟩🟩<br>🟩⬛⬛⬛🟩<br>🟩🟩🟩🟩🟩</div>
+        <div class="note">
+            <b>Связь с 6.1:</b> одна строка рисунка похожа на список <code>[GRASS, GRASS, STONE, ...]</code>. Pixel Art избавляет от ручного набора десятков <code>place</code>.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">2</span> Установка расширения Pixel Art</h2>
+        <p>Открой редактор (<code>C</code> в игре) → режим <b>MakeCode</b> (если переключаешься между блочным и Python, расширение ставится в проекте MakeCode).</p>
+        <ol class="ext-steps">
+            <li>Нажми <b>+ Extensions</b> (или «Расширения») под списком категорий блоков.</li>
+            <li>В поиске введи <b>Pixel Art</b> (автор — сообщество MakeCode; выбери расширение с иконкой палитры / пикселей).</li>
+            <li>Нажми <b>+</b> на карточке расширения — появится новая категория блоков.</li>
+            <li>Сохрани проект. В Python-проекте того же мира расширение тоже доступно, если установлено в связанном MakeCode-проекте (уточни у преподавателя для вашей версии Minecraft Education).</li>
+        </ol>
+        <div class="note warn">
+            <b>Нет интернета?</b> Преподаватель может заранее установить расширение в шаблоне мира. Без Pixel Art можно нарисовать маленькое животное списками в Python — но на занятии цель именно освоить расширение.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">3</span> Как пользоваться Pixel Art</h2>
+        <p>Точные названия кнопок могут чуть отличаться по версии — ориентируйся на смысл:</p>
+        <div class="ui-grid">
+            <div class="ui-card"><h4>🖼️ Холст (Canvas)</h4><p>Сетка клеток. Клик — поставить цвет. Перетаскивание — линия. Размер сетки можно менять (ширина × высота).</p></div>
+            <div class="ui-card"><h4>🎨 Палитра</h4><p>Выбор блока/цвета для «кисти». Разные блоки шерсти, бетона, стекла — для контраста.</p></div>
+            <div class="ui-card"><h4>🧹 Ластик</h4><p>Убирает пиксель (воздух или фоновый цвет).</p></div>
+            <div class="ui-card"><h4>↩️ Отмена / очистка</h4><p>Undo или Clear — исправить ошибку или начать заново.</p></div>
+            <div class="ui-card"><h4>📍 Позиция постройки</h4><p>Координаты или «от игрока» — куда в мире перенести рисунок. Часто смещение вперёд, чтобы не построить себе на голову.</p></div>
+            <div class="ui-card"><h4>🏗️ Build / Построить</h4><p>Запускает установку блоков в мире по сетке. Дождись окончания на больших рисунках.</p></div>
+        </div>
+        <p>Блоки расширения в коде обычно выглядят как «создать pixel art», «нарисовать», «построить в мир» — перетащи их в <b>on chat</b> или вызови из Python, если API экспортирован (на занятии достаточно сценария: нарисовал → построил → проверил).</p>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">4</span> Идея для животного</h2>
+        <p>Выбери простое силуэтное животное: <b>кошка, пanda, рыба, птица</b>. Размер <b>8×8</b> или <b>16×16</b> — не больше, чтобы успеть за занятие. Сначала контур, потом глаза другим цветом.</p>
+    </div>
+
+    <div class="task-box" id="pixelPractice">
+        <h2>🛠️ Практика: животное в Pixel Art</h2>
+        <div class="progress-track"><div class="progress-fill-minecraft" id="practiceProgressFill" style="width:0%"></div></div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 6</span>
+        <div class="task-item"><div class="task-title"><span class="badge">1</span> Расширение установлено <input type="checkbox" onchange="updateProgress()" style="margin-left:auto;width:20px;height:20px;accent-color:#059669"></div><p>Категория Pixel Art видна в MakeCode.</p></div>
+        <div class="task-item"><div class="task-title"><span class="badge">2</span> Эскиз <input type="checkbox" onchange="updateProgress()" style="margin-left:auto;width:20px;height:20px;accent-color:#059669"></div><p>Набросок на бумаге или в тетради — какое животное.</p></div>
+        <div class="task-item"><div class="task-title"><span class="badge">3</span> Рисунок на холсте <input type="checkbox" onchange="updateProgress()" style="margin-left:auto;width:20px;height:20px;accent-color:#059669"></div><p>Минимум 2 цвета блоков + фон.</p></div>
+        <div class="task-item"><div class="task-title"><span class="badge">4</span> Постройка в мире <input type="checkbox" onchange="updateProgress()" style="margin-left:auto;width:20px;height:20px;accent-color:#059669"></div><p>Build с безопасным смещением от игрока.</p></div>
+        <div class="task-item"><div class="task-title"><span class="badge">5</span> Правки <input type="checkbox" onchange="updateProgress()" style="margin-left:auto;width:20px;height:20px;accent-color:#059669"></div><p>Исправь 1–2 клетки, если «глаз» съехал — перестрой.</p></div>
+        <div class="task-item"><div class="task-title"><span class="badge">6</span> Показ <input type="checkbox" onchange="updateProgress()" style="margin-left:auto;width:20px;height:20px;accent-color:#059669"></div><p>Показать результат преподавателю и группе.</p></div>
+    </div>
+
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <textarea placeholder="Моё животное...&#10;Pixel Art помог...&#10;Списки в коде похожи на..."></textarea>
+    </div>
+
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_6-1.html"><div class="lbl">← Назад</div><div class="ttl">6.1 Массивы и списки</div></a>
+        <a class="nav-btn next" href="les_python_6-3.html"><div class="lbl">Далее →</div><div class="ttl">6.3 Итоговый проект</div></a>
+    </div>
+</main>
+
+<footer class="site-footer"><div class="wrap"><div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt=""> Учебный центр «РОБОВИТА»</div><div>Занятие 6.2 · Пиксель-арт</div></div></footer>
+
+<script>
+    function updateProgress() {
+        const cbs = document.querySelectorAll('#pixelPractice input[type=checkbox]');
+        let n = 0; cbs.forEach(c => { if (c.checked) n++; });
+        document.getElementById('practiceProgressFill').style.width = (n/cbs.length*100)+'%';
+        document.getElementById('practiceProgressLabel').textContent = `Выполнено шагов: ${n} из ${cbs.length}`;
+    }
+    updateProgress();
+</script>
+</body>
+</html>
