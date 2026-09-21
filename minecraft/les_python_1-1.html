@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.1. Знакомство с Python — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #eef2ff; border-bottom: 3px solid #4f46e5; }
+        .site-footer { background: #eef2ff; border-top: 3px solid #4f46e5; }
+        .brand-name { color: #312e81; }
+        .module-pill { background: #4f46e5; color: #fff; }
+        .hex-badge { background: #4f46e5; color: #fff; }
+        .data-table th { background: #4f46e5; color: #fff; }
+        .match-btn, .quiz-btn, .action-btn { background: #4f46e5; color: #fff; border: none; }
+        .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4338ca; }
+        .task-box { border-left: 4px solid #4f46e5; }
+        .code-block { border: 1px solid #c7d2fe; background: #f5f7ff; }
+        .alice-btn { background: #4f46e5; color: #fff; }
+        .alice-btn:hover { background: #4338ca; }
+        .alice-q-btn { background: #eff6ff; border: 1px solid #4f46e5; color: #1e3a8a; }
+        .alice-q-btn:hover { background: #dbeafe; }
+        .interactive-box { background: #f8faff; border: 1px solid #c7d2fe; }
+        .syntax-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 10px; }
+        .syntax-card b { color: #4f46e5; }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .comparison-grid .blocks, .comparison-grid .python {
+            background: #f8faff;
+            border: 2px solid #c7d2fe;
+            border-radius: 16px;
+            padding: 20px;
+        }
+        .comparison-grid .blocks h4, .comparison-grid .python h4 {
+            text-align: center;
+            font-family: 'Fredoka', sans-serif;
+            margin-top: 0;
+        }
+        .comparison-grid .blocks h4 { color: #4f46e5; }
+        .comparison-grid .python h4 { color: #4f46e5; }
+        .comparison-grid .code-block { margin: 0; }
+        .comparison-grid .video-result {
+            margin-top: 15px;
+            background: #1e1e2e;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            color: #c7d2fe;
+            font-weight: 600;
+        }
+        .comparison-grid .video-result video, .comparison-grid .video-result img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .feature-grid .feature-item {
+            background: #f5f7ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .feature-grid .feature-item .icon { font-size: 32px; display: block; margin-bottom: 8px; }
+        .feature-grid .feature-item .title { font-weight: 700; color: #312e81; }
+        .task-box .task-item {
+            background: #f5f7ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .task-box .task-item .task-title { font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; }
+        .task-box .task-item .task-title .badge {
+            background: #4f46e5;
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 99px;
+        }
+        .task-box .task-item .task-code { margin-top: 10px; }
+        .task-box .task-item .task-code .code-block { margin: 0; }
+        .interactive-box .match-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .interactive-box .match-row .match-key {
+            background: #4f46e5;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            min-width: 120px;
+            text-align: center;
+        }
+        .interactive-box .match-row select {
+            flex: 1;
+            min-width: 150px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #c7d2fe;
+            font-family: 'Nunito', sans-serif;
+            background: #fff;
+        }
+        .interactive-box .match-row select.correct { border-color: #4f46e5; background: #eef2ff; }
+        .interactive-box .match-row select.incorrect { border-color: #d93b3b; background: #fde8e8; }
+        .interactive-box .match-result { margin-top: 12px; font-weight: 700; }
+        .code-block .code-head { background: #1e1e2e; color: #c7d2fe; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .code-block .code-head .dots { display: flex; gap: 6px; }
+        .code-block .code-head .dots .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .code-block .code-head .dots .dot.r { background: #d93b3b; }
+        .code-block .code-head .dots .dot.y { background: #ffb238; }
+        .code-block .code-head .dots .dot.g { background: #4f46e5; }
+        .code-block .code-head .fname { font-family: 'JetBrains Mono', monospace; font-size: 13px; opacity: 0.8; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; margin: 0; padding: 16px 20px; overflow-x: auto; font-size: 14px; line-height: 1.8; }
+        .code-block pre.code code { font-family: 'JetBrains Mono', Consolas, monospace; }
+        .tok-c { color: #7fcf9e; font-style: italic; }
+        .tok-k { color: #ffb238; font-weight: 700; }
+        .tok-s { color: #8fd7ff; }
+        .tok-f { color: #ffd08a; }
+        .tok-n { color: #ff9aae; }
+        .tok-v { color: #ff9aae; }
+        .tok-o { color: #ffb238; }
+        .course-path {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        .course-path .path-item {
+            background: #f5f7ff;
+            border: 2px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 12px 20px;
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+        .course-path .path-item .step { font-weight: 700; color: #4f46e5; font-size: 20px; }
+        .course-path .path-item .label { font-size: 14px; color: #312e81; }
+        .course-path .path-item.current { border-color: #4f46e5; background: #eef2ff; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); }
+        .course-path .path-item .arrow { color: #c7d2fe; font-size: 24px; }
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 16px 0;
+            padding-left: 20px;
+            border-left: 3px solid #4f46e5;
+        }
+        .timeline .event {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 12px;
+            background: #f5f7ff;
+            border-radius: 10px;
+            border: 1px solid #c7d2fe;
+        }
+        .timeline .event .year {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            color: #4f46e5;
+            min-width: 70px;
+            font-size: 16px;
+        }
+        .timeline .event .desc { font-size: 15px; }
+        .timeline .event .desc .highlight { color: #4f46e5; font-weight: 700; }
+        @media (max-width: 768px) {
+            .comparison-grid { grid-template-columns: 1fr; }
+            .course-path { flex-direction: column; align-items: stretch; }
+            .timeline .event { flex-wrap: wrap; }
+            .timeline .event .year { min-width: 50px; font-size: 14px; }
+        }
+
+        /* Стили для игры "Найди ошибку" */
+        .error-game .clickable-line {
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            display: inline-block;
+            margin: 0 -4px;
+            position: relative;
+        }
+        .error-game .clickable-line:hover {
+            background: rgba(79, 70, 229, 0.12);
+        }
+        .error-game .clickable-line .line-text {
+            display: inline;
+        }
+        .error-game .clickable-line .check-mark {
+            display: none;
+            margin-left: 6px;
+            font-weight: 700;
+        }
+        .error-game .clickable-line.found {
+            background: rgba(79, 70, 229, 0.12);
+            border-radius: 4px;
+        }
+        .error-game .clickable-line.found .check-mark {
+            display: inline;
+            color: #4f46e5;
+        }
+        .error-game .clickable-line.wrong {
+            background: rgba(217, 59, 59, 0.12);
+            border-radius: 4px;
+            animation: shake 0.3s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+        .error-game .clickable-line.disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+        .error-game .clickable-line.disabled:hover {
+            background: none;
+        }
+        .error-game .error-feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            min-height: 50px;
+        }
+        .error-game .error-feedback.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+        .error-game .error-feedback.fail {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef5350;
+        }
+        .error-game .error-feedback.info {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #42a5f5;
+        }
+        .error-game .error-feedback.attempt {
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffa726;
+        }
+        .error-game .error-counter {
+            font-size: 14px;
+            color: #4a6a3a;
+            margin-top: 8px;
+            font-weight: 700;
+        }
+        .error-game .level-block {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: #eef2ff;
+            border-radius: 8px;
+            border-left: 4px solid #4f46e5;
+        }
+        .error-game .level-block h4 {
+            margin: 0 0 8px 0;
+            color: #312e81;
+            font-size: 16px;
+        }
+        .error-game .level-block .code-block {
+            margin: 0;
+        }
+        .error-game .level-block .hint {
+            font-size: 14px;
+            color: #4a6a3a;
+            margin-top: 4px;
+        }
+        .error-game .level-block .hint strong {
+            color: #312e81;
+        }
+
+        /* Прогресс-бар для практических заданий */
+        .progress-track {
+            background: #e8f5e9;
+            border-radius: 99px;
+            height: 20px;
+            overflow: hidden;
+            margin: 12px 0 6px;
+        }
+        .progress-fill-minecraft {
+            background: linear-gradient(90deg, #4f46e5, #4338ca);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 99px;
+        }
+        .progress-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #312e81;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .task-steps {
+            list-style: none;
+            margin: 10px 0 0;
+            padding: 0;
+        }
+        .task-steps li {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 12px 16px;
+            align-items: start;
+            padding: 10px 12px;
+            border-radius: 10px;
+            margin-bottom: 4px;
+        }
+        .task-steps li:hover { background: #f5f7ff; }
+        .task-steps input[type=checkbox] {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            accent-color: #4f46e5;
+            cursor: pointer;
+        }
+        .task-steps label {
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e2a3a;
+        }
+        .task-steps .bonus-step {
+            background: #f0edff;
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1px dashed #4f46e5;
+        }
+
+        /* AI помощник */
+        .ai-helper {
+            background: #1e1e2e;
+            color: #e4f5da;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-helper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.15), transparent 60%);
+            pointer-events: none;
+        }
+        .ai-head {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        .ai-head .ai-icon { font-size: 36px; line-height: 1; }
+        .ai-head .t {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 22px;
+        }
+        .ai-head .t span { color: #8fd7ff; }
+        .ai-sub {
+            color: #b8d9a8;
+            font-size: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .ai-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .ai-q-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e4f5da;
+            padding: 10px 18px;
+            border-radius: 99px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .ai-q-btn:hover {
+            background: rgba(79, 70, 229, 0.25);
+            border-color: rgba(79, 70, 229, 0.4);
+            transform: translateY(-2px);
+        }
+        .ai-answer {
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 4px solid #4f46e5;
+            border-radius: 0 12px 12px 0;
+            padding: 16px 20px;
+            font-size: 15px;
+            min-height: 44px;
+            position: relative;
+            color: #e4f5da;
+        }
+        .ai-real-tip {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.12);
+            font-size: 14px;
+            color: #b8d9a8;
+            position: relative;
+        }
+        .prompt-example {
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #ffd08a;
+        }
+        .ai-real-tip .warning {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #b8d9a8;
+            opacity: 0.7;
+        }
+
+        .lang-evolution {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+            padding: 16px;
+            background: #f5f7ff;
+            border-radius: 12px;
+            border: 1px solid #c7d2fe;
+        }
+        .lang-evolution .lang-item {
+            background: #fff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 2px solid #c7d2fe;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            color: #312e81;
+        }
+        .lang-evolution .lang-item.python-highlight {
+            border-color: #4f46e5;
+            background: #eef2ff;
+            color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .lang-evolution .arrow { font-size: 20px; color: #c7d2fe; }
+
+        /* Базовые команды Python */
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        .commands-grid .cmd-card {
+            background: #f5f7ff;
+            border: 2px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            transition: border-color 0.2s;
+        }
+        .commands-grid .cmd-card:hover {
+            border-color: #4f46e5;
+        }
+        .commands-grid .cmd-card .cmd-title {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            color: #312e81;
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .commands-grid .cmd-card .cmd-title .cmd-icon { font-size: 20px; }
+        .commands-grid .cmd-card .cmd-code {
+            background: #1e1e2e;
+            color: #e4f5da;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            margin: 6px 0;
+            overflow-x: auto;
+        }
+        .commands-grid .cmd-card .cmd-desc {
+            font-size: 14px;
+            color: #4a6a3a;
+            margin-top: 4px;
+        }
+
+        .direction-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 300px;
+            margin: 10px auto;
+        }
+        .direction-grid .dir-item {
+            background: #eef2ff;
+            border: 2px solid #c7d2fe;
+            border-radius: 8px;
+            padding: 8px 4px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: #312e81;
+            transition: all 0.2s;
+        }
+        .direction-grid .dir-item:hover {
+            border-color: #4f46e5;
+            background: #e0e7ff;
+        }
+        .direction-grid .dir-item .dir-en {
+            font-size: 11px;
+            color: #4a6a3a;
+            font-weight: 400;
+            display: block;
+        }
+        .direction-grid .dir-item.center {
+            background: transparent;
+            border: none;
+            font-size: 18px;
+        }
+        .direction-grid .dir-item.center:hover {
+            background: transparent;
+        }
+
+        /* Мини-игра на печать */
+        .typing-game {
+            background: #1e1e2e;
+            border-radius: 12px;
+            padding: 24px 28px;
+            color: #e4f5da;
+            margin: 16px 0;
+        }
+        .typing-game .typing-prompt {
+            font-size: 28px;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+            user-select: none;
+        }
+        .typing-game .typing-prompt .char-correct { color: #4caf50; }
+        .typing-game .typing-prompt .char-wrong { color: #ef5350; background: rgba(239, 83, 80, 0.2); }
+        .typing-game .typing-prompt .char-current { color: #ffd08a; background: rgba(255, 208, 138, 0.15); border-radius: 2px; }
+        .typing-game .typing-prompt .char-next { color: #8fd7ff; }
+        .typing-game .typing-prompt .char-done { color: #4a6a3a; }
+        .typing-game .typing-input {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            border-radius: 10px;
+            border: 2px solid #4f46e5;
+            background: #0d1117;
+            color: #e4f5da;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .typing-game .typing-input:focus {
+            border-color: #8fd7ff;
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.15);
+        }
+        .typing-game .typing-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .typing-game .typing-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #b8d9a8;
+        }
+        .typing-game .typing-stats .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .typing-game .typing-stats .stat-item .stat-value {
+            font-weight: 700;
+            color: #e4f5da;
+            font-size: 18px;
+        }
+        .typing-game .typing-stats .stat-item .stat-label {
+            font-size: 13px;
+        }
+        .typing-game .typing-result {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .typing-game .typing-result.success {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+            border: 1px solid #4caf50;
+        }
+        .typing-game .typing-result.fail {
+            background: rgba(239, 83, 80, 0.15);
+            color: #ef5350;
+            border: 1px solid #ef5350;
+        }
+        .typing-game .typing-result.info {
+            background: rgba(79, 70, 229, 0.1);
+            color: #8fd7ff;
+            border: 1px solid #4f46e5;
+        }
+        .typing-game .typing-progress {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+        .typing-game .typing-progress .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4f46e5, #8fd7ff);
+            width: 0%;
+            transition: width 0.2s;
+            border-radius: 2px;
+        }
+        .typing-game .typing-btn {
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 99px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .typing-game .typing-btn:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+        }
+        .typing-game .typing-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .typing-game .typing-phrases {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+        .typing-game .typing-phrases .phrase-tag {
+            background: rgba(255,255,255,0.06);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 12px;
+            color: #b8d9a8;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .typing-game .typing-phrases .phrase-tag:hover {
+            background: rgba(79, 70, 229, 0.2);
+            border-color: #4f46e5;
+        }
+        .typing-game .typing-phrases .phrase-tag.active {
+            background: rgba(79, 70, 229, 0.25);
+            border-color: #4f46e5;
+            color: #e4f5da;
+        }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div>
+                    <div class="brand-name">РОБОВИТА</div>
+                    <div class="brand-tag">учимся программировать роботов и игры</div>
+                </div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 1.1 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">1.1</div>
+            <div>
+                <div class="module-pill">Раздел 1 · Знакомство с Python</div>
+                <h1>Привет, Python!</h1>
+                <p class="subtitle">Переходим от блоков к настоящему коду в Minecraft</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <!-- Цели -->
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Узнать, как работают компьютеры и что такое языки программирования</li>
+            <li>Познакомиться с историей развития языков программирования</li>
+            <li>Узнать, что такое Python и почему он один из самых популярных языков в мире</li>
+            <li>Понять разницу между блочным программированием и текстовым кодом</li>
+            <li>Изучить базовые команды Python в Minecraft (сообщения, эффекты, агент)</li>
+            <li>Познакомиться с планом обучения на курсе Python</li>
+            <li>Изучить базовый синтаксис Python (отступы и функции)</li>
+            <li>Написать свои первые программы на Python в Minecraft</li>
+        </ul>
+    </div>
+
+    <!-- План занятия -->
+    <div class="card">
+        <h2>📋 План занятия</h2>
+        <table class="timetable">
+            <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>Как работают компьютеры</td><td>10 мин</td><td>От электронов до программ</td></tr>
+            <tr><td>История языков программирования</td><td>8 мин</td><td>От машинного кода до Python</td></tr>
+            <tr><td>Что такое Python</td><td>7 мин</td><td>Где используется и почему он крут</td></tr>
+            <tr><td>Python vs Блоки</td><td>10 мин</td><td>Сравнение возможностей в Minecraft</td></tr>
+            <tr><td>Базовые команды Python</td><td>10 мин</td><td>Игрок, эффекты, Агент</td></tr>
+            <tr><td>План курса + Синтаксис</td><td>10 мин</td><td>Что изучим и правила кода</td></tr>
+            <tr><td>Мини-игра: Печать на клавиатуре</td><td>5 мин</td><td>Тренируемся печатать код</td></tr>
+            <tr><td>Практика: Первые команды</td><td>25 мин</td><td>Сообщения в чат, эффекты и управление Агентом</td></tr>
+            <tr><td>Итоги</td><td>5 мин</td><td>Рефлексия</td></tr>
+            <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+        </table>
+    </div>
+
+    <!-- Часть 0: Как работают компьютеры -->
+    <div class="card">
+        <h2><span class="num" style="background: #4f46e5;">0</span> Как работают компьютеры?</h2>
+        <p>Прежде чем говорить о программировании, давай разберёмся, что такое компьютер и как он «понимает» наши команды.</p>
+
+        <h3>От электричества к информации</h3>
+        <p>Внутри компьютера миллиарды крошечных переключателей — <b>транзисторов</b>. Они могут быть либо <b>включены</b> (1), либо <b>выключены</b> (0). Компьютер «думает» с помощью таких сигналов — это называется <b>двоичный код</b>.</p>
+
+        <div class="note">
+            <b>💡 Интересный факт:</b> Любая информация в компьютере — текст, картинки, видео — это просто последовательности нулей и единиц. Например, буква «A» в двоичном коде выглядит как <code>01000001</code>.
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-item">
+                <span class="icon">💡</span>
+                <div class="title">Включено / Выключено</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Компьютер работает на электрических сигналах — 1 и 0</div>
+            </div>
+            <div class="feature-item">
+                <span class="icon">🧩</span>
+                <div class="title">Двоичный код</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Все данные — это последовательности нулей и единиц</div>
+            </div>
+            <div class="feature-item">
+                <span class="icon">⚙️</span>
+                <div class="title">Процессор</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Мозг компьютера, который выполняет инструкции</div>
+            </div>
+        </div>
+
+        <h3>Как люди общаются с компьютером?</h3>
+        <p>Люди говорят на разных языках — русском, английском, китайском. Компьютеры понимают только <b>машинный код</b> — последовательности нулей и единиц. Но программистам было бы очень сложно писать программы в таком виде. Поэтому люди придумали <b>языки программирования</b> — мосты между человеческим языком и машинным кодом.</p>
+
+        <div style="text-align: center; margin: 16px 0; padding: 16px; background: #f5f7ff; border-radius: 12px;">
+            <span style="font-size: 20px; font-weight: 700; color: #312e81;">Человек</span>
+            <span style="font-size: 28px; color: #c7d2fe; margin: 0 12px;">➡️</span>
+            <span style="font-size: 20px; font-weight: 700; color: #4f46e5;">Язык программирования</span>
+            <span style="font-size: 28px; color: #c7d2fe; margin: 0 12px;">➡️</span>
+            <span style="font-size: 20px; font-weight: 700; color: #312e81;">Машинный код (0 и 1)</span>
+        </div>
+    </div>
+
+    <!-- Часть 0.5: История языков -->
+    <div class="card">
+        <h2><span class="num" style="background: #4f46e5;">1</span> История языков программирования</h2>
+        <p>Языки программирования развивались вместе с компьютерами. Давай посмотрим на главные вехи:</p>
+
+        <div class="timeline">
+            <div class="event">
+                <span class="year">1940-е</span>
+                <div class="desc"><span class="highlight">Машинный код</span> — программисты писали программы напрямую нулями и единицами. Это было очень сложно и медленно.</div>
+            </div>
+            <div class="event">
+                <span class="year">1950-е</span>
+                <div class="desc"><span class="highlight">Ассемблер</span> — появились первые сокращения (мнемоники) для команд. Вместо <code>0101</code> можно было написать <code>ADD</code>.</div>
+            </div>
+            <div class="event">
+                <span class="year">1957</span>
+                <div class="desc"><span class="highlight">FORTRAN</span> — первый высокоуровневый язык. Учёные могли писать формулы почти как в математике.</div>
+            </div>
+            <div class="event">
+                <span class="year">1972</span>
+                <div class="desc"><span class="highlight">C</span> — мощный язык, который до сих пор используется для создания операционных систем и игр.</div>
+            </div>
+            <div class="event">
+                <span class="year">1991</span>
+                <div class="desc"><span class="highlight">Python</span> — язык, который создали, чтобы программирование было простым и понятным. Именно его мы будем изучать!</div>
+            </div>
+        </div>
+
+        <div class="lang-evolution">
+            <span class="lang-item">Машинный код</span>
+            <span class="arrow">→</span>
+            <span class="lang-item">Ассемблер</span>
+            <span class="arrow">→</span>
+            <span class="lang-item">FORTRAN</span>
+            <span class="arrow">→</span>
+            <span class="lang-item">C</span>
+            <span class="arrow">→</span>
+            <span class="lang-item python-highlight">Python 🐍</span>
+        </div>
+
+        <div class="note" style="border-left-color: #4f46e5;">
+            <b>🚀 Почему Python?</b><br>
+            Python создали, чтобы программирование было <b>понятным</b> и <b>доступным</b>. Его код похож на обычный английский язык, поэтому его легко читать и писать. Не зря говорят: «Python — это исполняемый псевдокод».
+        </div>
+    </div>
+
+    <!-- Часть 1: Что такое Python -->
+    <div class="card">
+        <h2><span class="num">2</span> Что такое Python?</h2>
+        <p>До сих пор мы собирали программы из блоков, как конструктор LEGO. Это круто, чтобы понять логику, но настоящие программисты пишут код текстом. И один из самых крутых языков для этого — <b>Python</b> (Пайтон).</p>
+
+        <div class="note">
+            <b>Python</b> — это мощный, но при этом простой для чтения язык. Его используют в:
+            <ul>
+                <li>Создании игр (да-да, и в Minecraft тоже!)</li>
+                <li>Искусственном интеллекте (ChatGPT написан с помощью Python)</li>
+                <li>Научных исследованиях и космосе</li>
+                <li>Создании сайтов и приложений (YouTube, Instagram)</li>
+            </ul>
+        </div>
+
+        <h3>Почему Python круче блоков?</h3>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <span class="icon">⚡</span>
+                <div class="title">Скорость</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Одна строчка кода вместо 5-6 блоков</div>
+            </div>
+            <div class="feature-item">
+                <span class="icon">🧠</span>
+                <div class="title">Сложные задачи</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Обработка тысяч блоков и умные алгоритмы</div>
+            </div>
+            <div class="feature-item">
+                <span class="icon">💼</span>
+                <div class="title">Профессионализм</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Язык, на котором работают в Google и NASA</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Часть 2: Сравнение блоков и Python -->
+    <div class="card">
+        <h2><span class="num">3</span> Как это выглядит?</h2>
+        <p>Давайте сравним, как одна и та же задача выглядит в блоках и на Python.</p>
+
+        <!-- Пример 1: Команда чата -->
+        <h3>Пример 1: Команда чата «jump»</h3>
+        <p>Когда мы пишем в чат <code>jump</code>, игрок подлетает вверх.</p>
+        <div class="comparison-grid">
+            <div class="blocks">
+                <h4>🧩 Блоки</h4>
+                <div class="code-block" style="border: 2px solid #4f46e5;">
+                  <img src="files/pyles_1-1.png" alt="">
+                </div>
+            </div>
+            <div class="python">
+                <h4>🐍 Python</h4>
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">jump.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-k">def</span> <span class="tok-f">on_chat_jump</span>():
+    player.teleport(pos(<span class="tok-n">0</span>, <span class="tok-n">10</span>, <span class="tok-n">0</span>))
+player.on_chat(<span class="tok-s">"jump"</span>, on_chat_jump)</code></pre>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 10px;">
+            <div style="background: #1e1e2e; border-radius: 12px; padding: 12px; display: inline-block; color: #c7d2fe; font-weight: 600;">
+                🎬 Результат: Игрок подлетает вверх при команде /jump
+            </div>
+        </div>
+
+        <!-- Пример 2: Команда чата с превращением блоков -->
+        <h3>Пример 2: Команда чата «turn»</h3>
+        <p>По команде чата <code>turn</code> все золотые блоки в радиусе превращаются в камень.</p>
+        <div class="comparison-grid">
+            <div class="blocks">
+                <h4>🧩 Блоки</h4>
+                <div class="code-block" style="border: 2px solid #4f46e5;">
+                  <img src="files/pyles_1-2.png" alt="">
+                </div>
+            </div>
+            <div class="python">
+                <h4>🐍 Python</h4>
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">turn.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-k">def</span> <span class="tok-f">on_chat_turn</span>():
+    blocks.replace(GOLD_BLOCK, STONE, pos(<span class="tok-n">-10</span>, <span class="tok-n">0</span>, <span class="tok-n">-10</span>), pos(<span class="tok-n">10</span>, <span class="tok-n">10</span>, <span class="tok-n">10</span>))
+player.on_chat(<span class="tok-s">"turn"</span>, on_chat_turn)</code></pre>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 10px;">
+            <div style="background: #1e1e2e; border-radius: 12px; padding: 12px; display: inline-block; color: #c7d2fe; font-weight: 600;">
+                🎬 Результат: Все золотые блоки в области становятся камнем
+            </div>
+        </div>
+        <div class="note" style="margin-top: 16px;">
+            <b>💡 Важно:</b> В Python мы создаём <b>функцию</b> (<code>def</code>), а затем <b>привязываем</b> её к команде чата с помощью <code>player.on_chat()</code>. Это и есть настоящая программная инженерия!
+        </div>
+    </div>
+
+    <!-- Часть 2.5: Базовые команды Python -->
+    <div class="card">
+        <h2><span class="num">4</span> Базовые команды Python в Minecraft</h2>
+        <p>Давай познакомимся с основными командами, которые мы будем использовать в этом курсе. Все они пишутся на английском, но мы добавим подсказки на русском!</p>
+
+        <h3>👤 Команды для игрока</h3>
+        <div class="commands-grid">
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">💬</span> Сообщение в чат</div>
+                <div class="cmd-code">player.say("Привет!")</div>
+                <div class="cmd-desc">Выводит сообщение в чат Minecraft</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">✨</span> Эффект игроку</div>
+                <div class="cmd-code">player.give_effect(SPEED, 10, 2)</div>
+                <div class="cmd-desc">Даёт эффект (скорость, сила, прыгучесть) на время</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">📍</span> Телепортация</div>
+                <div class="cmd-code">player.teleport(pos(0, 10, 0))</div>
+                <div class="cmd-desc">Перемещает игрока в указанные координаты</div>
+            </div>
+        </div>
+
+        <h3>🤖 Команды для Агента</h3>
+        <div class="commands-grid">
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">🚶</span> Движение Агента</div>
+                <div class="cmd-code">agent.move(ВПЕРЁД, 5)</div>
+                <div class="cmd-desc">Перемещает Агента в указанном направлении</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">🔄</span> Поворот Агента</div>
+                <div class="cmd-code">agent.turn(НАПРАВО)</div>
+                <div class="cmd-desc">Поворачивает Агента на 90° влево или вправо</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">🧱</span> Поставить блок</div>
+                <div class="cmd-code">agent.place(ВПЕРЁД)</div>
+                <div class="cmd-desc">Ставит блок перед Агентом</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">🔨</span> Сломать блок</div>
+                <div class="cmd-code">agent.destroy(ВПЕРЁД)</div>
+                <div class="cmd-desc">Разрушает блок перед Агентом</div>
+            </div>
+        </div>
+
+        <h4>🧭 Направления для Агента</h4>
+        <p>В Python мы используем английские названия, но вот таблица с переводом для всех направлений:</p>
+        <div class="direction-grid">
+            <div class="dir-item">⬆️ ВВЕРХ <span class="dir-en">(UP)</span></div>
+            <div class="dir-item">⬆️ ВПЕРЁД <span class="dir-en">(FORWARD)</span></div>
+            <div class="dir-item">⬆️ ВВЕРХ <span class="dir-en">(UP)</span></div>
+            <div class="dir-item">⬅️ ВЛЕВО <span class="dir-en">(LEFT)</span></div>
+            <div class="dir-item center">🎯</div>
+            <div class="dir-item">➡️ ВПРАВО <span class="dir-en">(RIGHT)</span></div>
+            <div class="dir-item">⬇️ ВНИЗ <span class="dir-en">(DOWN)</span></div>
+            <div class="dir-item">⬇️ НАЗАД <span class="dir-en">(BACK)</span></div>
+            <div class="dir-item">⬇️ ВНИЗ <span class="dir-en">(DOWN)</span></div>
+        </div>
+        <div style="text-align: center; font-size: 14px; color: #4a6a3a; margin-top: 8px;">
+            💡 Запомни: <b>FORWARD</b> — вперёд, <b>BACK</b> — назад, <b>LEFT</b> — влево, <b>RIGHT</b> — вправо, <b>UP</b> — вверх, <b>DOWN</b> — вниз
+        </div>
+    </div>
+
+    <!-- Часть 3: План курса -->
+    <div class="card">
+        <h2><span class="num">5</span> Что нас ждет впереди?</h2>
+        <p>На этом блоке мы пройдем путь от новичка до создателя сложных систем:</p>
+        <div class="course-path">
+            <div class="path-item current">
+                <div class="step">1</div>
+                <div class="label">Основы Python</div>
+                <div style="font-size: 12px; color: #4f46e5;">⬅️ Вы здесь</div>
+            </div>
+            <div class="path-item">
+                <div class="step">2</div>
+                <div class="label">Агент 2.0</div>
+                <div style="font-size: 12px; color: #4a6a3a;">Программируем робота</div>
+            </div>
+            <div class="path-item">
+                <div class="step">3</div>
+                <div class="label">Координаты</div>
+                <div style="font-size: 12px; color: #4a6a3a;">3D постройки</div>
+            </div>
+            <div class="path-item">
+                <div class="step">4</div>
+                <div class="label">ИИ в Minecraft</div>
+                <div style="font-size: 12px; color: #4a6a3a;">Умный мир</div>
+            </div>
+            <div class="path-item">
+                <div class="step">5</div>
+                <div class="label">Функции и Игры</div>
+                <div style="font-size: 12px; color: #4a6a3a;">Создаём мини-игры</div>
+            </div>
+            <div class="path-item">
+                <div class="step">6</div>
+                <div class="label">Финальный проект</div>
+                <div style="font-size: 12px; color: #4a6a3a;">Твоя программа!</div>
+            </div>
+        </div>
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <tr><th>Раздел</th><th>Что изучим</th></tr>
+                <tr><td>1. Основы</td><td>Переменные, типы данных и логика</td></tr>
+                <tr><td>2. Агент 2.0</td><td>Программируем робота на Python для стройки и добычи</td></tr>
+                <tr><td>3. Координаты</td><td>Сложные 3D постройки одной командой</td></tr>
+                <tr><td>4. ИИ в Minecraft</td><td>Как заставить мир жить своей жизнью</td></tr>
+                <tr><td>5. Функции и Игры</td><td>Создаем свои мини-игры внутри Minecraft</td></tr>
+                <tr><td>6. Финальный проект</td><td>Твоя собственная сложная программа!</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Часть 4: Правила синтаксиса -->
+    <div class="card">
+        <h2><span class="num">6</span> Правила написания (Синтаксис)</h2>
+        <p>Компьютер очень внимателен к деталям. Если ты совершишь ошибку в «грамматике» кода, он не поймет команду. Вот главные правила:</p>
+
+        <div class="syntax-card">
+            <b>1. Отступы (Indentation)</b><br>
+            В Python отступы показывают, какие команды относятся к функции. Если команда «внутри» функции, перед ней должно быть 4 пробела (или клавиша Tab).
+            <div class="code-block" style="margin-top: 8px;">
+                <div class="code-head" style="background: #1e1e2e; color: #c7d2fe;">
+                    <span class="fname">✅ Правильно</span>
+                </div>
+                <pre class="code"><code><span class="tok-k">def</span> <span class="tok-f">hello</span>():
+    <span class="tok-c"># ← Этот отступ (4 пробела) показывает, что команда внутри функции</span>
+    player.say(<span class="tok-s">"Привет!"</span>)</code></pre>
+            </div>
+            <div class="code-block" style="margin-top: 8px; border-color: #d93b3b;">
+                <div class="code-head" style="background: #fde8e8; color: #d93b3b;">
+                    <span class="fname">❌ Ошибка</span>
+                </div>
+                <pre class="code" style="background: #fde8e8; color: #d93b3b;"><code><span class="tok-k">def</span> <span class="tok-f">hello</span>():
+    <span class="tok-c"># ← Нет отступа — Python выдаст ошибку!</span>
+player.say(<span class="tok-s">"Привет!"</span>)</code></pre>
+            </div>
+        </div>
+
+        <div class="syntax-card">
+            <b>2. Названия функций</b><br>
+            Функции начинаются со слова <code>def</code> (от английского define — определить). После названия обязательно идут скобки <code>()</code> и двоеточие <code>:</code>.
+            <div class="code-block" style="margin-top: 8px;">
+                <div class="code-head" style="background: #1e1e2e; color: #c7d2fe;">
+                    <span class="fname">✅ Правильно</span>
+                </div>
+                <pre class="code"><code><span class="tok-k">def</span> <span class="tok-f">my_function</span>():  <span class="tok-c"># ← def, название, скобки, двоеточие</span>
+    player.say(<span class="tok-s">"Hello!"</span>)</code></pre>
+            </div>
+        </div>
+
+        <div class="syntax-card">
+            <b>3. Скобки и кавычки</b><br>
+            Аргументы команды пишутся внутри <code>()</code>. Текст — в <code>"кавычках"</code>.
+            <div class="code-block" style="margin-top: 8px;">
+                <div class="code-head" style="background: #1e1e2e; color: #c7d2fe;">
+                    <span class="fname">✅ Правильно</span>
+                </div>
+                <pre class="code"><code>player.say(<span class="tok-s">"Привет, мир!"</span>)  <span class="tok-c"># ← Текст в кавычках</span>
+agent.move(FORWARD, <span class="tok-n">5</span>)      <span class="tok-c"># ← Аргументы в скобках</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ИНТЕРАКТИВ: Найди ошибку (3 уровня) -->
+    <div class="interactive-box error-game" id="errorGame">
+        <h2>🧠 Интерактив: Найди ошибку (3 уровня)</h2>
+        <p>В каждом уровне есть ровно <b>одна</b> ошибка в синтаксисе. Кликни на строку, где по-твоему ошибка!</p>
+
+        <!-- Уровень 1 -->
+        <div class="level-block">
+            <h4>Уровень 1: Пропущен отступ</h4>
+            <div class="code-block">
+                <div class="code-head" style="background: #1e1e2e; color: #c7d2fe;">
+                    <span class="fname">level_1.py</span>
+                </div>
+                <pre class="code" style="position: relative;"><code><span class="tok-k">def</span> <span class="tok-f">greet</span>():
+<span class="clickable-line" data-level="1" data-error="indent" onclick="checkErrorLine(this, 1)"><span class="line-text">player.say(<span class="tok-s">"Hello!"</span>)</span><span class="check-mark">✅</span></span>
+greet()</code></pre>
+            </div>
+            <div class="hint">💡 <strong>Подсказка:</strong> Посмотри на отступы. Все команды внутри функции должны быть сдвинуты вправо.</div>
+        </div>
+
+        <!-- Уровень 2 -->
+        <div class="level-block">
+            <h4>Уровень 2: Пропущено двоеточие</h4>
+            <div class="code-block">
+                <div class="code-head" style="background: #1e1e2e; color: #c7d2fe;">
+                    <span class="fname">level_2.py</span>
+                </div>
+                <pre class="code" style="position: relative;"><code><span class="tok-k">def</span> <span class="tok-f">move_agent</span>() <span class="clickable-line" data-level="2" data-error="colon" onclick="checkErrorLine(this, 2)"><span class="line-text">      </span><span class="check-mark">✅</span></span>
+    agent.move(FORWARD, <span class="tok-n">5</span>)
+move_agent()</code></pre>
+            </div>
+            <div class="hint">💡 <strong>Подсказка:</strong> После объявления функции всегда ставится двоеточие.</div>
+        </div>
+
+        <!-- Уровень 3 -->
+        <div class="level-block">
+            <h4>Уровень 3: Неправильное название команды</h4>
+            <div class="code-block">
+                <div class="code-head" style="background: #1e1e2e; color: #c7d2fe;">
+                    <span class="fname">level_3.py</span>
+                </div>
+                <pre class="code" style="position: relative;"><code><span class="tok-k">def</span> <span class="tok-f">on_chat</span>():
+    player.<span class="clickable-line" data-level="3" data-error="command" onclick="checkErrorLine(this, 3)"><span class="line-text">sayy</span><span class="check-mark">✅</span></span>(<span class="tok-s">"Привет!"</span>)
+player.on_chat(<span class="tok-s">"hello"</span>, on_chat)</code></pre>
+            </div>
+            <div class="hint">💡 <strong>Подсказка:</strong> Проверь правильность написания команды. В Python все команды пишутся строго.</div>
+        </div>
+
+        <div id="errorFeedbackGame" class="error-feedback info">
+            👆 Кликни на строку с ошибкой в каждом уровне
+        </div>
+        <div class="error-counter" id="errorCounter">Найдено ошибок: 0 из 3</div>
+    </div>
+
+    <!-- ИНТЕРАКТИВ: Собери код в правильном порядке -->
+    <div class="interactive-box code-sort" id="codeSort">
+        <h2>🧩 Собери код в правильном порядке</h2>
+        <p>Перетащи строки кода мышкой, чтобы они шли в правильном порядке. Затем нажми «Проверить».</p>
+        <p style="font-size: 14px; color: #4a6a3a;">Задача: программа должна выводить «Привет!» в чат по команде /hello</p>
+
+        <div id="sortContainer" style="margin-top: 12px;"></div>
+
+        <button class="action-btn" onclick="checkSortOrder()" style="margin-top: 12px;">✅ Проверить порядок</button>
+        <div class="sort-feedback info" id="sortFeedback">
+            💡 Перетащи строки в правильном порядке
+        </div>
+    </div>
+
+    <!-- AI-помощник -->
+    <div class="ai-helper">
+        <div class="ai-head">
+            <span class="ai-icon">🤖</span>
+            <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+        </div>
+        <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+
+        <div class="ai-buttons">
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20Python%20%D0%B8%20%D0%B4%D0%BB%D1%8F%20%D1%87%D0%B5%D0%B3%D0%BE%20%D0%BE%D0%BD%20%D0%BD%D1%83%D0%B6%D0%B5%D0%BD%3F%22%7D" target="_blank" class="ai-q-btn">Что такое Python?</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BD%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D1%83%20%D0%BD%D0%B0%20Python%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="ai-q-btn">Python в Minecraft</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%97%D0%B0%D1%87%D0%B5%D0%BC%20%D0%BD%D1%83%D0%B6%D0%BD%D1%8B%20%D0%BE%D1%82%D1%81%D1%82%D1%83%D0%BF%D1%8B%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Зачем отступы?</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D1%82%D1%8C%20%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D1%8E%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Как создать функцию?</a>
+        </div>
+
+        <div class="ai-answer">
+            💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+        </div>
+
+        <div class="ai-real-tip">
+            <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про Python или программирование.<br>
+            <span class="prompt-example">Просто скажи: «Алиса, как заставить агента двигаться в Python?»</span>
+            <div class="warning">⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.</div>
+        </div>
+    </div>
+
+    <!-- МИНИ-ИГРА: Тренировка печати -->
+    <div class="interactive-box" id="typingGame">
+        <h2>⌨️ Тренировка печати</h2>
+        <p>Прежде чем писать код, потренируйся печатать команды Python на клавиатуре! Набирай текст точно так, как показано.</p>
+
+        <div class="typing-game">
+            <div class="typing-prompt" id="typingPrompt">
+                <span class="char-done"></span>
+                <span class="char-current"></span>
+                <span class="char-next"></span>
+            </div>
+            <input type="text" class="typing-input" id="typingInput" placeholder="Начни печатать..." autofocus>
+            <div class="typing-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Прогресс:</span>
+                    <span class="stat-value" id="typingProgress">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Ошибок:</span>
+                    <span class="stat-value" id="typingErrors">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">⏱️</span>
+                    <span class="stat-value" id="typingTime">0с</span>
+                </div>
+                <button class="typing-btn" id="typingResetBtn">🔄 Новый текст</button>
+            </div>
+            <div class="typing-progress">
+                <div class="progress-fill" id="typingProgressFill"></div>
+            </div>
+            <div class="typing-result info" id="typingResult">
+                💡 Набери текст выше. Начинай с первого символа!
+            </div>
+            <div class="typing-phrases" id="typingPhrases">
+                <span class="phrase-tag active" data-text="player.say(&quot;Привет!&quot;)">player.say()</span>
+                <span class="phrase-tag" data-text="agent.move(FORWARD, 5)">agent.move()</span>
+                <span class="phrase-tag" data-text="agent.turn(RIGHT)">agent.turn()</span>
+                <span class="phrase-tag" data-text="agent.place(FORWARD)">agent.place()</span>
+                <span class="phrase-tag" data-text="player.give_effect(SPEED, 10)">give_effect</span>
+                <span class="phrase-tag" data-text="def on_chat():">def функция</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Часть 5: Практические задания -->
+    <div class="task-box" id="pythonFirstSteps">
+        <h2>🛠️ Твои первые программы на Python</h2>
+        <p>Открой редактор кода в Minecraft (нажми <code>C</code> и выбери Python вместо Blocks).</p>
+
+        <!-- Прогресс-бар -->
+        <div class="progress-track">
+            <div class="progress-fill-minecraft" id="practiceProgressFill" style="width: 0%;"></div>
+        </div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 4</span>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 1</span>
+                Приветствие
+                <input type="checkbox" id="task1" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Напиши программу, которая выводит в чат <b>«Я теперь программист на Python!»</b>. Используй команду <code>player.say("текст")</code>.</p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">hello.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-c"># Напиши свой код здесь</span>
+player.say(<span class="tok-s">"Я теперь программист на Python!"</span>)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 2</span>
+                Магический предмет
+                <input type="checkbox" id="task2" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Сделай так, чтобы при использовании золотого яблока игроку выдавался эффект скорости на 10 секунд.</p>
+            <p><i>Подсказка: используй событие <code>player.on_item_used</code> и команду <code>player.give_effect(SPEED, 10, 2)</code>.</i></p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">magic_item.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-k">def</span> <span class="tok-f">on_use_item</span>(item):
+    <span class="tok-k">if</span> item == GOLDEN_APPLE:
+        player.give_effect(SPEED, <span class="tok-n">10</span>, <span class="tok-n">2</span>)
+
+player.on_item_used(on_use_item)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">⭐ Задание 3</span>
+                Агент-фигурист
+                <input type="checkbox" id="task3" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Напиши команду чата <b>«круг»</b>. При этой команде Агент должен пройти по кругу (4 раза: пройти вперёд 5 блоков и повернуть направо).</p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">agent_circle.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-k">def</span> <span class="tok-f">on_chat_circle</span>():
+    <span class="tok-k">for</span> i <span class="tok-k">in</span> range(<span class="tok-n">4</span>):
+        agent.move(FORWARD, <span class="tok-n">5</span>)
+        agent.turn(RIGHT)
+
+player.on_chat(<span class="tok-s">"круг"</span>, on_chat_circle)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item" style="border: 2px dashed #4f46e5; background: #f0edff;">
+            <div class="task-title">
+                <span class="badge" style="background: #ffb238; color: #312e81;">🚀 Бонус</span>
+                Свой проект
+                <input type="checkbox" id="task4" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Придумай и напиши свою программу на Python в Minecraft! Поделись результатом с преподавателем.</p>
+        </div>
+
+        <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="action-btn" onclick="alert('✅ Отлично! Ты готов к следующему занятию!')">✅ Я всё сделал(а)!</button>
+        </div>
+    </div>
+
+    <!-- Интерактив: Сопоставление -->
+    <div class="interactive-box" id="matchPython">
+        <h2>🔑 Сопоставь команду и её описание</h2>
+        <p>Выбери правильное описание для каждой команды Python:</p>
+
+        <div class="match-row">
+            <div class="match-key">player.say()</div>
+            <select data-correct="Выводит сообщение в чат">
+                <option value="">— выбери —</option>
+                <option value="Выводит сообщение в чат">Выводит сообщение в чат</option>
+                <option value="Телепортирует игрока">Телепортирует игрока</option>
+                <option value="Даёт эффект">Даёт эффект</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">agent.move()</div>
+            <select data-correct="Перемещает Агента">
+                <option value="">— выбери —</option>
+                <option value="Перемещает Агента">Перемещает Агента</option>
+                <option value="Поворачивает Агента">Поворачивает Агента</option>
+                <option value="Ставит блок">Ставит блок</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">agent.place()</div>
+            <select data-correct="Ставит блок">
+                <option value="">— выбери —</option>
+                <option value="Перемещает Агента">Перемещает Агента</option>
+                <option value="Ставит блок">Ставит блок</option>
+                <option value="Разрушает блок">Разрушает блок</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">def</div>
+            <select data-correct="Объявляет новую функцию">
+                <option value="">— выбери —</option>
+                <option value="Объявляет новую функцию">Объявляет новую функцию</option>
+                <option value="Создаёт переменную">Создаёт переменную</option>
+                <option value="Запускает цикл">Запускает цикл</option>
+            </select>
+        </div>
+
+        <button class="action-btn" onclick="checkMatch('matchPython')">✅ Проверить</button>
+        <div class="match-result" id="matchResultPython"></div>
+    </div>
+
+    <!-- Опрос -->
+    <div class="quiz-wrap" id="quizPython1">
+        <h2>📝 Проверь себя</h2>
+
+        <div class="quiz-question" data-name="qp1" data-correct="b">
+            <p class="quiz-q-text">1. Что такое двоичный код?</p>
+            <label><input type="radio" name="qp1" value="a"> Это язык, на котором говорят программисты</label>
+            <label><input type="radio" name="qp1" value="b"> Это последовательности нулей и единиц, которые понимает компьютер</label>
+            <label><input type="radio" name="qp1" value="c"> Это название игры в Minecraft</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="qp2" data-correct="a">
+            <p class="quiz-q-text">2. Какой язык программирования появился в 1991 году и стал очень популярным?</p>
+            <label><input type="radio" name="qp2" value="a"> Python</label>
+            <label><input type="radio" name="qp2" value="b"> FORTRAN</label>
+            <label><input type="radio" name="qp2" value="c"> C</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="qp3" data-correct="b">
+            <p class="quiz-q-text">3. Какая команда выводит сообщение в чат в Python?</p>
+            <label><input type="radio" name="qp3" value="a"> player.chat()</label>
+            <label><input type="radio" name="qp3" value="b"> player.say()</label>
+            <label><input type="radio" name="qp3" value="c"> player.message()</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="qp4" data-correct="c">
+            <p class="quiz-q-text">4. Какую команду использует Агент для движения вперёд?</p>
+            <label><input type="radio" name="qp4" value="a"> agent.go()</label>
+            <label><input type="radio" name="qp4" value="b"> agent.walk()</label>
+            <label><input type="radio" name="qp4" value="c"> agent.move(FORWARD, 5)</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="qp5" data-correct="a">
+            <p class="quiz-q-text">5. Что означает FORWARD в Python для Агента?</p>
+            <label><input type="radio" name="qp5" value="a"> Вперёд</label>
+            <label><input type="radio" name="qp5" value="b"> Назад</label>
+            <label><input type="radio" name="qp5" value="c"> Влево</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <button class="quiz-btn" onclick="checkQuiz('quizPython1')">Проверить ответы</button>
+        <div class="quiz-result"></div>
+    </div>
+
+    <!-- Рефлексия -->
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <p>Напиши, что тебе понравилось, а что было сложно:</p>
+        <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+    </div>
+
+    <!-- Навигация -->
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="index.html"><div class="lbl">← Назад</div><div class="ttl">К карте курса</div></a>
+        <a class="nav-btn next" href="les_python_1-2.html"><div class="lbl">Далее →</div><div class="ttl">1.2 Переменные и типы данных</div></a>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Занятие 1.1 Python · офлайн-курс Minecraft Education</div>
+    </div>
+</footer>
+
+<script>
+    // ===== ИГРА "НАЙДИ ОШИБКУ" =====
+    let errorFound = { 1: false, 2: false, 3: false };
+    let errorAttempts = { 1: 0, 2: 0, 3: 0 };
+    const errorMessages = {
+        1: { fail: '❌ Неверно! Вспомни, что все команды внутри функции должны иметь отступ (4 пробела).', 
+             success: '✅ Правильно! Здесь нужен отступ в 4 пробела.' },
+        2: { fail: '❌ Неверно! Посмотри, чего не хватает в конце первой строки.', 
+             success: '✅ Правильно! После объявления функции всегда ставится двоеточие (:).' },
+        3: { fail: '❌ Неверно! Проверь правильность написания команды. В Python все команды пишутся строго.', 
+             success: '✅ Правильно! Команда называется say, а не sayy.' }
+    };
+
+    function checkErrorLine(element, level) {
+        if (errorFound[level]) return;
+
+        const isError = element.dataset.error !== undefined;
+        const feedback = document.getElementById('errorFeedbackGame');
+        const counter = document.getElementById('errorCounter');
+
+        if (element.classList.contains('found')) return;
+
+        if (isError) {
+            element.classList.add('found');
+            errorFound[level] = true;
+            feedback.className = 'error-feedback success';
+            feedback.textContent = errorMessages[level].success;
+        } else {
+            element.classList.add('wrong');
+            errorAttempts[level] = (errorAttempts[level] || 0) + 1;
+            feedback.className = 'error-feedback attempt';
+            feedback.textContent = errorMessages[level].fail + ' Попробуй ещё раз!';
+
+            setTimeout(() => {
+                element.classList.remove('wrong');
+            }, 800);
+        }
+
+        const found = Object.values(errorFound).filter(v => v === true).length;
+        counter.textContent = `Найдено ошибок: ${found} из 3`;
+
+        if (found === 3) {
+            feedback.className = 'error-feedback success';
+            feedback.textContent = '🎉 Поздравляю! Ты нашёл все 3 ошибки! Отличная работа!';
+        }
+    }
+
+    // ===== ИГРА "СОБЕРИ КОД" =====
+    const codeLines = [
+        { id: 0, text: 'def on_chat_hello():', order: 0 },
+        { id: 1, text: '    player.say("Привет!")', order: 1 },
+        { id: 2, text: 'player.on_chat("hello", on_chat_hello)', order: 2 }
+    ];
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function renderSortItems() {
+        const container = document.getElementById('sortContainer');
+        const shuffled = shuffleArray([...codeLines]);
+
+        container.innerHTML = '';
+        shuffled.forEach((line, index) => {
+            const div = document.createElement('div');
+            div.className = 'sort-item';
+            div.draggable = true;
+            div.dataset.id = line.id;
+            div.dataset.order = line.order;
+            div.innerHTML = `
+                <span class="drag-handle">⠿</span>
+                <span style="font-family: 'JetBrains Mono', monospace;">${line.text}</span>
+            `;
+            container.appendChild(div);
+        });
+
+        const items = container.querySelectorAll('.sort-item');
+        let dragItem = null;
+
+        items.forEach(item => {
+            item.addEventListener('dragstart', function(e) {
+                dragItem = this;
+                this.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', '');
+            });
+
+            item.addEventListener('dragend', function(e) {
+                this.classList.remove('dragging');
+                dragItem = null;
+                items.forEach(el => el.classList.remove('correct-order', 'wrong-order'));
+            });
+
+            item.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            });
+
+            item.addEventListener('drop', function(e) {
+                e.preventDefault();
+                if (!dragItem || dragItem === this) return;
+
+                const parent = container;
+                const children = Array.from(parent.children);
+                const dragIndex = children.indexOf(dragItem);
+                const targetIndex = children.indexOf(this);
+
+                if (dragIndex < targetIndex) {
+                    parent.insertBefore(dragItem, this.nextSibling);
+                } else {
+                    parent.insertBefore(dragItem, this);
+                }
+            });
+        });
+    }
+
+    function checkSortOrder() {
+        const container = document.getElementById('sortContainer');
+        const items = container.querySelectorAll('.sort-item');
+        const feedback = document.getElementById('sortFeedback');
+
+        let correct = true;
+        let expectedOrder = 0;
+
+        items.forEach(item => {
+            const order = parseInt(item.dataset.order);
+            item.classList.remove('correct-order', 'wrong-order');
+
+            if (order === expectedOrder) {
+                item.classList.add('correct-order');
+                expectedOrder++;
+            } else {
+                item.classList.add('wrong-order');
+                correct = false;
+            }
+        });
+
+        if (correct) {
+            feedback.className = 'sort-feedback success';
+            feedback.textContent = '✅ Отлично! Код собран в правильном порядке! Теперь программа работает!';
+        } else {
+            feedback.className = 'sort-feedback fail';
+            feedback.textContent = '❌ Порядок нарушен. Вспомни: сначала объявляем функцию (def), затем пишем её содержимое с отступом, и только потом привязываем к команде чата.';
+        }
+    }
+
+    // ===== СОПОСТАВЛЕНИЕ =====
+    function checkMatch(containerId) {
+        const container = document.getElementById(containerId);
+        const selects = container.querySelectorAll('select[data-correct]');
+        let correct = 0;
+        selects.forEach(sel => {
+            const correctVal = sel.getAttribute('data-correct');
+            sel.classList.remove('correct', 'incorrect');
+            if (sel.value === correctVal) {
+                sel.classList.add('correct');
+                correct++;
+            } else if (sel.value !== '') {
+                sel.classList.add('incorrect');
+            }
+        });
+        const resultDiv = container.querySelector('.match-result');
+        if (resultDiv) {
+            resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${selects.length}`;
+            resultDiv.style.display = 'block';
+        }
+    }
+
+    // ===== ВИКТОРИНА =====
+    function checkQuiz(containerId) {
+        const container = document.getElementById(containerId);
+        const questions = container.querySelectorAll('.quiz-question');
+        let total = 0, correct = 0;
+        questions.forEach(q => {
+            const correctVal = q.getAttribute('data-correct');
+            const selected = q.querySelector('input[type="radio"]:checked');
+            const feedback = q.querySelector('.q-feedback');
+            if (selected) {
+                total++;
+                if (selected.value === correctVal) {
+                    correct++;
+                    feedback.innerHTML = '✅ Верно!';
+                    feedback.style.color = '#2e7d32';
+                } else {
+                    feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+                    feedback.style.color = '#c62828';
+                }
+            } else {
+                feedback.innerHTML = '⚠️ Выбери вариант.';
+                feedback.style.color = '#f57c00';
+            }
+        });
+        const resultDiv = container.querySelector('.quiz-result');
+        if (resultDiv) {
+            if (total === 0) {
+                resultDiv.innerHTML = '⚠️ Ответь на все вопросы.';
+            } else {
+                resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${questions.length}`;
+            }
+            resultDiv.style.display = 'block';
+        }
+    }
+
+    // ===== ПРОГРЕСС ПРАКТИЧЕСКИХ ЗАДАНИЙ =====
+    function updatePracticeProgress() {
+        const checkboxes = document.querySelectorAll('#pythonFirstSteps input[type="checkbox"]');
+        const total = checkboxes.length;
+        let checked = 0;
+        checkboxes.forEach(cb => { if (cb.checked) checked++; });
+        const fill = document.getElementById('practiceProgressFill');
+        const label = document.getElementById('practiceProgressLabel');
+        if (fill) fill.style.width = (checked / total * 100) + '%';
+        if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+    }
+
+    // ===== МИНИ-ИГРА: ТРЕНИРОВКА ПЕЧАТИ =====
+    const typingPhrases = [
+        'player.say("Привет!")',
+        'agent.move(FORWARD, 5)',
+        'agent.turn(RIGHT)',
+        'agent.place(FORWARD)',
+        'player.give_effect(SPEED, 10)',
+        'def on_chat():'
+    ];
+
+    let currentTypingPhrase = typingPhrases[0];
+    let typingIndex = 0;
+    let typingErrors = 0;
+    let typingStartTime = null;
+    let typingTimer = null;
+    let isTypingComplete = false;
+
+    function initTypingGame(phrase) {
+        currentTypingPhrase = phrase;
+        typingIndex = 0;
+        typingErrors = 0;
+        isTypingComplete = false;
+        typingStartTime = null;
+        
+        if (typingTimer) {
+            clearInterval(typingTimer);
+            typingTimer = null;
+        }
+
+        const input = document.getElementById('typingInput');
+        input.value = '';
+        input.disabled = false;
+        input.focus();
+
+        document.getElementById('typingErrors').textContent = '0';
+        document.getElementById('typingTime').textContent = '0с';
+        document.getElementById('typingResult').className = 'typing-result info';
+        document.getElementById('typingResult').textContent = '💡 Набери текст выше. Начинай с первого символа!';
+
+        updateTypingDisplay();
+        updateTypingProgress();
+    }
+
+    function updateTypingDisplay() {
+        const prompt = document.getElementById('typingPrompt');
+        const phrase = currentTypingPhrase;
+        let html = '';
+
+        for (let i = 0; i < phrase.length; i++) {
+            const char = phrase[i];
+            let className = 'char-next';
+            
+            if (i < typingIndex) {
+                className = 'char-done';
+            } else if (i === typingIndex) {
+                className = 'char-current';
+            } else {
+                className = 'char-next';
+            }
+            
+            html += `<span class="${className}">${char === ' ' ? '&nbsp;' : char}</span>`;
+        }
+
+        prompt.innerHTML = html;
+    }
+
+    function updateTypingProgress() {
+        const phrase = currentTypingPhrase;
+        const progress = phrase.length > 0 ? (typingIndex / phrase.length * 100) : 0;
+        document.getElementById('typingProgress').textContent = Math.round(progress) + '%';
+        document.getElementById('typingProgressFill').style.width = progress + '%';
+    }
+
+    function handleTypingInput(e) {
+        if (isTypingComplete) return;
+
+        const input = e.target;
+        const value = input.value;
+        const phrase = currentTypingPhrase;
+
+        // Засекаем время при первом вводе
+        if (!typingStartTime && value.length > 0) {
+            typingStartTime = Date.now();
+            typingTimer = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - typingStartTime) / 1000);
+                document.getElementById('typingTime').textContent = elapsed + 'с';
+            }, 1000);
+        }
+
+        // Проверяем, что пользователь вводит правильно
+        const expectedChar = phrase[typingIndex];
+        const actualChar = value[value.length - 1];
+
+        if (value.length > typingIndex + 1) {
+            // Пользователь ввел лишний символ - ошибка
+            const lastChar = value[value.length - 1];
+            if (lastChar !== expectedChar) {
+                typingErrors++;
+                document.getElementById('typingErrors').textContent = typingErrors;
+                input.value = value.slice(0, -1);
+                document.getElementById('typingResult').className = 'typing-result fail';
+                document.getElementById('typingResult').textContent = '❌ Неверный символ! Попробуй ещё раз.';
+                setTimeout(() => {
+                    if (!isTypingComplete) {
+                        document.getElementById('typingResult').className = 'typing-result info';
+                        document.getElementById('typingResult').textContent = '💡 Продолжай печатать!';
+                    }
+                }, 1000);
+                return;
+            }
+        }
+
+        // Проверяем текущий символ
+        if (value.length > 0 && value[value.length - 1] === expectedChar) {
+            typingIndex++;
+            updateTypingDisplay();
+            updateTypingProgress();
+
+            // Проверяем, завершён ли ввод
+            if (typingIndex === phrase.length) {
+                isTypingComplete = true;
+                input.disabled = true;
+                if (typingTimer) {
+                    clearInterval(typingTimer);
+                    typingTimer = null;
+                }
+                const elapsed = Math.floor((Date.now() - typingStartTime) / 1000);
+                document.getElementById('typingResult').className = 'typing-result success';
+                document.getElementById('typingResult').textContent = `🎉 Отлично! Ты напечатал "${phrase}" за ${elapsed} секунд! Ошибок: ${typingErrors}`;
+                return;
+            }
+        }
+
+        // Если ввод не совпадает с ожидаемым
+        if (value.length > 0 && value[value.length - 1] !== expectedChar && !isTypingComplete) {
+            typingErrors++;
+            document.getElementById('typingErrors').textContent = typingErrors;
+            input.value = value.slice(0, -1);
+            document.getElementById('typingResult').className = 'typing-result fail';
+            document.getElementById('typingResult').textContent = '❌ Неверный символ! Попробуй ещё раз.';
+            setTimeout(() => {
+                if (!isTypingComplete) {
+                    document.getElementById('typingResult').className = 'typing-result info';
+                    document.getElementById('typingResult').textContent = '💡 Продолжай печатать!';
+                }
+            }, 1000);
+        }
+    }
+
+    function resetTypingGame() {
+        const tags = document.querySelectorAll('.phrase-tag');
+        let activeTag = document.querySelector('.phrase-tag.active');
+        if (!activeTag) {
+            activeTag = tags[0];
+            activeTag.classList.add('active');
+        }
+        initTypingGame(activeTag.dataset.text);
+    }
+
+    // Обработчики для мини-игры
+    document.addEventListener('DOMContentLoaded', function() {
+        // Инициализация игры
+        const tags = document.querySelectorAll('.phrase-tag');
+        tags.forEach(tag => {
+            tag.addEventListener('click', function() {
+                tags.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                initTypingGame(this.dataset.text);
+            });
+        });
+
+        const input = document.getElementById('typingInput');
+        input.addEventListener('input', handleTypingInput);
+
+        document.getElementById('typingResetBtn').addEventListener('click', resetTypingGame);
+
+        // Запускаем с первой фразой
+        const firstTag = document.querySelector('.phrase-tag.active');
+        if (firstTag) {
+            initTypingGame(firstTag.dataset.text);
+        }
+    });
+
+    // ===== АВТОМАТИЧЕСКАЯ ПРОВЕРКА СОПОСТАВЛЕНИЯ =====
+    document.querySelectorAll('.interactive-box select[data-correct]').forEach(sel => {
+        sel.addEventListener('change', function() {
+            const container = this.closest('.interactive-box');
+            if (container && container.id === 'matchPython') {
+                const allSelected = container.querySelectorAll('select[data-correct]');
+                let allFilled = true;
+                allSelected.forEach(s => { if (s.value === '') allFilled = false; });
+                if (allFilled) {
+                    checkMatch('matchPython');
+                }
+            }
+        });
+    });
+
+    // ===== ИНИЦИАЛИЗАЦИЯ =====
+    renderSortItems();
+    updatePracticeProgress();
+</script>
+</body>
+</html>

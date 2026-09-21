@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.2. Мини-проект: Очень странные дела — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #ffbbbb; border-bottom: 3px solid #e50914; }
+        .site-footer { background: #1a0a2e; border-top: 3px solid #e50914; }
+        .site-footer, .site-footer .foot-brand { color: #e8e0f0; }
+        .brand-name { color: #312e81; }
+        .lesson-page .hero h1 { color: #1e1b4b; }
+        .module-pill { background: #e50914; color: #fff; }
+        .hex-badge { background: #e50914; color: #fff; }
+        .data-table th { background: #4f46e5; color: #fff; }
+        .match-btn, .quiz-btn, .action-btn { background: #4f46e5; color: #fff; border: none; cursor: pointer; padding: 10px 20px; border-radius: 8px; font-weight: 700; }
+        .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4338ca; }
+        .action-btn.danger { background: #7f1d1d; }
+        .action-btn.danger:hover { background: #991b1b; }
+        .action-btn.outline { background: transparent; border: 2px solid #4f46e5; color: #312e81; }
+        .task-box { border-left: 4px solid #e50914; }
+        .code-block { border: 1px solid #c7d2fe; background: #f5f7ff; }
+        .interactive-box { background: #f8faff; border: 1px solid #c7d2fe; }
+        .code-block .code-head { background: #1e1e2e; color: #c7d2fe; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .code-block .code-head .dots { display: flex; gap: 6px; }
+        .code-block .code-head .dots .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .code-block .code-head .dots .dot.r { background: #d93b3b; }
+        .code-block .code-head .dots .dot.y { background: #ffb238; }
+        .code-block .code-head .dots .dot.g { background: #4f46e5; }
+        .code-block .code-head .fname { font-family: 'JetBrains Mono', monospace; font-size: 13px; opacity: 0.8; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; margin: 0; padding: 16px 20px; overflow-x: auto; font-size: 14px; line-height: 1.8; }
+        .tok-c { color: #7fcf9e; font-style: italic; }
+        .tok-k { color: #ffb238; font-weight: 700; }
+        .tok-s { color: #8fd7ff; }
+        .tok-f { color: #ffd08a; }
+        .tok-n { color: #ff9aae; }
+        .note { background: #eef2ff; border-left: 6px solid #4f46e5; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.warn { background: #fef3c7; border-left-color: #f59e0b; }
+        .note.danger { background: #fde8e8; border-left-color: #e50914; }
+        .note.stranger { background: #2d1b4e; color: #f3e8ff; border-left-color: #e50914; }
+        .note.stranger b { color: #ff6b6b; }
+        .task-box .task-item {
+            background: #f5f7ff; border: 1px solid #c7d2fe; border-radius: 12px;
+            padding: 16px; margin-bottom: 12px;
+        }
+        .task-box .task-item .task-title { display: flex; align-items: center; gap: 10px; }
+        .task-box .task-item .task-title { font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .task-box .task-item .task-title .badge {
+            background: #4f46e5; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 99px;
+        }
+        .task-box .task-item .task-title .badge.bonus { background: #ffb238; color: #312e81; }
+        .hint-list { margin: 10px 0 0; padding-left: 20px; }
+        .hint-list li { margin-bottom: 8px; font-size: 15px; }
+        .interactive-box .match-row {
+            display: flex; gap: 16px; align-items: center; margin: 12px 0; flex-wrap: wrap;
+        }
+        .interactive-box .match-row .match-key {
+            background: #4f46e5; color: #fff; padding: 8px 16px; border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; min-width: 160px; text-align: center;
+        }
+        .interactive-box .match-row select {
+            flex: 1; min-width: 150px; padding: 8px 12px; border-radius: 8px;
+            border: 2px solid #c7d2fe; font-family: 'Nunito', sans-serif; background: #fff;
+        }
+        .interactive-box .match-row select.correct { border-color: #4f46e5; background: #eef2ff; }
+        .interactive-box .match-row select.incorrect { border-color: #d93b3b; background: #fde8e8; }
+        .interactive-box .match-result { margin-top: 12px; font-weight: 700; }
+        .progress-track { background: #e8f5e9; border-radius: 99px; height: 20px; overflow: hidden; margin: 12px 0 6px; }
+        .progress-fill-minecraft {
+            background: linear-gradient(90deg, #e50914, #4f46e5);
+            height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 99px;
+        }
+        .progress-label { font-size: 15px; font-weight: 700; color: #312e81; display: block; margin-bottom: 8px; }
+        .commands-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 16px 0;
+        }
+        .commands-grid .cmd-card {
+            background: #f5f7ff; border: 2px solid #c7d2fe; border-radius: 12px; padding: 16px;
+        }
+        .commands-grid .cmd-card .cmd-title { font-weight: 700; color: #312e81; margin-bottom: 8px; }
+        .commands-grid .cmd-card .cmd-code {
+            background: #1e1e2e; color: #e4f5da; padding: 10px 14px; border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 12px; overflow-x: auto;
+        }
+        .commands-grid .cmd-card .cmd-desc { font-size: 14px; color: #4a6a3a; margin-top: 6px; }
+        .story-banner {
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%);
+            color: #f3e8ff; border-radius: 16px; padding: 24px 28px; margin: 16px 0;
+            border: 1px solid rgba(229, 9, 20, 0.4);
+        }
+        .story-banner h3 { margin: 0 0 10px; color: #ff6b6b; font-family: 'Fredoka', sans-serif; }
+        .chunk-viz {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; max-width: 120px;
+            margin: 12px auto;
+        }
+        .chunk-viz span { aspect-ratio: 1; background: #4f46e5; border-radius: 2px; opacity: 0.7; }
+        .chunk-viz span:nth-child(odd) { background: #e50914; }
+        .ai-helper {
+            background: #1e1e2e; color: #e4f5da; border-radius: 16px; padding: 28px 32px; margin: 20px 0;
+            position: relative; overflow: hidden;
+        }
+        .ai-helper::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.15), transparent 60%);
+            pointer-events: none;
+        }
+        .ai-head {
+            display: flex; align-items: center; gap: 16px; margin-bottom: 8px; position: relative;
+        }
+        .ai-head .ai-icon { font-size: 36px; line-height: 1; }
+        .ai-head .t {
+            font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 22px;
+        }
+        .ai-head .t span { color: #8fd7ff; }
+        .ai-sub {
+            color: #b8d9a8; font-size: 16px; margin-bottom: 16px; position: relative;
+        }
+        .ai-buttons {
+            display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; position: relative;
+        }
+        .ai-q-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e4f5da; padding: 10px 18px; border-radius: 99px; font-size: 14px; font-weight: 600;
+            cursor: pointer; font-family: 'Nunito', sans-serif; text-decoration: none; transition: all 0.2s;
+        }
+        .ai-q-btn:hover {
+            background: rgba(79, 70, 229, 0.25); border-color: rgba(79, 70, 229, 0.4); transform: translateY(-2px);
+        }
+        .ai-answer {
+            background: rgba(255, 255, 255, 0.04); border-left: 4px solid #4f46e5;
+            border-radius: 0 12px 12px 0; padding: 16px 20px; font-size: 15px; min-height: 44px;
+            position: relative; color: #e4f5da;
+        }
+        .ai-real-tip {
+            margin-top: 16px; padding-top: 16px; border-top: 1px dashed rgba(255, 255, 255, 0.12);
+            font-size: 14px; color: #b8d9a8; position: relative;
+        }
+        .prompt-example {
+            display: block; background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 10px 16px;
+            margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #ffd08a;
+        }
+        .ai-real-tip .warning {
+            margin-top: 8px; font-size: 13px; color: #b8d9a8; opacity: 0.7;
+        }
+        .solution-gate {
+            margin-top: 24px; padding: 20px; background: #fef2f2; border: 2px dashed #e50914;
+            border-radius: 12px; text-align: center;
+        }
+        .solution-gate p { margin: 0 0 12px; color: #312e81; font-size: 15px; }
+        #solutionReveal { display: none; margin-top: 16px; text-align: left; }
+        #solutionReveal.unlocked { display: block; }
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+            z-index: 9999; align-items: center; justify-content: center; padding: 16px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: #fff; border-radius: 16px; padding: 28px; max-width: 400px; width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); border-top: 4px solid #e50914;
+        }
+        .modal-box h3 { margin: 0 0 8px; color: #312e81; }
+        .modal-box p { font-size: 14px; color: #4a6a3a; margin: 0 0 16px; }
+        .modal-box input {
+            width: 100%; padding: 12px; border: 2px solid #c7d2fe; border-radius: 8px;
+            font-size: 18px; letter-spacing: 4px; text-align: center; font-family: 'JetBrains Mono', monospace;
+            box-sizing: border-box;
+        }
+        .modal-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+        .modal-actions .action-btn { flex: 1; min-width: 120px; }
+        .modal-error { color: #c62828; font-weight: 700; font-size: 14px; min-height: 20px; margin-top: 8px; }
+        .order-step {
+            display: flex; align-items: center; gap: 12px; margin: 8px 0; flex-wrap: wrap;
+        }
+        .order-step .step-num {
+            background: #312e81; color: #fff; width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
+        }
+        .order-step select { flex: 1; min-width: 200px; padding: 8px; border-radius: 8px; border: 2px solid #c7d2fe; }
+        .order-step select.correct { border-color: #2e7d32; background: #e8f5e9; }
+        .order-step select.incorrect { border-color: #c62828; background: #ffebee; }
+        @media (max-width: 768px) {
+            .commands-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div>
+                    <div class="brand-name">РОБОВИТА</div>
+                    <div class="brand-tag">учимся программировать роботов и игры</div>
+                </div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 3.2 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">3.2</div>
+            <div>
+                <div class="module-pill">Раздел 3 · Координаты</div>
+                <h1>Мини-проект: Очень странные дела</h1>
+                <p class="subtitle">Случайный чанк из блоков — когда мир ведёт себя странно</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Научиться реагировать на <b>использование предмета</b> в Python</li>
+            <li>Закрепить <b>абсолютные координаты</b> и позицию игрока</li>
+            <li>Использовать <b>тройной цикл</b> для постройки объёма 16×16×16</li>
+            <li>Применить <b>случайные числа</b> для «странных» блоков</li>
+            <li>Собрать мини-проект «Upside Down» своими руками (без готового кода с первого экрана)</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📋 План занятия</h2>
+        <table class="timetable">
+            <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>Идея проекта</td><td>10 мин</td><td>Сюжет и правила безопасности в мире</td></tr>
+            <tr><td>Новые команды</td><td>15 мин</td><td>on_item_interacted, randint, block_by_id</td></tr>
+            <tr><td>Алгоритм чанка</td><td>15 мин</td><td>Координаты + тройной цикл</td></tr>
+            <tr><td>Интерактив</td><td>15 мин</td><td>Сопоставление и порядок шагов</td></tr>
+            <tr><td>Мини-проект</td><td>30 мин</td><td>Пишем программу по подсказкам</td></tr>
+            <tr><td>Итоги</td><td>5 мин</td><td>Викторина и рефлексия</td></tr>
+            <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+        </table>
+    </div>
+
+    <div class="story-banner">
+        <h3>🌀 Что происходит в мире?</h3>
+        <p>Ты находишь <b>зачарованное яблоко</b> — странный предмет. Когда игрок <b>использует</b> его (ПКМ / взаимодействие), перед ним внезапно вырастает <b>куб из случайных блоков</b> размером <b>16 × 16 × 16</b> — как будто открылась «изнанка» мира.</p>
+        <div class="chunk-viz" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+        </div>
+        <p style="font-size: 14px; opacity: 0.9; text-align: center;">4096 блоков — мощная магия! Не злоупотребляй.</p>
+    </div>
+
+    <div class="note danger">
+        <b>⚠️ Важно для занятия</b>
+        <ul style="margin: 8px 0 0;">
+            <li>Работай в <b>своём отдельном мире</b> (или один ученик — один мир). Если несколько человек запустят эффект в одном мире, игра может <b>сильно лагать</b>.</li>
+            <li>В чате могут появляться сообщения вроде «этот блок является предметом и его нельзя поставить» — это нормально: часть ID — не блоки. На занятии <b>можно не исправлять</b>, программа всё равно строит куб.</li>
+            <li>Готовое решение — только через кнопку с <b>паролем от преподавателя</b>. Сначала попробуй сам!</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">1</span> Событие: использование предмета</h2>
+        <p>Раньше мы запускали код по команде в чате. Здесь код запускается, когда игрок <b>использует конкретный предмет</b>.</p>
+
+        <div class="commands-grid">
+            <div class="cmd-card">
+                <div class="cmd-title">🍎 player.on_item_interacted</div>
+                <div class="cmd-code">player.on_item_interacted(ENCHANTED_APPLE, on_item_interacted)</div>
+                <div class="cmd-desc">Вызывает функцию <code>on_item_interacted</code>, когда игрок использует зачарованное яблоко. В начале файла нужна функция с этим именем (без параметров).</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">📍 player.position()</div>
+                <div class="cmd-code">posP = player.position()</div>
+                <div class="cmd-desc">Сохраняет текущую позицию игрока. Из неё можно взять X, Y, Z через <code>get_value(Axis.X)</code> и т.д.</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">🎲 randint</div>
+                <div class="cmd-code">randint(0, 800)</div>
+                <div class="cmd-desc">Случайное целое число от 0 до 800 — будем использовать как ID блока.</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">🧱 blocks.block_by_id</div>
+                <div class="cmd-code">blocks.block_by_id(42)</div>
+                <div class="cmd-desc">Превращает число (ID) в тип блока для команды <code>blocks.place</code>.</div>
+            </div>
+        </div>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">item_event_skeleton.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-k">def</span> <span class="tok-f">on_item_interacted</span>():
+    player.say(<span class="tok-s">"Что-то странное начинается..."</span>)
+
+player.on_item_interacted(ENCHANTED_APPLE, on_item_interacted)</code></pre>
+        </div>
+
+        <div class="note warn">
+            <b>💡 Предмет в инвентаре:</b> выдай себе зачарованное яблоко через творческий режим или команду в чате, иначе протестировать не получится.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">2</span> Строим куб 16×16×16</h2>
+        <p>Чанк в Minecraft часто ассоциируют с размером <b>16 блоков</b>. Нам нужно перебрать все комбинации <code>x</code>, <code>y</code>, <code>z</code> от 0 до 15 — для этого подходит <b>тройной вложенный цикл</b> <code>for</code>.</p>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">triple_loop.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-k">for</span> x <span class="tok-k">in</span> range(<span class="tok-n">16</span>):
+    <span class="tok-k">for</span> y <span class="tok-k">in</span> range(<span class="tok-n">16</span>):
+        <span class="tok-k">for</span> z <span class="tok-k">in</span> range(<span class="tok-n">16</span>):
+            <span class="tok-c"># здесь: выбрать случайный блок и поставить его в world(...)</span>
+            <span class="tok-k">pass</span></code></pre>
+        </div>
+
+        <p><b>Где строить?</b> Возьми координаты игрока и сдвинь угол куба, например на <b>+10</b> по X и <b>+10</b> по Z — чтобы куб появился <b>рядом</b>, а не внутри игрока. Каждый блок внутри цикла:</p>
+        <p><code>world(posX + x, posY + y, posZ + z)</code></p>
+
+        <div class="note">
+            <b>📐 Связь с занятием 2.3:</b> здесь мы снова используем <code>world()</code> — абсолютные координаты. Угол куба считаем один раз; в цикле только прибавляем <code>x</code>, <code>y</code>, <code>z</code>.
+        </div>
+    </div>
+
+    <div class="interactive-box" id="matchStrange">
+        <h2>🔑 Сопоставь команду и смысл</h2>
+        <div class="match-row">
+            <div class="match-key">player.on_item_interacted(...)</div>
+            <select data-correct="Запуск кода при использовании предмета">
+                <option value="">— выбери —</option>
+                <option value="Запуск кода при использовании предмета">Запуск кода при использовании предмета</option>
+                <option value="Телепорт игрока">Телепорт игрока</option>
+                <option value="Спавн агента">Спавн агента</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">randint(0, 800)</div>
+            <select data-correct="Случайный ID для блока">
+                <option value="">— выбери —</option>
+                <option value="Случайный ID для блока">Случайный ID для блока</option>
+                <option value="Количество блоков в кубе">Количество блоков в кубе</option>
+                <option value="Координата Y">Координата Y</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">range(16)</div>
+            <select data-correct="Числа 0…15 для стороны куба">
+                <option value="">— выбери —</option>
+                <option value="Числа 0…15 для стороны куба">Числа 0…15 для стороны куба</option>
+                <option value="16 игроков на сервере">16 игроков на сервере</option>
+                <option value="Высота неба">Высота неба</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">blocks.block_by_id(n)</div>
+            <select data-correct="Получить тип блока по числу n">
+                <option value="">— выбери —</option>
+                <option value="Получить тип блока по числу n">Получить тип блока по числу n</option>
+                <option value="Удалить блок n">Удалить блок n</option>
+                <option value="Узнать имя игрока">Узнать имя игрока</option>
+            </select>
+        </div>
+        <button class="action-btn" onclick="checkMatch('matchStrange')">✅ Проверить</button>
+        <div class="match-result"></div>
+    </div>
+
+    <div class="interactive-box" id="orderAlgo">
+        <h2>🧩 Расставь шаги алгоритма</h2>
+        <p>Выбери правильный порядок (1 — первый, 5 — последний):</p>
+        <div class="order-step">
+            <span class="step-num">?</span>
+            <span style="flex:1;">Зарегистрировать обработчик: яблоко → функция</span>
+            <select data-order="5" data-step="reg" title="Последний шаг в файле">
+                <option value="">№</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+        </div>
+        <div class="order-step">
+            <span class="step-num">?</span>
+            <span style="flex:1;">Получить позицию игрока и вычислить угол куба (posX, posY, posZ)</span>
+            <select data-order="2" data-step="pos">
+                <option value="">№</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+        </div>
+        <div class="order-step">
+            <span class="step-num">?</span>
+            <span style="flex:1;">Тройной цикл for по x, y, z от 0 до 15</span>
+            <select data-order="3" data-step="loop">
+                <option value="">№</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+        </div>
+        <div class="order-step">
+            <span class="step-num">?</span>
+            <span style="flex:1;">Внутри цикла: случайный ID → block_by_id → blocks.place в world(...)</span>
+            <select data-order="4" data-step="place">
+                <option value="">№</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+        </div>
+        <div class="order-step">
+            <span class="step-num">?</span>
+            <span style="flex:1;">Объявить функцию on_item_interacted (внутри неё вся логика)</span>
+            <select data-order="1" data-step="def">
+                <option value="">№</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+        </div>
+        <button class="action-btn" onclick="checkOrder()">✅ Проверить порядок</button>
+        <div class="match-result" id="orderResult"></div>
+        <p style="font-size: 13px; color: #4a6a3a; margin-top: 8px;">Подсказка: в Python сначала пишут функцию, потом регистрируют событие внизу файла.</p>
+    </div>
+
+    <div class="ai-helper">
+        <div class="ai-head">
+            <span class="ai-icon">🤖</span>
+            <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+        </div>
+        <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+        <div class="ai-buttons">
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%81%D0%B4%D0%B5%D0%BB%D0%B0%D1%82%D1%8C%20%D1%86%D0%B8%D0%BA%D0%BB%20%D0%B2%20Python%20%D0%B4%D0%BB%D1%8F%20%D0%BF%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B8%20%D0%BA%D1%83%D0%B1%D0%B0%3F%22%7D" target="_blank" class="ai-q-btn">Цикл для куба</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B2%20Python%20Minecraft%20Education%20%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D1%82%D1%8C%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%20%D0%BF%D1%80%D0%B5%D0%B4%D0%BC%D0%B5%D1%82%D0%B0%3F%22%7D" target="_blank" class="ai-q-btn">Событие предмета</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%81%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D0%BE%D0%B5%20%D1%87%D0%B8%D1%81%D0%BB%D0%BE%20randint%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Случайные числа</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%BA%D0%BE%D0%BE%D1%80%D0%B4%D0%B8%D0%BD%D0%B0%D1%82%D1%8B%20world%20%D0%B2%20Python%20Minecraft%3F%22%7D" target="_blank" class="ai-q-btn">Координаты world</a>
+        </div>
+        <div class="ai-answer">
+            💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+        </div>
+        <div class="ai-real-tip">
+            <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай вопрос про «Upside Down» или циклы в Minecraft.<br>
+            <span class="prompt-example">«Алиса, как сделать тройной цикл for в Python?»</span>
+            <div class="warning">⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.</div>
+        </div>
+    </div>
+
+    <div class="task-box" id="projectStrange">
+        <h2>🛠️ Мини-проект: собери программу сам</h2>
+        <p>Открой Python в Minecraft (<code>C</code>). <b>Не копируй готовое решение</b> — иди по шагам. Отмечай галочкой, что уже сделал.</p>
+
+        <div class="progress-track">
+            <div class="progress-fill-minecraft" id="practiceProgressFill" style="width: 0%;"></div>
+        </div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 7</span>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 1</span>
+                Функция-обработчик
+                <input type="checkbox" id="task1" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Создай функцию <code>on_item_interacted</code> без параметров. Внутри можно написать <code>player.say("...")</code>, чтобы проверить, что яблоко «слышит» код.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 2</span>
+                Привязка к яблоку
+                <input type="checkbox" id="task2" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>После функции добавь регистрацию: <code>ENCHANTED_APPLE</code> и имя функции. Используй яблоко в игре — должно появиться сообщение.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 3</span>
+                Угол куба
+                <input type="checkbox" id="task3" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Сохрани <code>player.position()</code>, вычисли <code>posX</code>, <code>posY</code>, <code>posZ</code> через <code>get_value(Axis.X)</code> и сдвинь X и Z вперёд (например +10).</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 4</span>
+                Тройной цикл
+                <input type="checkbox" id="task4" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Три вложенных <code>for</code> с <code>range(16)</code>. Счётчики: <code>x</code>, <code>y</code>, <code>z</code>.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 5</span>
+                Случайный блок
+                <input type="checkbox" id="task5" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Внутри цикла: <code>block = blocks.block_by_id(randint(0, 800))</code>. Ошибки в чате про «предмет» можно игнорировать.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 6</span>
+                Поставить блок
+                <input type="checkbox" id="task6" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p><code>blocks.place(block, world(posX + x, posY + y, posZ + z))</code>. Запусти один раз в своём мире — куб большой, подожди завершения.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 7</span>
+                Тест и рефлексия
+                <input type="checkbox" id="task7" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Покажи результат преподавателю. Что получилось красиво? Что бы ты изменил (размер, смещение, диапазон randint)?</p>
+        </div>
+
+        <div class="solution-gate">
+            <p><b>🔐 Готовое решение</b> — только если застрял или преподаватель разрешил.</p>
+            <button type="button" class="action-btn danger" onclick="openSolutionModal()">Показать решение</button>
+            <div id="solutionReveal">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">strange_things_solution.py</span>
+                    </div>
+                    <pre class="code" id="solutionCodePre"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="quiz-wrap" id="quizStrange">
+        <h2>📝 Проверь себя</h2>
+        <div class="quiz-question" data-name="sq1" data-correct="b">
+            <p class="quiz-q-text">1. Сколько блоков в кубе 16×16×16?</p>
+            <label><input type="radio" name="sq1" value="a"> 256</label>
+            <label><input type="radio" name="sq1" value="b"> 4096</label>
+            <label><input type="radio" name="sq1" value="c"> 16</label>
+            <div class="q-feedback"></div>
+        </div>
+        <div class="quiz-question" data-name="sq2" data-correct="c">
+            <p class="quiz-q-text">2. Какой предмет запускает наш проект?</p>
+            <label><input type="radio" name="sq2" value="a"> GOLDEN_APPLE</label>
+            <label><input type="radio" name="sq2" value="b"> DIAMOND</label>
+            <label><input type="radio" name="sq2" value="c"> ENCHANTED_APPLE</label>
+            <div class="q-feedback"></div>
+        </div>
+        <div class="quiz-question" data-name="sq3" data-correct="a">
+            <p class="quiz-q-text">3. Зачем сдвигаем posX и posZ от позиции игрока?</p>
+            <label><input type="radio" name="sq3" value="a"> Чтобы куб появился рядом, а не внутри игрока</label>
+            <label><input type="radio" name="sq3" value="b"> Чтобы мир загрузился быстрее</label>
+            <label><input type="radio" name="sq3" value="c"> Это не нужно</label>
+            <div class="q-feedback"></div>
+        </div>
+        <div class="quiz-question" data-name="sq4" data-correct="b">
+            <p class="quiz-q-text">4. Почему лучше тестировать в своём мире?</p>
+            <label><input type="radio" name="sq4" value="a"> В чужом мире код не работает</label>
+            <label><input type="radio" name="sq4" value="b"> Много блоков могут вызвать лаг</label>
+            <label><input type="radio" name="sq4" value="c"> Яблоко есть только в одиночной игре</label>
+            <div class="q-feedback"></div>
+        </div>
+        <button class="quiz-btn" onclick="checkQuiz('quizStrange')">Проверить ответы</button>
+        <div class="quiz-result"></div>
+    </div>
+
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <textarea placeholder="Самое странное в моём кубе было...&#10;Я понял(а), как работает...&#10;Хочу улучшить..."></textarea>
+    </div>
+
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_3-1.html"><div class="lbl">← Назад</div><div class="ttl">3.1 Координаты и Python</div></a>
+        <a class="nav-btn next" href="les_python_3-3.html"><div class="lbl">Далее →</div><div class="ttl">3.3 Строим с Python</div></a>
+    </div>
+</main>
+
+<div class="modal-overlay" id="solutionModal" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal-box">
+        <h3 id="modalTitle">🔐 Пароль преподавателя</h3>
+        <input type="text" id="solutionPasswordInput" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••">
+        <div class="modal-error" id="modalPasswordError"></div>
+        <div class="modal-actions">
+            <button type="button" class="action-btn" onclick="submitSolutionPassword()">Открыть</button>
+            <button type="button" class="action-btn outline" onclick="closeSolutionModal()">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Занятие 3.2 · Мини-проект: Очень странные дела · Minecraft Education и Python</div>
+    </div>
+</footer>
+
+<script>
+    const SOLUTION_SOURCE = `def on_item_interacted():
+    block = AIR
+    posX = 0
+    posY = 0
+    posZ = 0
+    posP = player.position()
+    posX = posP.get_value(Axis.X) + 10
+    posY = posP.get_value(Axis.Y)
+    posZ = posP.get_value(Axis.Z) + 10
+    for x in range(16):
+        for y in range(16):
+            for z in range(16):
+                block = blocks.block_by_id(randint(0, 800))
+                blocks.place(block, world(posX + x, posY + y, posZ + z))
+player.on_item_interacted(ENCHANTED_APPLE, on_item_interacted)`;
+
+    function getPasswordDDMM() {
+        const now = new Date();
+        const d = String(now.getDate()).padStart(2, '0');
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        return d + m;
+    }
+
+    function openSolutionModal() {
+        document.getElementById('solutionModal').classList.add('open');
+        document.getElementById('solutionPasswordInput').value = '';
+        document.getElementById('modalPasswordError').textContent = '';
+        document.getElementById('solutionPasswordInput').focus();
+    }
+
+    function closeSolutionModal() {
+        document.getElementById('solutionModal').classList.remove('open');
+    }
+
+    function submitSolutionPassword() {
+        const input = document.getElementById('solutionPasswordInput').value.trim();
+        const err = document.getElementById('modalPasswordError');
+        if (input !== getPasswordDDMM()) {
+            err.textContent = '❌ Неверный пароль.';
+            return;
+        }
+        err.textContent = '';
+        closeSolutionModal();
+        const pre = document.getElementById('solutionCodePre');
+        pre.textContent = SOLUTION_SOURCE;
+        document.getElementById('solutionReveal').classList.add('unlocked');
+        pre.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    document.getElementById('solutionModal').addEventListener('click', function(e) {
+        if (e.target === this) closeSolutionModal();
+    });
+    document.getElementById('solutionPasswordInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') submitSolutionPassword();
+        if (e.key === 'Escape') closeSolutionModal();
+    });
+
+    function checkMatch(containerId) {
+        const container = document.getElementById(containerId);
+        const selects = container.querySelectorAll('select[data-correct]');
+        let correct = 0;
+        selects.forEach(sel => {
+            const cv = sel.getAttribute('data-correct');
+            sel.classList.remove('correct', 'incorrect');
+            if (sel.value === cv) { sel.classList.add('correct'); correct++; }
+            else if (sel.value !== '') sel.classList.add('incorrect');
+        });
+        const resultDiv = container.querySelector('.match-result');
+        if (resultDiv) {
+            resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${selects.length}`;
+        }
+    }
+
+    function checkOrder() {
+        const selects = document.querySelectorAll('#orderAlgo select[data-order]');
+        let ok = 0;
+        selects.forEach(sel => {
+            const expected = sel.getAttribute('data-order');
+            sel.classList.remove('correct', 'incorrect');
+            if (sel.value === expected) { sel.classList.add('correct'); ok++; }
+            else if (sel.value !== '') sel.classList.add('incorrect');
+        });
+        const res = document.getElementById('orderResult');
+        if (ok === selects.length && ok > 0) {
+            res.innerHTML = '🎉 Отлично! Порядок верный: объявить функцию → позиция → цикл → place → регистрация яблока.';
+            res.style.color = '#2e7d32';
+        } else {
+            res.innerHTML = `Проверь шаги: верно ${ok} из ${selects.length}. Подсказка: сначала тело функции, в конце файла — on_item_interacted.`;
+            res.style.color = '#c62828';
+        }
+    }
+
+    function checkQuiz(containerId) {
+        const container = document.getElementById(containerId);
+        const questions = container.querySelectorAll('.quiz-question');
+        let correct = 0, total = 0;
+        questions.forEach(q => {
+            const cv = q.getAttribute('data-correct');
+            const sel = q.querySelector('input[type="radio"]:checked');
+            const fb = q.querySelector('.q-feedback');
+            if (sel) {
+                total++;
+                if (sel.value === cv) {
+                    correct++;
+                    fb.innerHTML = '✅ Верно!';
+                    fb.style.color = '#2e7d32';
+                } else {
+                    fb.innerHTML = '❌ Неверно.';
+                    fb.style.color = '#c62828';
+                }
+            } else {
+                fb.innerHTML = '⚠️ Выбери вариант.';
+                fb.style.color = '#f57c00';
+            }
+        });
+        const rd = container.querySelector('.quiz-result');
+        rd.innerHTML = total ? `✅ Правильных: ${correct} из ${questions.length}` : '⚠️ Ответь на все вопросы.';
+        rd.style.display = 'block';
+    }
+
+    function updateProjectProgress() {
+        const cbs = document.querySelectorAll('#projectStrange input[type="checkbox"]');
+        let n = 0;
+        cbs.forEach(c => { if (c.checked) n++; });
+        const fill = document.getElementById('practiceProgressFill');
+        const label = document.getElementById('practiceProgressLabel');
+        if (fill) fill.style.width = (n / cbs.length * 100) + '%';
+        if (label) label.textContent = `Выполнено шагов: ${n} из ${cbs.length}`;
+    }
+
+    document.querySelectorAll('#matchStrange select[data-correct]').forEach(sel => {
+        sel.addEventListener('change', () => {
+            const all = document.querySelectorAll('#matchStrange select[data-correct]');
+            if ([...all].every(s => s.value !== '')) checkMatch('matchStrange');
+        });
+    });
+
+    updateProjectProgress();
+</script>
+</body>
+</html>

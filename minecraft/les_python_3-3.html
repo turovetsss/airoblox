@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.3. Творческое занятие: строим с Python — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #ecfdf5; border-bottom: 3px solid #059669; }
+        .site-footer { background: #ecfdf5; border-top: 3px solid #059669; }
+        .brand-name { color: #312e81; }
+        .module-pill { background: #059669; color: #fff; }
+        .hex-badge { background: #059669; color: #fff; }
+        .data-table th { background: #4f46e5; color: #fff; }
+        .match-btn, .quiz-btn, .action-btn {
+            background: #4f46e5; color: #fff; border: none; cursor: pointer;
+            padding: 10px 20px; border-radius: 8px; font-weight: 700;
+        }
+        .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4338ca; }
+        .task-box { border-left: 4px solid #4f46e5; }
+        .code-block { border: 1px solid #a7f3d0; background: #f0fdf4; }
+        .interactive-box { background: #f8faff; border: 1px solid #c7d2fe; }
+        .code-block .code-head { background: #1e1e2e; color: #c7d2fe; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .code-block .code-head .dots { display: flex; gap: 6px; }
+        .code-block .code-head .dots .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .code-block .code-head .dots .dot.r { background: #d93b3b; }
+        .code-block .code-head .dots .dot.y { background: #ffb238; }
+        .code-block .code-head .dots .dot.g { background: #059669; }
+        .code-block .code-head .fname { font-family: 'JetBrains Mono', monospace; font-size: 13px; opacity: 0.8; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; margin: 0; padding: 16px 20px; overflow-x: auto; font-size: 14px; line-height: 1.8; }
+        .tok-c { color: #7fcf9e; font-style: italic; }
+        .tok-k { color: #ffb238; font-weight: 700; }
+        .tok-s { color: #8fd7ff; }
+        .tok-n { color: #ff9aae; }
+        .note { background: #ecfdf5; border-left: 6px solid #059669; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.warn { background: #fef3c7; border-left-color: #f59e0b; }
+        .note.indigo { background: #eef2ff; border-left-color: #4f46e5; }
+        .build-ways {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 16px 0;
+        }
+        .build-ways .way-card {
+            background: #fff; border: 2px solid #a7f3d0; border-radius: 14px; padding: 18px;
+        }
+        .build-ways .way-card h4 { margin: 0 0 8px; color: #065f46; font-family: 'Fredoka', sans-serif; }
+        .commands-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 16px 0;
+        }
+        .commands-grid .cmd-card {
+            background: #f0fdf4; border: 2px solid #a7f3d0; border-radius: 12px; padding: 16px;
+        }
+        .commands-grid .cmd-card .cmd-title { font-weight: 700; color: #312e81; margin-bottom: 8px; }
+        .commands-grid .cmd-card .cmd-code {
+            background: #1e1e2e; color: #e4f5da; padding: 10px 14px; border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 12px; overflow-x: auto;
+        }
+        .commands-grid .cmd-card .cmd-desc { font-size: 14px; color: #4a6a3a; margin-top: 6px; }
+        .project-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 16px 0;
+        }
+        .project-grid .project-card {
+            background: #f0fdf4; border: 2px solid #a7f3d0; border-radius: 12px; padding: 16px;
+            text-align: center; transition: all 0.2s; cursor: pointer;
+        }
+        .project-grid .project-card:hover {
+            border-color: #059669; transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(5, 150, 105, 0.15);
+        }
+        .project-grid .project-card.selected {
+            border-color: #059669; background: #ecfdf5; box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.25);
+        }
+        .project-grid .project-icon { font-size: 42px; display: block; margin-bottom: 8px; }
+        .project-grid .project-name { font-weight: 700; color: #312e81; font-size: 17px; }
+        .project-grid .project-desc { font-size: 13px; color: #4a6a3a; margin-top: 6px; min-height: 2.5em; }
+        .project-grid .project-meta { font-size: 12px; color: #065f46; margin-top: 8px; font-weight: 600; }
+        .project-grid .project-tool {
+            display: inline-block; margin-top: 6px; padding: 2px 10px; border-radius: 99px;
+            font-size: 11px; font-weight: 700; background: #dbeafe; color: #1e40af;
+        }
+        .project-grid .project-tool.agent { background: #ede9fe; color: #5b21b6; }
+        .interactive-box .match-row {
+            display: flex; gap: 16px; align-items: center; margin: 12px 0; flex-wrap: wrap;
+        }
+        .interactive-box .match-row .match-key {
+            background: #059669; color: #fff; padding: 8px 16px; border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; min-width: 140px; text-align: center;
+        }
+        .interactive-box .match-row select {
+            flex: 1; min-width: 150px; padding: 8px 12px; border-radius: 8px;
+            border: 2px solid #c7d2fe; background: #fff;
+        }
+        .interactive-box .match-row select.correct { border-color: #059669; background: #ecfdf5; }
+        .interactive-box .match-row select.incorrect { border-color: #d93b3b; background: #fde8e8; }
+        .interactive-box .match-result { margin-top: 12px; font-weight: 700; }
+        .task-box .task-item {
+            background: #f5f7ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 16px; margin-bottom: 12px;
+        }
+        .task-box .task-item .task-title {
+            font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+        }
+        .task-box .task-item .task-title .badge {
+            background: #4f46e5; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 99px;
+        }
+        .task-box .task-item .task-title .badge.bonus { background: #ffb238; color: #312e81; }
+        .progress-track { background: #e8f5e9; border-radius: 99px; height: 20px; overflow: hidden; margin: 12px 0 6px; }
+        .progress-fill-minecraft {
+            background: linear-gradient(90deg, #4f46e5, #4338ca);
+            height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 99px;
+        }
+        .progress-label { font-size: 15px; font-weight: 700; color: #312e81; margin-bottom: 8px; display: block; }
+        .ai-helper {
+            background: #1e1e2e; color: #e4f5da; border-radius: 16px; padding: 28px 32px; margin: 20px 0;
+            position: relative; overflow: hidden;
+        }
+        .ai-helper::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.15), transparent 60%);
+            pointer-events: none;
+        }
+        .ai-head {
+            display: flex; align-items: center; gap: 16px; margin-bottom: 8px; position: relative;
+        }
+        .ai-head .ai-icon { font-size: 36px; line-height: 1; }
+        .ai-head .t {
+            font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 22px;
+        }
+        .ai-head .t span { color: #8fd7ff; }
+        .ai-sub {
+            color: #b8d9a8; font-size: 16px; margin-bottom: 16px; position: relative;
+        }
+        .ai-buttons {
+            display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; position: relative;
+        }
+        .ai-q-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e4f5da; padding: 10px 18px; border-radius: 99px; font-size: 14px; font-weight: 600;
+            cursor: pointer; font-family: 'Nunito', sans-serif; text-decoration: none; transition: all 0.2s;
+        }
+        .ai-q-btn:hover {
+            background: rgba(79, 70, 229, 0.25); border-color: rgba(79, 70, 229, 0.4); transform: translateY(-2px);
+        }
+        .ai-answer {
+            background: rgba(255, 255, 255, 0.04); border-left: 4px solid #4f46e5;
+            border-radius: 0 12px 12px 0; padding: 16px 20px; font-size: 15px; min-height: 44px;
+            position: relative; color: #e4f5da;
+        }
+        .ai-real-tip {
+            margin-top: 16px; padding-top: 16px; border-top: 1px dashed rgba(255, 255, 255, 0.12);
+            font-size: 14px; color: #b8d9a8; position: relative;
+        }
+        .prompt-example {
+            display: block; background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 10px 16px;
+            margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #ffd08a;
+        }
+        .ai-real-tip .warning {
+            margin-top: 8px; font-size: 13px; color: #b8d9a8; opacity: 0.7;
+        }
+        #selectedTheme {
+            display: none; margin-top: 12px; padding: 14px; background: #ecfdf5;
+            border-radius: 10px; text-align: center; font-weight: 700; color: #065f46;
+        }
+        @media (max-width: 768px) {
+            .project-grid { grid-template-columns: 1fr 1fr; }
+            .commands-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .project-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div>
+                    <div class="brand-name">РОБОВИТА</div>
+                    <div class="brand-tag">учимся программировать роботов и игры</div>
+                </div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 3.3 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">3.3</div>
+            <div>
+                <div class="module-pill">Раздел 3 · Координаты</div>
+                <h1>Творческое занятие: строим с Python</h1>
+                <p class="subtitle">Собираем постройку по выбранной теме — Агент, блоки и фигуры</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Повторить все способы строительства в Python: <b>Агент</b>, <b>блоки по координатам</b>, <b>готовые фигуры</b></li>
+            <li>Научиться выбирать подходящий инструмент под задачу</li>
+            <li>Спланировать постройку и реализовать её за ~70 минут (с тестированием)</li>
+            <li>Писать код на <b>циклах и командах</b> — без отдельного изучения функций</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📋 План занятия</h2>
+        <table class="timetable">
+            <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>Теория: способы строить</td><td>20 мин</td><td>Агент, blocks, фигуры</td></tr>
+            <tr><td>Интерактив</td><td>10 мин</td><td>Закрепляем выбор инструмента</td></tr>
+            <tr><td>Выбор темы</td><td>5 мин</td><td>Один проект из 10 вариантов</td></tr>
+            <tr><td>Творческая практика</td><td>70 мин</td><td>План → код → тест → доработка</td></tr>
+            <tr><td>Итоги</td><td>5 мин</td><td>Показ работ и рефлексия</td></tr>
+            <tr><td>Итого</td><td>~110 мин</td><td>На усмотрение педагога можно сократить теорию</td></tr>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">1</span> Три способа строить в Python</h2>
+        <div class="build-ways">
+            <div class="way-card">
+                <h4>🤖 Через Агента</h4>
+                <p>Робот ходит и ставит блоки. Удобно для дорог, заборов, башен «по шагам».</p>
+            </div>
+            <div class="way-card">
+                <h4>📍 Через координаты</h4>
+                <p>Команды <code>blocks.place</code> и <code>blocks.fill</code> сразу в точке мира — без ходьбы.</p>
+            </div>
+            <div class="way-card">
+                <h4>📦 Готовые объёмы</h4>
+                <p>Заполнение куба, «полый» дом, контур — одной командой <code>fill</code> или циклом.</p>
+            </div>
+        </div>
+        <div class="note indigo">
+            <b>Без функций:</b> мы ещё не проходим <code>def</code> как тему. Запускай код через <b>команду чата</b> — используй готовый шаблон в конце теории (скопируй и вставь свой код с отступом внутрь).
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">2</span> Строительство с Агентом</h2>
+        <p>Повторение занятий 2.1–2.2. Агенту нужны блоки в инвентаре.</p>
+        <div class="commands-grid">
+            <div class="cmd-card">
+                <div class="cmd-title">agent.move(НАПРАВЛЕНИЕ, шаги)</div>
+                <div class="cmd-code">agent.move(FORWARD, 3)</div>
+                <div class="cmd-desc">FORWARD, BACK, LEFT, RIGHT, UP, DOWN</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">agent.turn(LEFT / RIGHT)</div>
+                <div class="cmd-code">agent.turn(RIGHT)</div>
+                <div class="cmd-desc">Поворот на 90° — для квадратов и углов</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">agent.place(НАПРАВЛЕНИЕ)</div>
+                <div class="cmd-code">agent.place(DOWN)</div>
+                <div class="cmd-desc">Блок под ногами — дорога; FORWARD — стена перед агентом</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">agent.destroy(НАПРАВЛЕНИЕ)</div>
+                <div class="cmd-code">agent.destroy(FORWARD)</div>
+                <div class="cmd-desc">Убрать лишний блок перед стройкой</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">agent.teleport(pos, сторона)</div>
+                <div class="cmd-code">agent.teleport(pos(0, 0, 3), NORTH)</div>
+                <div class="cmd-desc">Поставить агента рядом с игроком перед стартом</div>
+            </div>
+        </div>
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">agent_road.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Дорога из 8 блоков (вставь внутрь шаблона чата)</span>
+<span class="tok-k">for</span> i <span class="tok-k">in</span> range(<span class="tok-n">8</span>):
+    agent.place(DOWN)
+    agent.move(FORWARD, <span class="tok-n">1</span>)</code></pre>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">3</span> Блоки по координатам</h2>
+        <p>Из занятия 3.1: абсолютные <code>world(x,y,z)</code> и относительные <code>pos(...)</code>, <code>posCamera(...)</code>.</p>
+        <div class="commands-grid">
+            <div class="cmd-card">
+                <div class="cmd-title">blocks.place</div>
+                <div class="cmd-code">blocks.place(GRASS, world(5, 64, 5))</div>
+                <div class="cmd-desc">Один блок в точке</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">blocks.fill</div>
+                <div class="cmd-code">blocks.fill(STONE, world(0,64,0), world(5,68,5), FillOperation.REPLACE)</div>
+                <div class="cmd-desc">Заполнить параллелепiped между двумя углами</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">FillOperation.HOLLOW</div>
+                <div class="cmd-code">blocks.fill(..., FillOperation.HOLLOW)</div>
+                <div class="cmd-desc">Только стены — пусто внутри (домик, колодец)</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">FillOperation.OUTLINE</div>
+                <div class="cmd-code">blocks.fill(..., FillOperation.OUTLINE)</div>
+                <div class="cmd-desc">Только рёбра куба — рамка</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">blocks.replace</div>
+                <div class="cmd-code">blocks.replace(GRASS, STONE, pos(0,-1,0), pos(5,-1,5))</div>
+                <div class="cmd-desc">Заменить один тип блока на другой в области</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">player.position()</div>
+                <div class="cmd-code">positions.add(player.position(), pos(2, 0, 2))</div>
+                <div class="cmd-desc">Строить «от игрока», не запоминая X, Y, Z наизусть</div>
+            </div>
+        </div>
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">platform.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Площадка 7×7 под игроком</span>
+blocks.fill(
+    GRASS,
+    pos(<span class="tok-n">-3</span>, <span class="tok-n">-1</span>, <span class="tok-n">-3</span>),
+    pos(<span class="tok-n">3</span>, <span class="tok-n">-1</span>, <span class="tok-n">3</span>),
+    FillOperation.REPLACE
+)</code></pre>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">4</span> Фигуры: как собрать из кода</h2>
+        <table class="data-table">
+            <tr><th>Фигура</th><th>Лучший способ</th><th>Идея</th></tr>
+            <tr><td>Плоская площадка</td><td><code>blocks.fill</code></td><td>Один слой: Y одинаковый у обоих углов</td></tr>
+            <tr><td>Куб / комната</td><td><code>fill</code> + HOLLOW</td><td>Два угла задают размер; внутри пусто</td></tr>
+            <tr><td>Линия / дорога</td><td>Агент или цикл <code>place</code></td><td><code>for i in range(N): place + сдвиг</code></td></tr>
+            <tr><td>Столб / башня</td><td>Агент UP + place DOWN</td><td>Цикл из 5–12 повторений</td></tr>
+            <tr><td>Квадрат / забор</td><td>Агент FORWARD + turn</td><td>4 стороны в цикле <code>range(4)</code></td></tr>
+            <tr><td>«Торт» (ярусы)</td><td>Несколько <code>fill</code></td><td>Каждый ярус меньше и выше на 1 блок</td></tr>
+            <tr><td>Надпись</td><td><code>blocks.print</code></td><td>Текст из блоков: <code>blocks.print("HI", GOLD_BLOCK, pos(0,2,0), WEST)</code></td></tr>
+            <tr><td>Мост</td><td><code>fill</code> или цикл <code>place</code></td><td>Тонкий прямоугольник в воздухе</td></tr>
+        </table>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">hollow_room.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Комната 6×4×6 (полый куб) рядом с игроком</span>
+blocks.fill(
+    COBBLESTONE,
+    pos(<span class="tok-n">1</span>, <span class="tok-n">0</span>, <span class="tok-n">1</span>),
+    pos(<span class="tok-n">6</span>, <span class="tok-n">4</span>, <span class="tok-n">6</span>),
+    FillOperation.HOLLOW
+)</code></pre>
+        </div>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">chat_template.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># === Шаблон: скопируй в редактор, внутрь вставь СВОЙ код ===</span>
+<span class="tok-c"># (слово def — служебное, функции разберём позже)</span>
+
+<span class="tok-k">def</span> <span class="tok-f">build</span>():
+    player.say(<span class="tok-s">"Начинаю строить!"</span>)
+    <span class="tok-c"># ----- твои циклы и команды здесь -----</span>
+
+player.on_chat(<span class="tok-s">"build"</span>, build)</code></pre>
+        </div>
+
+        <div class="note warn">
+            <b>⏱️ На 70 минут:</b> выбери тему проще, нарисуй схему на бумаге (вид сверху и сбоку), сначала сделай «скелет», потом укрась. Не строй гигантские fill — для теста хватит 5×5×5.
+        </div>
+    </div>
+
+    <div class="interactive-box" id="matchBuild">
+        <h2>🔑 Какой инструмент лучше?</h2>
+        <div class="match-row">
+            <div class="match-key">Площадка 10×10</div>
+            <select data-correct="blocks.fill">
+                <option value="">— выбери —</option>
+                <option value="blocks.fill">blocks.fill</option>
+                <option value="agent.move">agent.move</option>
+                <option value="blocks.print">blocks.print</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">Дорога из 15 блоков</div>
+            <select data-correct="Агент + place(DOWN)">
+                <option value="">— выбери —</option>
+                <option value="blocks.fill">blocks.fill</option>
+                <option value="Агент + place(DOWN)">Агент + place(DOWN)</option>
+                <option value="player.teleport">player.teleport</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">Полая комната</div>
+            <select data-correct="fill + HOLLOW">
+                <option value="">— выбери —</option>
+                <option value="fill + HOLLOW">fill + HOLLOW</option>
+                <option value="agent.destroy">agent.destroy</option>
+                <option value="blocks.replace">blocks.replace</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">Надпись «OK»</div>
+            <select data-correct="blocks.print">
+                <option value="">— выбери —</option>
+                <option value="blocks.place">blocks.place</option>
+                <option value="blocks.print">blocks.print</option>
+                <option value="agent.turn">agent.turn</option>
+            </select>
+        </div>
+        <button class="action-btn" onclick="checkMatch('matchBuild')">✅ Проверить</button>
+        <div class="match-result"></div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">5</span> Выбери тему постройки</h2>
+        <p>Кликни на карточку — одна тема на весь урок. Все варианты рассчитаны на <b>~70 минут</b> с тестами.</p>
+
+        <div class="project-grid" id="themeGrid">
+            <div class="project-card" data-theme="Площадка-парк" onclick="selectTheme(this)">
+                <span class="project-icon">🟩</span>
+                <div class="project-name">Площадка-парк</div>
+                <div class="project-desc">Ровная трава 8×8, по краю 4 «дерева» (столб + листва)</div>
+                <span class="project-tool">fill + place</span>
+                <div class="project-meta">★ Легко · ~40–50 мин</div>
+            </div>
+            <div class="project-card" data-theme="Дорожка" onclick="selectTheme(this)">
+                <span class="project-icon">🛤️</span>
+                <div class="project-name">Дорожка</div>
+                <div class="project-desc">Агент кладёт 12–15 блоков дороги вперёд</div>
+                <span class="project-tool agent">Агент</span>
+                <div class="project-meta">★ Легко · ~35 мин</div>
+            </div>
+            <div class="project-card" data-theme="Столб-маяк" onclick="selectTheme(this)">
+                <span class="project-icon">🗼</span>
+                <div class="project-name">Столб-маяк</div>
+                <div class="project-desc">Башня 8–10 блоков, сверху факел или блок света</div>
+                <span class="project-tool agent">Агент</span>
+                <div class="project-meta">★ Легко · ~30 мин</div>
+            </div>
+            <div class="project-card" data-theme="Забор" onclick="selectTheme(this)">
+                <span class="project-icon">🚧</span>
+                <div class="project-name">Забор</div>
+                <div class="project-desc">Квадрат 6×6 из забора: агент идёт по периметру</div>
+                <span class="project-tool agent">Агент</span>
+                <div class="project-meta">★★ Средне · ~50 мин</div>
+            </div>
+            <div class="project-card" data-theme="Домик" onclick="selectTheme(this)">
+                <span class="project-icon">🏠</span>
+                <div class="project-name">Домик</div>
+                <div class="project-desc">HOLLOW 6×4×6, дырка «дверь» через destroy или пропуск</div>
+                <span class="project-tool">fill HOLLOW</span>
+                <div class="project-meta">★★ Средне · ~55 мин</div>
+            </div>
+            <div class="project-card" data-theme="Куб-арт" onclick="selectTheme(this)">
+                <span class="project-icon">🧊</span>
+                <div class="project-name">Куб-арт</div>
+                <div class="project-desc">Малый куб 5×5×5 из цветного камня или стекла</div>
+                <span class="project-tool">fill</span>
+                <div class="project-meta">★ Легко · ~25 мин + украшение</div>
+            </div>
+            <div class="project-card" data-theme="Мост" onclick="selectTheme(this)">
+                <span class="project-icon">🌉</span>
+                <div class="project-name">Мост</div>
+                <div class="project-desc">Перемычка 2×10×1 в воздухе на высоте Y+2 от игрока</div>
+                <span class="project-tool">fill или цикл</span>
+                <div class="project-meta">★★ Средне · ~45 мин</div>
+            </div>
+            <div class="project-card" data-theme="Колодец" onclick="selectTheme(this)">
+                <span class="project-icon">⛲</span>
+                <div class="project-name">Колодец</div>
+                <div class="project-desc">Кольцо 5×5 OUTLINE или HOLLOW высотой 3, внутри вода (если есть блок)</div>
+                <span class="project-tool">fill</span>
+                <div class="project-meta">★★ Средне · ~50 мин</div>
+            </div>
+            <div class="project-card" data-theme="Торт" onclick="selectTheme(this)">
+                <span class="project-icon">🎂</span>
+                <div class="project-name">Торт</div>
+                <div class="project-desc">3 яруса fill: 7×7, 5×5, 3×3, разные «кремовые» блоки</div>
+                <span class="project-tool">несколько fill</span>
+                <div class="project-meta">★★ Средне · ~60 мин</div>
+            </div>
+            <div class="project-card" data-theme="Надпись" onclick="selectTheme(this)">
+                <span class="project-icon">✨</span>
+                <div class="project-name">Надпись</div>
+                <div class="project-desc">Имя или «OK» через blocks.print + маленькая площадка под текстом</div>
+                <span class="project-tool">print + fill</span>
+                <div class="project-meta">★ Легко · ~40 мин</div>
+            </div>
+        </div>
+        <div id="selectedTheme">✅ Твоя тема: <span id="selectedThemeName">—</span></div>
+    </div>
+
+    <div class="ai-helper">
+        <div class="ai-head">
+            <span class="ai-icon">🤖</span>
+            <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+        </div>
+        <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+        <div class="ai-buttons">
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B8%D1%82%D1%8C%20%D0%B4%D0%BE%D0%BC%20%D1%81%20%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E%20fill%20%D0%B2%20Python%20Minecraft%3F%22%7D" target="_blank" class="ai-q-btn">Дом через fill</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B0%D0%B3%D0%B5%D0%BD%D1%82%20%D1%81%D1%82%D1%80%D0%BE%D0%B8%D1%82%20%D0%B4%D0%BE%D1%80%D0%BE%D0%B3%D1%83%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Дорога агентом</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20FillOperation.HOLLOW%20%D0%B2%20Minecraft%20Education%3F%22%7D" target="_blank" class="ai-q-btn">Полый куб HOLLOW</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D1%86%D0%B8%D0%BA%D0%BB%20for%20%D0%B4%D0%BB%D1%8F%20%D1%81%D1%82%D1%80%D0%BE%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D1%82%D0%B2%D0%B0%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="ai-q-btn">Циклы в строительстве</a>
+        </div>
+        <div class="ai-answer">
+            💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+        </div>
+        <div class="ai-real-tip">
+            <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай вопрос про постройки в Minecraft.<br>
+            <span class="prompt-example">«Алиса, как построить мост с помощью blocks.fill в Python?»</span>
+            <div class="warning">⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.</div>
+        </div>
+    </div>
+
+    <div class="task-box" id="creativePractice">
+        <h2>🛠️ Практика: строим выбранную тему</h2>
+        <p>Открой редактор кода в Minecraft (клавиша <code>C</code>) и выбери Python. На выполнение — около <b>70 минут</b> (вместе с тестированием).</p>
+
+        <div class="progress-track">
+            <div class="progress-fill-minecraft" id="practiceProgressFill" style="width: 0%;"></div>
+        </div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 6</span>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 1</span>
+                Тема и план
+                <input type="checkbox" id="task1" onchange="updateCreativeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Выбери карточку выше. Набросай на бумаге размеры и что делает агент, а что — fill/place.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 2</span>
+                Шаблон чата
+                <input type="checkbox" id="task2" onchange="updateCreativeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Скопируй шаблон <code>player.on_chat("build", build)</code> из части 4. Проверь: в чате <code>build</code> — появляется сообщение «Начинаю…».</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 3</span>
+                Основа постройки
+                <input type="checkbox" id="task3" onchange="updateCreativeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Реализуй «скелет» (один fill, один цикл агента или линия place). Сначала без декора.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 4</span>
+                Тест в мире
+                <input type="checkbox" id="task4" onchange="updateCreativeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Запусти в <b>своём</b> плоском мире. Если смещено — поправь <code>pos</code> / телепорт агента.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 5</span>
+                Детали
+                <input type="checkbox" id="task5" onchange="updateCreativeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Добавь 2–3 детали: факел, другой блок, второй цвет, маленький забор и т.д.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 6</span>
+                Показ преподавателю
+                <input type="checkbox" id="task6" onchange="updateCreativeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Расскажи, почему выбрал агента или fill. Покажи работающую команду чата.</p>
+        </div>
+    </div>
+
+    <div class="quiz-wrap" id="quizCreative">
+        <h2>📝 Проверь себя</h2>
+        <div class="quiz-question" data-name="cr1" data-correct="b">
+            <p class="quiz-q-text">1. Что быстрее для плоской площадки 10×10?</p>
+            <label><input type="radio" name="cr1" value="a"> 100 раз agent.place</label>
+            <label><input type="radio" name="cr1" value="b"> Один blocks.fill</label>
+            <label><input type="radio" name="cr1" value="c"> player.say</label>
+            <div class="q-feedback"></div>
+        </div>
+        <div class="quiz-question" data-name="cr2" data-correct="a">
+            <p class="quiz-q-text">2. FillOperation.HOLLOW делает…</p>
+            <label><input type="radio" name="cr2" value="a"> Стены с пустотой внутри</label>
+            <label><input type="radio" name="cr2" value="b"> Удаляет все блоки</label>
+            <label><input type="radio" name="cr2" value="c"> Только воздух</label>
+            <div class="q-feedback"></div>
+        </div>
+        <div class="quiz-question" data-name="cr3" data-correct="c">
+            <p class="quiz-q-text">3. Для дороги «шаг за шагом» удобнее…</p>
+            <label><input type="radio" name="cr3" value="a"> blocks.print</label>
+            <label><input type="radio" name="cr3" value="b"> blocks.replace на весь мир</label>
+            <label><input type="radio" name="cr3" value="c"> Агент: place + move</label>
+            <div class="q-feedback"></div>
+        </div>
+        <button class="quiz-btn" onclick="checkQuiz('quizCreative')">Проверить ответы</button>
+        <div class="quiz-result"></div>
+    </div>
+
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <textarea placeholder="Я выбрал тему...&#10;Мне помогло...&#10;В следующий раз хочу построить..."></textarea>
+    </div>
+
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_3-2.html"><div class="lbl">← Назад</div><div class="ttl">3.2 Очень странные дела</div></a>
+        <a class="nav-btn next" href="les_python_4-1.html"><div class="lbl">Далее →</div><div class="ttl">4.1 Исследователь мира</div></a>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Занятие 3.3 · Творческое занятие: строим с Python</div>
+    </div>
+</footer>
+
+<script>
+    function selectTheme(card) {
+        document.querySelectorAll('#themeGrid .project-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        const name = card.getAttribute('data-theme');
+        document.getElementById('selectedThemeName').textContent = name;
+        document.getElementById('selectedTheme').style.display = 'block';
+    }
+
+    function checkMatch(containerId) {
+        const container = document.getElementById(containerId);
+        const selects = container.querySelectorAll('select[data-correct]');
+        let correct = 0;
+        selects.forEach(sel => {
+            const cv = sel.getAttribute('data-correct');
+            sel.classList.remove('correct', 'incorrect');
+            if (sel.value === cv) { sel.classList.add('correct'); correct++; }
+            else if (sel.value !== '') sel.classList.add('incorrect');
+        });
+        const resultDiv = container.querySelector('.match-result');
+        if (resultDiv) resultDiv.innerHTML = `✅ Правильных: ${correct} из ${selects.length}`;
+    }
+
+    function checkQuiz(containerId) {
+        const container = document.getElementById(containerId);
+        const questions = container.querySelectorAll('.quiz-question');
+        let correct = 0, total = 0;
+        questions.forEach(q => {
+            const cv = q.getAttribute('data-correct');
+            const sel = q.querySelector('input[type="radio"]:checked');
+            const fb = q.querySelector('.q-feedback');
+            if (sel) {
+                total++;
+                if (sel.value === cv) {
+                    correct++;
+                    fb.innerHTML = '✅ Верно!';
+                    fb.style.color = '#2e7d32';
+                } else {
+                    fb.innerHTML = '❌ Неверно.';
+                    fb.style.color = '#c62828';
+                }
+            } else {
+                fb.innerHTML = '⚠️ Выбери вариант.';
+                fb.style.color = '#f57c00';
+            }
+        });
+        const rd = container.querySelector('.quiz-result');
+        rd.innerHTML = total ? `✅ Правильных: ${correct} из ${questions.length}` : '⚠️ Ответь на все вопросы.';
+        rd.style.display = 'block';
+    }
+
+    function updateCreativeProgress() {
+        const cbs = document.querySelectorAll('#creativePractice input[type="checkbox"]');
+        let n = 0;
+        cbs.forEach(c => { if (c.checked) n++; });
+        const fill = document.getElementById('practiceProgressFill');
+        const label = document.getElementById('practiceProgressLabel');
+        if (fill) fill.style.width = (n / cbs.length * 100) + '%';
+        if (label) label.textContent = `Выполнено шагов: ${n} из ${cbs.length}`;
+    }
+
+    document.querySelectorAll('#matchBuild select[data-correct]').forEach(sel => {
+        sel.addEventListener('change', () => {
+            const all = document.querySelectorAll('#matchBuild select[data-correct]');
+            if ([...all].every(s => s.value !== '')) checkMatch('matchBuild');
+        });
+    });
+
+    updateCreativeProgress();
+</script>
+</body>
+</html>

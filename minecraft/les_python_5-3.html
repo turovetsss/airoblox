@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5.3. Мини-проект: Игровой автомат — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #fef3c7; border-bottom: 3px solid #d97706; }
+        .site-footer { background: #312e81; border-top: 3px solid #4f46e5; }
+        .site-footer, .site-footer .foot-brand { color: #e2e8f0; }
+        .brand-name { color: #312e81; }
+        .module-pill { background: #d97706; color: #fff; }
+        .hex-badge { background: linear-gradient(135deg, #f59e0b, #4f46e5); color: #fff; }
+        .match-btn, .quiz-btn, .action-btn { background: #4f46e5; color: #fff; border: none; cursor: pointer; padding: 10px 20px; border-radius: 8px; font-weight: 700; }
+        .action-btn.danger { background: #b45309; }
+        .action-btn.danger:hover { background: #92400e; }
+        .action-btn.outline { background: transparent; border: 2px solid #4f46e5; color: #312e81; }
+        .task-box { border-left: 4px solid #d97706; }
+        .code-block { border: 1px solid #fcd34d; background: #fffbeb; }
+        .code-block .code-head { background: #1e1e2e; color: #c7d2fe; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; margin: 0; padding: 16px 20px; overflow-x: auto; font-size: 13px; line-height: 1.7; }
+        .tok-c { color: #7fcf9e; font-style: italic; }
+        .tok-k { color: #ffb238; font-weight: 700; }
+        .note { background: #fffbeb; border-left: 6px solid #d97706; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.indigo { background: #eef2ff; border-left-color: #4f46e5; }
+        .algo-flow { background: #1e1e2e; color: #e4f5da; border-radius: 14px; padding: 20px 24px; margin: 16px 0; font-size: 15px; line-height: 1.7; }
+        .algo-flow ol { margin: 8px 0 0; padding-left: 22px; }
+        .algo-flow li { margin-bottom: 10px; }
+        .slot-viz { display: flex; justify-content: center; gap: 12px; font-size: 36px; margin: 16px 0; flex-wrap: wrap; }
+        .task-box .task-item { background: #f5f7ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .task-box .task-item .task-title { font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .task-box .task-item .task-title .badge { background: #4f46e5; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 99px; }
+        .task-box .task-item .task-title .badge.hint { background: #f59e0b; color: #312e81; }
+        .progress-track { background: #fef3c7; border-radius: 99px; height: 20px; overflow: hidden; margin: 12px 0 6px; }
+        .progress-fill-minecraft { background: linear-gradient(90deg, #f59e0b, #4f46e5); height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 99px; }
+        .progress-label { font-size: 15px; font-weight: 700; color: #312e81; display: block; margin-bottom: 8px; }
+        .solution-gate { margin-top: 24px; padding: 20px; background: #fff7ed; border: 2px dashed #d97706; border-radius: 12px; text-align: center; }
+        #solutionReveal { display: none; margin-top: 16px; text-align: left; }
+        #solutionReveal.unlocked { display: block; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9999; align-items: center; justify-content: center; padding: 16px; }
+        .modal-overlay.open { display: flex; }
+        .modal-box { background: #fff; border-radius: 16px; padding: 28px; max-width: 400px; width: 100%; border-top: 4px solid #d97706; }
+        .modal-box input { width: 100%; padding: 12px; border: 2px solid #c7d2fe; border-radius: 8px; font-size: 18px; letter-spacing: 4px; text-align: center; box-sizing: border-box; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+        .modal-error { color: #c62828; font-weight: 700; min-height: 20px; margin-top: 8px; }
+        .ai-helper { background: #1e1e2e; color: #e4f5da; border-radius: 16px; padding: 28px 32px; margin: 20px 0; }
+        .ai-head { display: flex; align-items: center; gap: 16px; }
+        .ai-head .t { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 600; }
+        .ai-q-btn { color: #e4f5da; padding: 10px 18px; border-radius: 99px; background: rgba(255,255,255,0.08); text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div><div class="brand-name">РОБОВИТА</div><div class="brand-tag">учимся программировать роботов и игры</div></div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 5.3 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">5.3</div>
+            <div>
+                <div class="module-pill">Раздел 5 · Функции</div>
+                <h1>Мини-проект: Игровой автомат</h1>
+                <p class="subtitle">Три барабана, лопата, агент-судья и функция check_win — собери сам!</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Разобрать <b>алгоритм</b> автомата: постройка → прокрутка → проверка → приз</li>
+            <li>Использовать <b>список</b> блоков, <code>randint</code>, <code>global</code> для координат слотов</li>
+            <li>Применить <b>несколько функций</b> и два события: чат и предмет</li>
+            <li>Собрать проект по подсказкам; полный код — под паролем преподавателя</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📋 План занятия</h2>
+        <table class="timetable">
+            <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>Алгоритм</td><td>20 мин</td><td>Схема и роли функций</td></tr>
+            <tr><td>Разбор API</td><td>15 мин</td><td>on_chat, on_item_interacted, agent</td></tr>
+            <tr><td>Самостоятельно</td><td>45 мин</td><td>Пишем с подсказками</td></tr>
+            <tr><td>Итоги</td><td>10 мин</td><td>Играем и рефлексия</td></tr>
+            <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">1</span> Как работает автомат</h2>
+        <p>Это <b>игровой автомат</b> в мире Minecraft: три «окна» с блоками. Сначала ты <b>строишь</b> автомат, потом <b>крутишь</b> его железной лопатой. Программа быстро меняет блоки в слотах, агент «смотрит» результат и вызывает функцию <code>check_win</code>, если три блока совпали.</p>
+
+        <div class="slot-viz" aria-hidden="true">🎰 🟫 💎 🟫 🎰</div>
+
+        <div class="algo-flow">
+            <b>Алгоритм по шагам</b>
+            <ol>
+                <li><b>Команда «старт»</b> (<code>player.on_chat</code> → <code>on_chat</code>): сообщение игроку; цикл строит корпус 5×5 из WOOL рядом с игроком; вычисляются три позиции слотов; в слоты ставится «дефолтный» блок; игроку выдаётся <b>железная лопата</b>.</li>
+                <li><b>Использование лопаты</b> (<code>player.on_item_interacted(IRON_SHOVEL, …)</code>): сообщение «прокрутка»; цикл ~10 раз ставит в каждый слот <b>случайный</b> блок из списка <code>items</code> (эффект барабана).</li>
+                <li><b>Проверка агентом:</b> агент телепортируется к каждому слоту и через <code>agent.inspect_block(FORWARD)</code> узнаёт, какой блок в «окне».</li>
+                <li><b>Сравнение:</b> если три блока одинаковые — вызывается <code>check_win(block1, block2, block3)</code>, иначе — «Повезёт в другой раз».</li>
+                <li><b>check_win:</b> отдельная функция с <code>if / elif</code> — разные призы за алмазы, изумруды, золото; любой другой одинаковый набор — мягкий комфорт-приз.</li>
+            </ol>
+        </div>
+
+        <div class="note indigo">
+            <b>global f_s, s_s, t_s:</b> координаты слотов в мире нужны и при постройке, и при прокрутке. После <code>on_chat</code> их сохраняют в переменные с <code>global</code>, чтобы <code>on_item_interacted</code> их видел.
+        </div>
+
+        <div class="note">
+            <b>Список блоков:</b> <code>items = [DIRT, GOLD_BLOCK, DIAMOND_BLOCK, EMERALD_BLOCK]</code>. Случайный индекс в Python: <code>randint(0, len(items) - 1)</code> — не <code>items.length</code> (это из JavaScript).
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">2</span> Какие функции нужны</h2>
+        <table class="data-table">
+            <tr><th>Функция</th><th>Когда вызывается</th></tr>
+            <tr><td><code>on_chat()</code></td><td>Игрок пишет в чат «старт»</td></tr>
+            <tr><td><code>on_item_interacted()</code></td><td>Игрок использует железную лопату (ПКМ)</td></tr>
+            <tr><td><code>check_win(b1, b2, b3)</code></td><td>Три одинаковых блока после прокрутки</td></tr>
+        </table>
+        <p>Внизу файла — две регистрации событий: <code>player.on_chat("старт", on_chat)</code> и <code>player.on_item_interacted(IRON_SHOVEL, on_item_interacted)</code>.</p>
+    </div>
+
+    <div class="ai-helper">
+        <div class="ai-head"><span class="ai-icon">🤖</span><div class="t">Спроси Алису</div></div>
+        <p style="color:#b8d9a8;margin-bottom:12px;">Если непонятны global или randint — короткий вопрос.</p>
+        <div class="ai-buttons">
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%97%D0%B0%D1%87%D0%B5%D0%BC%20%D0%BD%D1%83%D0%B6%D0%B5%D0%BD%20global%20%D0%B2%20Python%20%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%8B%D0%BC%D0%B8%20%D1%81%D0%BB%D0%BE%D0%B2%D0%B0%D0%BC%D0%B8%3F%22%7D" target="_blank" rel="noopener" class="ai-q-btn">global</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B2%D1%8B%D0%B1%D1%80%D0%B0%D1%82%D1%8C%20%D1%81%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D1%8B%D0%B9%20%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%20%D0%B8%D0%B7%20%D1%81%D0%BF%D0%B8%D1%81%D0%BA%D0%B0%20%D0%B2%20Python%3F%22%7D" target="_blank" rel="noopener" class="ai-q-btn">randint и список</a>
+        </div>
+    </div>
+
+    <div class="task-box" id="slotProject">
+        <h2>🛠️ Собери автомат сам (с подсказками)</h2>
+        <p>Не копируй решение сразу — иди по шагам. Тестируй в <b>своём</b> мире.</p>
+
+        <div class="progress-track"><div class="progress-fill-minecraft" id="practiceProgressFill" style="width: 0%;"></div></div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 8</span>
+
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 1</span> Переменные вверху файла
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p><code>items</code>, <code>default_slot</code> (бревно), <code>f_s, s_s, t_s = world(0,0,0)</code> — заготовки координат слотов.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 2</span> on_chat — корпус
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p>Двойной цикл 5×5: <code>blocks.place(WOOL, positions.add(player.position(), pos(3, i, j)))</code>.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge hint">Подсказка 3</span> Слоты и global
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p><code>global f_s, s_s, t_s</code>. Три позиции на «этаже» i=2, j=1,2,3 → <code>.to_world()</code> сохранить в f_s, s_s, t_s. Поставить default_slot в каждый слот.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 4</span> Лопата и регистрация чата
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p><code>mobs.give(mobs.target(NEAREST_PLAYER), IRON_SHOVEL, 1)</code> и <code>player.on_chat("старт", on_chat)</code>.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 5</span> on_item_interacted — прокрутка
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p>Цикл 10 раз: в f_s, s_s, t_s ставить <code>items[randint(0, len(items)-1)]</code>.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge hint">Подсказка 6</span> Агент читает слоты
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p>Телепорт к слоту + <code>inspect_block(FORWARD)</code> три раза; <code>agent.teleport_to_player()</code> в конце.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 7</span> check_win и elif
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p>Если три блока равны — <code>check_win(...)</code>. Внутри — призы за DIAMOND, EMERALD, GOLD и ветка «else».</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 8</span> Тест и игра
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p>Чат <code>старт</code> → лопата → несколько прокруток. Покажи преподавателю джекпот или «не повезло».</p>
+        </div>
+
+        <div class="solution-gate">
+            <p><b>🔐 Готовое решение</b> — если застрял или разрешил преподаватель.</p>
+            <button type="button" class="action-btn danger" onclick="openSolutionModal()">Показать решение</button>
+            <div id="solutionReveal">
+                <div class="code-block">
+                    <div class="code-head"><span class="fname">slot_machine.py</span></div>
+                    <pre class="code" id="solutionCodePre"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="quiz-wrap" id="quizSlot">
+        <h2>📝 Проверь себя</h2>
+        <div class="quiz-question" data-name="sl1" data-correct="b">
+            <p class="quiz-q-text">1. Что запускает постройку автомата?</p>
+            <label><input type="radio" name="sl1" value="a"> IRON_SHOVEL</label>
+            <label><input type="radio" name="sl1" value="b"> Команда «старт» в чате</label>
+            <label><input type="radio" name="sl1" value="c"> agent.move</label>
+            <div class="q-feedback"></div>
+        </div>
+        <div class="quiz-question" data-name="sl2" data-correct="c">
+            <p class="quiz-q-text">2. Зачем global f_s, s_s, t_s?</p>
+            <label><input type="radio" name="sl2" value="a"> Чтобы мир загрузился</label>
+            <label><input type="radio" name="sl2" value="b"> Чтобы список items был длиннее</label>
+            <label><input type="radio" name="sl2" value="c"> Чтобы второе событие знало координаты слотов</label>
+            <div class="q-feedback"></div>
+        </div>
+        <button class="quiz-btn" onclick="checkQuiz('quizSlot')">Проверить</button>
+        <div class="quiz-result"></div>
+    </div>
+
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <textarea placeholder="Самая сложная часть автомата...&#10;Функция check_win нужна потому что..."></textarea>
+    </div>
+
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_5-2.html"><div class="lbl">← Назад</div><div class="ttl">5.2 Функции для строительства</div></a>
+        <a class="nav-btn next" href="les_python_6-1.html"><div class="lbl">Далее →</div><div class="ttl">6.1 Массивы и списки</div></a>
+    </div>
+</main>
+
+<div class="modal-overlay" id="solutionModal">
+    <div class="modal-box">
+        <h3>🔐 Пароль преподавателя</h3>
+        <input type="text" id="solutionPasswordInput" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••">
+        <div class="modal-error" id="modalPasswordError"></div>
+        <div class="modal-actions">
+            <button type="button" class="action-btn" onclick="submitSolutionPassword()">Открыть</button>
+            <button type="button" class="action-btn outline" onclick="closeSolutionModal()">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Занятие 5.3 · Игровой автомат</div>
+    </div>
+</footer>
+
+<script>
+    const SOLUTION_SOURCE = `items = [DIRT, GOLD_BLOCK, DIAMOND_BLOCK, EMERALD_BLOCK]
+default_slot = LOG_OAK
+f_s = world(0, 0, 0)
+s_s = world(0, 0, 0)
+t_s = world(0, 0, 0)
+
+def on_chat():
+    global f_s, s_s, t_s
+    player.say("Идет постройка автомата")
+    for i in range(5):
+        for j in range(5):
+            blocks.place(WOOL, positions.add(player.position(), pos(3, i, j)))
+    first_slot = positions.add(player.position(), pos(3, 2, 1))
+    second_slot = positions.add(player.position(), pos(3, 2, 2))
+    third_slot = positions.add(player.position(), pos(3, 2, 3))
+    f_s = first_slot.to_world()
+    s_s = second_slot.to_world()
+    t_s = third_slot.to_world()
+    blocks.place(default_slot, first_slot)
+    blocks.place(default_slot, second_slot)
+    blocks.place(default_slot, third_slot)
+    player.say("Автомат построен, для прокручивания используйте железную лопату в вашем инвентаре")
+    mobs.give(mobs.target(NEAREST_PLAYER), IRON_SHOVEL, 1)
+
+player.on_chat("старт", on_chat)
+
+def on_item_interacted():
+    player.say("Идет прокручивание автомата...")
+    for i in range(10):
+        blocks.place(items[randint(0, len(items) - 1)], f_s)
+        blocks.place(items[randint(0, len(items) - 1)], s_s)
+        blocks.place(items[randint(0, len(items) - 1)], t_s)
+    agent.teleport(positions.add(f_s, pos(1, 0, 0)), WEST)
+    first_slot_block = agent.inspect_block(FORWARD)
+    agent.teleport(positions.add(s_s, pos(1, 0, 0)), WEST)
+    second_slot_block = agent.inspect_block(FORWARD)
+    agent.teleport(positions.add(t_s, pos(1, 0, 0)), WEST)
+    third_slot_block = agent.inspect_block(FORWARD)
+    agent.teleport_to_player()
+    if first_slot_block == second_slot_block == third_slot_block:
+        check_win(first_slot_block, second_slot_block, third_slot_block)
+    else:
+        player.say("Повезёт в другой раз :(")
+
+player.on_item_interacted(IRON_SHOVEL, on_item_interacted)
+
+def check_win(block1, block2, block3):
+    if block1 == DIAMOND_BLOCK and block2 == DIAMOND_BLOCK and block3 == DIAMOND_BLOCK:
+        player.say("Джекпот!")
+        mobs.give(mobs.target(NEAREST_PLAYER), ENCHANTED_APPLE, 64)
+    elif block1 == EMERALD_BLOCK and block2 == EMERALD_BLOCK and block3 == EMERALD_BLOCK:
+        player.say("Три изумруда!")
+        mobs.give(mobs.target(NEAREST_PLAYER), DIAMOND, 16)
+    elif block1 == GOLD_BLOCK and block2 == GOLD_BLOCK and block3 == GOLD_BLOCK:
+        player.say("Золотой набор!")
+        mobs.give(mobs.target(NEAREST_PLAYER), DIAMOND, 1)
+    else:
+        player.say("Любой выигрыш — хорошо!")`;
+
+    function getPasswordDDMM() {
+        const now = new Date();
+        return String(now.getDate()).padStart(2, '0') + String(now.getMonth() + 1).padStart(2, '0');
+    }
+    function openSolutionModal() {
+        document.getElementById('solutionModal').classList.add('open');
+        document.getElementById('solutionPasswordInput').value = '';
+        document.getElementById('modalPasswordError').textContent = '';
+        document.getElementById('solutionPasswordInput').focus();
+    }
+    function closeSolutionModal() {
+        document.getElementById('solutionModal').classList.remove('open');
+    }
+    function submitSolutionPassword() {
+        const input = document.getElementById('solutionPasswordInput').value.trim();
+        const err = document.getElementById('modalPasswordError');
+        if (input !== getPasswordDDMM()) {
+            err.textContent = '❌ Неверный пароль.';
+            return;
+        }
+        err.textContent = '';
+        closeSolutionModal();
+        document.getElementById('solutionCodePre').textContent = SOLUTION_SOURCE;
+        document.getElementById('solutionReveal').classList.add('unlocked');
+    }
+    document.getElementById('solutionModal').addEventListener('click', e => { if (e.target.id === 'solutionModal') closeSolutionModal(); });
+    document.getElementById('solutionPasswordInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') submitSolutionPassword();
+        if (e.key === 'Escape') closeSolutionModal();
+    });
+
+    function checkQuiz(containerId) {
+        const container = document.getElementById(containerId);
+        let correct = 0, total = 0;
+        container.querySelectorAll('.quiz-question').forEach(q => {
+            const cv = q.getAttribute('data-correct');
+            const sel = q.querySelector('input[type="radio"]:checked');
+            const fb = q.querySelector('.q-feedback');
+            if (sel) {
+                total++;
+                if (sel.value === cv) { correct++; fb.innerHTML = '✅'; fb.style.color = '#2e7d32'; }
+                else { fb.innerHTML = '❌'; fb.style.color = '#c62828'; }
+            } else { fb.innerHTML = '⚠️'; fb.style.color = '#f57c00'; }
+        });
+        container.querySelector('.quiz-result').innerHTML = total ? `✅ ${correct} из ${container.querySelectorAll('.quiz-question').length}` : '⚠️ Ответь на все';
+        container.querySelector('.quiz-result').style.display = 'block';
+    }
+    function updateProgress() {
+        const cbs = document.querySelectorAll('#slotProject input[type="checkbox"]');
+        let n = 0; cbs.forEach(c => { if (c.checked) n++; });
+        document.getElementById('practiceProgressFill').style.width = (n / cbs.length * 100) + '%';
+        document.getElementById('practiceProgressLabel').textContent = `Выполнено шагов: ${n} из ${cbs.length}`;
+    }
+    updateProgress();
+</script>
+</body>
+</html>
