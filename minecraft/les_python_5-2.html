@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5.2. Функции для строительства — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #eef2ff; border-bottom: 3px solid #4f46e5; }
+        .site-footer { background: #312e81; border-top: 3px solid #4f46e5; }
+        .site-footer, .site-footer .foot-brand { color: #e2e8f0; }
+        .brand-name { color: #312e81; }
+        .module-pill { background: #4f46e5; color: #fff; }
+        .hex-badge { background: #4f46e5; color: #fff; }
+        .match-btn, .quiz-btn, .action-btn { background: #4f46e5; color: #fff; border: none; cursor: pointer; padding: 10px 20px; border-radius: 8px; font-weight: 700; }
+        .task-box { border-left: 4px solid #4f46e5; }
+        .code-block { border: 1px solid #c7d2fe; background: #f5f7ff; }
+        .code-block .code-head { background: #1e1e2e; color: #c7d2fe; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .code-block .code-head .dots { display: flex; gap: 6px; }
+        .code-block .code-head .dots .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .code-block .code-head .dots .dot.r { background: #d93b3b; }
+        .code-block .code-head .dots .dot.y { background: #ffb238; }
+        .code-block .code-head .dots .dot.g { background: #4f46e5; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; margin: 0; padding: 16px 20px; overflow-x: auto; font-size: 14px; line-height: 1.8; }
+        .tok-c { color: #7fcf9e; font-style: italic; }
+        .tok-k { color: #ffb238; font-weight: 700; }
+        .tok-s { color: #8fd7ff; }
+        .tok-f { color: #ffd08a; }
+        .note { background: #eef2ff; border-left: 6px solid #4f46e5; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.warn { background: #fef3c7; border-left-color: #f59e0b; }
+        .house-parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 16px 0; }
+        .house-parts .part { background: #fff; border: 2px solid #c7d2fe; border-radius: 12px; padding: 14px; }
+        .house-parts .part h4 { margin: 0 0 6px; color: #312e81; font-family: 'Fredoka', sans-serif; }
+        .task-box .task-item { background: #f5f7ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .task-box .task-item .task-title { font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .task-box .task-item .task-title .badge { background: #4f46e5; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 99px; }
+        .progress-track { background: #e8eaf6; border-radius: 99px; height: 20px; overflow: hidden; margin: 12px 0 6px; }
+        .progress-fill-minecraft { background: linear-gradient(90deg, #6366f1, #4f46e5); height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 99px; }
+        .progress-label { font-size: 15px; font-weight: 700; color: #312e81; display: block; margin-bottom: 8px; }
+        .ai-helper { background: #1e1e2e; color: #e4f5da; border-radius: 16px; padding: 28px 32px; margin: 20px 0; }
+        .ai-head { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+        .ai-head .t { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 600; }
+        .ai-head .t span { color: #a5b4fc; }
+        .ai-sub { color: #b8d9a8; margin-bottom: 12px; }
+        .ai-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+        .ai-q-btn { color: #e4f5da; padding: 10px 18px; border-radius: 99px; background: rgba(255,255,255,0.08); text-decoration: none; font-weight: 600; font-size: 14px; }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div><div class="brand-name">РОБОВИТА</div><div class="brand-tag">учимся программировать роботов и игры</div></div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 5.2 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">5.2</div>
+            <div>
+                <div class="module-pill">Раздел 5 · Функции</div>
+                <h1>Функции для строительства</h1>
+                <p class="subtitle">Дом из блоков: стены, крыша, дверь и окна — каждая часть своей функцией</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Повторить идею <b>разбиения</b> программы на функции</li>
+            <li>Сделать отдельные функции для <b>стен, крыши, двери, окон</b></li>
+            <li>Собрать дом в <code>build_house()</code> и запустить из чата</li>
+            <li>Понять, как передавать «угол дома» через параметры или общие переменные</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📋 План занятия</h2>
+        <table class="timetable">
+            <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>Повторение</td><td>10 мин</td><td>def и вызовы</td></tr>
+            <tr><td>Архитектура дома</td><td>15 мин</td><td>4 функции + главная</td></tr>
+            <tr><td>Координаты</td><td>15 мин</td><td>player.position(), fill</td></tr>
+            <tr><td>Практика</td><td>45 мин</td><td>Строим дом</td></tr>
+            <tr><td>Итоги</td><td>5 мин</td><td>Рефлексия</td></tr>
+            <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">1</span> Повторение: зачем функции в стройке</h2>
+        <p>Дом — сложный объект. Если написать всё в одной функции на 80 строк, ошибку найти трудно. Удобнее:</p>
+        <ul>
+            <li><code>build_walls()</code> — каркас и стены (например <code>blocks.fill</code> с <code>HOLLOW</code>);</li>
+            <li><code>build_roof()</code> — «шапка» из другого блока;</li>
+            <li><code>build_door()</code> — проём 1×2 (воздух или другой блок);</li>
+            <li><code>build_windows()</code> — 1–2 блока стекла в стенах;</li>
+            <li><code>build_house()</code> — вызывает всё по порядку.</li>
+        </ul>
+
+        <div class="house-parts">
+            <div class="part"><h4>🧱 Стены</h4><p>HOLLOW 7×5×7 или свой размер</p></div>
+            <div class="part"><h4>🏠 Крыша</h4><p>fill поверх стен, другой блок</p></div>
+            <div class="part"><h4>🚪 Дверь</h4><p>replace / place AIR или DOOR</p></div>
+            <div class="part"><h4>🪟 Окна</h4><p>GLASS в стене</p></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">2</span> Скелет проекта</h2>
+        <p>Угол дома можно вычислить один раз в <code>build_house()</code> и передать числами X, Y, Z в каждую функцию — или сохранить в переменные, которые видны всем функциям (осторожно с <code>global</code>, на занятии проще передавать параметры).</p>
+
+        <div class="code-block">
+            <div class="code-head"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><span class="fname">house_skeleton.py</span></div>
+            <pre class="code"><code><span class="tok-k">def</span> <span class="tok-f">build_walls</span>(x, y, z):
+    <span class="tok-c"># blocks.fill(..., world(x,y,z), ..., FillOperation.HOLLOW)</span>
+    <span class="tok-k">pass</span>
+
+<span class="tok-k">def</span> <span class="tok-f">build_roof</span>(x, y, z):
+    <span class="tok-k">pass</span>
+
+<span class="tok-k">def</span> <span class="tok-f">build_door</span>(x, y, z):
+    <span class="tok-k">pass</span>
+
+<span class="tok-k">def</span> <span class="tok-f">build_windows</span>(x, y, z):
+    <span class="tok-k">pass</span>
+
+<span class="tok-k">def</span> <span class="tok-f">build_house</span>():
+    p = player.position()
+    x = p.get_value(Axis.X) + <span class="tok-n">5</span>
+    y = p.get_value(Axis.Y)
+    z = p.get_value(Axis.Z) + <span class="tok-n">5</span>
+    build_walls(x, y, z)
+    build_roof(x, y, z)
+    build_door(x, y, z)
+    build_windows(x, y, z)
+    player.say(<span class="tok-s">"Дом готов!"</span>)
+
+player.on_chat(<span class="tok-s">"dom"</span>, build_house)</code></pre>
+        </div>
+
+        <div class="note warn">
+            <b>Подсказка по порядку:</b> сначала стены, потом крыша (выше по Y), потом дверь и окна — чтобы не заложить стекло, которое потом перекроет fill.
+        </div>
+    </div>
+
+    <div class="note">
+        <b>Связь с 3.3 и 4.2:</b> те же <code>blocks.fill</code> и координаты — здесь акцент на <b>модульности</b>, а не на ИИ.
+    </div>
+
+    <div class="ai-helper">
+        <div class="ai-head"><span class="ai-icon">🤖</span><div class="t">Спроси Алису <span>(по желанию)</span></div></div>
+        <p class="ai-sub">Если застрял на fill или HOLLOW — короткий вопрос.</p>
+        <div class="ai-buttons">
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B8%D1%82%D1%8C%20%D0%BF%D0%BE%D0%BB%D1%8B%D0%B9%20%D0%B4%D0%BE%D0%BC%20%D1%87%D0%B5%D1%80%D0%B5%D0%B7%20fill%20HOLLOW%20%D0%B2%20Minecraft%20Education%20Python%3F%22%7D" target="_blank" rel="noopener" class="ai-q-btn">HOLLOW дом</a>
+        </div>
+    </div>
+
+    <div class="task-box" id="housePractice">
+        <h2>🛠️ Практика: дом из функций</h2>
+        <p>Минимальный размер: <b>6×4×6</b> (можно больше). Команда чата — на твой выбор (<code>dom</code>, <code>house</code>…).</p>
+
+        <div class="progress-track"><div class="progress-fill-minecraft" id="practiceProgressFill" style="width: 0%;"></div></div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 7</span>
+
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 1</span> build_walls
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p>Полый прямоугольник. Блок стен — на выбор (OAK_PLANKS, COBBLESTONE…).</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 2</span> build_roof
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p>Слой крыши на верхней грани дома (y + высота).</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 3</span> build_door
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p>Проём 1×2 на передней стене — AIR или блок двери.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 4</span> build_windows
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p>Минимум 2 окна из GLASS.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 5</span> build_house
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p>Считай угол, вызови 4 функции по порядку.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 6</span> Тест
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p>Свой мир, команда в чате, дом рядом с игроком.</p>
+        </div>
+        <div class="task-item">
+            <div class="task-title"><span class="badge">Шаг 7</span> Презентация
+                <input type="checkbox" onchange="updateProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;"></div>
+            <p>Покажи преподавателю: какая функция за что отвечает.</p>
+        </div>
+    </div>
+
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <textarea placeholder="Самая простая функция была...&#10;Без функций дом писать было бы..."></textarea>
+    </div>
+
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_5-1.html"><div class="lbl">← Назад</div><div class="ttl">5.1 Функции и Python</div></a>
+        <a class="nav-btn next" href="les_python_5-3.html"><div class="lbl">Далее →</div><div class="ttl">5.3 Игровой автомат</div></a>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Занятие 5.2 · Функции для строительства</div>
+    </div>
+</footer>
+
+<script>
+    function updateProgress() {
+        const cbs = document.querySelectorAll('#housePractice input[type="checkbox"]');
+        let n = 0; cbs.forEach(c => { if (c.checked) n++; });
+        document.getElementById('practiceProgressFill').style.width = (n / cbs.length * 100) + '%';
+        document.getElementById('practiceProgressLabel').textContent = `Выполнено шагов: ${n} из ${cbs.length}`;
+    }
+    updateProgress();
+</script>
+</body>
+</html>

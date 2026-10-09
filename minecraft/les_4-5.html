@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4.5. Итоговый проект, ч.2 — Презентация — Учебный центр «РОБОВИТА»</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .lesson-page .site-header { background: linear-gradient(135deg, #fff8e1, #f3e5f5); border-bottom: 3px solid #ff9800; }
+    .site-footer { background: #fff8e1; border-top: 3px solid #ff9800; }
+    .brand-name { color: #e65100; }
+    .module-pill { background: linear-gradient(135deg, #ff9800, #9c27b0); color: #fff; }
+    .hex-badge { background: linear-gradient(155deg, #ff9800, #ffb74d); color: #fff; }
+    .data-table th { background: #ef6c00; color: #fff; }
+    .match-btn, .quiz-btn, .action-btn { background: #ff9800; color: #fff; border: none; }
+    .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #f57c00; }
+    .task-box { border-left: 4px solid #ff9800; }
+    .code-block { border: 1px solid #ffcc80; background: #fffbf0; }
+    .alice-q-btn { background: #fff3e0; border: 1px solid #ff9800; color: #e65100; }
+    .alice-q-btn:hover { background: #ffe0b2; }
+    .interactive-box { background: #fffbf0; border: 1px solid #ffcc80; }
+    .sort-item { background: #fff8e1; border: 1px solid #ffcc80; cursor: grab; }
+    .hint-btn {
+      background: #9c27b0; color: #fff; border: none;
+      padding: 4px 16px; border-radius: 20px; font-weight: 600;
+      font-size: 0.8rem; cursor: pointer; transition: 0.2s; margin-top: 8px;
+    }
+    .hint-btn:hover { background: #7b1fa2; transform: scale(1.05); }
+    .hint-content {
+      display: none; background: #f3e5f5; padding: 10px 14px; border-radius: 8px;
+      margin-top: 8px; border-left: 3px solid #9c27b0; font-size: 0.95rem; text-align: left;
+    }
+    .hint-content.show { display: block; }
+    .task-number {
+      display: inline-block; background: #ff9800; color: #fff; border-radius: 50%;
+      width: 28px; height: 28px; text-align: center; line-height: 28px;
+      font-weight: 700; margin-right: 10px; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .final-banner {
+      background: linear-gradient(135deg, #fff8e1, #f3e5f5);
+      border: 3px solid #ff9800; border-radius: 20px; padding: 24px 28px; margin: 16px 0;
+      text-align: center;
+    }
+    .final-banner h3 { margin: 0 0 8px 0; color: #e65100; font-size: 1.4rem; }
+    .bug-card {
+      background: #fff; border: 2px solid #ffcdd2; border-radius: 12px;
+      padding: 14px 16px; margin: 10px 0;
+    }
+    .bug-card .symptom { font-weight: 700; color: #c62828; }
+    .bug-card .fix { color: #2e7d32; margin-top: 6px; }
+    .pres-step {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: #fff; border: 2px solid #ffcc80; border-radius: 14px;
+      padding: 16px 18px; margin: 12px 0;
+    }
+    .pres-num {
+      background: #ff9800; color: #fff; font-weight: 800;
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .pres-step h4 { margin: 0 0 4px 0; color: #e65100; }
+    .pres-step p { margin: 0; font-size: 0.95rem; color: #555; }
+    .pres-time { font-size: 0.8rem; color: #999; font-weight: 700; }
+    .checklist-print {
+      background: #fff; border: 2px dashed #ff9800; border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .card h2 .num { background: #fff3e0; color: #e65100; }
+    .peer-box {
+      background: linear-gradient(135deg, #e8f5e9, #fff8e1);
+      border: 2px solid #66bb6a; border-radius: 12px; padding: 16px 20px; margin: 16px 0;
+    }
+  </style>
+</head>
+<body class="lesson-page">
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="index.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+        <div>
+          <div class="brand-name">РОБОВИТА</div>
+          <div class="brand-tag">учимся программировать роботов и игры</div>
+        </div>
+      </a>
+      <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 4.5</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">4.5</div>
+      <div>
+        <div class="module-pill">Раздел 4 · Финал курса</div>
+        <h1>Итоговый проект, часть 2</h1>
+        <p class="subtitle">Исправляем баги и представляем игру классу</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="final-banner">
+    <h3>🎤 День премьеры!</h3>
+    <p style="margin:0;color:#555;">Сегодня каждый — разработчик и рассказчик. Сначала доведём проект до ума, потом покажем его друзьям. Не бойся ошибок — их исправляют все программисты!</p>
+  </div>
+
+  <div class="objectives">
+    <h2>🎯 Цели занятия</h2>
+    <ul>
+      <li>Найти и исправить баги в своём проекте</li>
+      <li>Проверить наличие всех обязательных элементов (условия, циклы, переменные, координаты)</li>
+      <li>Подготовить и провести презентацию 3–5 минут</li>
+      <li>Увидеть проекты одноклассников и дать добрый отзыв</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📋 План занятия</h2>
+    <table class="timetable">
+      <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+      <tr><td>Орг. момент</td><td>5 мин</td><td>Что такое баг, правила презентации</td></tr>
+      <tr><td>Отладка</td><td>30 мин</td><td>Ищем и чиним ошибки</td></tr>
+      <tr><td>Проверка с другом</td><td>15 мин</td><td>Тестируем проекты друг друга</td></tr>
+      <tr><td>Подготовка речи</td><td>15 мин</td><td>План выступления на 3–5 минут</td></tr>
+      <tr><td>Презентации</td><td>20 мин</td><td>Каждый показывает игру классу</td></tr>
+      <tr><td>Награждение и итоги</td><td>5 мин</td><td>Робокоины, рефлексия курса</td></tr>
+      <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span> Что такое баг?</h2>
+    <p><b>Баг</b> (от англ. bug — «жук» 🐛) — это ошибка в программе. Игра ведёт себя не так, как ты задумал: агент не двигается, счёт не растёт, программа «зависает».</p>
+    <p><b>Отладка</b> — поиск и исправление багов. Это нормальная часть работы каждого программиста!</p>
+
+    <h3>Алгоритм отладки (4 шага)</h3>
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+        <span class="fname">отладка.txt</span>
+      </div>
+      <pre class="code"><code><span class="tok-n">1.</span> <span class="tok-k">Воспроизвести</span> — что именно пошло не так? (запиши!)
+<span class="tok-n">2.</span> <span class="tok-k">Найти</span> — какой блок виноват? (читай код сверху вниз)
+<span class="tok-n">3.</span> <span class="tok-k">Исправить</span> — измени один блок и проверь
+<span class="tok-n">4.</span> <span class="tok-k">Проверить снова</span> — Play → всё работает?</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> Частые баги и как их чинить</h2>
+
+    <div class="bug-card">
+      <div class="symptom">🐛 Агент ничего не делает после команды в чат</div>
+      <div class="fix">✅ Проверь: правильное слово в <code>при команде чата</code>? Нажал Play? Агент призван?</div>
+    </div>
+    <div class="bug-card">
+      <div class="symptom">🐛 Цикл не останавливается / агент «завис»</div>
+      <div class="fix">✅ В цикле «пока» условие должно когда-нибудь стать ложью. Добавь <code>изменить переменную на 1</code> внутри цикла.</div>
+    </div>
+    <div class="bug-card">
+      <div class="symptom">🐛 Счётчик очков всегда 0</div>
+      <div class="fix">✅ Переменная должна <code>изменяться</code> внутри условия или цикла, а не только «задаться» в начале.</div>
+    </div>
+    <div class="bug-card">
+      <div class="symptom">🐛 Агент копает / строит не там</div>
+      <div class="fix">✅ Проверь координаты: <code>~1</code> — справа, <code>~-1</code> — слева. Агент смотрит в нужную сторону?</div>
+    </div>
+    <div class="bug-card">
+      <div class="symptom">🐛 Условие «если» никогда не срабатывает</div>
+      <div class="fix">✅ Проверь ID блока или сравнение. Попробуй <code>сказать</code> внутри «если» — сработало ли?</div>
+    </div>
+    <div class="bug-card">
+      <div class="symptom">🐛 Агент падает или застревает</div>
+      <div class="fix">✅ Добавь блоки под ноги, включи <code>агент: не обнулять движение</code> или телепорт на старт.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span> Чек-лист перед презентацией</h2>
+    <p>Убедись, что проект готов показать классу:</p>
+
+    <div class="checklist-print">
+      <ul style="margin:0;line-height:2;">
+        <li>Игра запускается с первого раза (Play → чат → работает)</li>
+        <li>Есть <b>условие</b> <code>если … то</code></li>
+        <li>Есть <b>цикл</b> <code>повторить</code> или <code>пока</code></li>
+        <li>Есть <b>переменная</b>, которая меняется в игре</li>
+        <li>Используются <b>координаты</b> (~ или X, Y, Z)</li>
+        <li>Понятна <b>цель</b> игры (как выиграть?)</li>
+        <li>Есть сообщение о результате (<code>сказать</code> победа / очки)</li>
+        <li>Я могу <b>объяснить</b> свой код своими словами</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">4</span> Как выступить перед классом</h2>
+    <p>У каждого будет <b>3–5 минут</b>. Не нужно учить текст наизусть — достаточно плана:</p>
+
+    <div class="pres-step">
+      <div class="pres-num">1</div>
+      <div>
+        <h4>Приветствие <span class="pres-time">~30 сек</span></h4>
+        <p>«Привет! Меня зовут …, моя игра называется …»</p>
+      </div>
+    </div>
+    <div class="pres-step">
+      <div class="pres-num">2</div>
+      <div>
+        <h4>О чём игра <span class="pres-time">~1 мин</span></h4>
+        <p>Расскажи цель: что должен сделать игрок? Что делает агент?</p>
+      </div>
+    </div>
+    <div class="pres-step">
+      <div class="pres-num">3</div>
+      <div>
+        <h4>Демо в Minecraft <span class="pres-time">~1–2 мин</span></h4>
+        <p>Play → покажи игру в действии. Комментируй: «Сейчас агент …»</p>
+      </div>
+    </div>
+    <div class="pres-step">
+      <div class="pres-num">4</div>
+      <div>
+        <h4>Код — 1–2 блока <span class="pres-time">~1 мин</span></h4>
+        <p>Покажи в MakeCode самый интересный кусок: цикл, условие или переменную. Объясни простыми словами.</p>
+      </div>
+    </div>
+    <div class="pres-step">
+      <div class="pres-num">5</div>
+      <div>
+        <h4>Итог <span class="pres-time">~30 сек</span></h4>
+        <p>«Я научился …», «Самое сложное было …», «Спасибо за внимание!»</p>
+      </div>
+    </div>
+
+    <div class="peer-box">
+      <b>👂 Правила для аудитории:</b> слушаем внимательно, не перебиваем, после выступления — аплодисменты 👏. Можно задать один вопрос: «А что будет, если …?»
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">5</span> Интерактив</h2>
+
+    <div class="interactive-box" id="bugQuiz">
+      <h3>🐛 Что делать первым при баге?</h3>
+      <div class="choice-grid">
+        <div class="choice-card" data-correct-choice="false">Удалить весь код</div>
+        <div class="choice-card" data-correct-choice="true">Воспроизвести ошибку и записать, что пошло не так</div>
+        <div class="choice-card" data-correct-choice="false">Сразу перезагрузить компьютер</div>
+      </div>
+      <button class="action-btn" onclick="checkChoices('bugQuiz')">✅ Проверить</button>
+      <div class="activity-result"></div>
+    </div>
+
+    <div class="interactive-box" id="sortPres" style="margin-top:20px;">
+      <h3>🎤 Порядок презентации</h3>
+      <p>Перетащи части выступления в правильном порядке:</p>
+      <ul class="sort-list" id="sortPresList">
+        <li class="sort-item" draggable="true" data-correct-step="3">Демо игры в Minecraft</li>
+        <li class="sort-item" draggable="true" data-correct-step="1">Название игры и приветствие</li>
+        <li class="sort-item" draggable="true" data-correct-step="5">«Спасибо!» и что я узнал</li>
+        <li class="sort-item" draggable="true" data-correct-step="2">Объяснение цели игры</li>
+        <li class="sort-item" draggable="true" data-correct-step="4">Показ интересного блока кода</li>
+      </ul>
+      <button class="action-btn" onclick="checkSequence('sortPres')">✅ Проверить порядок</button>
+      <div class="activity-result"></div>
+    </div>
+  </div>
+
+  <div class="ai-helper">
+    <div class="ai-head">
+      <span style="font-size:32px;line-height:1;">🤖</span>
+      <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+    </div>
+    <p class="ai-sub">Нажми на вопрос перед выступлением!</p>
+    <div class="ai-buttons">
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BD%D0%B0%D0%B9%D1%82%D0%B8%20%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D1%83%20%D0%B2%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B5%20MakeCode%3F%22%7D" target="_blank" class="alice-q-btn">Как найти ошибку в коде?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%B5%D0%B7%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8E%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B0%20%D0%B4%D0%BB%D1%8F%20%D1%88%D0%BA%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA%D0%BE%D0%B2%3F%22%7D" target="_blank" class="alice-q-btn">Как подготовить презентацию?</a>
+      <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%97%D0%B0%D1%87%D0%B5%D0%BC%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%81%D1%82%D1%8B%20%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D1%83%D1%8E%D1%82%20%D1%81%D0%B2%D0%BE%D0%B8%20%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D1%8B%3F%22%7D" target="_blank" class="alice-q-btn">Зачем тестировать программы?</a>
+    </div>
+    <div class="ai-answer">💬 Нажми на любой вопрос — откроется Алиса.</div>
+  </div>
+
+  <div class="task-box" id="practicePres">
+    <h2>🛠️ Задания на занятие</h2>
+    <div class="progress-track"><div class="progress-fill-minecraft" id="presProgressFill"></div></div>
+    <span class="progress-label" id="presProgressLabel">Выполнено шагов: 0 из 12</span>
+
+    <div style="margin-top:20px;padding:16px;background:#fff8e1;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#e65100;"><span class="task-number">1</span> Отладка проекта</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p0" onchange="updatePresProgress()"><label for="p0">Запустил игру — записал, что не работает</label></li>
+        <li><input type="checkbox" id="p1" onchange="updatePresProgress()"><label for="p1">Исправил баги по алгоритму: воспроизвести → найти → исправить → проверить</label></li>
+        <li><input type="checkbox" id="p2" onchange="updatePresProgress()"><label for="p2">Проверил чек-лист: условие, цикл, переменная, координаты — всё на месте</label></li>
+      </ul>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#fffbf0;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#e65100;"><span class="task-number">2</span> Тест с одноклассником</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p3" onchange="updatePresProgress()"><label for="p3">Показал проект другу — он попробовал сыграть</label></li>
+        <li><input type="checkbox" id="p4" onchange="updatePresProgress()"><label for="p4">Получил один совет («было бы круто, если…») — по желанию исправил</label></li>
+        <li><input type="checkbox" id="p5" onchange="updatePresProgress()"><label for="p5">Сам протестировал чужой проект и сказал, что понравилось</label></li>
+      </ul>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#fff8e1;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#e65100;"><span class="task-number">3</span> Подготовка презентации</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p6" onchange="updatePresProgress()"><label for="p6">Записал план выступления (5 пунктов из раздела 4)</label></li>
+        <li><input type="checkbox" id="p7" onchange="updatePresProgress()"><label for="p7">Выбрал 1–2 блока кода, которые покажу классу</label></li>
+        <li><input type="checkbox" id="p8" onchange="updatePresProgress()"><label for="p8">Прорепетировал речь</label></li>
+      </ul>
+      <button class="hint-btn" onclick="toggleHint('hintPres')">💡 Шаблон речи</button>
+      <div class="hint-content" id="hintPres">
+        «Привет! Я …, игра «…». Цель — … . Сейчас покажу… Вот тут в коде цикл — он повторяет … . Я научился … . Спасибо!»
+      </div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px;background:#f3e5f5;border-radius:12px;">
+      <h3 style="margin:0 0 8px 0;color:#4a148c;"><span class="task-number">4</span> Презентация</h3>
+      <ul class="task-steps">
+        <li><input type="checkbox" id="p9" onchange="updatePresProgress()"><label for="p9">Выступил перед классом (3–5 минут)</label></li>
+        <li><input type="checkbox" id="p10" onchange="updatePresProgress()"><label for="p10">Показал демо игры и кусок кода</label></li>
+        <li><input type="checkbox" id="p11" onchange="updatePresProgress()"><label for="p11">Ответил на вопрос или получил аплодисменты 👏</label></li>
+      </ul>
+      <div class="note" style="margin-top:10px;">
+        <b>🏆 Поздравляем!</b> Ты прошёл первую часть курса Minecraft Education — от первых шагов агента до своей игры! Следующим этапом идёт изучение настоящего языка программирования Python.
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" id="quizPres">
+    <h2>📝 Проверь себя</h2>
+
+    <div class="quiz-question" data-name="pq0" data-correct="b">
+      <p class="quiz-q-text">1. Что такое баг?</p>
+      <label><input type="radio" name="pq0" value="a"> Насекомое в Minecraft</label>
+      <label><input type="radio" name="pq0" value="b"> Ошибка в программе</label>
+      <label><input type="radio" name="pq0" value="c"> Новый блок в игре</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="pq1" data-correct="a">
+      <p class="quiz-q-text">2. Первый шаг отладки — это…</p>
+      <label><input type="radio" name="pq1" value="a"> Воспроизвести ошибку и понять, что не так</label>
+      <label><input type="radio" name="pq1" value="b"> Удалить Minecraft</label>
+      <label><input type="radio" name="pq1" value="c"> Написать новую игру с нуля</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="pq2" data-correct="c">
+      <p class="quiz-q-text">3. Сколько времени на презентацию?</p>
+      <label><input type="radio" name="pq2" value="a"> 30 секунд</label>
+      <label><input type="radio" name="pq2" value="b"> 20 минут</label>
+      <label><input type="radio" name="pq2" value="c"> 3–5 минут</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="quiz-question" data-name="pq3" data-correct="b">
+      <p class="quiz-q-text">4. Что обязательно показать на презентации?</p>
+      <label><input type="radio" name="pq3" value="a"> Только лицо в камеру</label>
+      <label><input type="radio" name="pq3" value="b"> Демо игры и кратко — как устроен код</label>
+      <label><input type="radio" name="pq3" value="c"> Весь код построчно 15 минут</label>
+      <div class="q-feedback"></div>
+    </div>
+
+    <button class="quiz-btn" onclick="checkQuiz('quizPres')">Проверить ответы</button>
+    <div class="quiz-result"></div>
+  </div>
+
+  <div class="reflection-box">
+    <h2>💭 Рефлексия курса</h2>
+    <textarea placeholder="За весь курс я научился...&#10;Мой любимый проект был..., потому что...&#10;Хочу дальше изучать..."></textarea>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn prev" href="les_4-4.html"><div class="lbl">← Назад</div><div class="ttl">4.4 Итоговый проект, ч.1</div></a>
+    <a class="nav-btn next" href="index.html"><div class="lbl">На карту курса →</div><div class="ttl">Курс пройден! 🎉</div></a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand">
+      <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+      Учебный центр «РОБОВИТА»
+    </div>
+    <div>Занятие 4.5 · финал курса Minecraft Education</div>
+  </div>
+</footer>
+
+<script src="../assets/js/lesson.js"></script>
+<script>
+  function toggleHint(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('show');
+  }
+
+  function updatePresProgress() {
+    const cbs = document.querySelectorAll('#practicePres input[type="checkbox"]');
+    const total = 12;
+    let n = 0;
+    cbs.forEach((cb, i) => { if (i < total && cb.checked) n++; });
+    const fill = document.getElementById('presProgressFill');
+    const label = document.getElementById('presProgressLabel');
+    if (fill) fill.style.width = (n / total * 100) + '%';
+    if (label) label.textContent = `Выполнено шагов: ${n} из ${total}` + (n === total ? ' 🎉 Ты молодец!' : '');
+  }
+
+  (function initSortable() {
+    const list = document.getElementById('sortPresList');
+    if (!list) return;
+    let dragged = null;
+    list.addEventListener('dragstart', e => {
+      dragged = e.target.closest('.sort-item');
+      if (dragged) e.dataTransfer.effectAllowed = 'move';
+    });
+    list.addEventListener('dragend', () => { dragged = null; });
+    list.addEventListener('dragover', e => e.preventDefault());
+    list.addEventListener('drop', e => {
+      e.preventDefault();
+      const target = e.target.closest('.sort-item');
+      if (dragged && target && dragged !== target) {
+        const items = Array.from(list.querySelectorAll('.sort-item'));
+        if (items.indexOf(dragged) < items.indexOf(target)) target.after(dragged);
+        else target.before(dragged);
+      }
+    });
+  })();
+</script>
+</body>
+</html>

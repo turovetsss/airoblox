@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6.5. Презентация и защита проектов — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: linear-gradient(135deg, #fef3c7, #ecfdf5); border-bottom: 4px solid #f59e0b; }
+        .site-footer { background: #1e1b4b; border-top: 4px solid #f59e0b; }
+        .site-footer, .site-footer .foot-brand { color: #fef3c7; }
+        .brand-name { color: #312e81; }
+        .module-pill { background: linear-gradient(90deg, #f59e0b, #059669); color: #fff; }
+        .hex-badge { background: #f59e0b; color: #312e81; font-weight: 800; }
+        .grad-hero {
+            text-align: center; padding: 40px 24px; margin: 24px 0;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #065f46 100%);
+            color: #fef3c7; border-radius: 20px; border: 2px solid rgba(245, 158, 11, 0.4);
+            box-shadow: 0 16px 48px rgba(30, 27, 75, 0.25);
+        }
+        .grad-hero h2 { font-family: 'Fredoka', sans-serif; font-size: clamp(28px, 5vw, 42px); margin: 0 0 12px; color: #fde68a; }
+        .grad-hero .emoji-row { font-size: 48px; margin: 16px 0; letter-spacing: 8px; }
+        .grad-hero p { font-size: 18px; line-height: 1.6; max-width: 640px; margin: 0 auto 12px; color: #e0e7ff; }
+        .thanks-card {
+            background: #fff; border-radius: 16px; padding: 28px 32px; margin: 24px 0;
+            border: 2px solid #c7d2fe; box-shadow: 0 8px 24px rgba(79, 70, 229, 0.08);
+        }
+        .thanks-card h3 { color: #312e81; font-family: 'Fredoka', sans-serif; margin-top: 0; }
+        .thanks-card p { color: #4a6a3a; line-height: 1.7; font-size: 16px; }
+        .wish-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 24px 0; }
+        .wish-list .wish {
+            background: #f5f7ff; border: 2px solid #a5b4fc; border-radius: 14px; padding: 20px; text-align: center;
+        }
+        .wish-list .wish .icon { font-size: 40px; display: block; margin-bottom: 10px; }
+        .wish-list .wish .title { font-weight: 700; color: #312e81; font-family: 'Fredoka', sans-serif; }
+        .defense-tips { background: #ecfdf5; border-left: 6px solid #059669; padding: 20px 24px; border-radius: 0 14px 14px 0; margin: 20px 0; }
+        .defense-tips ol { margin: 8px 0 0; }
+        .cert-box {
+            margin: 32px 0; padding: 24px; text-align: center; background: #fffbeb;
+            border: 2px dashed #f59e0b; border-radius: 16px;
+        }
+        .cert-box p { color: #78350f; font-weight: 600; margin: 0; }
+        .back-map { display: inline-block; margin-top: 24px; background: #4f46e5; color: #fff; padding: 14px 28px; border-radius: 12px; font-weight: 700; text-decoration: none; }
+        .back-map:hover { background: #4338ca; }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div><div class="brand-name">РОБОВИТА</div><div class="brand-tag">учимся программировать роботов и игры</div></div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 6.5 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">6.5</div>
+            <div>
+                <div class="module-pill">Финал курса Python</div>
+                <h1>Презентация и защита проектов</h1>
+                <p class="subtitle">Ты — разработчик. Покажи игру и прими поздравления!</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="grad-hero">
+        <h2>🎉 Поздравляем с завершением курса!</h2>
+        <div class="emoji-row">⛏️ 🐍 🤖 🏆</div>
+        <p>Ты прошёл путь от первых команд <code>player.say</code> до <b>собственной игры</b> в Minecraft Education на Python. Это настоящий проект — с кодом, багами, победами и презентацией, как у настоящих IT-специалистов.</p>
+    </div>
+
+    <div class="card">
+        <h2>📋 Как проходит занятие</h2>
+        <table class="timetable">
+            <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>Защита проектов</td><td>60–70 мин</td><td>Короткий доклад + демо в Minecraft или по слайдам</td></tr>
+            <tr><td>Вопросы</td><td>10 мин</td><td>Одноклассники и преподаватель</td></tr>
+            <tr><td>Награждение</td><td>10 мин</td><td>Сертификаты / слова центра</td></tr>
+        </table>
+    </div>
+
+    <div class="defense-tips">
+        <h2 style="margin-top:0;color:#065f46;">🎤 Как выступить (3–5 минут)</h2>
+        <ol>
+            <li>Название и одна фраза «о чём игра».</li>
+            <li>Покажи слайд с <b>кодом</b> — объясни одну функцию или цикл.</li>
+            <li>Запусти демо в Minecraft (или короткое видео, если договорились с преподом).</li>
+            <li>Чему научился(лась) — одна честная мысль.</li>
+            <li>«Спасибо, готов(а) к вопросам».</li>
+        </ol>
+    </div>
+
+    <div class="thanks-card">
+        <h3>💚 Слова благодарности от учебного центра «РОБОВИТА»</h3>
+        <p>Спасибо тебе за <b>любопытство</b>, за то, что не боялся(лась) ошибок в коде и снова нажимал(а) Run. Спасибо родителям за поддержку!</p>
+        <p>Вы — поколение, которое не только играет, но и <b>создаёт</b> игры. Мы гордимся каждым построенным домом, каждым автоматом, каждой строкой Python и каждым пикселем в Pixel Art.</p>
+        <p>Курс закончился, но твой мир в Minecraft и знания Python — остаются с тобой. Строй дальше. Программируй дальше. Делись знаниями с друзьями.</p>
+    </div>
+
+    <div class="wish-list">
+        <div class="wish"><span class="icon">🚀</span><div class="title">Удачи в новых проектах</div><p style="font-size:14px;color:#4a6a3a;margin:8px 0 0">Пробуй Roblox, Arduino, веб — база логики уже есть.</p></div>
+        <div class="wish"><span class="icon">🧠</span><div class="title">Учись с умом</div><p style="font-size:14px;color:#4a6a3a;margin:8px 0 0">ИИ — помощник, а главный программист — ты.</p></div>
+        <div class="wish"><span class="icon">🤝</span><div class="title">Дружная команда</div><p style="font-size:14px;color:#4a6a3a;margin:8px 0 0">Лучшие игры делают вместе — помни одногруппников.</p></div>
+    </div>
+
+    <div class="cert-box">
+        <p>🏅 Сертификат и памятные подарки вручает преподаватель по правилам центра «РОБОВИТА».</p>
+    </div>
+
+    <div style="text-align:center;">
+        <a class="back-map" href="index.html">← Вернуться на карту курса</a>
+    </div>
+
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_6-4.html"><div class="lbl">← Назад</div><div class="ttl">6.4 Презентация</div></a>
+        <a class="nav-btn next" href="index.html"><div class="lbl">Карта курса</div><div class="ttl">Курс пройден 🎓</div></a>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Minecraft Education · Python · Курс завершён · 2026</div>
+    </div>
+</footer>
+</body>
+</html>

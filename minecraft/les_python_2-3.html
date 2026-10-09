@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.3. Агент-шахтёр — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #eef2ff; border-bottom: 3px solid #4f46e5; }
+        .site-footer { background: #eef2ff; border-top: 3px solid #4f46e5; }
+        .brand-name { color: #312e81; }
+        .module-pill { background: #4f46e5; color: #fff; }
+        .hex-badge { background: #4f46e5; color: #fff; }
+        .data-table th { background: #4f46e5; color: #fff; }
+        .match-btn, .quiz-btn, .action-btn { background: #4f46e5; color: #fff; border: none; }
+        .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4338ca; }
+        .task-box { border-left: 4px solid #4f46e5; }
+        .code-block { border: 1px solid #c7d2fe; background: #f5f7ff; }
+        .interactive-box { background: #f8faff; border: 1px solid #c7d2fe; }
+        .syntax-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 10px; }
+        .syntax-card b { color: #4f46e5; }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .feature-grid .feature-item {
+            background: #f5f7ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .feature-grid .feature-item .icon { font-size: 32px; display: block; margin-bottom: 8px; }
+        .feature-grid .feature-item .title { font-weight: 700; color: #312e81; }
+        .code-block .code-head { background: #1e1e2e; color: #c7d2fe; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .code-block .code-head .dots { display: flex; gap: 6px; }
+        .code-block .code-head .dots .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .code-block .code-head .dots .dot.r { background: #d93b3b; }
+        .code-block .code-head .dots .dot.y { background: #ffb238; }
+        .code-block .code-head .dots .dot.g { background: #4f46e5; }
+        .code-block .code-head .fname { font-family: 'JetBrains Mono', monospace; font-size: 13px; opacity: 0.8; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; margin: 0; padding: 16px 20px; overflow-x: auto; font-size: 14px; line-height: 1.8; }
+        .code-block pre.code code { font-family: 'JetBrains Mono', Consolas, monospace; }
+        .tok-c { color: #7fcf9e; font-style: italic; }
+        .tok-k { color: #ffb238; font-weight: 700; }
+        .tok-s { color: #8fd7ff; }
+        .tok-f { color: #ffd08a; }
+        .tok-n { color: #ff9aae; }
+        .tok-v { color: #ff9aae; }
+        .tok-o { color: #ffb238; }
+        .note { background: #eef2ff; border-left: 6px solid #4f46e5; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.warn { background: #fef3c7; border-left-color: #f59e0b; }
+        .note.danger { background: #fde8e8; border-left-color: #d93b3b; }
+        .task-box .task-item {
+            background: #f5f7ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .task-box .task-item .task-title { font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; }
+        .task-box .task-item .task-title .badge {
+            background: #4f46e5;
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 99px;
+        }
+        .task-box .task-item .task-title .badge.bonus { background: #ffb238; color: #312e81; }
+        .task-box .task-item .task-code { margin-top: 10px; }
+        .task-box .task-item .task-code .code-block { margin: 0; }
+        .interactive-box .match-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .interactive-box .match-row .match-key {
+            background: #4f46e5;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            min-width: 120px;
+            text-align: center;
+        }
+        .interactive-box .match-row select {
+            flex: 1;
+            min-width: 150px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #c7d2fe;
+            font-family: 'Nunito', sans-serif;
+            background: #fff;
+        }
+        .interactive-box .match-row select.correct { border-color: #4f46e5; background: #eef2ff; }
+        .interactive-box .match-row select.incorrect { border-color: #d93b3b; background: #fde8e8; }
+        .interactive-box .match-result { margin-top: 12px; font-weight: 700; }
+        .progress-track {
+            background: #e8f5e9;
+            border-radius: 99px;
+            height: 20px;
+            overflow: hidden;
+            margin: 12px 0 6px;
+        }
+        .progress-fill-minecraft {
+            background: linear-gradient(90deg, #4f46e5, #4338ca);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 99px;
+        }
+        .progress-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #312e81;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .task-steps {
+            list-style: none;
+            margin: 10px 0 0;
+            padding: 0;
+        }
+        .task-steps li {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 12px 16px;
+            align-items: start;
+            padding: 10px 12px;
+            border-radius: 10px;
+            margin-bottom: 4px;
+        }
+        .task-steps li:hover { background: #f5f7ff; }
+        .task-steps input[type=checkbox] {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            accent-color: #4f46e5;
+            cursor: pointer;
+        }
+        .task-steps label {
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e2a3a;
+        }
+        .task-steps .bonus-step {
+            background: #f0edff;
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1px dashed #4f46e5;
+        }
+
+        /* AI помощник */
+        .ai-helper {
+            background: #1e1e2e;
+            color: #e4f5da;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-helper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.15), transparent 60%);
+            pointer-events: none;
+        }
+        .ai-head {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        .ai-head .ai-icon { font-size: 36px; line-height: 1; }
+        .ai-head .t {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 22px;
+        }
+        .ai-head .t span { color: #8fd7ff; }
+        .ai-sub {
+            color: #b8d9a8;
+            font-size: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .ai-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .ai-q-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e4f5da;
+            padding: 10px 18px;
+            border-radius: 99px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .ai-q-btn:hover {
+            background: rgba(79, 70, 229, 0.25);
+            border-color: rgba(79, 70, 229, 0.4);
+            transform: translateY(-2px);
+        }
+        .ai-answer {
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 4px solid #4f46e5;
+            border-radius: 0 12px 12px 0;
+            padding: 16px 20px;
+            font-size: 15px;
+            min-height: 44px;
+            position: relative;
+            color: #e4f5da;
+        }
+        .ai-real-tip {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.12);
+            font-size: 14px;
+            color: #b8d9a8;
+            position: relative;
+        }
+        .prompt-example {
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #ffd08a;
+        }
+        .ai-real-tip .warning {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #b8d9a8;
+            opacity: 0.7;
+        }
+
+        .direction-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 300px;
+            margin: 10px auto;
+        }
+        .direction-grid .dir-item {
+            background: #eef2ff;
+            border: 2px solid #c7d2fe;
+            border-radius: 8px;
+            padding: 8px 4px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: #312e81;
+            transition: all 0.2s;
+        }
+        .direction-grid .dir-item:hover {
+            border-color: #4f46e5;
+            background: #e0e7ff;
+        }
+        .direction-grid .dir-item .dir-en {
+            font-size: 11px;
+            color: #4a6a3a;
+            font-weight: 400;
+            display: block;
+        }
+        .direction-grid .dir-item.center {
+            background: transparent;
+            border: none;
+            font-size: 18px;
+        }
+        .direction-grid .dir-item.center:hover {
+            background: transparent;
+        }
+
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        .commands-grid .cmd-card {
+            background: #f5f7ff;
+            border: 2px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            transition: border-color 0.2s;
+        }
+        .commands-grid .cmd-card:hover {
+            border-color: #4f46e5;
+        }
+        .commands-grid .cmd-card .cmd-title {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            color: #312e81;
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .commands-grid .cmd-card .cmd-title .cmd-icon { font-size: 20px; }
+        .commands-grid .cmd-card .cmd-code {
+            background: #1e1e2e;
+            color: #e4f5da;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            margin: 6px 0;
+            overflow-x: auto;
+        }
+        .commands-grid .cmd-card .cmd-desc {
+            font-size: 14px;
+            color: #4a6a3a;
+            margin-top: 4px;
+        }
+
+        /* Стили для проектов */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        .project-grid .project-card {
+            background: #f5f7ff;
+            border: 2px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .project-grid .project-card:hover {
+            border-color: #4f46e5;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.12);
+        }
+        .project-grid .project-card .project-icon { font-size: 48px; display: block; margin-bottom: 8px; }
+        .project-grid .project-card .project-name { font-weight: 700; color: #312e81; font-size: 18px; }
+        .project-grid .project-card .project-desc { font-size: 14px; color: #4a6a3a; margin-top: 4px; }
+        .project-grid .project-card .project-difficulty {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+        .project-grid .project-card .project-difficulty.easy { background: #e8f5e9; color: #2e7d32; }
+        .project-grid .project-card .project-difficulty.medium { background: #fff3e0; color: #e65100; }
+        .project-grid .project-card .project-difficulty.hard { background: #fde8e8; color: #c62828; }
+
+        /* Стили для инвентаря */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .inventory-grid .inv-item {
+            background: #f5f7ff;
+            border: 2px solid #c7d2fe;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+        .inventory-grid .inv-item .inv-icon { font-size: 32px; display: block; margin-bottom: 4px; }
+        .inventory-grid .inv-item .inv-name { font-weight: 700; color: #312e81; font-size: 14px; }
+        .inventory-grid .inv-item .inv-id { font-size: 12px; color: #4a6a3a; }
+
+        @media (max-width: 768px) {
+            .ai-helper { padding: 20px 16px; }
+            .direction-grid { max-width: 100%; }
+            .commands-grid { grid-template-columns: 1fr; }
+            .project-grid { grid-template-columns: 1fr 1fr; }
+            .inventory-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .project-grid { grid-template-columns: 1fr; }
+            .inventory-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div>
+                    <div class="brand-name">РОБОВИТА</div>
+                    <div class="brand-tag">учимся программировать роботов и игры</div>
+                </div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 2.3 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">2.3</div>
+            <div>
+                <div class="module-pill">Раздел 2 · Агент и Python</div>
+                <h1>Агент-шахтёр</h1>
+                <p class="subtitle">Учим робота копать шахты и собирать руду</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <!-- Цели -->
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Изучить команды для добычи блоков Агентом</li>
+            <li>Понять, как добавлять добытые блоки в инвентарь Агента</li>
+            <li>Познакомиться с проверкой типа блока перед добычей</li>
+            <li>Создать программу для автоматической добычи ценных руд</li>
+            <li>Развить навыки работы с условиями и циклами в Python</li>
+        </ul>
+    </div>
+
+    <!-- План занятия -->
+    <div class="card">
+        <h2>📋 План занятия</h2>
+        <table class="timetable">
+            <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>Кто такой Агент-шахтёр</td><td>10 мин</td><td>Знакомство с добычей ресурсов</td></tr>
+            <tr><td>Команды для добычи</td><td>12 мин</td><td>Изучаем destroy и give</td></tr>
+            <tr><td>Проверка блоков</td><td>10 мин</td><td>Как определить, что за блок перед Агентом</td></tr>
+            <tr><td>Интерактив: Сопоставление</td><td>8 мин</td><td>Закрепляем команды</td></tr>
+            <tr><td>AI-помощник</td><td>5 мин</td><td>Спроси у Алисы</td></tr>
+            <tr><td>Мини-проект: Шахта</td><td>40 мин</td><td>Копаем шахту и собираем руду</td></tr>
+            <tr><td>Итоги и рефлексия</td><td>5 мин</td><td>Проверяем знания</td></tr>
+            <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+        </table>
+    </div>
+
+    <!-- Часть 1: Команды для добычи -->
+    <div class="card">
+        <h2><span class="num">1</span> Команды для добычи ресурсов</h2>
+        <p>Агент может не только строить, но и добывать ресурсы! Для этого есть специальные команды:</p>
+
+        <div class="commands-grid">
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">🔨</span> Разрушить блок</div>
+                <div class="cmd-code">agent.destroy(НАПРАВЛЕНИЕ)</div>
+                <div class="cmd-desc">Разрушает блок в указанном направлении</div>
+                <div style="font-size: 12px; color: #4a6a3a; margin-top: 4px;">Пример: <code>agent.destroy(DOWN)</code></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">🎁</span> Выдать предмет</div>
+                <div class="cmd-code">agent.give(ПРЕДМЕТ, КОЛИЧЕСТВО, СЛОТ)</div>
+                <div class="cmd-desc">Добавляет предмет прямо в инвентарь Агента</div>
+                <div style="font-size: 12px; color: #4a6a3a; margin-top: 4px;">Пример: <code>agent.give(IRON_INGOT, 1, 1)</code></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">🔍</span> Проверить блок</div>
+                <div class="cmd-code">agent.inspect(НАПРАВЛЕНИЕ)</div>
+                <div class="cmd-desc">Возвращает информацию о блоке перед Агентом</div>
+                <div style="font-size: 12px; color: #4a6a3a; margin-top: 4px;">Пример: <code>agent.inspect(DOWN)</code></div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">🗑️</span> Выбросить предмет</div>
+                <div class="cmd-code">agent.drop(НАПРАВЛЕНИЕ)</div>
+                <div class="cmd-desc">Выбрасывает предмет из инвентаря Агента</div>
+                <div style="font-size: 12px; color: #4a6a3a; margin-top: 4px;">Пример: <code>agent.drop(FORWARD)</code></div>
+            </div>
+        </div>
+
+        <div class="note danger">
+            <b>⚠️ Очень важно!</b> Когда Агент ломает блок командой <code>destroy</code>, блок <b>НЕ выпадает</b> в мир, как у игрока — он просто исчезает! Поэтому команда <code>agent.collect()</code> здесь <b>не поможет</b>.<br><br>
+            Чтобы Агент «положил добычу к себе в инвентарь», нужно использовать <b><code>agent.give()</code></b> — она добавляет предмет напрямую, без выпадения в мир.
+        </div>
+    </div>
+
+    <!-- Часть 2: Таблица блоков и предметов -->
+    <div class="card">
+        <h2><span class="num">2</span> Блоки и предметы для инвентаря</h2>
+        <p>В Minecraft есть разные блоки. Некоторые из них — обычные (камень, земля), а некоторые — ценные (руды). Вот таблица с основными блоками и предметами:</p>
+
+        <div class="inventory-grid">
+            <div class="inv-item">
+                <span class="inv-icon">🪨</span>
+                <div class="inv-name">Камень</div>
+                <div class="inv-id">STONE (ID: 1)</div>
+            </div>
+            <div class="inv-item">
+                <span class="inv-icon">🟫</span>
+                <div class="inv-name">Земля</div>
+                <div class="inv-id">DIRT (ID: 3)</div>
+            </div>
+            <div class="inv-item">
+                <span class="inv-icon">⬛</span>
+                <div class="inv-name">Уголь</div>
+                <div class="inv-id">COAL (ID: 16)</div>
+            </div>
+            <div class="inv-item">
+                <span class="inv-icon">⬜</span>
+                <div class="inv-name">Железная руда</div>
+                <div class="inv-id">IRON_ORE (ID: 15)</div>
+            </div>
+            <div class="inv-item">
+                <span class="inv-icon">🔩</span>
+                <div class="inv-name">Железный слиток</div>
+                <div class="inv-id">IRON_INGOT (ID: 265)</div>
+            </div>
+            <div class="inv-item">
+                <span class="inv-icon">🟨</span>
+                <div class="inv-name">Золотая руда</div>
+                <div class="inv-id">GOLD_ORE (ID: 14)</div>
+            </div>
+            <div class="inv-item">
+                <span class="inv-icon">💎</span>
+                <div class="inv-name">Алмаз</div>
+                <div class="inv-id">DIAMOND (ID: 264)</div>
+            </div>
+            <div class="inv-item">
+                <span class="inv-icon">💚</span>
+                <div class="inv-name">Изумруд</div>
+                <div class="inv-id">EMERALD (ID: 388)</div>
+            </div>
+        </div>
+
+        <div class="note warn">
+            <b>💡 Важно различать!</b> Когда добываешь <b>руду</b> — в инвентарь попадает сама руда (IRON_ORE). Но если ты хочешь получить <b>слиток</b> — нужно выдать IRON_INGOT. В нашем проекте Агент будет выдавать сразу готовые слитки и драгоценности, чтобы они были полезны для крафта!
+        </div>
+
+        <h3>Проверка блока перед добычей</h3>
+        <p>Чтобы Агент добывал только ценные блоки, нужно проверить, что за блок перед ним. Для этого используется команда <code>agent.inspect()</code>, которая возвращает ID блока.</p>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">check_block.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Проверяем блок перед Агентом</span>
+block = agent.inspect(DOWN)
+
+<span class="tok-k">if</span> block == <span class="tok-n">15</span>:  <span class="tok-c"># ID железной руды</span>
+    player.say(<span class="tok-s">"Нашёл железную руду!"</span>)
+    agent.destroy(DOWN)
+    agent.give(IRON_INGOT, <span class="tok-n">1</span>, <span class="tok-n">1</span>)  <span class="tok-c"># Кладём слиток в инвентарь!</span>
+<span class="tok-k">elif</span> block == <span class="tok-n">56</span>:  <span class="tok-c"># ID алмазной руды</span>
+    player.say(<span class="tok-s">"Нашёл алмазы!"</span>)
+    agent.destroy(DOWN)
+    agent.give(DIAMOND, <span class="tok-n">1</span>, <span class="tok-n">1</span>)  <span class="tok-c"># Кладём алмаз в инвентарь!</span>
+<span class="tok-k">else</span>:
+    agent.destroy(DOWN)  <span class="tok-c"># Просто копаем</span></code></pre>
+        </div>
+    </div>
+
+    <!-- ИНТЕРАКТИВ: Сопоставление -->
+    <div class="interactive-box" id="matchMiner">
+        <h2>🔑 Сопоставь команду и её действие</h2>
+        <p>Выбери правильное действие для каждой команды Агента-шахтёра:</p>
+
+        <div class="match-row">
+            <div class="match-key">agent.destroy(DOWN)</div>
+            <select data-correct="Разрушает блок под Агентом">
+                <option value="">— выбери —</option>
+                <option value="Разрушает блок под Агентом">Разрушает блок под Агентом</option>
+                <option value="Добавляет предмет в инвентарь">Добавляет предмет в инвентарь</option>
+                <option value="Проверяет блок под Агентом">Проверяет блок под Агентом</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">agent.give(IRON_INGOT, 1, 1)</div>
+            <select data-correct="Добавляет железный слиток в инвентарь">
+                <option value="">— выбери —</option>
+                <option value="Добавляет железный слиток в инвентарь">Добавляет железный слиток в инвентарь</option>
+                <option value="Выбрасывает железный слиток из инвентаря">Выбрасывает железный слиток из инвентаря</option>
+                <option value="Разрушает блок железа">Разрушает блок железа</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">agent.inspect(DOWN)</div>
+            <select data-correct="Проверяет, какой блок под Агентом">
+                <option value="">— выбери —</option>
+                <option value="Разрушает блок под Агентом">Разрушает блок под Агентом</option>
+                <option value="Добавляет предмет в инвентарь">Добавляет предмет в инвентарь</option>
+                <option value="Проверяет, какой блок под Агентом">Проверяет, какой блок под Агентом</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">agent.drop(FORWARD)</div>
+            <select data-correct="Выбрасывает предмет из инвентаря">
+                <option value="">— выбери —</option>
+                <option value="Разрушает блок перед Агентом">Разрушает блок перед Агентом</option>
+                <option value="Добавляет предмет в инвентарь">Добавляет предмет в инвентарь</option>
+                <option value="Выбрасывает предмет из инвентаря">Выбрасывает предмет из инвентаря</option>
+            </select>
+        </div>
+
+        <button class="action-btn" onclick="checkMatch('matchMiner')">✅ Проверить</button>
+        <div class="match-result" id="matchResultMiner"></div>
+    </div>
+
+    <!-- AI-помощник -->
+    <div class="ai-helper">
+        <div class="ai-head">
+            <span class="ai-icon">🤖</span>
+            <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+        </div>
+        <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+
+        <div class="ai-buttons">
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B7%D0%B0%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C%20%D0%90%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%20%D0%BA%D0%BE%D0%BF%D0%B0%D1%82%D1%8C%20%D1%88%D0%B0%D1%85%D1%82%D1%83%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Как копать шахту?</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%B5%D0%B4%D0%BC%D0%B5%D1%82%20%D0%B2%20%D0%B8%D0%BD%D0%B2%D0%B5%D0%BD%D1%82%D0%B0%D1%80%D1%8C%20%D0%90%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%3F%22%7D" target="_blank" class="ai-q-btn">Как дать предмет Агенту?</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%B8%D1%82%D1%8C%20%D0%B1%D0%BB%D0%BE%D0%BA%20%D0%BF%D0%B5%D1%80%D0%B5%D0%B4%20%D0%90%D0%B3%D0%B5%D0%BD%D1%82%D0%BE%D0%BC%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="ai-q-btn">Как проверить блок?</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%B5%D1%80%D0%B5%D0%BF%D0%BB%D0%B0%D0%B2%D0%B8%D1%82%D1%8C%20%D1%80%D1%83%D0%B4%D1%83%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="ai-q-btn">Как переплавить руду?</a>
+        </div>
+
+        <div class="ai-answer">
+            💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+        </div>
+
+        <div class="ai-real-tip">
+            <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про Агента-шахтёра.<br>
+            <span class="prompt-example">Просто скажи: «Алиса, как научить Агента добывать алмазы в Minecraft?»</span>
+            <div class="warning">⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.</div>
+        </div>
+    </div>
+
+    <!-- Часть 3: Мини-проект -->
+    <div class="card">
+        <h2><span class="num">3</span> Мини-проект: Шахта с ценными рудами</h2>
+        <p>Теперь давай создадим программу, которая научит Агента копать шахту и собирать только ценные ресурсы!</p>
+
+        <div class="note warn">
+            <b>🎯 Задача:</b> Агент должен копать шахту вниз, проверять каждый блок, и если находит ценную руду (железо, золото, алмазы, изумруды) — разрушать её и <b>добавлять в инвентарь</b> через <code>agent.give()</code>. Обычные блоки (камень, земля) просто разрушать.
+        </div>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">miner.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Программа для Агента-шахтёра</span>
+<span class="tok-c"># Агент копает вниз и добавляет ценные руды в инвентарь</span>
+
+<span class="tok-k">def</span> <span class="tok-f">mine_shaft</span>():
+    <span class="tok-k">for</span> i <span class="tok-k">in</span> range(<span class="tok-n">20</span>):  <span class="tok-c"># Копаем 20 блоков вниз</span>
+        block = agent.inspect(DOWN)  <span class="tok-c"># Проверяем блок под Агентом</span>
+        
+        <span class="tok-c"># Проверяем, ценная ли руда</span>
+        <span class="tok-k">if</span> block == <span class="tok-n">15</span>:  <span class="tok-c"># Железная руда</span>
+            player.say(<span class="tok-s">"Нашёл железо!"</span>)
+            agent.destroy(DOWN)
+            agent.give(RAW_IRON, <span class="tok-n">1</span>, <span class="tok-n">1</span>)   <span class="tok-c"># Необработанный слиток в инвентарь</span>
+        <span class="tok-k">elif</span> block == <span class="tok-n">14</span>:  <span class="tok-c"># Золотая руда</span>
+            player.say(<span class="tok-s">"Нашёл золото!"</span>)
+            agent.destroy(DOWN)
+            agent.give(RAW_GOLD, <span class="tok-n">1</span>, <span class="tok-n">1</span>)   <span class="tok-c"># Необработанный слиток в инвентарь</span>
+        <span class="tok-k">elif</span> block == <span class="tok-n">56</span>:  <span class="tok-c"># Алмазная руда</span>
+            player.say(<span class="tok-s">"Нашёл алмазы!"</span>)
+            agent.destroy(DOWN)
+            agent.give(DIAMOND, <span class="tok-n">1</span>, <span class="tok-n">1</span>)      <span class="tok-c"># Алмаз в инвентарь</span>
+        <span class="tok-k">elif</span> block == <span class="tok-n">133</span>:  <span class="tok-c"># Изумрудная руда</span>
+            player.say(<span class="tok-s">"Нашёл изумруды!"</span>)
+            agent.destroy(DOWN)
+            agent.give(EMERALD, <span class="tok-n">1</span>, <span class="tok-n">1</span>)      <span class="tok-c"># Изумруд в инвентарь</span>
+        <span class="tok-k">else</span>:
+            agent.destroy(DOWN)  <span class="tok-c"># Обычный блок - просто копаем</span>
+        
+        agent.move(DOWN, <span class="tok-n">1</span>)  <span class="tok-c"># Спускаемся на 1 блок вниз</span>
+    
+    player.say(<span class="tok-s">"Шахта готова!"</span>)
+
+<span class="tok-c"># Привязываем к команде чата</span>
+player.on_chat(<span class="tok-s">"шахта"</span>, mine_shaft)</code></pre>
+        </div>
+
+        <h3>⭐ Бонус: Переплавка руды</h3>
+        <p>Агент может проверить свой инвентарь и «переплавить» руду — то есть заменить её на слиток. В Minecraft Education это можно сделать так: проверяем слот, если там железная руда — забираем её и выдаём железный слиток.</p>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">smelt.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Бонус: программа для переплавки руды</span>
+<span class="tok-c"># Агент проверяет инвентарь и заменяет руду на слитки</span>
+
+<span class="tok-k">def</span> <span class="tok-f">smelt_inventory</span>():
+    <span class="tok-c"># Проверяем каждый слот инвентаря (у Агента 27 слотов)</span>
+    <span class="tok-k">for</span> slot <span class="tok-k">in</span> range(<span class="tok-n">27</span>):
+        item = agent.get_item(slot)  <span class="tok-c"># Получаем предмет из слота</span>
+        
+        <span class="tok-c"># Если это железная руда (ID 15)</span>
+        <span class="tok-c"># Или если это необработанный слиток (ID 505)</span>
+        <span class="tok-k">if</span> item == <span class="tok-n">15</span>:
+            player.say(<span class="tok-s">"Переплавляю железо..."</span>)
+            agent.drop(1)                     <span class="tok-c"># Выбрасываем руду</span>
+            agent.give(IRON_INGOT, <span class="tok-n">1</span>, slot)  <span class="tok-c"># Кладём слиток на то же место</span>
+        
+        <span class="tok-c"># Если это золотая руда (ID 14)</span>
+        <span class="tok-c"># Или если это необработанный слиток (ID 506)</span>
+        <span class="tok-k">elif</span> item == <span class="tok-n">14</span>:
+            player.say(<span class="tok-s">"Переплавляю золото..."</span>)
+            agent.drop(1)
+            agent.give(GOLD_INGOT, <span class="tok-n">1</span>, slot)
+    
+    player.say(<span class="tok-s">"Переплавка завершена!"</span>)
+
+player.on_chat(<span class="tok-s">"переплавь"</span>, smelt_inventory)</code></pre>
+        </div>
+
+        <div class="note">
+            <b>💡 Пояснение:</b> команда <code>agent.get_item(slot)</code> возвращает ID предмета в указанном слоте инвентаря Агента (от 0 до 26). Мы проходим по всем слотам, и если находим руду — заменяем её на слиток через <code>drop</code> + <code>give</code>.
+        </div>
+    </div>
+
+    <!-- Практическое задание -->
+    <div class="task-box" id="minerPractice">
+        <h2>🛠️ Практика: Создаём шахту</h2>
+        <p>Открой редактор кода в Minecraft (клавиша <code>C</code>) и выбери Python. Напиши программу для Агента-шахтёра.</p>
+
+        <!-- Прогресс-бар -->
+        <div class="progress-track">
+            <div class="progress-fill-minecraft" id="practiceProgressFill" style="width: 0%;"></div>
+        </div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 6</span>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 1</span>
+                Копаем вниз
+                <input type="checkbox" id="task1" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Напиши программу, в которой Агент копает вниз на 20 блоков, разрушая каждый блок.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 2</span>
+                Выдаём камень в инвентарь
+                <input type="checkbox" id="task2" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Добавь команду <code>agent.give(STONE, 1, 1)</code> после разрушения обычного блока, чтобы Агент складывал камень в инвентарь.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 3</span>
+                Проверяем руду
+                <input type="checkbox" id="task3" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Добавь проверку блока с помощью <code>agent.inspect(DOWN)</code>. Если это железная руда (ID 15) — выведи сообщение «Нашёл железо!» и выдай <code>RAW_IRON</code>.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 4</span>
+                Собираем ценные ресурсы
+                <input type="checkbox" id="task4" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Добавь проверку для алмазов (ID 56) и золота (ID 14). При обнаружении — выводи сообщение и выдавай <code>DIAMOND</code> или <code>RAW_GOLD</code> в инвентарь.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 5</span>
+                Тестирование
+                <input type="checkbox" id="task5" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Запусти программу в Minecraft и проверь, правильно ли Агент копает шахту и собирает руду в инвентарь.</p>
+        </div>
+
+        <div class="task-item" style="border: 2px dashed #4f46e5; background: #f0edff;">
+            <div class="task-title">
+                <span class="badge bonus">🚀 Бонус</span>
+                Переплавка руды
+                <input type="checkbox" id="task6" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Напиши команду чата <code>переплавь</code>, которая проверяет все слоты инвентаря Агента и заменяет железную руду на железные слитки, а золотую — на золотые.</p>
+        </div>
+    </div>
+
+    <!-- Опрос -->
+    <div class="quiz-wrap" id="quizMiner">
+        <h2>📝 Проверь себя</h2>
+
+        <div class="quiz-question" data-name="mq1" data-correct="b">
+            <p class="quiz-q-text">1. Какая команда разрушает блок перед Агентом?</p>
+            <label><input type="radio" name="mq1" value="a"> agent.place()</label>
+            <label><input type="radio" name="mq1" value="b"> agent.destroy()</label>
+            <label><input type="radio" name="mq1" value="c"> agent.give()</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="mq2" data-correct="a">
+            <p class="quiz-q-text">2. Какая команда добавляет предмет в инвентарь Агента?</p>
+            <label><input type="radio" name="mq2" value="a"> agent.give()</label>
+            <label><input type="radio" name="mq2" value="b"> agent.destroy()</label>
+            <label><input type="radio" name="mq2" value="c"> agent.collect()</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="mq3" data-correct="c">
+            <p class="quiz-q-text">3. Какая команда проверяет, какой блок находится перед Агентом?</p>
+            <label><input type="radio" name="mq3" value="a"> agent.check()</label>
+            <label><input type="radio" name="mq3" value="b"> agent.look()</label>
+            <label><input type="radio" name="mq3" value="c"> agent.inspect()</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="mq4" data-correct="b">
+            <p class="quiz-q-text">4. Что произойдёт, если Агент сломает блок командой destroy?</p>
+            <label><input type="radio" name="mq4" value="a"> Блок выпадет в мир, и его можно подобрать</label>
+            <label><input type="radio" name="mq4" value="b"> Блок просто исчезнет, в инвентарь ничего не попадёт</label>
+            <label><input type="radio" name="mq4" value="c"> Блок автоматически попадёт в инвентарь</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="mq5" data-correct="a">
+            <p class="quiz-q-text">5. Что делает команда agent.drop()?</p>
+            <label><input type="radio" name="mq5" value="a"> Выбрасывает предмет из инвентаря</label>
+            <label><input type="radio" name="mq5" value="b"> Добавляет предмет в инвентарь</label>
+            <label><input type="radio" name="mq5" value="c"> Разрушает блок</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <button class="quiz-btn" onclick="checkQuiz('quizMiner')">Проверить ответы</button>
+        <div class="quiz-result"></div>
+    </div>
+
+    <!-- Рефлексия -->
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <p>Напиши, что тебе понравилось, а что было сложно:</p>
+        <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+    </div>
+
+    <!-- Навигация -->
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_2-2.html"><div class="lbl">← Назад</div><div class="ttl">2.2 Агент-строитель</div></a>
+        <a class="nav-btn next" href="les_python_2-4.html"><div class="lbl">Далее →</div><div class="ttl">2.4 Агент-фермер</div></a>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Занятие 2.3 · Агент-шахтёр · офлайн-курс по Minecraft Education и Python</div>
+    </div>
+</footer>
+
+<script>
+    // ===== СОПОСТАВЛЕНИЕ =====
+    function checkMatch(containerId) {
+        const container = document.getElementById(containerId);
+        const selects = container.querySelectorAll('select[data-correct]');
+        let correct = 0;
+        selects.forEach(sel => {
+            const correctVal = sel.getAttribute('data-correct');
+            sel.classList.remove('correct', 'incorrect');
+            if (sel.value === correctVal) {
+                sel.classList.add('correct');
+                correct++;
+            } else if (sel.value !== '') {
+                sel.classList.add('incorrect');
+            }
+        });
+        const resultDiv = container.querySelector('.match-result');
+        if (resultDiv) {
+            resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${selects.length}`;
+            resultDiv.style.display = 'block';
+        }
+    }
+
+    // ===== ВИКТОРИНА =====
+    function checkQuiz(containerId) {
+        const container = document.getElementById(containerId);
+        const questions = container.querySelectorAll('.quiz-question');
+        let total = 0, correct = 0;
+        questions.forEach(q => {
+            const correctVal = q.getAttribute('data-correct');
+            const selected = q.querySelector('input[type="radio"]:checked');
+            const feedback = q.querySelector('.q-feedback');
+            if (selected) {
+                total++;
+                if (selected.value === correctVal) {
+                    correct++;
+                    feedback.innerHTML = '✅ Верно!';
+                    feedback.style.color = '#2e7d32';
+                } else {
+                    feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+                    feedback.style.color = '#c62828';
+                }
+            } else {
+                feedback.innerHTML = '⚠️ Выбери вариант.';
+                feedback.style.color = '#f57c00';
+            }
+        });
+        const resultDiv = container.querySelector('.quiz-result');
+        if (resultDiv) {
+            if (total === 0) {
+                resultDiv.innerHTML = '⚠️ Ответь на все вопросы.';
+            } else {
+                resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${questions.length}`;
+            }
+            resultDiv.style.display = 'block';
+        }
+    }
+
+    // ===== ПРОГРЕСС ПРАКТИЧЕСКИХ ЗАДАНИЙ =====
+    function updatePracticeProgress() {
+        const checkboxes = document.querySelectorAll('#minerPractice input[type="checkbox"]');
+        const total = checkboxes.length;
+        let checked = 0;
+        checkboxes.forEach(cb => { if (cb.checked) checked++; });
+        const fill = document.getElementById('practiceProgressFill');
+        const label = document.getElementById('practiceProgressLabel');
+        if (fill) fill.style.width = (checked / total * 100) + '%';
+        if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+    }
+
+    // ===== АВТОМАТИЧЕСКАЯ ПРОВЕРКА СОПОСТАВЛЕНИЯ =====
+    document.querySelectorAll('.interactive-box select[data-correct]').forEach(sel => {
+        sel.addEventListener('change', function() {
+            const container = this.closest('.interactive-box');
+            if (container && container.id === 'matchMiner') {
+                const allSelected = container.querySelectorAll('select[data-correct]');
+                let allFilled = true;
+                allSelected.forEach(s => { if (s.value === '') allFilled = false; });
+                if (allFilled) {
+                    checkMatch('matchMiner');
+                }
+            }
+        });
+    });
+
+    // ===== ИНИЦИАЛИЗАЦИЯ =====
+    updatePracticeProgress();
+</script>
+</body>
+</html>

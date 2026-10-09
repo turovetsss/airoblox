@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.1. Координаты и Python — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #eef2ff; border-bottom: 3px solid #4f46e5; }
+        .site-footer { background: #eef2ff; border-top: 3px solid #4f46e5; }
+        .brand-name { color: #312e81; }
+        .module-pill { background: #4f46e5; color: #fff; }
+        .hex-badge { background: #4f46e5; color: #fff; }
+        .data-table th { background: #4f46e5; color: #fff; }
+        .match-btn, .quiz-btn, .action-btn { background: #4f46e5; color: #fff; border: none; }
+        .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4338ca; }
+        .task-box { border-left: 4px solid #4f46e5; }
+        .code-block { border: 1px solid #c7d2fe; background: #f5f7ff; }
+        .interactive-box { background: #f8faff; border: 1px solid #c7d2fe; }
+        .code-block .code-head { background: #1e1e2e; color: #c7d2fe; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .code-block .code-head .dots { display: flex; gap: 6px; }
+        .code-block .code-head .dots .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .code-block .code-head .dots .dot.r { background: #d93b3b; }
+        .code-block .code-head .dots .dot.y { background: #ffb238; }
+        .code-block .code-head .dots .dot.g { background: #4f46e5; }
+        .code-block .code-head .fname { font-family: 'JetBrains Mono', monospace; font-size: 13px; opacity: 0.8; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; margin: 0; padding: 16px 20px; overflow-x: auto; font-size: 14px; line-height: 1.8; }
+        .code-block pre.code code { font-family: 'JetBrains Mono', Consolas, monospace; }
+        .tok-c { color: #7fcf9e; font-style: italic; }
+        .tok-k { color: #ffb238; font-weight: 700; }
+        .tok-s { color: #8fd7ff; }
+        .tok-f { color: #ffd08a; }
+        .tok-n { color: #ff9aae; }
+        .note { background: #eef2ff; border-left: 6px solid #4f46e5; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.warn { background: #fef3c7; border-left-color: #f59e0b; }
+        .task-box .task-item {
+            background: #f5f7ff; border: 1px solid #c7d2fe; border-radius: 12px;
+            padding: 16px; margin-bottom: 12px;
+        }
+        .task-box .task-item .task-title {
+            font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px;
+        }
+        .task-box .task-item .task-title .badge {
+            background: #4f46e5; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 99px;
+        }
+        .task-box .task-item .task-title .badge.bonus { background: #ffb238; color: #312e81; }
+        .interactive-box .match-row {
+            display: flex; gap: 16px; align-items: center; margin: 12px 0; flex-wrap: wrap;
+        }
+        .interactive-box .match-row .match-key {
+            background: #4f46e5; color: #fff; padding: 8px 16px; border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; min-width: 140px; text-align: center;
+        }
+        .interactive-box .match-row select {
+            flex: 1; min-width: 150px; padding: 8px 12px; border-radius: 8px;
+            border: 2px solid #c7d2fe; font-family: 'Nunito', sans-serif; background: #fff;
+        }
+        .interactive-box .match-row select.correct { border-color: #4f46e5; background: #eef2ff; }
+        .interactive-box .match-row select.incorrect { border-color: #d93b3b; background: #fde8e8; }
+        .interactive-box .match-result { margin-top: 12px; font-weight: 700; }
+        .progress-track {
+            background: #e8f5e9; border-radius: 99px; height: 20px; overflow: hidden; margin: 12px 0 6px;
+        }
+        .progress-fill-minecraft {
+            background: linear-gradient(90deg, #4f46e5, #4338ca);
+            height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 99px;
+        }
+        .progress-label { font-size: 15px; font-weight: 700; color: #312e81; display: block; margin-bottom: 8px; }
+        .commands-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 16px 0;
+        }
+        .commands-grid .cmd-card {
+            background: #f5f7ff; border: 2px solid #c7d2fe; border-radius: 12px; padding: 16px;
+        }
+        .commands-grid .cmd-card .cmd-title {
+            font-family: 'Fredoka', sans-serif; font-weight: 700; color: #312e81; font-size: 16px;
+            margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+        }
+        .commands-grid .cmd-card .cmd-code {
+            background: #1e1e2e; color: #e4f5da; padding: 10px 14px; border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 12px; margin: 6px 0; overflow-x: auto;
+        }
+        .commands-grid .cmd-card .cmd-desc { font-size: 14px; color: #4a6a3a; margin-top: 4px; }
+        .coord-demo {
+            display: flex; justify-content: center; gap: 20px; margin: 16px 0; flex-wrap: wrap;
+        }
+        .coord-demo .axis {
+            display: flex; flex-direction: column; align-items: center; padding: 12px 20px;
+            background: #f5f7ff; border-radius: 12px; border: 2px solid #c7d2fe;
+        }
+        .coord-demo .axis .label { font-weight: 700; font-size: 1.1rem; }
+        .coord-demo .axis .desc { font-size: 0.85rem; color: #4a6a3a; }
+        .axis-x .label { color: #e74c3c; }
+        .axis-y .label { color: #2ecc71; }
+        .axis-z .label { color: #3498db; }
+        .compare-table td:first-child { background: #fff5f5; }
+        .compare-table td:nth-child(2) { background: #f5f7ff; }
+        .ai-helper {
+            background: #1e1e2e; color: #e4f5da; border-radius: 16px; padding: 28px 32px; margin: 20px 0;
+            position: relative; overflow: hidden;
+        }
+        .ai-helper::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.15), transparent 60%);
+            pointer-events: none;
+        }
+        .ai-head { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; position: relative; }
+        .ai-head .ai-icon { font-size: 36px; }
+        .ai-head .t { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 22px; }
+        .ai-head .t span { color: #8fd7ff; }
+        .ai-sub { color: #b8d9a8; font-size: 16px; margin-bottom: 16px; position: relative; }
+        .ai-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; position: relative; }
+        .ai-q-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e4f5da; padding: 10px 18px; border-radius: 99px; font-size: 14px; font-weight: 600;
+            cursor: pointer; font-family: 'Nunito', sans-serif; text-decoration: none; transition: all 0.2s;
+        }
+        .ai-q-btn:hover { background: rgba(79, 70, 229, 0.25); border-color: rgba(79, 70, 229, 0.4); transform: translateY(-2px); }
+        .ai-answer {
+            background: rgba(255, 255, 255, 0.04); border-left: 4px solid #4f46e5;
+            border-radius: 0 12px 12px 0; padding: 16px 20px; font-size: 15px; min-height: 44px; position: relative;
+        }
+        .ai-real-tip {
+            margin-top: 16px; padding-top: 16px; border-top: 1px dashed rgba(255, 255, 255, 0.12);
+            font-size: 14px; color: #b8d9a8; position: relative;
+        }
+        .prompt-example {
+            display: block; background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 10px 16px;
+            margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #ffd08a;
+        }
+        .ai-real-tip .warning { margin-top: 8px; font-size: 13px; color: #b8d9a8; opacity: 0.7; }
+        @media (max-width: 768px) {
+            .ai-helper { padding: 20px 16px; }
+            .commands-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div>
+                    <div class="brand-name">РОБОВИТА</div>
+                    <div class="brand-tag">учимся программировать роботов и игры</div>
+                </div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 3.1 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">3.1</div>
+            <div>
+                <div class="module-pill">Раздел 3 · Координаты</div>
+                <h1>Координаты и Python</h1>
+                <p class="subtitle">Абсолютные и относительные координаты в коде Minecraft</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Понять систему координат X, Y, Z в Minecraft</li>
+            <li>Научиться использовать <b>абсолютные</b> координаты через <code>world()</code></li>
+            <li>Научиться использовать <b>относительные</b> координаты через <code>pos()</code> и <code>posCamera()</code></li>
+            <li>Освоить команды постройки и перемещения с координатами в Python</li>
+            <li>Выполнить простые практические задания в Minecraft Education</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📋 План занятия</h2>
+        <table class="timetable">
+            <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>Оси X, Y, Z</td><td>10 мин</td><td>Что такое координаты в 3D-мире</td></tr>
+            <tr><td>Абсолютные координаты</td><td>15 мин</td><td><code>world()</code>, точки в мире</td></tr>
+            <tr><td>Относительные координаты</td><td>15 мин</td><td><code>pos()</code>, <code>posCamera()</code></td></tr>
+            <tr><td>Команды Python</td><td>15 мин</td><td>place, fill, teleport, position</td></tr>
+            <tr><td>Интерактив</td><td>10 мин</td><td>Сопоставление и задача на координаты</td></tr>
+            <tr><td>AI-помощник</td><td>5 мин</td><td>Спроси у Алисы</td></tr>
+            <tr><td>Практика</td><td>25 мин</td><td>Строим и телепортируемся кодом</td></tr>
+            <tr><td>Итоги</td><td>5 мин</td><td>Викторина и рефлексия</td></tr>
+            <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">1</span> Система координат в Minecraft</h2>
+        <p>Мир Minecraft — это большой <b>трёхмерный</b> куб. Любая точка (блок) описывается <b>тремя числами</b>: X, Y и Z.</p>
+
+        <div class="coord-demo">
+            <div class="axis axis-x">
+                <div class="label">🔴 Ось X</div>
+                <div class="desc">Восток (+) / Запад (−)</div>
+            </div>
+            <div class="axis axis-y">
+                <div class="label">🟢 Ось Y</div>
+                <div class="desc">Вверх (+) / Вниз (−)</div>
+            </div>
+            <div class="axis axis-z">
+                <div class="label">🔵 Ось Z</div>
+                <div class="desc">Юг (+) / Север (−)</div>
+            </div>
+        </div>
+
+        <div class="note">
+            <b>📍 Запись:</b> <code>(X, Y, Z)</code> — например <code>(100, 64, -20)</code>.<br>
+            Y часто около <b>64</b> на равнине — это «уровень земли». Координаты можно посмотреть в игре (подсказка на экране или команда в чате).
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">2</span> Абсолютные координаты</h2>
+        <p><b>Абсолютные координаты</b> — это точка в мире, которая <b>не меняется</b>, куда бы ни ходил игрок. Начало мира — точка <code>(0, 0, 0)</code>.</p>
+
+        <div class="commands-grid">
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">🌍</span> world(x, y, z)</div>
+                <div class="cmd-code">world(10, 64, 20)</div>
+                <div class="cmd-desc">Создаёт позицию в мире: всегда один и тот же блок, независимо от того, где стоишь.</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">📍</span> player.position()</div>
+                <div class="cmd-code">p = player.position()</div>
+                <div class="cmd-desc">Возвращает <b>абсолютную</b> позицию игрока (можно вывести в чат или сохранить в переменные).</div>
+            </div>
+        </div>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">absolute_coords.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Поставить блок земли в фиксированной точке мира</span>
+blocks.place(GRASS, world(<span class="tok-n">5</span>, <span class="tok-n">64</span>, <span class="tok-n">5</span>))
+
+<span class="tok-c"># Заполнить куб камнем от одной точки до другой (абсолютные углы)</span>
+blocks.fill(
+    STONE,
+    world(<span class="tok-n">0</span>, <span class="tok-n">64</span>, <span class="tok-n">0</span>),
+    world(<span class="tok-n">4</span>, <span class="tok-n">66</span>, <span class="tok-n">4</span>),
+    FillOperation.REPLACE
+)
+
+<span class="tok-c"># Телепорт игрока в абсолютную точку</span>
+<span class="tok-k">def</span> <span class="tok-f">go_home</span>():
+    player.teleport(world(<span class="tok-n">0</span>, <span class="tok-n">64</span>, <span class="tok-n">0</span>))
+player.on_chat(<span class="tok-s">"дом"</span>, go_home)</code></pre>
+        </div>
+
+        <div class="note warn">
+            <b>💡 Когда удобно:</b> строишь арену, дом или метку на карте — координаты записал один раз, программа работает везде одинаково.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">3</span> Относительные координаты</h2>
+        <p><b>Относительные координаты</b> считаются от <b>текущего положения</b> игрока или агента. В Python для этого используют функции <code>pos()</code> и <code>posCamera()</code>.</p>
+
+        <div class="data-table-wrap">
+            <table class="data-table compare-table">
+                <tr><th>Функция</th><th>Относительно чего</th><th>Пример</th></tr>
+                <tr>
+                    <td><code>pos(x, y, z)</code></td>
+                    <td>Ног игрока, оси мира (восток/запад, вверх/вниз, юг/север)</td>
+                    <td><code>pos(3, 0, 0)</code> — на 3 блока на восток</td>
+                </tr>
+                <tr>
+                    <td><code>posCamera(x, y, z)</code></td>
+                    <td>Куда <b>смотрит</b> игрок: вперёд, назад, влево, вправо</td>
+                    <td><code>posCamera(0, 0, 5)</code> — на 5 блоков вперёд</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="commands-grid">
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">👣</span> pos(x, y, z)</div>
+                <div class="cmd-code">blocks.place(GOLD_BLOCK, pos(0, 2, 0))</div>
+                <div class="cmd-desc">Блок на 2 выше ног игрока (над головой), независимо от того, куда ты смотришь.</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">👀</span> posCamera(x, y, z)</div>
+                <div class="cmd-code">blocks.place(TORCH, posCamera(0, 0, 3))</div>
+                <div class="cmd-desc">Блок на 3 шага <b>вперёд</b> по направлению взгляда.</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">🤖</span> agent.teleport(pos, направление)</div>
+                <div class="cmd-code">agent.teleport(pos(0, 5, 0), NORTH)</div>
+                <div class="cmd-desc">Телепорт агента на 5 блоков вверх от его текущей позиции; второй параметр — куда он смотрит.</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">➕</span> positions.add(a, b)</div>
+                <div class="cmd-code">positions.add(player.position(), pos(0, 2, 0))</div>
+                <div class="cmd-desc">Складывает две позиции. Удобно: «где я стою» + «на 2 блока выше» = абсолютная точка над игроком.</div>
+            </div>
+        </div>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">relative_coords.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Блок прямо перед игроком (по взгляду)</span>
+blocks.place(STONE, posCamera(<span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">2</span>))
+
+<span class="tok-c"># Платформа 5×5 под ногами игрока (относительный fill)</span>
+blocks.fill(
+    GRASS,
+    pos(<span class="tok-n">-2</span>, <span class="tok-n">-1</span>, <span class="tok-n">-2</span>),
+    pos(<span class="tok-n">2</span>, <span class="tok-n">-1</span>, <span class="tok-n">2</span>),
+    FillOperation.REPLACE
+)
+
+<span class="tok-c"># Поднять игрока на 10 блоков (относительный телепорт)</span>
+<span class="tok-k">def</span> <span class="tok-f">jump_up</span>():
+    player.teleport(pos(<span class="tok-n">0</span>, <span class="tok-n">10</span>, <span class="tok-n">0</span>))
+player.on_chat(<span class="tok-s">"вверх"</span>, jump_up)</code></pre>
+        </div>
+
+        <div class="note">
+            <b>📌 Помни:</b> после перемещения игрока или агента относительная точка <code>pos(0, 2, 0)</code> указывает уже на <b>другое</b> место в мире — она «ездит» вместе с тобой!
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">4</span> Сводка команд для координат</h2>
+        <p>Краткая шпаргалка — что за что отвечает:</p>
+
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <tr><th>Команда</th><th>Тип координат</th><th>Что делает</th></tr>
+                <tr><td><code>world(x, y, z)</code></td><td>Абсолютные</td><td>Точка в мире по числам X, Y, Z</td></tr>
+                <tr><td><code>pos(x, y, z)</code></td><td>Относительные</td><td>Смещение от ног игрока по осям мира</td></tr>
+                <tr><td><code>posCamera(x, y, z)</code></td><td>Относительные</td><td>Смещение от игрока по направлению взгляда</td></tr>
+                <tr><td><code>blocks.place(БЛОК, позиция)</code></td><td>Любые</td><td>Ставит один блок в указанную позицию</td></tr>
+                <tr><td><code>blocks.fill(БЛОК, от, до, REPLACE)</code></td><td>Любые</td><td>Заполняет прямоугольный объём блоками</td></tr>
+                <tr><td><code>blocks.replace(...)</code></td><td>Любые</td><td>Меняет один тип блока на другой в области</td></tr>
+                <tr><td><code>player.teleport(позиция)</code></td><td>Любые</td><td>Перемещает игрока</td></tr>
+                <tr><td><code>agent.teleport(позиция, сторона)</code></td><td>Обычно <code>pos()</code></td><td>Перемещает агента и поворачивает его</td></tr>
+                <tr><td><code>player.position()</code></td><td>—</td><td>Узнать, где сейчас игрок (абсолютные числа)</td></tr>
+                <tr><td><code>positions.add(p1, p2)</code></td><td>Смешанные</td><td>Сложить две позиции (тип результата как у первой)</td></tr>
+            </table>
+        </div>
+
+        <div class="note warn">
+            <b>🤖 Агент и координаты:</b> чтобы двигать агента «вперёд» и строить, как на занятиях 2.1–2.2, по-прежнему удобны <code>agent.move()</code> и <code>agent.place()</code>. Координаты нужны, когда строишь <b>без пошагового хода</b> — сразу целую фигуру или телепорт.
+        </div>
+    </div>
+
+    <div class="interactive-box" id="matchCoords">
+        <h2>🔑 Абсолютные или относительные?</h2>
+        <p>Выбери тип координат для каждой команды:</p>
+
+        <div class="match-row">
+            <div class="match-key">world(0, 64, 0)</div>
+            <select data-correct="Абсолютные">
+                <option value="">— выбери —</option>
+                <option value="Абсолютные">Абсолютные</option>
+                <option value="Относительные">Относительные</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">pos(0, 5, 0)</div>
+            <select data-correct="Относительные">
+                <option value="">— выбери —</option>
+                <option value="Абсолютные">Абсолютные</option>
+                <option value="Относительные">Относительные</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">blocks.place(GRASS, world(10, 64, 10))</div>
+            <select data-correct="Точка в мире не зависит от игрока">
+                <option value="">— выбери —</option>
+                <option value="Точка в мире не зависит от игрока">Точка в мире не зависит от игрока</option>
+                <option value="Блок всегда рядом с игроком">Блок всегда рядом с игроком</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">blocks.place(GOLD_BLOCK, posCamera(0, 0, 4))</div>
+            <select data-correct="4 блока вперёд по взгляду">
+                <option value="">— выбери —</option>
+                <option value="4 блока вперёд по взгляду">4 блока вперёд по взгляду</option>
+                <option value="4 блока на восток">4 блока на восток</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">player.position()</div>
+            <select data-correct="Возвращает абсолютную позицию">
+                <option value="">— выбери —</option>
+                <option value="Возвращает абсолютную позицию">Возвращает абсолютную позицию</option>
+                <option value="Возвращает относительную позицию">Возвращает относительную позицию</option>
+            </select>
+        </div>
+
+        <button class="action-btn" onclick="checkMatch('matchCoords')">✅ Проверить</button>
+        <div class="match-result" id="matchResultCoords"></div>
+    </div>
+
+    <div class="interactive-box" id="coordCalcQuiz">
+        <h2>🧮 Посчитай координаты</h2>
+        <p>Игрок стоит в точке <code>(10, 64, 20)</code>. Куда попадёт блок при <code>blocks.place(STONE, pos(5, 3, -2))</code>?</p>
+        <p><small>Подсказка: к X прибавь 5, к Y — 3, к Z — −2.</small></p>
+        <div class="choice-grid">
+            <div class="choice-card" data-correct-choice="false" onclick="pickCoord(this)">(5, 61, 22)</div>
+            <div class="choice-card" data-correct-choice="true" onclick="pickCoord(this)">(15, 67, 18)</div>
+            <div class="choice-card" data-correct-choice="false" onclick="pickCoord(this)">(15, 61, 18)</div>
+        </div>
+        <button class="action-btn" onclick="checkCoordCalc()">✅ Проверить</button>
+        <div class="activity-result" id="coordCalcResult"></div>
+    </div>
+
+    <div class="ai-helper">
+        <div class="ai-head">
+            <span class="ai-icon">🤖</span>
+            <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+        </div>
+        <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+        <div class="ai-buttons">
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0%20%D0%BA%D0%BE%D0%BE%D1%80%D0%B4%D0%B8%D0%BD%D0%B0%D1%82%20%D0%B2%20Minecraft%3F%22%7D" target="_blank" class="ai-q-btn">Система координат</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%92%20%D1%87%D1%91%D0%BC%20%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D1%86%D0%B0%20%D0%BC%D0%B5%D0%B6%D0%B4%D1%83%20%D0%B0%D0%B1%D1%81%D0%BE%D0%BB%D1%8E%D1%82%D0%BD%D1%8B%D0%BC%D0%B8%20%D0%B8%20%D0%BE%D1%82%D0%BD%D0%BE%D1%81%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%BC%D0%B8%20%D0%BA%D0%BE%D0%BE%D1%80%D0%B4%D0%B8%D0%BD%D0%B0%D1%82%D0%B0%D0%BC%D0%B8%3F%22%7D" target="_blank" class="ai-q-btn">Абсолютные vs относительные</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D0%BA%D0%BE%D0%BE%D1%80%D0%B4%D0%B8%D0%BD%D0%B0%D1%82%D1%8B%20%D0%B2%20Python%20Minecraft%20Education%3F%22%7D" target="_blank" class="ai-q-btn">Координаты в Python</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C%20%D0%B1%D0%BB%D0%BE%D0%BA%20%D0%B2%20Minecraft%20%D1%81%20%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E%20%D0%BA%D0%BE%D0%BE%D1%80%D0%B4%D0%B8%D0%BD%D0%B0%D1%82%3F%22%7D" target="_blank" class="ai-q-btn">Поставить блок по координатам</a>
+        </div>
+        <div class="ai-answer">💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.</div>
+        <div class="ai-real-tip">
+            <b>💡 Хочешь спросить что-то своё?</b> Открой Алису и задай вопрос про координаты или Python в Minecraft.<br>
+            <span class="prompt-example">«Алиса, чем pos отличается от world в MakeCode Python?»</span>
+            <div class="warning">⚠️ Никогда не отправляй Алисе личные данные — вопросы обсуждай с родителями и преподавателем.</div>
+        </div>
+    </div>
+
+    <div class="task-box" id="coordsPractice">
+        <h2>🛠️ Практика: координаты в Minecraft</h2>
+        <p>Открой редактор кода (<code>C</code>), выбери Python. Выполни задания на плоском мире.</p>
+
+        <div class="progress-track">
+            <div class="progress-fill-minecraft" id="practiceProgressFill" style="width: 0%;"></div>
+        </div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено: 0 из 6</span>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 1</span>
+                Абсолютная точка
+                <input type="checkbox" id="task1" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>По команде чата <code>метка</code> поставь блок <b>светящегося камня</b> в абсолютную точку <code>world(5, 64, 5)</code>.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 2</span>
+                Над головой
+                <input type="checkbox" id="task2" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>По команде <code>шапка</code> поставь <b>золотой блок</b> на 2 блока выше игрока: <code>blocks.place(GOLD_BLOCK, pos(0, 2, 0))</code>.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 3</span>
+                Вперёд по взгляду
+                <input type="checkbox" id="task3" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>По команде <code>дорога</code> поставь 5 блоков <b>камня</b> в линию: используй цикл и <code>posCamera(0, -1, i)</code> для <code>i</code> от 1 до 5 (под ногами перед тобой).</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 4</span>
+                Маленькая площадка
+                <input type="checkbox" id="task4" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>По команде <code>площадка</code> заполни область <b>травой</b> от <code>world(0, 63, 0)</code> до <code>world(6, 63, 6)</code> через <code>blocks.fill</code> и <code>FillOperation.REPLACE</code>.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 5</span>
+                Телепорт агента
+                <input type="checkbox" id="task5" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>По команде <code>агент</code> телепортируй агента на 3 блока вверх от его позиции: <code>agent.teleport(pos(0, 3, 0), NORTH)</code>.</p>
+        </div>
+
+        <div class="task-item" style="border: 2px dashed #4f46e5; background: #f0edff;">
+            <div class="task-title">
+                <span class="badge bonus">🚀 Бонус</span>
+                Где я?
+                <input type="checkbox" id="task6" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>По команде <code>где</code> сохрани <code>player.position()</code> в переменную и выведи в чат сообщение с координатами X, Y, Z (можно через несколько <code>player.say()</code>).</p>
+        </div>
+    </div>
+
+    <div class="quiz-wrap" id="quizCoords">
+        <h2>📝 Проверь себя</h2>
+
+        <div class="quiz-question" data-name="cq1" data-correct="b">
+            <p class="quiz-q-text">1. Какая функция задаёт абсолютную точку в мире?</p>
+            <label><input type="radio" name="cq1" value="a"> pos()</label>
+            <label><input type="radio" name="cq1" value="b"> world()</label>
+            <label><input type="radio" name="cq1" value="c"> posCamera()</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="cq2" data-correct="c">
+            <p class="quiz-q-text">2. Что означает ось Y?</p>
+            <label><input type="radio" name="cq2" value="a"> Восток и запад</label>
+            <label><input type="radio" name="cq2" value="b"> Север и юг</label>
+            <label><input type="radio" name="cq2" value="c"> Высота (вверх и вниз)</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="cq3" data-correct="a">
+            <p class="quiz-q-text">3. Как поставить блок на 4 шага вперёд по направлению взгляда?</p>
+            <label><input type="radio" name="cq3" value="a"> blocks.place(..., posCamera(0, 0, 4))</label>
+            <label><input type="radio" name="cq3" value="b"> blocks.place(..., pos(4, 0, 0))</label>
+            <label><input type="radio" name="cq3" value="c"> agent.move(FORWARD, 4)</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="cq4" data-correct="b">
+            <p class="quiz-q-text">4. Команда blocks.fill нужна, чтобы…</p>
+            <label><input type="radio" name="cq4" value="a"> Телепортировать игрока</label>
+            <label><input type="radio" name="cq4" value="b"> Заполнить объём между двумя точками блоками</label>
+            <label><input type="radio" name="cq4" value="c"> Узнать ID блока</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="cq5" data-correct="a">
+            <p class="quiz-q-text">5. Относительные координаты pos(0, 0, 0) — это…</p>
+            <label><input type="radio" name="cq5" value="a"> Блок у ног игрока</label>
+            <label><input type="radio" name="cq5" value="b"> Центр мира (0, 0, 0)</label>
+            <label><input type="radio" name="cq5" value="c"> Точка на спавне сервера</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <button class="quiz-btn" onclick="checkQuiz('quizCoords')">Проверить ответы</button>
+        <div class="quiz-result"></div>
+    </div>
+
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <p>Напиши, что тебе понятнее — абсолютные или относительные координаты и почему:</p>
+        <textarea placeholder="Сегодня я понял(а)...&#10;С абсолютными координатами...&#10;С относительными..."></textarea>
+    </div>
+
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_2-3.html"><div class="lbl">← Назад</div><div class="ttl">2.3 Агент-шахтёр</div></a>
+        <a class="nav-btn next" href="les_python_3-2.html"><div class="lbl">Далее →</div><div class="ttl">3.2 Очень странные дела</div></a>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Занятие 3.1 · Координаты и Python · офлайн-курс по Minecraft Education и Python</div>
+    </div>
+</footer>
+
+<script>
+    function checkMatch(containerId) {
+        const container = document.getElementById(containerId);
+        const selects = container.querySelectorAll('select[data-correct]');
+        let correct = 0;
+        selects.forEach(sel => {
+            const correctVal = sel.getAttribute('data-correct');
+            sel.classList.remove('correct', 'incorrect');
+            if (sel.value === correctVal) {
+                sel.classList.add('correct');
+                correct++;
+            } else if (sel.value !== '') {
+                sel.classList.add('incorrect');
+            }
+        });
+        const resultDiv = container.querySelector('.match-result');
+        if (resultDiv) {
+            resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${selects.length}`;
+            resultDiv.style.display = 'block';
+        }
+    }
+
+    let coordCalcPick = null;
+    function pickCoord(el) {
+        document.querySelectorAll('#coordCalcQuiz .choice-card').forEach(c => {
+            c.classList.remove('selected', 'correct', 'incorrect');
+        });
+        el.classList.add('selected');
+        coordCalcPick = el;
+    }
+
+    function checkCoordCalc() {
+        const result = document.getElementById('coordCalcResult');
+        if (!coordCalcPick) {
+            result.innerHTML = '⚠️ Выбери один вариант.';
+            result.style.display = 'block';
+            return;
+        }
+        const ok = coordCalcPick.getAttribute('data-correct-choice') === 'true';
+        document.querySelectorAll('#coordCalcQuiz .choice-card').forEach(c => {
+            if (c.getAttribute('data-correct-choice') === 'true') c.classList.add('correct');
+            else if (c === coordCalcPick) c.classList.add('incorrect');
+        });
+        result.innerHTML = ok ? '✅ Верно! (15, 67, 18)' : '❌ Неверно. Сложи: 10+5, 64+3, 20+(−2).';
+        result.style.display = 'block';
+    }
+
+    function checkQuiz(containerId) {
+        const container = document.getElementById(containerId);
+        const questions = container.querySelectorAll('.quiz-question');
+        let total = 0, correct = 0;
+        questions.forEach(q => {
+            const correctVal = q.getAttribute('data-correct');
+            const selected = q.querySelector('input[type="radio"]:checked');
+            const feedback = q.querySelector('.q-feedback');
+            if (selected) {
+                total++;
+                if (selected.value === correctVal) {
+                    correct++;
+                    feedback.innerHTML = '✅ Верно!';
+                    feedback.style.color = '#2e7d32';
+                } else {
+                    feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+                    feedback.style.color = '#c62828';
+                }
+            } else {
+                feedback.innerHTML = '⚠️ Выбери вариант.';
+                feedback.style.color = '#f57c00';
+            }
+        });
+        const resultDiv = container.querySelector('.quiz-result');
+        if (resultDiv) {
+            resultDiv.innerHTML = total === 0 ? '⚠️ Ответь на все вопросы.' : `✅ Правильных ответов: ${correct} из ${questions.length}`;
+            resultDiv.style.display = 'block';
+        }
+    }
+
+    function updatePracticeProgress() {
+        const checkboxes = document.querySelectorAll('#coordsPractice input[type="checkbox"]');
+        let checked = 0;
+        checkboxes.forEach(cb => { if (cb.checked) checked++; });
+        const fill = document.getElementById('practiceProgressFill');
+        const label = document.getElementById('practiceProgressLabel');
+        if (fill) fill.style.width = (checked / checkboxes.length * 100) + '%';
+        if (label) label.textContent = `Выполнено: ${checked} из ${checkboxes.length}`;
+    }
+
+    document.querySelectorAll('#matchCoords select[data-correct]').forEach(sel => {
+        sel.addEventListener('change', function() {
+            const all = document.querySelectorAll('#matchCoords select[data-correct]');
+            let filled = true;
+            all.forEach(s => { if (s.value === '') filled = false; });
+            if (filled) checkMatch('matchCoords');
+        });
+    });
+
+    updatePracticeProgress();
+</script>
+</body>
+</html>

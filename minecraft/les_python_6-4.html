@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6.4. Итоговый проект: готовимся к презентации — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: linear-gradient(135deg, #eef2ff, #ecfdf5); border-bottom: 4px solid #4f46e5; }
+        .site-footer { background: #312e81; border-top: 4px solid #059669; }
+        .site-footer, .site-footer .foot-brand { color: #e2e8f0; }
+        .brand-name { color: #312e81; }
+        .module-pill { background: #4f46e5; color: #fff; }
+        .hex-badge { background: #059669; color: #fff; }
+        .slides-card { background: #fff; border: 2px solid #4285f4; border-radius: 14px; padding: 20px; margin: 16px 0; }
+        .slides-card h3 { color: #1a73e8; margin-top: 0; font-family: 'Fredoka', sans-serif; }
+        .slide-outline { list-style: none; padding: 0; margin: 0; }
+        .slide-outline li { display: flex; gap: 14px; align-items: flex-start; padding: 14px; margin-bottom: 8px; background: #f8faff; border-radius: 10px; border-left: 4px solid #4f46e5; }
+        .slide-outline .num { background: #4f46e5; color: #fff; min-width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .note { background: #eef2ff; border-left: 6px solid #4f46e5; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.warn { background: #fef3c7; border-left-color: #f59e0b; }
+        .task-box { border-left: 4px solid #059669; }
+        .task-box .task-item { background: #f5f7ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .task-box .task-item .task-title { font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .task-box .task-item .task-title .badge { background: #059669; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 99px; }
+        .progress-track { background: #d1fae5; border-radius: 99px; height: 20px; overflow: hidden; margin: 12px 0 6px; }
+        .progress-fill-minecraft { background: linear-gradient(90deg, #4285f4, #059669); height: 100%; width: 0%; transition: width 0.3s; border-radius: 99px; }
+        .progress-label { font-weight: 700; color: #312e81; margin-bottom: 8px; display: block; }
+        .ext-link { display: inline-flex; align-items: center; gap: 8px; background: #4285f4; color: #fff; padding: 12px 20px; border-radius: 10px; font-weight: 700; text-decoration: none; margin: 8px 0; }
+        .ext-link:hover { background: #1a73e8; }
+        .ai-helper { background: #1e1e2e; color: #e4f5da; border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .ai-q-btn { color: #e4f5da; padding: 10px 18px; border-radius: 99px; background: rgba(255,255,255,0.08); text-decoration: none; font-weight: 600; margin-right: 8px; display: inline-block; margin-top: 8px; }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div><div class="brand-name">РОБОВИТА</div><div class="brand-tag">учимся программировать роботов и игры</div></div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 6.4 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">6.4</div>
+            <div>
+                <div class="module-pill">Итоговый проект · часть 2</div>
+                <h1>Готовимся к презентации</h1>
+                <p class="subtitle">Доработка, тест и Google Slides — покажи проект миру</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Доработать проект за <b>20–30 минут</b></li>
+            <li>Протестировать сценарий и исправить баги</li>
+            <li>Собрать презентацию в <b>Google Slides</b></li>
+            <li>Подготовиться к защите на занятии 6.5</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📋 План занятия (90 мин)</h2>
+        <table class="timetable">
+            <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>Доработка</td><td>20–30 мин</td><td>Баги, баланс, сообщения в чат</td></tr>
+            <tr><td>Тестирование</td><td>20 мин</td><td>Друг проходит игру / препод смотрит</td></tr>
+            <tr><td>Google Slides</td><td>35 мин</td><td>Слайды по структуре ниже</td></tr>
+            <tr><td>Репетиция</td><td>5–10 мин</td><td>1 минута «питча» вслух</td></tr>
+        </table>
+    </div>
+
+    <div class="note warn">
+        <b>Тестирование:</b> попроси одноклассника пройти игру «с нуля» — не подсказывай. Запиши, где человек застрял — это улучшить в первые 20 минут.
+    </div>
+
+    <div class="slides-card">
+        <h3>📊 Google Slides — структура</h3>
+        <a class="ext-link" href="https://slides.google.com/" target="_blank" rel="noopener">Открыть Google Slides</a>
+        <p style="font-size:14px;color:#4a6a3a;">Войди через аккаунт, который дал преподаватель (школа / центр).</p>
+        <ul class="slide-outline">
+            <li><span class="num">1</span><div><b>Титульный лист</b> — название игры, твоё имя, «Курс Python + Minecraft · РОБОВИТА», дата.</div></li>
+            <li><span class="num">2</span><div><b>Идея</b> — о чём игра, для кого, как выиграть / что делает игрок (2–4 пункта).</div></li>
+            <li><span class="num">3</span><div><b>Инструменты</b> — что использовал: <i>функции, циклы, переменные, координаты</i>, при необходимости — агент, списки, ИИ, Pixel Art. Не просто список слов — по одному предложению «зачем».</div></li>
+            <li><span class="num">4</span><div><b>Скриншот кода</b> — <u>обязательно</u> фрагмент Python из Minecraft (главная функция или интересный цикл). Читаемый шрифт, можно обвести важное.</div></li>
+            <li><span class="num">5</span><div><b>Скриншот геймплея</b> — мир, постройка, момент игры.</div></li>
+            <li><span class="num">6+</span><div><b>Дополнительно</b> — второй скрин кода, «было / стало», планы на будущее (по желанию).</div></li>
+        </ul>
+    </div>
+
+    <div class="ai-helper">
+        <p style="margin:0 0 8px;font-family:'Fredoka',sans-serif;font-size:20px;">🤖 ИИ для текста слайдов</p>
+        <p style="color:#b8d9a8;font-size:14px;">Можно попросить DeepSeek или ChatGPT: «Помоги написать 3 буллета для слайда „Идея игры“…» — без личных данных. Текст <b>прочитай и отредактируй</b> своими словами.</p>
+        <a href="https://chat.deepseek.com/" target="_blank" rel="noopener" class="ai-q-btn">DeepSeek</a>
+        <a href="https://chatgpt.com/" target="_blank" rel="noopener" class="ai-q-btn">ChatGPT</a>
+    </div>
+
+    <div class="task-box" id="presPractice">
+        <h2>🛠️ Чеклист занятия</h2>
+        <div class="progress-track"><div class="progress-fill-minecraft" id="practiceProgressFill" style="width:0%"></div></div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 6</span>
+        <div class="task-item"><div class="task-title"><span class="badge">1</span> Доработка 20–30 мин <input type="checkbox" onchange="updateProgress()" style="margin-left:auto;width:20px;height:20px;accent-color:#059669"></div><p>Минимум одно исправление по тестам.</p></div>
+        <div class="task-item"><div class="task-title"><span class="badge">2</span> Чужой тест <input type="checkbox" onchange="updateProgress()" style="margin-left:auto;width:20px;height:20px;accent-color:#059669"></div><p>Кто-то другой прошёл игру.</p></div>
+        <div class="task-item"><div class="task-title"><span class="badge">3</span> Презентация создана <input type="checkbox" onchange="updateProgress()" style="margin-left:auto;width:20px;height:20px;accent-color:#059669"></div><p>Google Slides, доступ преподавателю.</p></div>
+        <div class="task-item"><div class="task-title"><span class="badge">4</span> Слайд с кодом <input type="checkbox" onchange="updateProgress()" style="margin-left:auto;width:20px;height:20px;accent-color:#059669"></div><p>Обязательный скриншот Python.</p></div>
+        <div class="task-item"><div class="task-title"><span class="badge">5</span> Слайд геймплея <input type="checkbox" onchange="updateProgress()" style="margin-left:auto;width:20px;height:20px;accent-color:#059669"></div><p>Скрин из Minecraft.</p></div>
+        <div class="task-item"><div class="task-title"><span class="badge">6</span> Репетиция <input type="checkbox" onchange="updateProgress()" style="margin-left:auto;width:20px;height:20px;accent-color:#059669"></div><p>30–60 секунд рассказа вслух.</p></div>
+    </div>
+
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_6-3.html"><div class="lbl">← Назад</div><div class="ttl">6.3 Идея и код</div></a>
+        <a class="nav-btn next" href="les_python_6-5.html"><div class="lbl">Далее →</div><div class="ttl">6.5 Защита проектов</div></a>
+    </div>
+</main>
+
+<footer class="site-footer"><div class="wrap"><div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt=""> Учебный центр «РОБОВИТА»</div><div>Занятие 6.4 · Презентация</div></div></footer>
+
+<script>
+    function updateProgress() {
+        const cbs = document.querySelectorAll('#presPractice input[type=checkbox]');
+        let n = 0; cbs.forEach(c => { if (c.checked) n++; });
+        document.getElementById('practiceProgressFill').style.width = (n/cbs.length*100)+'%';
+        document.getElementById('practiceProgressLabel').textContent = `Выполнено шагов: ${n} из ${cbs.length}`;
+    }
+    updateProgress();
+</script>
+</body>
+</html>

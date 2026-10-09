@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4.1. Мини-проект: Исследователь мира — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #d5def1; border-bottom: 3px solid #06b6d4; }
+        .site-footer { background: #0f172a; border-top: 3px solid #06b6d4; }
+        .site-footer, .site-footer .foot-brand { color: #e2e8f0; }
+        .brand-name { color: #312e81; }
+        .lesson-page .hero h1 { color: #1e1b4b; }
+        .module-pill { background: #0891b2; color: #fff; }
+        .hex-badge { background: linear-gradient(135deg, #06b6d4, #6366f1); color: #fff; }
+        .data-table th { background: #4f46e5; color: #fff; }
+        .match-btn, .quiz-btn, .action-btn { background: #4f46e5; color: #fff; border: none; cursor: pointer; padding: 10px 20px; border-radius: 8px; font-weight: 700; }
+        .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4338ca; }
+        .action-btn.danger { background: #0e7490; }
+        .action-btn.danger:hover { background: #155e75; }
+        .action-btn.outline { background: transparent; border: 2px solid #4f46e5; color: #312e81; }
+        .task-box { border-left: 4px solid #06b6d4; }
+        .code-block { border: 1px solid #c7d2fe; background: #f5f7ff; }
+        .interactive-box { background: #f8faff; border: 1px solid #c7d2fe; }
+        .code-block .code-head { background: #1e1e2e; color: #c7d2fe; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .code-block .code-head .dots { display: flex; gap: 6px; }
+        .code-block .code-head .dots .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .code-block .code-head .dots .dot.r { background: #d93b3b; }
+        .code-block .code-head .dots .dot.y { background: #ffb238; }
+        .code-block .code-head .dots .dot.g { background: #06b6d4; }
+        .code-block .code-head .fname { font-family: 'JetBrains Mono', monospace; font-size: 13px; opacity: 0.8; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; margin: 0; padding: 16px 20px; overflow-x: auto; font-size: 14px; line-height: 1.8; }
+        .tok-c { color: #7fcf9e; font-style: italic; }
+        .tok-k { color: #ffb238; font-weight: 700; }
+        .tok-s { color: #8fd7ff; }
+        .tok-f { color: #ffd08a; }
+        .tok-n { color: #ff9aae; }
+        .tok-t { color: #c4b5fd; }
+        .note { background: #ecfeff; border-left: 6px solid #06b6d4; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.warn { background: #fef3c7; border-left-color: #f59e0b; }
+        .note.indigo { background: #eef2ff; border-left-color: #4f46e5; }
+        .task-box .task-item {
+            background: #f5f7ff; border: 1px solid #c7d2fe; border-radius: 12px;
+            padding: 16px; margin-bottom: 12px;
+        }
+        .task-box .task-item .task-title { font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .task-box .task-item .task-title .badge {
+            background: #4f46e5; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 99px;
+        }
+        .task-box .task-item .task-title .badge.bonus { background: #06b6d4; color: #0f172a; }
+        .interactive-box .match-row {
+            display: flex; gap: 16px; align-items: center; margin: 12px 0; flex-wrap: wrap;
+        }
+        .interactive-box .match-row .match-key {
+            background: #4f46e5; color: #fff; padding: 8px 16px; border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; min-width: 160px; text-align: center;
+        }
+        .interactive-box .match-row select {
+            flex: 1; min-width: 150px; padding: 8px 12px; border-radius: 8px;
+            border: 2px solid #c7d2fe; font-family: 'Nunito', sans-serif; background: #fff;
+        }
+        .interactive-box .match-row select.correct { border-color: #4f46e5; background: #eef2ff; }
+        .interactive-box .match-row select.incorrect { border-color: #d93b3b; background: #fde8e8; }
+        .interactive-box .match-result { margin-top: 12px; font-weight: 700; }
+        .progress-track { background: #e0f2fe; border-radius: 99px; height: 20px; overflow: hidden; margin: 12px 0 6px; }
+        .progress-fill-minecraft {
+            background: linear-gradient(90deg, #06b6d4, #6366f1);
+            height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 99px;
+        }
+        .progress-label { font-size: 15px; font-weight: 700; color: #312e81; display: block; margin-bottom: 8px; }
+        .commands-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 16px 0;
+        }
+        .commands-grid .cmd-card {
+            background: #f5f7ff; border: 2px solid #c7d2fe; border-radius: 12px; padding: 16px;
+        }
+        .commands-grid .cmd-card .cmd-title { font-weight: 700; color: #312e81; margin-bottom: 8px; }
+        .commands-grid .cmd-card .cmd-code {
+            background: #1e1e2e; color: #e4f5da; padding: 10px 14px; border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 12px; overflow-x: auto;
+        }
+        .commands-grid .cmd-card .cmd-desc { font-size: 14px; color: #4a6a3a; margin-top: 6px; }
+        .story-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 45%, #164e63 100%);
+            color: #e0f2fe; border-radius: 16px; padding: 24px 28px; margin: 16px 0;
+            border: 1px solid rgba(6, 182, 212, 0.35);
+        }
+        .story-banner h3 { margin: 0 0 10px; color: #67e8f9; font-family: 'Fredoka', sans-serif; }
+        .type-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 16px 0;
+        }
+        .type-grid .type-card {
+            background: #fff; border: 2px solid #a5f3fc; border-radius: 12px; padding: 14px; text-align: center;
+        }
+        .type-grid .type-card .type-name {
+            font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #0891b2; font-size: 18px;
+        }
+        .type-grid .type-card .type-example { font-size: 14px; color: #312e81; margin-top: 6px; }
+        .type-grid .type-card .type-desc { font-size: 13px; color: #4a6a3a; margin-top: 4px; }
+        .ai-helper {
+            background: #1e1e2e; color: #e4f5da; border-radius: 16px; padding: 28px 32px; margin: 20px 0;
+            position: relative; overflow: hidden;
+        }
+        .ai-helper::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 100% 0%, rgba(6, 182, 212, 0.18), transparent 60%);
+            pointer-events: none;
+        }
+        .ai-head { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; position: relative; }
+        .ai-head .ai-icon { font-size: 36px; line-height: 1; }
+        .ai-head .t { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 22px; }
+        .ai-head .t span { color: #67e8f9; }
+        .ai-sub { color: #b8d9a8; font-size: 16px; margin-bottom: 16px; position: relative; }
+        .ai-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; position: relative; }
+        .ai-q-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e4f5da; padding: 10px 18px; border-radius: 99px; font-size: 14px; font-weight: 600;
+            cursor: pointer; font-family: 'Nunito', sans-serif; text-decoration: none; transition: all 0.2s;
+        }
+        .ai-q-btn:hover {
+            background: rgba(6, 182, 212, 0.25); border-color: rgba(6, 182, 212, 0.45); transform: translateY(-2px);
+        }
+        .ai-answer {
+            background: rgba(255, 255, 255, 0.04); border-left: 4px solid #06b6d4;
+            border-radius: 0 12px 12px 0; padding: 16px 20px; font-size: 15px; min-height: 44px;
+            position: relative; color: #e4f5da;
+        }
+        .ai-real-tip {
+            margin-top: 16px; padding-top: 16px; border-top: 1px dashed rgba(255, 255, 255, 0.12);
+            font-size: 14px; color: #b8d9a8; position: relative;
+        }
+        .prompt-example {
+            display: block; background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 10px 16px;
+            margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #ffd08a;
+        }
+        .ai-real-tip .warning { margin-top: 8px; font-size: 13px; color: #b8d9a8; opacity: 0.7; }
+        .solution-gate {
+            margin-top: 24px; padding: 20px; background: #ecfeff; border: 2px dashed #0891b2;
+            border-radius: 12px; text-align: center;
+        }
+        .solution-gate p { margin: 0 0 12px; color: #312e81; font-size: 15px; }
+        #solutionReveal { display: none; margin-top: 16px; text-align: left; }
+        #solutionReveal.unlocked { display: block; }
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+            z-index: 9999; align-items: center; justify-content: center; padding: 16px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: #fff; border-radius: 16px; padding: 28px; max-width: 400px; width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); border-top: 4px solid #06b6d4;
+        }
+        .modal-box h3 { margin: 0 0 8px; color: #312e81; }
+        .modal-box p { font-size: 14px; color: #4a6a3a; margin: 0 0 16px; }
+        .modal-box input {
+            width: 100%; padding: 12px; border: 2px solid #c7d2fe; border-radius: 8px;
+            font-size: 18px; letter-spacing: 4px; text-align: center; font-family: 'JetBrains Mono', monospace;
+            box-sizing: border-box;
+        }
+        .modal-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+        .modal-actions .action-btn { flex: 1; min-width: 120px; }
+        .modal-error { color: #c62828; font-weight: 700; font-size: 14px; min-height: 20px; margin-top: 8px; }
+        .order-step {
+            display: flex; align-items: center; gap: 12px; margin: 8px 0; flex-wrap: wrap;
+        }
+        .order-step .step-num {
+            background: #312e81; color: #fff; width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
+        }
+        .order-step select { flex: 1; min-width: 200px; padding: 8px; border-radius: 8px; border: 2px solid #c7d2fe; }
+        .order-step select.correct { border-color: #2e7d32; background: #e8f5e9; }
+        .order-step select.incorrect { border-color: #c62828; background: #ffebee; }
+        .explorer-viz {
+            display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
+            margin: 16px 0; font-size: 28px;
+        }
+        @media (max-width: 768px) {
+            .commands-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div>
+                    <div class="brand-name">РОБОВИТА</div>
+                    <div class="brand-tag">учимся программировать роботов и игры</div>
+                </div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 4.1 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">4.1</div>
+            <div>
+                <div class="module-pill">Раздел 4 · Искусственный интеллект</div>
+                <h1>Мини-проект: Исследователь мира</h1>
+                <p class="subtitle">Агент идёт вперёд, «запоминает» блоки под ногами — как маленький ИИ-разведчик</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Понять, что такое <b>искусственный интеллект</b> в простых примерах из жизни и игры</li>
+            <li>Закрепить <b>типы данных</b> и <b>аннотации</b> в функциях (<code>str</code>, <code>number</code>, <code>bool</code>)</li>
+            <li>Собрать цикл <code>while</code> с условием «пока впереди нет стены»</li>
+            <li>Использовать <code>agent.detect</code>, <code>agent.inspect_block</code>, <code>blocks.name_of_block</code></li>
+            <li>Написать мини-проект «исследователь» и улучшить отчёт в чате</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📋 План занятия</h2>
+        <table class="timetable">
+            <tr><th>Этап</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>История про ИИ</td><td>10 мин</td><td>Зачем нужен «умный» помощник</td></tr>
+            <tr><td>Типы данных</td><td>15 мин</td><td>Строка, число, логика + аннотации в <code>def</code></td></tr>
+            <tr><td>Алгоритм исследователя</td><td>15 мин</td><td>Цикл, детект преграды, запись блоков</td></tr>
+            <tr><td>Интерактив</td><td>15 мин</td><td>Типы и порядок шагов</td></tr>
+            <tr><td>Мини-проект</td><td>30 мин</td><td>Пишем программу по подсказкам</td></tr>
+            <tr><td>Итоги</td><td>5 мин</td><td>Викторина и рефлексия</td></tr>
+            <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+        </table>
+    </div>
+
+    <div class="story-banner">
+        <h3>🧠 Что такое искусственный интеллект?</h3>
+        <p><b>Искусственный интеллект (ИИ)</b> — это когда компьютер или программа выполняет задачи, для которых обычно нужен человеческий «ум»: узнавать картинки, понимать речь, подсказывать маршрут, отвечать на вопросы.</p>
+        <p>ИИ не «магия» и не робот с чувствами — это <b>алгоритмы</b>: чёткие правила и данные. Чем больше примеров видит система, тем лучше она справляется. Голосовые помощники, рекомендации в видео и умная камера на телефоне — всё это разные формы ИИ.</p>
+        <p>На этом курсе мы сначала учимся <b>думать как программисты</b>: собирать логику из шагов. Агент в Minecraft, который сам идёт и <b>записывает</b>, что видит под ногами, — маленькая модель «исследователя»: он повторяет одно и то же действие, пока не встретит преграду, и в конце выдаёт <b>отчёт</b>. Позже мы будем пользоваться настоящими ИИ-помощниками (например, Алисой), чтобы быстрее разбираться в коде — но основа всегда в твоих решениях и типах данных.</p>
+        <div class="explorer-viz" aria-hidden="true">🤖 ➡️ 🟫 🟩 🟫 🧱 🛑</div>
+    </div>
+
+    <div class="note indigo">
+        <b>🔗 Связь с прошлыми занятиями:</b> переменные и типы мы уже видели в <b>1.2</b>, цикл <code>while</code> и условия — в <b>1.3</b>, движение агента — в разделе 2. Здесь всё собирается в один проект.
+    </div>
+
+    <div class="card">
+        <h2><span class="num">1</span> Типы данных и зачем их указывать</h2>
+        <p>В Python (и в Minecraft Education) в одной переменной может лежать <b>текст</b>, <b>число</b> или <b>да/нет</b>. От типа зависит, что можно делать: числа складывают, строки — склеивают, логические значения — проверяют в <code>if</code> и <code>while</code>.</p>
+
+        <div class="type-grid">
+            <div class="type-card">
+                <div class="type-name">str</div>
+                <div class="type-example">"трава", "Отчёт:"</div>
+                <div class="type-desc">Строка — текст в кавычках</div>
+            </div>
+            <div class="type-card">
+                <div class="type-name">number</div>
+                <div class="type-example">0, 5, amount</div>
+                <div class="type-desc">Число — счётчики шагов, ID</div>
+            </div>
+            <div class="type-card">
+                <div class="type-name">bool</div>
+                <div class="type-example">True, False</div>
+                <div class="type-desc">Игра идёт? <code>game = True</code></div>
+            </div>
+        </div>
+
+        <p>В нашем проекте в функции отчёта мы явно пишем, <b>какие типы ждём</b> — это называется <b>аннотация типов</b> (подсказка для тебя и для редактора):</p>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">types_in_function.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-k">def</span> <span class="tok-f">show_report</span>(trail: <span class="tok-t">str</span>, steps: <span class="tok-t">number</span>):
+    <span class="tok-c"># trail — длинная строка с названиями блоков</span>
+    <span class="tok-c"># steps — сколько шагов прошёл агент</span>
+    player.say(<span class="tok-s">"Шагов: "</span> + str(steps))</code></pre>
+        </div>
+
+        <div class="note warn">
+            <b>💡 Имя функции:</b> в учебном примере иногда пишут <code>print</code>, но в Python это встроенная команда. Лучше назвать функцию <code>show_report</code> или <code>finish_explore</code>, чтобы не путаться.
+        </div>
+
+        <p><b>Зачем указывать типы?</b></p>
+        <ul>
+            <li>Ты сразу видишь: сюда придёт <b>текст</b>, сюда — <b>число</b>.</li>
+            <li>Меньше ошибок вроде <code>"5" + 3</code> (строка + число без <code>str()</code>).</li>
+            <li>В больших проектах так проще читать чужой код — как подписи на коробках.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">2</span> Алгоритм «Агент-исследователь»</h2>
+        <p>Задача: программа работает, пока <b>перед агентом нет блока</b>. На каждом шаге агент смотрит, <b>какой блок под ним</b>, добавляет название в строку <code>result</code>, делает шаг вперёд и увеличивает счётчик. Когда впереди стена — цикл останавливается и вызывается функция с отчётом.</p>
+
+        <div class="commands-grid">
+            <div class="cmd-card">
+                <div class="cmd-title">🧱 agent.detect</div>
+                <div class="cmd-code">agent.detect(AgentDetection.BLOCK, FORWARD)</div>
+                <div class="cmd-desc">Возвращает <code>True</code>, если впереди есть блок (преграда).</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">👇 agent.inspect_block</div>
+                <div class="cmd-code">block = agent.inspect_block(DOWN)</div>
+                <div class="cmd-desc">Число-ID блока под агентом. <code>0</code> — «блока нет».</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">🏷️ blocks.name_of_block</div>
+                <div class="cmd-code">blocks.name_of_block(block)</div>
+                <div class="cmd-desc">Превращает ID в читаемое имя для отчёта (строка).</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title">🚶 agent.move</div>
+                <div class="cmd-code">agent.move(FORWARD, 1)</div>
+                <div class="cmd-desc">Один шаг вперёд после записи блока.</div>
+            </div>
+        </div>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">explorer_base.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-k">def</span> <span class="tok-f">show_report</span>(a: <span class="tok-t">str</span>, b: <span class="tok-t">number</span>):
+    player.say(<span class="tok-s">"Результат:"</span>)
+    player.say(a)
+    player.say(<span class="tok-s">"Блоков пройдено: "</span> + str(b))
+    player.say(<span class="tok-s">"Закончили :)"</span>)
+
+amount = <span class="tok-n">0</span>
+result = <span class="tok-s">""</span>
+block = AIR
+game = <span class="tok-k">True</span>
+
+<span class="tok-k">while</span> game:
+    <span class="tok-k">if</span> agent.detect(AgentDetection.BLOCK, FORWARD):
+        game = <span class="tok-k">False</span>
+        show_report(result, amount)
+    block = agent.inspect_block(DOWN)
+    <span class="tok-k">if</span> block == <span class="tok-n">0</span>:
+        player.say(<span class="tok-s">"Блока нету :("</span>)
+    <span class="tok-k">else</span>:
+        result = <span class="tok-s">""</span> + result + blocks.name_of_block(block) + <span class="tok-s">", "</span>
+    agent.move(FORWARD, <span class="tok-n">1</span>)
+    amount += <span class="tok-n">1</span></code></pre>
+        </div>
+
+        <div class="note">
+            <b>🗺️ Полигон для теста:</b> построй ровную дорожку из разных блоков и поставь в конце <b>стену</b> на уровне глаз агента. Вызови агента, поверни его лицом к дорожке и запусти код (<code>C</code> → Run).
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="num">3</span> Как сделать программу «красочнее»</h2>
+        <p>Базовый код уже работает — улучшения не меняют идею, а делают игру понятнее и интереснее:</p>
+        <ul>
+            <li><b>Старт и финиш</b> — короткие сообщения от <code>player.say</code> и <code>agent.say</code> («миссия началась», «финиш»).</li>
+            <li><b>Красивый отчёт</b> — разделители, подписи «Маршрут», «Шагов» вместо одной строки.</li>
+            <li><b>Прогресс</b> — каждые 5 шагов писать в чат «уже N шагов».</li>
+            <li><b>Голос агента</b> — иногда озвучивать имя блока через <code>agent.say</code>, не на каждом шаге (иначе спам).</li>
+            <li><b>Разделители в строке</b> — вместо запятых использовать <code> → </code> или <code> · </code>, чтобы список читался.</li>
+        </ul>
+        <p>Готовый «улучшенный» вариант — за паролем преподавателя в конце практики. Сначала собери базовую версию сам!</p>
+    </div>
+
+    <div class="interactive-box" id="matchTypes">
+        <h2>🔑 Сопоставь переменную и тип</h2>
+        <div class="match-row">
+            <div class="match-key">result = ""</div>
+            <select data-correct="str">
+                <option value="">— выбери —</option>
+                <option value="str">str (строка)</option>
+                <option value="number">number (число)</option>
+                <option value="bool">bool (да/нет)</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">amount = 0</div>
+            <select data-correct="number">
+                <option value="">— выбери —</option>
+                <option value="str">str (строка)</option>
+                <option value="number">number (число)</option>
+                <option value="bool">bool (да/нет)</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">game = True</div>
+            <select data-correct="bool">
+                <option value="">— выбери —</option>
+                <option value="str">str (строка)</option>
+                <option value="number">number (число)</option>
+                <option value="bool">bool (да/нет)</option>
+            </select>
+        </div>
+        <div class="match-row">
+            <div class="match-key">b: number в show_report</div>
+            <select data-correct="Число шагов">
+                <option value="">— выбери —</option>
+                <option value="Число шагов">Число шагов</option>
+                <option value="Текст отчёта">Текст отчёта</option>
+                <option value="Есть ли стена">Есть ли стена</option>
+            </select>
+        </div>
+        <button class="action-btn" onclick="checkMatch('matchTypes')">✅ Проверить</button>
+        <div class="match-result"></div>
+    </div>
+
+    <div class="interactive-box" id="orderExplore">
+        <h2>🧩 Расставь шаги одной итерации цикла</h2>
+        <p>Один «круг» внутри <code>while game</code> (пока ещё не финиш):</p>
+        <div class="order-step">
+            <span class="step-num">?</span>
+            <span style="flex:1;">Проверить: если впереди блок — выключить game и показать отчёт</span>
+            <select data-order="1" data-step="detect">
+                <option value="">№</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+        </div>
+        <div class="order-step">
+            <span class="step-num">?</span>
+            <span style="flex:1;">Узнать блок под агентом (DOWN)</span>
+            <select data-order="2" data-step="inspect">
+                <option value="">№</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+        </div>
+        <div class="order-step">
+            <span class="step-num">?</span>
+            <span style="flex:1;">Добавить имя блока в result или сообщить, что блока нет</span>
+            <select data-order="3" data-step="record">
+                <option value="">№</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+        </div>
+        <div class="order-step">
+            <span class="step-num">?</span>
+            <span style="flex:1;">agent.move(FORWARD, 1)</span>
+            <select data-order="4" data-step="move">
+                <option value="">№</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+        </div>
+        <div class="order-step">
+            <span class="step-num">?</span>
+            <span style="flex:1;">amount += 1</span>
+            <select data-order="5" data-step="inc">
+                <option value="">№</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+        </div>
+        <button class="action-btn" onclick="checkOrderExplore()">✅ Проверить порядок</button>
+        <div class="match-result" id="orderExploreResult"></div>
+    </div>
+
+    <div class="ai-helper">
+        <div class="ai-head">
+            <span class="ai-icon">🤖</span>
+            <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+        </div>
+        <p class="ai-sub">ИИ в жизни и в программировании — можно спросить простыми словами!</p>
+        <div class="ai-buttons">
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%A7%D1%82%D0%BE%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B5%20%D0%B8%D1%81%D0%BA%D1%83%D1%81%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9%20%D0%B8%D0%BD%D1%82%D0%B5%D0%BB%D0%BB%D0%B5%D0%BA%D1%82%20%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%8B%D0%BC%D0%B8%20%D1%81%D0%BB%D0%BE%D0%B2%D0%B0%D0%BC%D0%B8%3F%22%7D" target="_blank" class="ai-q-btn">Что такое ИИ?</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%97%D0%B0%D1%87%D0%B5%D0%BC%20%D0%BD%D1%83%D0%B6%D0%BD%D1%8B%20%D1%82%D0%B8%D0%BF%D1%8B%20%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Зачем типы данных</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82%20%D1%86%D0%B8%D0%BA%D0%BB%20while%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Цикл while</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BE%D0%B1%D1%8A%D0%B5%D0%B4%D0%B8%D0%BD%D0%B8%D1%82%D1%8C%20%D1%81%D1%82%D1%80%D0%BE%D0%BA%D1%83%20%D0%B8%20%D1%87%D0%B8%D1%81%D0%BB%D0%BE%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">str() и числа</a>
+        </div>
+        <div class="ai-answer">
+            💬 Нажми на вопрос — откроется Алиса. Сравни её ответ с тем, что мы делаем с агентом-исследователем: и там, и там важны чёткие правила и данные.
+        </div>
+        <div class="ai-real-tip">
+            <b>💡 Свой вопрос:</b> спроси, чем «умный» помощник отличается от нашей программы с <code>while</code>.<br>
+            <span class="prompt-example">«Алиса, чем нейросеть отличается от обычной программы с if и while?»</span>
+            <div class="warning">⚠️ Не отправляй личные данные и не вставляй в чат пароли — только учебные вопросы с преподавателем.</div>
+        </div>
+    </div>
+
+    <div class="task-box" id="projectExplorer">
+        <h2>🛠️ Мини-проект: Исследователь мира</h2>
+        <p>Открой Python в Minecraft (<code>C</code>). Собери программу по шагам.</p>
+
+        <div class="progress-track">
+            <div class="progress-fill-minecraft" id="practiceProgressFill" style="width: 0%;"></div>
+        </div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 7</span>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 1</span>
+                Функция отчёта с типами
+                <input type="checkbox" id="task1" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Создай <code>def show_report(a: str, b: number):</code> (или свои имена параметров с теми же типами). Внутри — несколько <code>player.say</code>: заголовок, строка <code>a</code>, число шагов через <code>str(b)</code>.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 2</span>
+                Переменные старта
+                <input type="checkbox" id="task2" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p><code>amount = 0</code>, <code>result = ""</code>, <code>game = True</code>. Объясни соседу, какой тип у каждой переменной.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 3</span>
+                Цикл while
+                <input type="checkbox" id="task3" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p><code>while game:</code> — тело цикла выполняется, пока <code>game</code> равно <code>True</code>.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 4</span>
+                Стена впереди
+                <input type="checkbox" id="task4" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p><code>if agent.detect(AgentDetection.BLOCK, FORWARD):</code> → <code>game = False</code> и вызов <code>show_report(result, amount)</code>.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 5</span>
+                Запись блока
+                <input type="checkbox" id="task5" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p><code>block = agent.inspect_block(DOWN)</code>. Если не 0 — добавь <code>blocks.name_of_block(block)</code> в <code>result</code> (склеивание строк).</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Шаг 6</span>
+                Шаг и счётчик
+                <input type="checkbox" id="task6" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p><code>agent.move(FORWARD, 1)</code> и <code>amount += 1</code>. Протестируй на дорожке со стеной в конце.</p>
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge bonus">Шаг 7</span>
+                «Красочная» версия
+                <input type="checkbox" id="task7" onchange="updateProjectProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Добавь стартовые сообщения, красивый отчёт или прогресс каждые N шагов. Сверься с подсказками в блоке «Как сделать программу красочнее».</p>
+        </div>
+
+        <div class="solution-gate">
+            <p><b>🔐 Готовое решение (улучшенная версия)</b> — если застрял или преподаватель разрешил.</p>
+            <button type="button" class="action-btn danger" onclick="openSolutionModal()">Показать решение</button>
+            <div id="solutionReveal">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">world_explorer_solution.py</span>
+                    </div>
+                    <pre class="code" id="solutionCodePre"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="quiz-wrap" id="quizExplorer">
+        <h2>📝 Проверь себя</h2>
+        <div class="quiz-question" data-name="eq1" data-correct="b">
+            <p class="quiz-q-text">1. Когда цикл while в нашем проекте останавливается?</p>
+            <label><input type="radio" name="eq1" value="a"> Когда amount больше 100</label>
+            <label><input type="radio" name="eq1" value="b"> Когда впереди агента появляется блок</label>
+            <label><input type="radio" name="eq1" value="c"> Когда result пустая строка</label>
+            <div class="q-feedback"></div>
+        </div>
+        <div class="quiz-question" data-name="eq2" data-correct="c">
+            <p class="quiz-q-text">2. Какой тип у переменной game?</p>
+            <label><input type="radio" name="eq2" value="a"> str</label>
+            <label><input type="radio" name="eq2" value="b"> number</label>
+            <label><input type="radio" name="eq2" value="c"> bool</label>
+            <div class="q-feedback"></div>
+        </div>
+        <div class="quiz-question" data-name="eq3" data-correct="a">
+            <p class="quiz-q-text">3. Зачем писать b: number в функции отчёта?</p>
+            <label><input type="radio" name="eq3" value="a"> Подсказка: второй аргумент — число (шаги)</label>
+            <label><input type="radio" name="eq3" value="b"> Чтобы Python автоматически ходил за агента</label>
+            <label><input type="radio" name="eq3" value="c"> Это обязательно, иначе код не запустится</label>
+            <div class="q-feedback"></div>
+        </div>
+        <div class="quiz-question" data-name="eq4" data-correct="b">
+            <p class="quiz-q-text">4. Что делает agent.inspect_block(DOWN)?</p>
+            <label><input type="radio" name="eq4" value="a"> Ломает блок под агентом</label>
+            <label><input type="radio" name="eq4" value="b"> Возвращает ID блока под агентом</label>
+            <label><input type="radio" name="eq4" value="c"> Поворачивает агента вниз</label>
+            <div class="q-feedback"></div>
+        </div>
+        <button class="quiz-btn" onclick="checkQuiz('quizExplorer')">Проверить ответы</button>
+        <div class="quiz-result"></div>
+    </div>
+
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <textarea placeholder="ИИ для меня — это...&#10;Самый интересный блок на маршруте агента был...&#10;Что я улучшил в отчёте..."></textarea>
+    </div>
+
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_3-3.html"><div class="lbl">← Назад</div><div class="ttl">3.3 Строим с Python</div></a>
+        <a class="nav-btn next" href="les_python_4-2.html"><div class="lbl">Далее →</div><div class="ttl">4.2 ИИ и Minecraft</div></a>
+    </div>
+</main>
+
+<div class="modal-overlay" id="solutionModal" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal-box">
+        <h3 id="modalTitle">🔐 Пароль преподавателя</h3>
+        <input type="text" id="solutionPasswordInput" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••">
+        <div class="modal-error" id="modalPasswordError"></div>
+        <div class="modal-actions">
+            <button type="button" class="action-btn" onclick="submitSolutionPassword()">Открыть</button>
+            <button type="button" class="action-btn outline" onclick="closeSolutionModal()">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Занятие 4.1 · Мини-проект: Исследователь мира · Minecraft Education и Python</div>
+    </div>
+</footer>
+
+<script>
+    const SOLUTION_SOURCE = `def show_report(trail: str, steps: number):
+    player.say("===== ОТЧЁТ ИССЛЕДОВАТЕЛЯ =====")
+    player.say("Маршрут (блоки под ногами):")
+    if trail == "":
+        player.say("(ничего не записано)")
+    else:
+        player.say(trail)
+    player.say("------------------------------")
+    player.say("Шагов сделано: " + str(steps))
+    player.say("Миссия выполнена!")
+    agent.say("Финиш!")
+
+amount = 0
+result = ""
+game = True
+
+player.say("Миссия: агент записывает блоки под ногами")
+agent.say("Старт! Иду вперёд...")
+
+while game:
+    if agent.detect(AgentDetection.BLOCK, FORWARD):
+        game = False
+        show_report(result, amount)
+    block = agent.inspect_block(DOWN)
+    step_num = amount + 1
+    if block == 0:
+        player.say("Шаг " + str(step_num) + ": подо мной пусто")
+    else:
+        name = blocks.name_of_block(block)
+        result = result + name + " → "
+        if step_num % 4 == 1:
+            agent.say("Вижу: " + name)
+    if step_num % 5 == 0:
+        player.say("··· уже " + str(step_num) + " шагов ···")
+    agent.move(FORWARD, 1)
+    amount += 1`;
+
+    function getPasswordDDMM() {
+        const now = new Date();
+        const d = String(now.getDate()).padStart(2, '0');
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        return d + m;
+    }
+
+    function openSolutionModal() {
+        document.getElementById('solutionModal').classList.add('open');
+        document.getElementById('solutionPasswordInput').value = '';
+        document.getElementById('modalPasswordError').textContent = '';
+        document.getElementById('solutionPasswordInput').focus();
+    }
+
+    function closeSolutionModal() {
+        document.getElementById('solutionModal').classList.remove('open');
+    }
+
+    function submitSolutionPassword() {
+        const input = document.getElementById('solutionPasswordInput').value.trim();
+        const err = document.getElementById('modalPasswordError');
+        if (input !== getPasswordDDMM()) {
+            err.textContent = '❌ Неверный пароль. Спроси код у преподавателя (ДДММ на сегодня).';
+            return;
+        }
+        err.textContent = '';
+        closeSolutionModal();
+        const pre = document.getElementById('solutionCodePre');
+        pre.textContent = SOLUTION_SOURCE;
+        document.getElementById('solutionReveal').classList.add('unlocked');
+        pre.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    document.getElementById('solutionModal').addEventListener('click', function(e) {
+        if (e.target === this) closeSolutionModal();
+    });
+    document.getElementById('solutionPasswordInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') submitSolutionPassword();
+        if (e.key === 'Escape') closeSolutionModal();
+    });
+
+    function checkMatch(containerId) {
+        const container = document.getElementById(containerId);
+        const selects = container.querySelectorAll('select[data-correct]');
+        let correct = 0;
+        selects.forEach(sel => {
+            const cv = sel.getAttribute('data-correct');
+            sel.classList.remove('correct', 'incorrect');
+            if (sel.value === cv) { sel.classList.add('correct'); correct++; }
+            else if (sel.value !== '') sel.classList.add('incorrect');
+        });
+        const resultDiv = container.querySelector('.match-result');
+        if (resultDiv) {
+            resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${selects.length}`;
+        }
+    }
+
+    function checkOrderExplore() {
+        const selects = document.querySelectorAll('#orderExplore select[data-order]');
+        let ok = 0;
+        selects.forEach(sel => {
+            const expected = sel.getAttribute('data-order');
+            sel.classList.remove('correct', 'incorrect');
+            if (sel.value === expected) { sel.classList.add('correct'); ok++; }
+            else if (sel.value !== '') sel.classList.add('incorrect');
+        });
+        const res = document.getElementById('orderExploreResult');
+        if (ok === selects.length && ok > 0) {
+            res.innerHTML = '🎉 Верно! Сначала проверка стены, потом inspect → запись → move → amount.';
+            res.style.color = '#2e7d32';
+        } else {
+            res.innerHTML = `Проверь шаги: верно ${ok} из ${selects.length}.`;
+            res.style.color = '#c62828';
+        }
+    }
+
+    function checkQuiz(containerId) {
+        const container = document.getElementById(containerId);
+        const questions = container.querySelectorAll('.quiz-question');
+        let correct = 0, total = 0;
+        questions.forEach(q => {
+            const cv = q.getAttribute('data-correct');
+            const sel = q.querySelector('input[type="radio"]:checked');
+            const fb = q.querySelector('.q-feedback');
+            if (sel) {
+                total++;
+                if (sel.value === cv) {
+                    correct++;
+                    fb.innerHTML = '✅ Верно!';
+                    fb.style.color = '#2e7d32';
+                } else {
+                    fb.innerHTML = '❌ Неверно.';
+                    fb.style.color = '#c62828';
+                }
+            } else {
+                fb.innerHTML = '⚠️ Выбери вариант.';
+                fb.style.color = '#f57c00';
+            }
+        });
+        const rd = container.querySelector('.quiz-result');
+        rd.innerHTML = total ? `✅ Правильных: ${correct} из ${questions.length}` : '⚠️ Ответь на все вопросы.';
+        rd.style.display = 'block';
+    }
+
+    function updateProjectProgress() {
+        const cbs = document.querySelectorAll('#projectExplorer input[type="checkbox"]');
+        let n = 0;
+        cbs.forEach(c => { if (c.checked) n++; });
+        const fill = document.getElementById('practiceProgressFill');
+        const label = document.getElementById('practiceProgressLabel');
+        if (fill) fill.style.width = (n / cbs.length * 100) + '%';
+        if (label) label.textContent = `Выполнено шагов: ${n} из ${cbs.length}`;
+    }
+
+    document.querySelectorAll('#matchTypes select[data-correct]').forEach(sel => {
+        sel.addEventListener('change', () => {
+            const all = document.querySelectorAll('#matchTypes select[data-correct]');
+            if ([...all].every(s => s.value !== '')) checkMatch('matchTypes');
+        });
+    });
+
+    updateProjectProgress();
+</script>
+</body>
+</html>

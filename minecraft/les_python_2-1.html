@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.1. Агент и Python — Учебный центр «РОБОВИТА»</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .lesson-page .site-header { background: #eef2ff; border-bottom: 3px solid #4f46e5; }
+        .site-footer { background: #eef2ff; border-top: 3px solid #4f46e5; }
+        .brand-name { color: #312e81; }
+        .module-pill { background: #4f46e5; color: #fff; }
+        .hex-badge { background: #4f46e5; color: #fff; }
+        .data-table th { background: #4f46e5; color: #fff; }
+        .match-btn, .quiz-btn, .action-btn { background: #4f46e5; color: #fff; border: none; }
+        .match-btn:hover, .quiz-btn:hover, .action-btn:hover { background: #4338ca; }
+        .task-box { border-left: 4px solid #4f46e5; }
+        .code-block { border: 1px solid #c7d2fe; background: #f5f7ff; }
+        .interactive-box { background: #f8faff; border: 1px solid #c7d2fe; }
+        .syntax-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 10px; }
+        .syntax-card b { color: #4f46e5; }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .feature-grid .feature-item {
+            background: #f5f7ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .feature-grid .feature-item .icon { font-size: 32px; display: block; margin-bottom: 8px; }
+        .feature-grid .feature-item .title { font-weight: 700; color: #312e81; }
+        .code-block .code-head { background: #1e1e2e; color: #c7d2fe; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+        .code-block .code-head .dots { display: flex; gap: 6px; }
+        .code-block .code-head .dots .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .code-block .code-head .dots .dot.r { background: #d93b3b; }
+        .code-block .code-head .dots .dot.y { background: #ffb238; }
+        .code-block .code-head .dots .dot.g { background: #4f46e5; }
+        .code-block .code-head .fname { font-family: 'JetBrains Mono', monospace; font-size: 13px; opacity: 0.8; }
+        .code-block pre.code { background: #1e1e2e; color: #e4f5da; margin: 0; padding: 16px 20px; overflow-x: auto; font-size: 14px; line-height: 1.8; }
+        .code-block pre.code code { font-family: 'JetBrains Mono', Consolas, monospace; }
+        .tok-c { color: #7fcf9e; font-style: italic; }
+        .tok-k { color: #ffb238; font-weight: 700; }
+        .tok-s { color: #8fd7ff; }
+        .tok-f { color: #ffd08a; }
+        .tok-n { color: #ff9aae; }
+        .tok-v { color: #ff9aae; }
+        .tok-o { color: #ffb238; }
+        .note { background: #eef2ff; border-left: 6px solid #4f46e5; padding: 16px 22px; margin: 18px 0; border-radius: 0 14px 14px 0; }
+        .note.warn { background: #fef3c7; border-left-color: #f59e0b; }
+        .note.danger { background: #fde8e8; border-left-color: #d93b3b; }
+        .task-box .task-item {
+            background: #f5f7ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .task-box .task-item .task-title { font-weight: 700; color: #312e81; display: flex; align-items: center; gap: 10px; }
+        .task-box .task-item .task-title .badge {
+            background: #4f46e5;
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 99px;
+        }
+        .task-box .task-item .task-title .badge.bonus { background: #ffb238; color: #312e81; }
+        .task-box .task-item .task-code { margin-top: 10px; }
+        .task-box .task-item .task-code .code-block { margin: 0; }
+        .interactive-box .match-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .interactive-box .match-row .match-key {
+            background: #4f46e5;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            min-width: 120px;
+            text-align: center;
+        }
+        .interactive-box .match-row select {
+            flex: 1;
+            min-width: 150px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #c7d2fe;
+            font-family: 'Nunito', sans-serif;
+            background: #fff;
+        }
+        .interactive-box .match-row select.correct { border-color: #4f46e5; background: #eef2ff; }
+        .interactive-box .match-row select.incorrect { border-color: #d93b3b; background: #fde8e8; }
+        .interactive-box .match-result { margin-top: 12px; font-weight: 700; }
+        .progress-track {
+            background: #e8f5e9;
+            border-radius: 99px;
+            height: 20px;
+            overflow: hidden;
+            margin: 12px 0 6px;
+        }
+        .progress-fill-minecraft {
+            background: linear-gradient(90deg, #4f46e5, #4338ca);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 99px;
+        }
+        .progress-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #312e81;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .task-steps {
+            list-style: none;
+            margin: 10px 0 0;
+            padding: 0;
+        }
+        .task-steps li {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 12px 16px;
+            align-items: start;
+            padding: 10px 12px;
+            border-radius: 10px;
+            margin-bottom: 4px;
+        }
+        .task-steps li:hover { background: #f5f7ff; }
+        .task-steps input[type=checkbox] {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            accent-color: #4f46e5;
+            cursor: pointer;
+        }
+        .task-steps label {
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e2a3a;
+        }
+        .task-steps .bonus-step {
+            background: #f0edff;
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1px dashed #4f46e5;
+        }
+
+        /* AI помощник */
+        .ai-helper {
+            background: #1e1e2e;
+            color: #e4f5da;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-helper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.15), transparent 60%);
+            pointer-events: none;
+        }
+        .ai-head {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        .ai-head .ai-icon { font-size: 36px; line-height: 1; }
+        .ai-head .t {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 22px;
+        }
+        .ai-head .t span { color: #8fd7ff; }
+        .ai-sub {
+            color: #b8d9a8;
+            font-size: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .ai-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .ai-q-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e4f5da;
+            padding: 10px 18px;
+            border-radius: 99px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .ai-q-btn:hover {
+            background: rgba(79, 70, 229, 0.25);
+            border-color: rgba(79, 70, 229, 0.4);
+            transform: translateY(-2px);
+        }
+        .ai-answer {
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 4px solid #4f46e5;
+            border-radius: 0 12px 12px 0;
+            padding: 16px 20px;
+            font-size: 15px;
+            min-height: 44px;
+            position: relative;
+            color: #e4f5da;
+        }
+        .ai-real-tip {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.12);
+            font-size: 14px;
+            color: #b8d9a8;
+            position: relative;
+        }
+        .prompt-example {
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #ffd08a;
+        }
+        .ai-real-tip .warning {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #b8d9a8;
+            opacity: 0.7;
+        }
+
+        /* Стили для игры "Найди ошибку" */
+        .error-game .clickable-line {
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            display: inline-block;
+            margin: 0 -4px;
+            position: relative;
+        }
+        .error-game .clickable-line:hover {
+            background: rgba(79, 70, 229, 0.12);
+        }
+        .error-game .clickable-line .line-text {
+            display: inline;
+        }
+        .error-game .clickable-line .check-mark {
+            display: none;
+            margin-left: 6px;
+            font-weight: 700;
+        }
+        .error-game .clickable-line.found {
+            background: rgba(79, 70, 229, 0.12);
+            border-radius: 4px;
+        }
+        .error-game .clickable-line.found .check-mark {
+            display: inline;
+            color: #4f46e5;
+        }
+        .error-game .clickable-line.wrong {
+            background: rgba(217, 59, 59, 0.12);
+            border-radius: 4px;
+            animation: shake 0.3s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+        .error-game .error-feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            min-height: 50px;
+        }
+        .error-game .error-feedback.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+        .error-game .error-feedback.fail {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef5350;
+        }
+        .error-game .error-feedback.info {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #42a5f5;
+        }
+        .error-game .error-feedback.attempt {
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffa726;
+        }
+        .error-game .error-counter {
+            font-size: 14px;
+            color: #4a6a3a;
+            margin-top: 8px;
+            font-weight: 700;
+        }
+        .error-game .level-block {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: #eef2ff;
+            border-radius: 8px;
+            border-left: 4px solid #4f46e5;
+        }
+        .error-game .level-block h4 {
+            margin: 0 0 8px 0;
+            color: #312e81;
+            font-size: 16px;
+        }
+        .error-game .level-block .code-block {
+            margin: 0;
+        }
+        .error-game .level-block .hint {
+            font-size: 14px;
+            color: #4a6a3a;
+            margin-top: 4px;
+        }
+        .error-game .level-block .hint strong {
+            color: #312e81;
+        }
+
+        .direction-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 300px;
+            margin: 10px auto;
+        }
+        .direction-grid .dir-item {
+            background: #eef2ff;
+            border: 2px solid #c7d2fe;
+            border-radius: 8px;
+            padding: 8px 4px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: #312e81;
+            transition: all 0.2s;
+        }
+        .direction-grid .dir-item:hover {
+            border-color: #4f46e5;
+            background: #e0e7ff;
+        }
+        .direction-grid .dir-item .dir-en {
+            font-size: 11px;
+            color: #4a6a3a;
+            font-weight: 400;
+            display: block;
+        }
+        .direction-grid .dir-item.center {
+            background: transparent;
+            border: none;
+            font-size: 18px;
+        }
+        .direction-grid .dir-item.center:hover {
+            background: transparent;
+        }
+
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        .commands-grid .cmd-card {
+            background: #f5f7ff;
+            border: 2px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 16px;
+            transition: border-color 0.2s;
+        }
+        .commands-grid .cmd-card:hover {
+            border-color: #4f46e5;
+        }
+        .commands-grid .cmd-card .cmd-title {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            color: #312e81;
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .commands-grid .cmd-card .cmd-title .cmd-icon { font-size: 20px; }
+        .commands-grid .cmd-card .cmd-code {
+            background: #1e1e2e;
+            color: #e4f5da;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            margin: 6px 0;
+            overflow-x: auto;
+        }
+        .commands-grid .cmd-card .cmd-desc {
+            font-size: 14px;
+            color: #4a6a3a;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .ai-helper { padding: 20px 16px; }
+            .direction-grid { max-width: 100%; }
+            .commands-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="lesson-page">
+
+<header class="site-header">
+    <div class="wrap">
+        <div class="top-bar">
+            <a class="brand" href="index.html">
+                <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА" loading="lazy">
+                <div>
+                    <div class="brand-name">РОБОВИТА</div>
+                    <div class="brand-tag">учимся программировать роботов и игры</div>
+                </div>
+            </a>
+            <div class="crumbs"><a href="index.html">Карта курса</a> · Занятие 2.1 (Python)</div>
+        </div>
+        <div class="hero">
+            <div class="hex-badge">2.1</div>
+            <div>
+                <div class="module-pill">Раздел 2 · Агент и Python</div>
+                <h1>Агент и Python</h1>
+                <p class="subtitle">Учим робота выполнять команды с помощью кода</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap">
+    <!-- Цели -->
+    <div class="objectives">
+        <h2>🎯 Цели занятия</h2>
+        <ul>
+            <li>Познакомиться с Агентом в Minecraft Education и его возможностями</li>
+            <li>Изучить основные команды управления Агентом на Python</li>
+            <li>Научиться использовать направления для движения Агента</li>
+            <li>Освоить команды: движение, поворот, установка и разрушение блоков</li>
+            <li>Написать программы для управления Агентом в Minecraft</li>
+        </ul>
+    </div>
+
+    <!-- План занятия -->
+    <div class="card">
+        <h2>📋 План занятия</h2>
+        <table class="timetable">
+            <tr><th>Этап занятия</th><th>Время</th><th>Что делаем</th></tr>
+            <tr><td>Кто такой Агент</td><td>10 мин</td><td>Знакомство с роботом-помощником</td></tr>
+            <tr><td>Команды движения</td><td>12 мин</td><td>Двигаем Агента в разные стороны</td></tr>
+            <tr><td>Повороты и направления</td><td>10 мин</td><td>Учим Агента поворачиваться</td></tr>
+            <tr><td>Блоки: поставить и сломать</td><td>10 мин</td><td>Агент-строитель</td></tr>
+            <tr><td>Интерактив: Сопоставление</td><td>8 мин</td><td>Закрепляем команды</td></tr>
+            <tr><td>AI-помощник</td><td>5 мин</td><td>Спроси у Алисы</td></tr>
+            <tr><td>Практика: Агент-помощник</td><td>30 мин</td><td>Пишем программы для Агента</td></tr>
+            <tr><td>Итоги и рефлексия</td><td>5 мин</td><td>Проверяем знания</td></tr>
+            <tr><td>Итого</td><td>90 мин</td><td>—</td></tr>
+        </table>
+    </div>
+
+    <!-- Часть 1: Кто такой Агент -->
+    <div class="card">
+        <h2><span class="num">1</span> Кто такой Агент?</h2>
+        <p><b>Агент</b> — это твой верный помощник в Minecraft Education. Это маленький робот, который может выполнять твои команды: ходить, строить, разрушать блоки и даже собирать предметы.</p>
+
+        <div style="display: flex; justify-content: center; margin: 16px 0;">
+            <img src="files/agent.gif" alt="Агент в Minecraft" style="max-width: 300px; border-radius: 12px; border: 2px solid #c7d2fe;">
+        </div>
+
+        <div class="note">
+            <b>🤖 Агент</b> — это программируемый робот. Ты можешь давать ему команды с помощью Python, и он будет их выполнять в игровом мире.
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-item">
+                <span class="icon">🚶</span>
+                <div class="title">Движение</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Агент умеет ходить вперёд, назад, влево, вправо, вверх и вниз</div>
+            </div>
+            <div class="feature-item">
+                <span class="icon">🔄</span>
+                <div class="title">Повороты</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Может поворачиваться налево и направо</div>
+            </div>
+            <div class="feature-item">
+                <span class="icon">🧱</span>
+                <div class="title">Строительство</div>
+                <div style="font-size: 14px; color: #4a6a3a;">Ставит и разрушает блоки по команде</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Часть 2: Команды движения -->
+    <div class="card">
+        <h2><span class="num">2</span> Команды движения</h2>
+        <p>Чтобы Агент двигался, мы используем команду <code>agent.move()</code>. Ей нужно передать два параметра: направление и количество шагов.</p>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">agent_move.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Движение Агента</span>
+agent.move(FORWARD, <span class="tok-n">5</span>)   <span class="tok-c"># Пройти вперёд 5 шагов</span>
+agent.move(BACK, <span class="tok-n">3</span>)       <span class="tok-c"># Пройти назад 3 шага</span>
+agent.move(LEFT, <span class="tok-n">2</span>)        <span class="tok-c"># Пройти влево 2 шага</span>
+agent.move(RIGHT, <span class="tok-n">4</span>)       <span class="tok-c"># Пройти вправо 4 шага</span>
+agent.move(UP, <span class="tok-n">1</span>)          <span class="tok-c"># Подняться на 1 блок вверх</span>
+agent.move(DOWN, <span class="tok-n">1</span>)        <span class="tok-c"># Опуститься на 1 блок вниз</span></code></pre>
+        </div>
+
+        <h4>🧭 Направления для Агента</h4>
+        <p>В Python мы используем английские названия. Вот таблица с переводом:</p>
+        <div class="direction-grid">
+            <div class="dir-item">⬆️ ВВЕРХ <span class="dir-en">(UP)</span></div>
+            <div class="dir-item">⬆️ ВПЕРЁД <span class="dir-en">(FORWARD)</span></div>
+            <div class="dir-item">⬆️ ВВЕРХ <span class="dir-en">(UP)</span></div>
+            <div class="dir-item">⬅️ ВЛЕВО <span class="dir-en">(LEFT)</span></div>
+            <div class="dir-item center">🎯</div>
+            <div class="dir-item">➡️ ВПРАВО <span class="dir-en">(RIGHT)</span></div>
+            <div class="dir-item">⬇️ ВНИЗ <span class="dir-en">(DOWN)</span></div>
+            <div class="dir-item">⬇️ НАЗАД <span class="dir-en">(BACK)</span></div>
+            <div class="dir-item">⬇️ ВНИЗ <span class="dir-en">(DOWN)</span></div>
+        </div>
+    </div>
+
+    <!-- Часть 3: Повороты -->
+    <div class="card">
+        <h2><span class="num">3</span> Повороты</h2>
+        <p>Агент может поворачиваться на 90 градусов влево или вправо с помощью команды <code>agent.turn()</code>.</p>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">agent_turn.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Повороты Агента</span>
+agent.turn(LEFT)   <span class="tok-c"># Повернуть налево</span>
+agent.turn(RIGHT)  <span class="tok-c"># Повернуть направо</span>
+
+<span class="tok-c"># Пример: квадрат</span>
+<span class="tok-k">for</span> i <span class="tok-k">in</span> range(<span class="tok-n">4</span>):
+    agent.move(FORWARD, <span class="tok-n">5</span>)
+    agent.turn(RIGHT)</code></pre>
+        </div>
+
+        <div class="note warn">
+            <b>💡 Важно!</b> После поворота Агент меняет своё направление, и все следующие команды движения будут выполняться относительно нового направления.
+        </div>
+    </div>
+
+    <!-- Часть 4: Блоки -->
+    <div class="card">
+        <h2><span class="num">4</span> Блоки: поставить и сломать</h2>
+        <p>Агент умеет ставить и разрушать блоки с помощью команд <code>agent.place()</code> и <code>agent.destroy()</code>.</p>
+
+        <div class="commands-grid">
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">🧱</span> Поставить блок</div>
+                <div class="cmd-code">agent.place(FORWARD)</div>
+                <div class="cmd-desc">Ставит блок перед Агентом (из инвентаря)</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">🔨</span> Сломать блок</div>
+                <div class="cmd-code">agent.destroy(FORWARD)</div>
+                <div class="cmd-desc">Разрушает блок перед Агентом</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">📦</span> Поставить с направлением</div>
+                <div class="cmd-code">agent.place(DOWN)</div>
+                <div class="cmd-desc">Ставит блок под Агентом</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-title"><span class="cmd-icon">📦</span> Сломать с направлением</div>
+                <div class="cmd-code">agent.destroy(UP)</div>
+                <div class="cmd-desc">Разрушает блок над Агентом</div>
+            </div>
+        </div>
+
+        <div class="code-block">
+            <div class="code-head">
+                <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                <span class="fname">agent_build.py</span>
+            </div>
+            <pre class="code"><code><span class="tok-c"># Агент строит башню</span>
+<span class="tok-k">for</span> i <span class="tok-k">in</span> range(<span class="tok-n">5</span>):
+    agent.place(DOWN)     <span class="tok-c"># Ставит блок под собой</span>
+    agent.move(UP, <span class="tok-n">1</span>)       <span class="tok-c"># Поднимается на блок вверх</span></code></pre>
+        </div>
+    </div>
+
+    <!-- ИНТЕРАКТИВ: Сопоставление -->
+    <div class="interactive-box" id="matchAgent">
+        <h2>🔑 Сопоставь команду и её действие</h2>
+        <p>Выбери правильное действие для каждой команды Агента:</p>
+
+        <div class="match-row">
+            <div class="match-key">agent.move(FORWARD, 3)</div>
+            <select data-correct="Двигается вперёд на 3 шага">
+                <option value="">— выбери —</option>
+                <option value="Двигается вперёд на 3 шага">Двигается вперёд на 3 шага</option>
+                <option value="Поворачивается налево">Поворачивается налево</option>
+                <option value="Ставит блок">Ставит блок</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">agent.turn(RIGHT)</div>
+            <select data-correct="Поворачивается направо">
+                <option value="">— выбери —</option>
+                <option value="Двигается вправо">Двигается вправо</option>
+                <option value="Поворачивается направо">Поворачивается направо</option>
+                <option value="Разрушает блок">Разрушает блок</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">agent.place(FORWARD)</div>
+            <select data-correct="Ставит блок перед собой">
+                <option value="">— выбери —</option>
+                <option value="Ставит блок перед собой">Ставит блок перед собой</option>
+                <option value="Разрушает блок перед собой">Разрушает блок перед собой</option>
+                <option value="Двигается вперёд">Двигается вперёд</option>
+            </select>
+        </div>
+
+        <div class="match-row">
+            <div class="match-key">agent.destroy(FORWARD)</div>
+            <select data-correct="Разрушает блок перед собой">
+                <option value="">— выбери —</option>
+                <option value="Ставит блок перед собой">Ставит блок перед собой</option>
+                <option value="Разрушает блок перед собой">Разрушает блок перед собой</option>
+                <option value="Двигается вперёд">Двигается вперёд</option>
+            </select>
+        </div>
+
+        <button class="action-btn" onclick="checkMatch('matchAgent')">✅ Проверить</button>
+        <div class="match-result" id="matchResultAgent"></div>
+    </div>
+
+    <!-- ИНТЕРАКТИВ: Найди ошибку -->
+    <div class="interactive-box error-game" id="errorGameAgent">
+        <h2>🧠 Найди ошибку в коде Агента</h2>
+        <p>В каждом уровне есть ровно <b>одна</b> ошибка. Кликни на строку с ошибкой!</p>
+
+        <!-- Уровень 1 -->
+        <div class="level-block">
+            <h4>Уровень 1: Неправильное направление</h4>
+            <div class="code-block">
+                <div class="code-head" style="background: #1e1e2e; color: #c7d2fe;">
+                    <span class="fname">agent_error_1.py</span>
+                </div>
+                <pre class="code" style="position: relative;"><code>agent.move(<span class="clickable-line" data-level="1" data-error="direction" onclick="checkErrorLineAgent(this, 1)"><span class="line-text">FRW</span><span class="check-mark">✅</span></span>, <span class="tok-n">5</span>)</code></pre>
+            </div>
+            <div class="hint">💡 <strong>Подсказка:</strong> Проверь правильность написания направления. Название должно быть на английском.</div>
+        </div>
+
+        <!-- Уровень 2 -->
+        <div class="level-block">
+            <h4>Уровень 2: Пропущена команда place</h4>
+            <div class="code-block">
+                <div class="code-head" style="background: #1e1e2e; color: #c7d2fe;">
+                    <span class="fname">agent_error_2.py</span>
+                </div>
+                <pre class="code" style="position: relative;"><code><span class="clickable-line" data-level="2" data-error="missing_place" onclick="checkErrorLineAgent(this, 2)"><span class="line-text">agent.(FORWARD)</span><span class="check-mark">✅</span></span></code></pre>
+            </div>
+            <div class="hint">💡 <strong>Подсказка:</strong> Для установки блока нужна команда place.</div>
+        </div>
+
+        <!-- Уровень 3 -->
+        <div class="level-block">
+            <h4>Уровень 3: Неправильное количество шагов</h4>
+            <div class="code-block">
+                <div class="code-head" style="background: #1e1e2e; color: #c7d2fe;">
+                    <span class="fname">agent_error_3.py</span>
+                </div>
+                <pre class="code" style="position: relative;"><code>agent.move(FORWARD, <span class="clickable-line" data-level="3" data-error="steps" onclick="checkErrorLineAgent(this, 3)"><span class="line-text">"5"</span><span class="check-mark">✅</span></span>)</code></pre>
+            </div>
+            <div class="hint">💡 <strong>Подсказка:</strong> Количество шагов должно быть числом, без кавычек.</div>
+        </div>
+
+        <div id="errorFeedbackAgent" class="error-feedback info">
+            👆 Кликни на строку с ошибкой в каждом уровне
+        </div>
+        <div class="error-counter" id="errorCounterAgent">Найдено ошибок: 0 из 3</div>
+    </div>
+
+    <!-- AI-помощник -->
+    <div class="ai-helper">
+        <div class="ai-head">
+            <span class="ai-icon">🤖</span>
+            <div class="t">Спроси Алису <span>(ИИ-помощник)</span></div>
+        </div>
+        <p class="ai-sub">Нажми на вопрос — Алиса ответит тебе прямо сейчас!</p>
+
+        <div class="ai-buttons">
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%B7%D0%B0%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C%20%D0%90%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%20%D0%B4%D0%B2%D0%B8%D0%B3%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%B2%20Python%20Minecraft%3F%22%7D" target="_blank" class="ai-q-btn">Как двигать Агента?</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D0%B2%D0%B5%D1%80%D0%BD%D1%83%D1%82%D1%8C%20%D0%90%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Как повернуть Агента?</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%20%D0%BF%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C%20%D0%B8%D0%BB%D0%B8%20%D1%81%D0%BB%D0%BE%D0%BC%D0%B0%D1%82%D1%8C%20%D0%B1%D0%BB%D0%BE%D0%BA%20%D0%90%D0%B3%D0%B5%D0%BD%D1%82%D0%BE%D0%BC%3F%22%7D" target="_blank" class="ai-q-btn">Блоки для Агента</a>
+            <a href="https://ya.ru/alice?alice_deeplink=%7B%22text%22%3A%22%D0%9A%D0%B0%D0%BA%D0%B8%D0%B5%20%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D1%8B%20%D0%B5%D1%81%D1%82%D1%8C%20%D1%83%20%D0%90%D0%B3%D0%B5%D0%BD%D1%82%D0%B0%20%D0%B2%20Python%3F%22%7D" target="_blank" class="ai-q-btn">Все команды Агента</a>
+        </div>
+
+        <div class="ai-answer">
+            💬 Нажми на любой вопрос — откроется Алиса с готовым ответом.
+        </div>
+
+        <div class="ai-real-tip">
+            <b>💡 Хочешь спросить что-то своё?</b> Открой Алису сам и задай любой вопрос про Агента.<br>
+            <span class="prompt-example">Просто скажи: «Алиса, как заставить Агента построить дом в Minecraft?»</span>
+            <div class="warning">⚠️ Никогда не отправляй Алисе личные данные (адрес, телефон, пароли) — вопросы обсуждай только с родителями и преподавателем.</div>
+        </div>
+    </div>
+
+    <!-- Часть 5: Практические задания -->
+    <div class="task-box" id="agentPractice">
+        <h2>🛠️ Практика: Агент-помощник</h2>
+        <p>Теперь давай применим знания об Агенте в Minecraft Education! Открой редактор кода (клавиша <code>C</code>) и выбери Python.</p>
+
+        <!-- Прогресс-бар -->
+        <div class="progress-track">
+            <div class="progress-fill-minecraft" id="practiceProgressFill" style="width: 0%;"></div>
+        </div>
+        <span class="progress-label" id="practiceProgressLabel">Выполнено шагов: 0 из 6</span>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 1</span>
+                Прогулка Агента
+                <input type="checkbox" id="task1" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Напиши программу, которая заставляет Агента пройти <b>вперёд 5 шагов</b>, затем <b>назад 3 шага</b>.</p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">agent_walk.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-c"># Заставь Агента пройти вперёд и назад</span>
+agent.move(FORWARD, <span class="tok-n">5</span>)
+agent.move(BACK, <span class="tok-n">3</span>)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 2</span>
+                Квадрат
+                <input type="checkbox" id="task2" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Напиши программу, в которой Агент проходит <b>квадрат</b> (4 раза: вперёд 5 шагов, поворот направо).</p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">agent_square.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-k">for</span> i <span class="tok-k">in</span> range(<span class="tok-n">4</span>):
+    agent.move(FORWARD, <span class="tok-n">5</span>)
+    agent.turn(RIGHT)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 3</span>
+                Постройка башни
+                <input type="checkbox" id="task3" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Напиши программу, в которой Агент строит <b>башню из 5 блоков</b> (ставит блок под собой и поднимается вверх).</p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">agent_tower.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-k">for</span> i <span class="tok-k">in</span> range(<span class="tok-n">5</span>):
+    agent.place(DOWN)
+    agent.move(UP, <span class="tok-n">1</span>)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">Задание 4</span>
+                Строитель дороги
+                <input type="checkbox" id="task4" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Напиши программу, в которой Агент строит <b>дорогу из 10 блоков</b> (идёт вперёд и ставит блок под собой).</p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">agent_road.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-k">for</span> i <span class="tok-k">in</span> range(<span class="tok-n">10</span>):
+    agent.place(DOWN)
+    agent.move(FORWARD, <span class="tok-n">1</span>)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item">
+            <div class="task-title">
+                <span class="badge">⭐ Задание 5</span>
+                Прямоугольник
+                <input type="checkbox" id="task5" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Напиши программу, в которой Агент проходит <b>прямоугольник</b> (вперёд 8 шагов, поворот, вперёд 4 шага, поворот — и так 2 раза).</p>
+            <!-- <div class="task-code">
+                <div class="code-block">
+                    <div class="code-head">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+                        <span class="fname">agent_rectangle.py</span>
+                    </div>
+                    <pre class="code"><code><span class="tok-k">for</span> i <span class="tok-k">in</span> range(<span class="tok-n">2</span>):
+    agent.move(FORWARD, <span class="tok-n">8</span>)
+    agent.turn(RIGHT)
+    agent.move(FORWARD, <span class="tok-n">4</span>)
+    agent.turn(RIGHT)</code></pre>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="task-item" style="border: 2px dashed #4f46e5; background: #f0edff;">
+            <div class="task-title">
+                <span class="badge bonus">🚀 Бонус</span>
+                Свой проект с Агентом
+                <input type="checkbox" id="task6" onchange="updatePracticeProgress()" style="margin-left: auto; width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer;">
+            </div>
+            <p>Придумай программу для Агента: например, построй дом, мост или любую фигуру. Используй движение, повороты и блоки. Поделись результатом с преподавателем!</p>
+        </div>
+    </div>
+
+    <!-- Опрос -->
+    <div class="quiz-wrap" id="quizAgent">
+        <h2>📝 Проверь себя</h2>
+
+        <div class="quiz-question" data-name="aq1" data-correct="b">
+            <p class="quiz-q-text">1. Какой командой Агент двигается вперёд?</p>
+            <label><input type="radio" name="aq1" value="a"> agent.go(FORWARD)</label>
+            <label><input type="radio" name="aq1" value="b"> agent.move(FORWARD, 5)</label>
+            <label><input type="radio" name="aq1" value="c"> agent.walk(FORWARD)</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="aq2" data-correct="b">
+            <p class="quiz-q-text">2. Какой командой Агент поворачивается направо?</p>
+            <label><input type="radio" name="aq2" value="a"> agent.turn(LEFT)</label>
+            <label><input type="radio" name="aq2" value="b"> agent.turn(RIGHT)</label>
+            <label><input type="radio" name="aq2" value="c"> agent.right()</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="aq3" data-correct="a">
+            <p class="quiz-q-text">3. Какой командой Агент ставит блок перед собой?</p>
+            <label><input type="radio" name="aq3" value="a"> agent.place(FORWARD)</label>
+            <label><input type="radio" name="aq3" value="b"> agent.put(FORWARD)</label>
+            <label><input type="radio" name="aq3" value="c"> agent.block(FORWARD)</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="aq4" data-correct="c">
+            <p class="quiz-q-text">4. Что означает направление BACK?</p>
+            <label><input type="radio" name="aq4" value="a"> Вперёд</label>
+            <label><input type="radio" name="aq4" value="b"> Влево</label>
+            <label><input type="radio" name="aq4" value="c"> Назад</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <div class="quiz-question" data-name="aq5" data-correct="b">
+            <p class="quiz-q-text">5. Какую команду нужно использовать, чтобы разрушить блок перед Агентом?</p>
+            <label><input type="radio" name="aq5" value="a"> agent.place(FORWARD)</label>
+            <label><input type="radio" name="aq5" value="b"> agent.destroy(FORWARD)</label>
+            <label><input type="radio" name="aq5" value="c"> agent.break(FORWARD)</label>
+            <div class="q-feedback"></div>
+        </div>
+
+        <button class="quiz-btn" onclick="checkQuiz('quizAgent')">Проверить ответы</button>
+        <div class="quiz-result"></div>
+    </div>
+
+    <!-- Рефлексия -->
+    <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <p>Напиши, что тебе понравилось, а что было сложно:</p>
+        <textarea placeholder="Сегодня я научился...&#10;Самым интересным было...&#10;В следующий раз хочу..."></textarea>
+    </div>
+
+    <!-- Навигация -->
+    <div class="lesson-nav">
+        <a class="nav-btn prev" href="les_python_1-4.html"><div class="lbl">← Назад</div><div class="ttl">1.4 Циклы и повторения</div></a>
+        <a class="nav-btn next" href="les_python_2-2.html"><div class="lbl">Далее →</div><div class="ttl">2.2 Агент-строитель</div></a>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <div class="foot-brand">
+            <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип РОБОВИТА">
+            Учебный центр «РОБОВИТА»
+        </div>
+        <div>Занятие 2.1 · Агент и Python · офлайн-курс по Minecraft Education и Python</div>
+    </div>
+</footer>
+
+<script>
+    // ===== СОПОСТАВЛЕНИЕ =====
+    function checkMatch(containerId) {
+        const container = document.getElementById(containerId);
+        const selects = container.querySelectorAll('select[data-correct]');
+        let correct = 0;
+        selects.forEach(sel => {
+            const correctVal = sel.getAttribute('data-correct');
+            sel.classList.remove('correct', 'incorrect');
+            if (sel.value === correctVal) {
+                sel.classList.add('correct');
+                correct++;
+            } else if (sel.value !== '') {
+                sel.classList.add('incorrect');
+            }
+        });
+        const resultDiv = container.querySelector('.match-result');
+        if (resultDiv) {
+            resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${selects.length}`;
+            resultDiv.style.display = 'block';
+        }
+    }
+
+    // ===== ИГРА "НАЙДИ ОШИБКУ" =====
+    let errorFoundAgent = { 1: false, 2: false, 3: false };
+    const errorMessagesAgent = {
+        1: { fail: '❌ Неверно! Проверь правильность написания направления. Должно быть FORWARD.', 
+             success: '✅ Правильно! Направление пишется как FORWARD.' },
+        2: { fail: '❌ Неверно! Для установки блока нужна команда place.', 
+             success: '✅ Правильно! Команда для установки блока — place.' },
+        3: { fail: '❌ Неверно! Количество шагов должно быть числом, без кавычек.', 
+             success: '✅ Правильно! Количество шагов пишется как число (например, 5).' }
+    };
+
+    function checkErrorLineAgent(element, level) {
+        if (errorFoundAgent[level]) return;
+
+        const isError = element.dataset.error !== undefined;
+        const feedback = document.getElementById('errorFeedbackAgent');
+        const counter = document.getElementById('errorCounterAgent');
+
+        if (element.classList.contains('found')) return;
+
+        if (isError) {
+            element.classList.add('found');
+            errorFoundAgent[level] = true;
+            feedback.className = 'error-feedback success';
+            feedback.textContent = errorMessagesAgent[level].success;
+        } else {
+            element.classList.add('wrong');
+            feedback.className = 'error-feedback attempt';
+            feedback.textContent = errorMessagesAgent[level].fail + ' Попробуй ещё раз!';
+            setTimeout(() => {
+                element.classList.remove('wrong');
+            }, 800);
+        }
+
+        const found = Object.values(errorFoundAgent).filter(v => v === true).length;
+        counter.textContent = `Найдено ошибок: ${found} из 3`;
+
+        if (found === 3) {
+            feedback.className = 'error-feedback success';
+            feedback.textContent = '🎉 Поздравляю! Ты нашёл все 3 ошибки! Отличная работа!';
+        }
+    }
+
+    // ===== ВИКТОРИНА =====
+    function checkQuiz(containerId) {
+        const container = document.getElementById(containerId);
+        const questions = container.querySelectorAll('.quiz-question');
+        let total = 0, correct = 0;
+        questions.forEach(q => {
+            const correctVal = q.getAttribute('data-correct');
+            const selected = q.querySelector('input[type="radio"]:checked');
+            const feedback = q.querySelector('.q-feedback');
+            if (selected) {
+                total++;
+                if (selected.value === correctVal) {
+                    correct++;
+                    feedback.innerHTML = '✅ Верно!';
+                    feedback.style.color = '#2e7d32';
+                } else {
+                    feedback.innerHTML = '❌ Неверно. Подумай ещё.';
+                    feedback.style.color = '#c62828';
+                }
+            } else {
+                feedback.innerHTML = '⚠️ Выбери вариант.';
+                feedback.style.color = '#f57c00';
+            }
+        });
+        const resultDiv = container.querySelector('.quiz-result');
+        if (resultDiv) {
+            if (total === 0) {
+                resultDiv.innerHTML = '⚠️ Ответь на все вопросы.';
+            } else {
+                resultDiv.innerHTML = `✅ Правильных ответов: ${correct} из ${questions.length}`;
+            }
+            resultDiv.style.display = 'block';
+        }
+    }
+
+    // ===== ПРОГРЕСС ПРАКТИЧЕСКИХ ЗАДАНИЙ =====
+    function updatePracticeProgress() {
+        const checkboxes = document.querySelectorAll('#agentPractice input[type="checkbox"]');
+        const total = checkboxes.length;
+        let checked = 0;
+        checkboxes.forEach(cb => { if (cb.checked) checked++; });
+        const fill = document.getElementById('practiceProgressFill');
+        const label = document.getElementById('practiceProgressLabel');
+        if (fill) fill.style.width = (checked / total * 100) + '%';
+        if (label) label.textContent = `Выполнено шагов: ${checked} из ${total}`;
+    }
+
+    // ===== АВТОМАТИЧЕСКАЯ ПРОВЕРКА СОПОСТАВЛЕНИЯ =====
+    document.querySelectorAll('.interactive-box select[data-correct]').forEach(sel => {
+        sel.addEventListener('change', function() {
+            const container = this.closest('.interactive-box');
+            if (container && container.id === 'matchAgent') {
+                const allSelected = container.querySelectorAll('select[data-correct]');
+                let allFilled = true;
+                allSelected.forEach(s => { if (s.value === '') allFilled = false; });
+                if (allFilled) {
+                    checkMatch('matchAgent');
+                }
+            }
+        });
+    });
+
+    // ===== ИНИЦИАЛИЗАЦИЯ =====
+    updatePracticeProgress();
+</script>
+</body>
+</html>
