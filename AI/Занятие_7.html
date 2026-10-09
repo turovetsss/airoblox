@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Занятие 7 · Текст в 3 стилях + герой | РОБОВИТА</title>
+<style>
+:root{
+  --primary:#7C3AED;--primary-light:#F5F3FF;--primary-dark:#5B21B6;
+  --accent:#F59E0B;--success:#10B981;--danger:#EF4444;--line:#DDD6FE;
+  --card-shadow:0 8px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#FAF5FF;font-family:'Segoe UI',Roboto,sans-serif;color:#1E293B;font-size:1.08rem;line-height:1.55}
+.wrap{max-width:1120px;margin:0 auto;padding:0 1.4rem}
+.site-header{background:linear-gradient(135deg,#2E1065,#5B21B6);color:#F5F3FF;padding:1.4rem 0 1rem;border-bottom:4px solid var(--accent)}
+.top-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.brand img{height:44px;border-radius:12px}
+.brand-name{font-weight:700;font-size:1.45rem}
+.brand-tag{font-size:.82rem;color:#C4B5FD}
+.hero{display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap}
+.hex-badge{background:var(--accent);color:#78350F;font-weight:800;font-size:1.5rem;width:64px;height:64px;display:flex;align-items:center;justify-content:center;border-radius:16px;box-shadow:0 8px 0 #B45309}
+.module-pill{background:#6D28D9;color:#EDE9FE;padding:4px 14px;border-radius:30px;font-weight:600;font-size:.9rem;display:inline-block}
+.hero h1{font-size:1.9rem;margin:.2rem 0}
+.subtitle{color:#DDD6FE}
+.scenario-box{background:#2E1065;border-radius:22px;padding:18px 22px;margin:1.3rem 0;display:flex;gap:16px;align-items:flex-start;color:#F5F3FF;border:1px solid var(--accent)}
+.main-goal{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:3px solid #F59E0B;border-radius:20px;padding:1.2rem 1.4rem;margin:1.2rem 0;color:#78350F}
+.main-goal h2{margin:0 0 .6rem;color:#9A3412;font-size:1.35rem}
+.main-goal ul{margin:.4rem 0 0;padding-left:1.2rem;font-weight:600}
+.layout{display:grid;grid-template-columns:270px 1fr;gap:1.4rem;margin:1.4rem 0}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.mission-map{background:#1E1B4B;border-radius:20px;padding:1.1rem;color:#E2E8F0;border:2px solid #4C1D95}
+.mission-map h3{margin:0 0 .8rem;color:#C4B5FD;font-size:1.05rem}
+.map-item{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:6px 0;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid #6D28D9;position:relative;opacity:.55;transition:.35s;cursor:pointer}
+.map-item .ico{font-size:1.2rem}
+.map-item .lab{font-weight:600;font-size:.8rem}
+.map-item.open{opacity:1;border-color:var(--accent);background:rgba(245,158,11,.18)}
+.map-item.current{animation:pulseMap 1.4s infinite;border-color:#FBBF24}
+.map-item.done{opacity:1;border-color:var(--success);background:rgba(16,185,129,.25)}
+.map-item.done::after{content:'✅';position:absolute;right:8px;font-size:.8rem}
+.map-item.locked::after{content:'🔒';position:absolute;right:8px;font-size:.8rem}
+@keyframes pulseMap{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.total-progress,.artifact-bar,.badges-bar{background:#fff;border-radius:16px;padding:12px;border:1px solid var(--line);margin:1rem 0}
+.tp-track{height:14px;background:#EDE9FE;border-radius:10px;overflow:hidden;margin-top:6px}
+.tp-fill{height:100%;width:0;background:linear-gradient(90deg,#7C3AED,#F59E0B);transition:width .4s}
+.artifact-slots,.badges-row{display:flex;flex-wrap:wrap;gap:6px}
+.artifact-slot{width:40px;height:40px;border-radius:12px;border:2px dashed #CBD5E1;display:flex;align-items:center;justify-content:center;font-size:1.15rem;background:#F8FAFC;opacity:.4}
+.artifact-slot.filled{opacity:1;border-style:solid;border-color:var(--primary);background:var(--primary-light)}
+.badge{display:inline-block;background:var(--accent);color:#78350F;padding:4px 10px;border-radius:20px;font-weight:700;font-size:.75rem}
+.xp-bar{font-weight:700;color:var(--primary-dark);font-size:.95rem}
+.tower{background:linear-gradient(160deg,#1E1B4B,#5B21B6 55%,#F59E0B);border-radius:24px;padding:1.3rem;color:#fff;margin:1.2rem 0;text-align:center}
+.crystals{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:1rem 0}
+.crystal{width:66px;height:66px;border-radius:16px;background:rgba(255,255,255,.1);border:2px dashed rgba(255,255,255,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.4rem;opacity:.35;transition:.35s}
+.crystal.on{opacity:1;border-style:solid;border-color:#FBBF24;background:rgba(251,191,36,.25);box-shadow:0 0 18px rgba(251,191,36,.45)}
+.crystal small{font-size:.6rem;margin-top:2px}
+.clarity-bar{height:12px;background:rgba(0,0,0,.25);border-radius:99px;overflow:hidden;margin-top:6px}
+.clarity-fill{height:100%;width:100%;background:linear-gradient(90deg,#34D399,#FBBF24);transition:width .3s}
+section.mission{background:#fff;border-radius:20px;padding:1.4rem 1.6rem;margin:1.3rem 0;box-shadow:var(--card-shadow);border:2px solid #E2E8F0;display:none}
+section.mission.active{display:block}
+section.mission.star{border-color:#F59E0B;box-shadow:0 0 0 3px rgba(245,158,11,.25)}
+.mission h2{margin-top:0;color:var(--primary-dark);font-size:1.28rem}
+.level-tag{display:inline-block;background:#EDE9FE;color:var(--primary-dark);padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:700;margin-bottom:8px}
+.level-tag.star{background:#FEF3C7;color:#9A3412}
+.comic{display:flex;gap:10px;flex-wrap:wrap;margin:1rem 0}
+.comic-panel{flex:1;min-width:200px;background:#F8FAFC;border:2px solid #E2E8F0;border-radius:16px;padding:12px;display:flex;gap:10px}
+.comic-avatar{font-size:2.1rem}
+.theory{background:var(--primary-light);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:12px 0}
+.theory h4{margin:.2rem 0 .5rem;color:var(--primary-dark)}
+.feedback{display:none;border-radius:14px;padding:12px 14px;margin:12px 0;border-left:5px solid var(--primary)}
+.feedback.show{display:block}
+.feedback.ok{background:#ECFDF5;border-color:var(--success)}
+.feedback.err{background:#FEF2F2;border-color:var(--danger)}
+.action-btn{background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:30px;font-weight:700;cursor:pointer;font-size:.98rem;box-shadow:0 4px 0 var(--primary-dark);margin:4px;display:inline-block;text-decoration:none}
+.action-btn:hover{background:#6D28D9}
+.action-btn.accent{background:var(--accent);color:#78350F;box-shadow:0 4px 0 #B45309}
+.action-btn.ghost{background:#fff;color:var(--primary-dark);border:2px solid var(--line);box-shadow:none}
+.choice-card{display:block;padding:12px 14px;margin:8px 0;border:2px solid #E2E8F0;border-radius:14px;cursor:pointer;background:#F8FAFC;font-weight:600}
+.choice-card:hover{border-color:var(--primary)}
+.choice-card.good{border-color:var(--success);background:#D1FAE5}
+.choice-card.bad{border-color:var(--danger);background:#FEE2E2}
+.fog-card{background:linear-gradient(135deg,#E2E8F0,#F1F5F9);border:2px dashed #94A3B8;border-radius:16px;padding:14px;margin:10px 0}
+.crystal-card{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:2px solid #F59E0B;border-radius:16px;padding:14px;margin:10px 0;color:#78350F}
+.arena{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:700px){.arena{grid-template-columns:1fr}}
+.drop-zone{min-height:100px;border:2px dashed #A78BFA;border-radius:16px;padding:10px;background:#FAF5FF;text-align:center}
+.drop-zone.filled{border-style:solid;border-color:var(--success);background:#ECFDF5}
+.drag-chip{display:inline-block;padding:8px 12px;margin:4px;background:#fff;border:1px solid #C4B5FD;border-radius:12px;cursor:grab;font-weight:600;user-select:none}
+.chip-bank{min-height:48px;padding:8px;border:2px dashed #CBD5E1;border-radius:12px;background:#fff;margin:8px 0}
+.sort-card{display:flex;align-items:center;justify-content:space-between;gap:10px;border:2px solid #E2E8F0;border-radius:12px;padding:10px 12px;margin:8px 0;background:#fff;flex-wrap:wrap}
+.sort-card.right{border-color:var(--success);background:#ECFDF5}
+.sort-card.wrong{border-color:var(--danger);background:#FEF2F2}
+.sort-btns{display:flex;gap:6px;flex-wrap:wrap}
+.sort-btns button{border:1px solid #C4B5FD;background:#F5F3FF;border-radius:10px;padding:6px 10px;cursor:pointer;font-weight:700;font-size:.85rem}
+.match-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:10px;margin:8px 0}
+.match-row .phrase{flex:1;min-width:150px;font-weight:600}
+.match-row select{flex:1;min-width:140px;padding:8px;border-radius:10px;border:1px solid var(--line);font-weight:700}
+.match-row.right{background:#ECFDF5;border-color:var(--success)}
+.match-row.wrong{background:#FEF2F2;border-color:var(--danger)}
+.fill-blank{border:none;background:#EDE9FE;border-bottom:2px solid var(--primary);padding:4px 8px;border-radius:6px;font-weight:700;min-width:110px;text-align:center;font-family:inherit}
+.fill-blank.ok{background:#D1FAE5;border-color:var(--success)}
+.style-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+@media(max-width:800px){.style-grid{grid-template-columns:1fr}}
+.style-box{background:#fff;border:2px solid var(--line);border-radius:16px;padding:12px}
+.style-box h4{margin:.2rem 0 .4rem;color:var(--primary-dark)}
+.style-box textarea,textarea,input[type=text],input[type=url],select{width:100%;border-radius:12px;border:1px solid var(--line);padding:10px;font-family:inherit;font-size:1rem;margin:6px 0}
+.style-box textarea{min-height:100px}
+.prompt-box{background:#F5F3FF;padding:1rem;border-radius:12px;margin:1rem 0;border:1px solid #DDD6FE;white-space:pre-wrap;word-break:break-word}
+.prompt-box.img{background:#FFFBEB;border-color:#F59E0B}
+.img-preview{margin-top:12px;min-height:140px;border:2px dashed #A78BFA;border-radius:16px;padding:12px;text-align:center;background:#FAF5FF}
+.img-preview img{max-width:100%;max-height:280px;border-radius:14px;border:3px solid #F59E0B}
+.hidden{display:none!important}
+.score-pill{display:inline-block;background:#EDE9FE;color:var(--primary-dark);padding:4px 12px;border-radius:20px;font-weight:800;margin:6px 0}
+.boss{background:#1E1B4B;color:#F5F3FF;border-radius:20px;padding:16px;margin:12px 0;border:2px solid #F59E0B}
+.boss .name{color:#FBBF24;font-weight:800;font-size:1.2rem}
+.hp-hearts{font-size:1.25rem;letter-spacing:2px}
+#finalCongrats{display:none;background:linear-gradient(135deg,#FBBF24,#F59E0B);border-radius:28px;padding:2rem;text-align:center;color:#3E2C0B;border:4px solid #D97706;margin:2rem 0}
+#finalCongrats.show{display:block}
+#finalCongrats img{max-width:220px;border-radius:16px;border:4px solid #fff;margin:12px 0}
+.card,.reflection-box,.objectives,.ai-timetable{background:#fff;border-radius:20px;padding:1.4rem;margin:1.4rem 0;border:1px solid #E2E8F0;box-shadow:var(--card-shadow)}
+.objectives{background:var(--primary-light);border-color:var(--primary)}
+.reflection-radio-label{display:inline-flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:30px;cursor:pointer;margin:4px}
+.lesson-nav{display:flex;justify-content:space-between;gap:1rem;margin:2rem 0 1rem;flex-wrap:wrap}
+.nav-btn{flex:1;border:1px solid #DDD6FE;border-radius:16px;padding:1rem 1.4rem;text-decoration:none;color:#1E293B;background:#fff;min-width:160px}
+.nav-btn:hover{border-color:var(--primary);background:var(--primary-light)}
+.nav-btn .lbl{font-size:.85rem;color:#64748B}.nav-btn .ttl{font-weight:700}
+.roby-panel{position:fixed;bottom:18px;right:18px;z-index:1000;max-width:340px;display:flex;gap:10px;align-items:flex-end}
+.roby-avatar{width:64px;height:64px;background:linear-gradient(135deg,#7C3AED,#5B21B6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 4px 12px rgba(0,0,0,.2);animation:bob 2s ease-in-out infinite;flex-shrink:0}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.roby-bubble{background:#fff;border-radius:16px 16px 4px 16px;padding:12px 14px;box-shadow:0 4px 20px rgba(0,0,0,.15);border:2px solid var(--primary);font-size:.92rem}
+#confetti-container{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:fall 3s ease-out forwards}
+@keyframes fall{0%{transform:translateY(-60px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.ai-links{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+th{background:var(--primary-light);color:var(--primary-dark)}
+</style>
+<link rel="stylesheet" href="ai-common.css" />
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <div class="top-bar">
+      <a class="brand" href="Карта.html">
+        <img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" />
+        <div><div class="brand-name">РОБОВИТА</div><div class="brand-tag">учимся программировать роботов и игры</div></div>
+      </a>
+      <div style="color:#C4B5FD;">Занятие 7 · Модуль 2</div>
+    </div>
+    <div class="hero">
+      <div class="hex-badge">★</div>
+      <div>
+        <div class="module-pill">Модуль 2 · Мастер промптов</div>
+        <h1>Текст в 3 стилях + герой</h1>
+        <p class="subtitle">Тренировка: кристаллы формулы · Итог: 3 текста и картинка</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="main-goal">
+    <h2>★ Главная задача урока</h2>
+    <p style="margin:0;font-weight:700;">Создай героя и сдай пакет:</p>
+    <ul>
+      <li><b>🖼 Изображение героя</b> (промпт + картинка из нейросети)</li>
+      <li><b>😊 Дружеский</b>, <b>📚 учебный</b> и <b>🧠 экспертный</b> тексты про этого героя</li>
+    </ul>
+    <p style="margin:.6rem 0 0;font-size:.95rem;">Кристаллы «Роль + Задача + Контекст + Формат» — тренажёр, чтобы тексты и промпт картинки получились сильными.</p>
+  </div>
+
+  <div class="scenario-box">
+    <div style="font-size:2.8rem;">🏰</div>
+    <div>
+      <strong>Сюжет:</strong> Роби в Башне Тумана. Туман = слабые запросы. Пройди этажи, собери 4 кристалла, победи босса — и выполни <b>главный проект</b>: герой на картинке и в трёх голосах.
+    </div>
+  </div>
+
+  <div class="objectives">
+    <h2>🎯 Цели</h2>
+    <ul>
+      <li>Собрать формулу промпта через игру</li>
+      <li>Написать <b>один смысл в трёх стилях</b></li>
+      <li>Сгенерировать и сохранить <b>изображение героя</b></li>
+    </ul>
+  </div>
+
+  <div class="ai-timetable">
+    <h2>⏱️ План ≈90 мин</h2>
+    <table>
+      <tr><th>Этап</th><th>Время</th></tr>
+      <tr><td>Кристаллы и мини-игры (этажи 1–8)</td><td>35 мин</td></tr>
+      <tr><td>Босс (этаж 9)</td><td>10 мин</td></tr>
+      <tr><td>★ Проект: картинка + 3 стиля (10–12)</td><td>35 мин</td></tr>
+      <tr><td>Сдача и рефлексия</td><td>10 мин</td></tr>
+    </table>
+  </div>
+
+  <div class="layout">
+    <aside class="mission-map" id="missionMap"><h3>🗺️ Этажи</h3></aside>
+    <div class="main-content">
+      <div class="achieve-rail" id="achieveRail">
+        <div class="achieve-rail-title"><span>🏅 Достижения</span></div>
+        <div id="progressProfileHost"></div>
+        <div class="total-progress">
+          <strong>Прогресс: <span id="totalPct">0</span>%</strong>
+          <div class="tp-track"><div class="tp-fill" id="totalProgress"></div></div>
+        </div>
+        <div class="badges-bar">
+          <h3 style="margin:0 0 .5rem;color:var(--primary-dark);font-size:1rem;">🏅 Значки</h3>
+          <div class="badges-row" id="badgesContainer"><span style="opacity:.5;font-size:.85rem;">Пока пусто</span></div>
+        </div>
+        <div class="artifact-bar">
+          <h3 style="margin:0 0 .5rem;color:var(--primary-dark);font-size:1rem;">💎 (<span id="artifactCount">0</span>/12)</h3>
+          <div class="artifact-slots" id="artifactSlots"></div>
+        </div>
+        <div class="xp-bar" id="xpDisplay">⭐ Новичок | XP: 0</div>
+        <div style="margin-top:8px;font-weight:700;">Ясность</div>
+        <div class="hp-hearts" id="hearts">💜💜💜</div>
+      </div>
+
+      <div class="tower">
+        <h3>🏰 Башня Тумана</h3>
+        <p style="opacity:.85;font-size:.9rem;">Собери кристаллы → открой ★ проект</p>
+        <div class="crystals">
+          <div class="crystal" id="crRole"><span>🎭</span><small>Роль</small></div>
+          <div class="crystal" id="crTask"><span>🎯</span><small>Задача</small></div>
+          <div class="crystal" id="crCtx"><span>🌍</span><small>Контекст</small></div>
+          <div class="crystal" id="crFmt"><span>📦</span><small>Формат</small></div>
+        </div>
+        <div>Ясность: <span id="clarityPct">100</span>%</div>
+        <div class="clarity-bar"><div class="clarity-fill" id="clarityFill"></div></div>
+        <p id="towerStatus" style="margin:.8rem 0 0;font-weight:700;opacity:.9;">Старт: этаж 1</p>
+      </div>
+
+      <div id="missionsContainer"></div>
+
+      <div id="finalCongrats">
+        <h2>🏆 Проект сдан!</h2>
+        <p>Текст в 3 стилях + изображение героя — готовы.</p>
+        <div id="finalImg"></div>
+        <p style="font-size:1.25rem;font-weight:800;">★ Мастер трёх голосов</p>
+      </div>
+
+      <div class="card">
+        <h2>🏁 Что сдать в Classroom</h2>
+        <ul>
+          <li>🖼 Картинка героя</li>
+          <li>😊📚🧠 Три текста</li>
+          <li>По желанию — промпты</li>
+        </ul>
+        <a href="https://classroom.google.com" target="_blank" class="action-btn">📤 Classroom</a>
+        <a href="prez7.html" class="action-btn ghost">📽 Презентация</a>
+      </div>
+
+      <div class="reflection-box">
+        <h2>💭 Рефлексия</h2>
+        <label class="reflection-radio-label"><input type="radio" name="sat" value="yes"> 🚀 Огонь</label>
+        <label class="reflection-radio-label"><input type="radio" name="sat" value="ok"> 🤔 Почти</label>
+        <label class="reflection-radio-label"><input type="radio" name="sat" value="no"> 😕 Повторить</label>
+        <textarea id="reflectionText" placeholder="Какой стиль текста был самым сложным? Похож ли герой на картинке на твоё описание?"></textarea>
+        <button class="action-btn" onclick="submitReflection()">Отправить</button>
+        <p id="reflectionResult" style="font-weight:700;"></p>
+      </div>
+
+      <div class="lesson-nav">
+        <a class="nav-btn" href="Занятие_6.html"><span class="lbl">назад</span><div class="ttl">← 6</div></a>
+        <a class="nav-btn" href="prez7.html"><span class="lbl">презентация</span><div class="ttl">prez7 →</div></a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-brand"><img src="https://robovita.by/wp-content/uploads/elementor/thumbs/dlya-sajtalogo-qej515h43prl8ythj1imhr4q78480k3bz18uut9d6o.png" alt="Логотип" /> РОБОВИТА</div>
+    <div>Занятие 7 · текст в 3 стилях + изображение героя</div>
+  </div>
+</footer>
+
+<div class="roby-panel">
+  <div class="roby-avatar">🤖</div>
+  <div class="roby-bubble"><strong>Роби:</strong> <span id="robyText">Главное сегодня — 3 текста и картинка героя. Начни с этажа 1!</span></div>
+</div>
+<div id="confetti-container"></div>
+
+<script src="ai-progress.js"></script>
+<script>
+const TOTAL = 12;
+const ARTIFACTS = [
+  {id:1,icon:'🎭',name:'Роль',xp:100},{id:2,icon:'🕵️',name:'Маски',xp:100},
+  {id:3,icon:'🎯',name:'Задача',xp:110},{id:4,icon:'⚡',name:'Глаголы',xp:110},
+  {id:5,icon:'🌍',name:'Контекст',xp:110},{id:6,icon:'🧩',name:'Детектив',xp:120},
+  {id:7,icon:'📦',name:'Формат',xp:120},{id:8,icon:'🔧',name:'Ремонт',xp:120},
+  {id:9,icon:'🐉',name:'Босс',xp:150},{id:10,icon:'🖼',name:'Картинка',xp:180},
+  {id:11,icon:'★',name:'3 стиля',xp:200},{id:12,icon:'🚀',name:'Сдача',xp:180}
+];
+const MAP_LABELS = [
+  {id:1,ico:'🎭',lab:'1. Роль'},{id:2,ico:'🕵️',lab:'2. Маски'},
+  {id:3,ico:'🎯',lab:'3. Задача'},{id:4,ico:'⚡',lab:'4. Глаголы'},
+  {id:5,ico:'🌍',lab:'5. Контекст'},{id:6,ico:'🧩',lab:'6. Детектив'},
+  {id:7,ico:'📦',lab:'7. Формат'},{id:8,ico:'🔧',lab:'8. Ремонт'},
+  {id:9,ico:'🐉',lab:'9. Босс'},{id:10,ico:'🖼',lab:'10. ★ Герой+картинка'},
+  {id:11,ico:'★',lab:'11. ★ Текст в 3 стилях'},{id:12,ico:'📤',lab:'12. ★ Сдача'}
+];
+
+const gameState = {
+  xp:0, current:1, lives:3, clarity:100,
+  completed:new Set(), artifacts:new Set(), badges:new Set(),
+  crystals:{role:false,task:false,ctx:false,fmt:false},
+  hero:{name:'',power:'',look:'',weak:'',art:'',imgPrompt:'',imgData:'',imgUrl:''},
+  voices:{friendly:'',school:'',expert:''},
+  studentName:'Герой'
+};
+
+function saveState(){ if(window.RobovitaProgress) RobovitaProgress.save(); }
+function robySay(t){ const el=document.getElementById('robyText'); if(el) el.textContent=t; }
+function showFeedback(id,text,type){
+  const el=document.getElementById(id); if(!el) return;
+  el.className='feedback show '+(type||'info');
+  el.innerHTML='<strong>🤖 Роби:</strong> '+text;
+}
+function earnBadge(name){
+  if(gameState.badges.has(name)) return;
+  gameState.badges.add(name);
+  const box=document.getElementById('badgesContainer');
+  if(!box.querySelector('.badge')) box.innerHTML='';
+  const b=document.createElement('span'); b.className='badge'; b.textContent=name; box.appendChild(b);
+  saveState();
+}
+function hitClarity(dmg){
+  gameState.clarity=Math.max(0,gameState.clarity-dmg);
+  if(gameState.clarity===0){
+    gameState.lives=Math.max(0,gameState.lives-1);
+    gameState.clarity=100;
+    if(gameState.lives===0){ gameState.lives=3; robySay('Туман сбил… Жизни восстановлены. Вперёд к проекту!'); }
+  }
+  updateUI(); saveState();
+}
+function healClarity(n){ gameState.clarity=Math.min(100,gameState.clarity+n); updateUI(); }
+
+const MissionManager = {
+  complete(id){
+    if(gameState.completed.has(id)) return;
+    gameState.completed.add(id);
+    gameState.artifacts.add(id);
+    const art=ARTIFACTS.find(a=>a.id===id);
+    if(art) gameState.xp+=art.xp;
+    if(id===gameState.current) gameState.current=Math.min(TOTAL+1,id+1);
+    updateUI(); unlockMissions(); saveState();
+    if(gameState.completed.size===TOTAL){
+      document.getElementById('finalCongrats').classList.add('show');
+      const h=gameState.hero;
+      const src=h.imgData||h.imgUrl;
+      document.getElementById('finalImg').innerHTML=src?`<img src="${src}" alt="Герой">`:'';
+      document.getElementById('towerStatus').textContent='Проект закрыт! 🎉';
+      earnBadge('★ Мастер трёх голосов');
+      launchConfetti();
+      robySay('Ты сделал главное: 3 стиля и картинку героя!');
+    }
+  }
+};
+
+function createMissionShell(id,title,html,isStar){
+  const sec=document.createElement('section');
+  sec.className='mission'+(isStar?' star':'');
+  sec.id='mission'+id; sec.dataset.id=id;
+  sec.innerHTML=`<span class="level-tag${isStar?' star':''}">${isStar?'★ ':''}Этаж ${id} / ${TOTAL}</span><h2>${title}</h2>${html}`;
+  document.getElementById('missionsContainer').appendChild(sec);
+}
+
+function initShell(){
+  const map=document.getElementById('missionMap');
+  map.innerHTML='<h3>🗺️ Этажи</h3>';
+  MAP_LABELS.forEach(m=>{
+    const d=document.createElement('div');
+    d.className='map-item'; d.id='map'+m.id;
+    d.innerHTML=`<span class="ico">${m.ico}</span><span class="lab">${m.lab}</span>`;
+    d.onclick=()=>{ if(m.id<=gameState.current||gameState.completed.has(m.id)) showMission(m.id); };
+    map.appendChild(d);
+  });
+  const slots=document.getElementById('artifactSlots'); slots.innerHTML='';
+  ARTIFACTS.forEach(a=>{
+    const s=document.createElement('div'); s.className='artifact-slot'; s.id='art'+a.id;
+    s.textContent='❔'; s.title=a.name; slots.appendChild(s);
+  });
+}
+
+function updateUI(){
+  const pct=Math.round(gameState.completed.size/TOTAL*100);
+  document.getElementById('totalPct').textContent=pct;
+  document.getElementById('totalProgress').style.width=pct+'%';
+  document.getElementById('artifactCount').textContent=gameState.artifacts.size;
+  document.getElementById('xpDisplay').textContent=`⭐ ${gameState.xp<500?'Новичок':gameState.xp<1200?'Искатель':'Мастер'} | XP: ${gameState.xp}`;
+  document.getElementById('clarityPct').textContent=gameState.clarity;
+  document.getElementById('clarityFill').style.width=gameState.clarity+'%';
+  document.getElementById('hearts').textContent='💜'.repeat(gameState.lives)+'🤍'.repeat(3-gameState.lives);
+  ARTIFACTS.forEach(a=>{
+    const slot=document.getElementById('art'+a.id);
+    if(slot){ const on=gameState.artifacts.has(a.id); slot.classList.toggle('filled',on); slot.textContent=on?a.icon:'❔'; }
+  });
+  document.getElementById('crRole').classList.toggle('on',gameState.crystals.role);
+  document.getElementById('crTask').classList.toggle('on',gameState.crystals.task);
+  document.getElementById('crCtx').classList.toggle('on',gameState.crystals.ctx);
+  document.getElementById('crFmt').classList.toggle('on',gameState.crystals.fmt);
+  const n=[gameState.crystals.role,gameState.crystals.task,gameState.crystals.ctx,gameState.crystals.fmt].filter(Boolean).length;
+  if(gameState.completed.size>=9) document.getElementById('towerStatus').textContent='★ Проект открыт: картинка + 3 стиля';
+  else if(n===4) document.getElementById('towerStatus').textContent='4 кристалла! Пора к боссу';
+  MAP_LABELS.forEach(m=>{
+    const el=document.getElementById('map'+m.id); if(!el) return;
+    el.classList.remove('open','current','done','locked');
+    if(gameState.completed.has(m.id)) el.classList.add('done');
+    else if(m.id===gameState.current) el.classList.add('open','current');
+    else if(m.id<gameState.current) el.classList.add('open');
+    else el.classList.add('locked');
+  });
+}
+function unlockMissions(){ showMission(gameState.completed.size===TOTAL?TOTAL:Math.min(gameState.current,TOTAL)); }
+function showMission(id){
+  document.querySelectorAll('section.mission').forEach(sec=>{
+    const mid=+sec.dataset.id;
+    const can=mid<=gameState.current||gameState.completed.has(mid)||gameState.completed.size===TOTAL;
+    sec.classList.toggle('active', can && mid===id);
+  });
+}
+
+/* ===== 1 РОЛЬ ===== */
+createMissionShell(1,'Кристалл «Роль»',
+  `<div class="comic"><div class="comic-panel"><div class="comic-avatar">🤖</div><div><strong>Роби:</strong> Кто говорит — тот задаёт тон. Потом это поможет описать героя в разных стилях.</div></div></div>
+  <div class="theory"><h4>💎 Роль</h4><p>«Ты учитель / тренер / сказочник…»</p></div>
+  <label class="choice-card" data-ok="0">Напиши про космос</label>
+  <label class="choice-card" data-ok="1">Ты астронавт-гид. Расскажи про Марс</label>
+  <label class="choice-card" data-ok="0">Хочу интересный текст</label>
+  <div class="feedback" id="m1fb"></div>`);
+document.querySelectorAll('#mission1 .choice-card').forEach(card=>{
+  card.onclick=()=>{
+    if(gameState.completed.has(1)) return;
+    document.querySelectorAll('#mission1 .choice-card').forEach(c=>c.classList.remove('good','bad'));
+    if(card.dataset.ok==='1'){
+      card.classList.add('good'); gameState.crystals.role=true; healClarity(15);
+      showFeedback('m1fb','Кристалл Роли твой!','ok'); earnBadge('🎭 Роль'); MissionManager.complete(1);
+      robySay('Этаж 2 — подбери маски под аудиторию.');
+    } else { card.classList.add('bad'); hitClarity(18); showFeedback('m1fb','Туман: нет роли.','err'); }
+  };
+});
+
+/* ===== 2 МАСКИ ===== */
+createMissionShell(2,'Мастер масок',
+  `<p>Тема: «как чистить зубы». Подбери роль.</p>
+  <div class="match-row" data-a="друг"><span class="phrase">Для одноклассника, весело</span>
+    <select><option value="">—</option><option value="друг">Ты лучший друг</option><option value="стоматолог">Ты стоматолог</option><option value="учёный">Ты учёный</option></select></div>
+  <div class="match-row" data-a="стоматолог"><span class="phrase">Серьёзно про здоровье</span>
+    <select><option value="">—</option><option value="друг">Ты лучший друг</option><option value="стоматолог">Ты стоматолог</option><option value="учёный">Ты учёный</option></select></div>
+  <div class="match-row" data-a="учёный"><span class="phrase">Про бактерии и эмаль</span>
+    <select><option value="">—</option><option value="друг">Ты лучший друг</option><option value="стоматолог">Ты стоматолог</option><option value="учёный">Ты учёный</option></select></div>
+  <button class="action-btn" onclick="m2check()">Проверить</button>
+  <div class="feedback" id="m2fb"></div>`);
+window.m2check=function(){
+  let ok=true;
+  document.querySelectorAll('#mission2 .match-row').forEach(row=>{
+    const good=row.querySelector('select').value===row.dataset.a;
+    row.classList.toggle('right',good); row.classList.toggle('wrong',!good); if(!good) ok=false;
+  });
+  if(!ok){ hitClarity(12); showFeedback('m2fb','Роль должна совпадать с аудиторией.','err'); return; }
+  healClarity(15); showFeedback('m2fb','Маски подобраны!','ok'); MissionManager.complete(2);
+};
+
+/* ===== 3 ЗАДАЧА ===== */
+createMissionShell(3,'Кристалл «Задача»',
+  `<div class="theory"><h4>💎 Задача</h4><p>Глагол: объясни, составь, сравни, придумай…</p></div>
+  <div class="chip-bank" id="m3bank"></div>
+  <div class="arena">
+    <div><b>Роль</b><div class="drop-zone filled">Ты тренер роботов</div></div>
+    <div><b>Задача →</b><div class="drop-zone" id="m3zone" ondragover="allow(event)" ondrop="m3drop(event)">Перетащи</div></div>
+  </div>
+  <button class="action-btn" onclick="m3check()">Проверить</button>
+  <div class="feedback" id="m3fb"></div>`);
+const M3=[{t:'составь 5 советов новичку',ok:1},{t:'что-нибудь про роботов',ok:0},{t:'привет',ok:0},{t:'объясни, как заряжать робота',ok:1}];
+let m3chip=null;
+(function(){
+  const bank=document.getElementById('m3bank');
+  M3.sort(()=>Math.random()-.5).forEach((item,i)=>{
+    const c=document.createElement('div'); c.className='drag-chip'; c.draggable=true; c.id='m3c'+i;
+    c.dataset.ok=item.ok; c.textContent=item.t;
+    c.ondragstart=e=>e.dataTransfer.setData('text',c.id);
+    bank.appendChild(c);
+  });
+})();
+window.allow=e=>e.preventDefault();
+window.m3drop=function(e){
+  e.preventDefault();
+  const c=document.getElementById(e.dataTransfer.getData('text'));
+  const z=document.getElementById('m3zone'); z.innerHTML=''; z.appendChild(c); z.classList.add('filled'); m3chip=c;
+};
+window.m3check=function(){
+  if(!m3chip){ showFeedback('m3fb','Перетащи задачу.','err'); return; }
+  if(m3chip.dataset.ok==='1'){ gameState.crystals.task=true; healClarity(15); showFeedback('m3fb','Кристалл Задачи!','ok'); MissionManager.complete(3); }
+  else { hitClarity(18); showFeedback('m3fb','Нужен ясный глагол.','err'); }
+};
+
+/* ===== 4 ГЛАГОЛЫ ===== */
+createMissionShell(4,'Охота на глаголы',
+  `<p>Задача или Туман? Нужно <b>6</b> верных.</p>
+  <div id="m4sort"></div>
+  <p class="score-pill" id="m4score">Верно: 0 / 6</p>
+  <div class="feedback" id="m4fb"></div>`);
+const M4SORT=[
+  {t:'Сравни кошку и собаку в таблице',a:'task'},{t:'Напиши нормально',a:'fog'},
+  {t:'Придумай 3 названия клуба',a:'task'},{t:'Что-нибудь весёлое',a:'fog'},
+  {t:'Объясни фотосинтез',a:'task'},{t:'Сделай красиво',a:'fog'},
+  {t:'Составь чек-лист из 5 пунктов',a:'task'},{t:'Нужен текст',a:'fog'}
+];
+let m4ok=0;
+(function(){
+  const box=document.getElementById('m4sort');
+  M4SORT.forEach((item,i)=>{
+    const row=document.createElement('div'); row.className='sort-card'; row.id='m4r'+i; row.dataset.a=item.a;
+    row.innerHTML=`<span>${item.t}</span><div class="sort-btns">
+      <button type="button" onclick="m4ans(${i},'task')">🎯 Задача</button>
+      <button type="button" onclick="m4ans(${i},'fog')">🌫 Туман</button></div>`;
+    box.appendChild(row);
+  });
+})();
+window.m4ans=function(i,ans){
+  const row=document.getElementById('m4r'+i);
+  if(row.dataset.done) return;
+  const good=ans===row.dataset.a;
+  row.dataset.done='1'; row.classList.add(good?'right':'wrong');
+  row.querySelector('.sort-btns').innerHTML=good?'✅':'❌';
+  if(good){ m4ok++; healClarity(5); } else hitClarity(10);
+  document.getElementById('m4score').textContent=`Верно: ${m4ok} / 6`;
+  if(m4ok>=6 && !gameState.completed.has(4)){ showFeedback('m4fb','Охотник на глаголы!','ok'); earnBadge('⚡ Глаголы'); MissionManager.complete(4); }
+};
+
+/* ===== 5 КОНТЕКСТ ===== */
+createMissionShell(5,'Кристалл «Контекст»',
+  `<div class="theory"><h4>💎 Контекст</h4><p>Для кого, зачем, ограничения.</p></div>
+  <div class="fog-card"><b>Туман:</b> «Ты учитель. Объясни гравитацию.»</div>
+  <label class="choice-card" data-ok="0">Для университета на 20 страниц</label>
+  <label class="choice-card" data-ok="1">Для ребёнка 9 лет, на примере мяча, в 4 предложениях</label>
+  <label class="choice-card" data-ok="0">Просто подробно</label>
+  <div class="feedback" id="m5fb"></div>`);
+document.querySelectorAll('#mission5 .choice-card').forEach(card=>{
+  card.onclick=()=>{
+    if(gameState.completed.has(5)) return;
+    document.querySelectorAll('#mission5 .choice-card').forEach(c=>c.classList.remove('good','bad'));
+    if(card.dataset.ok==='1'){
+      card.classList.add('good'); gameState.crystals.ctx=true; healClarity(20);
+      showFeedback('m5fb','Контекст пойман!','ok'); MissionManager.complete(5);
+    } else { card.classList.add('bad'); hitClarity(15); showFeedback('m5fb','Нужны детали «для кого».','err'); }
+  };
+});
+
+/* ===== 6 ДЕТЕКТИВ ===== */
+createMissionShell(6,'Детектив деталей',
+  `<p>Чего не хватает?</p>
+  <div class="fog-card">«Ты повар. Придумай рецепт пиццы.»</div>
+  <label class="choice-card"><input type="radio" name="d1" value="b"> Контекста (для кого / время / сложность)</label>
+  <label class="choice-card"><input type="radio" name="d1" value="a"> Роли — её нет</label>
+  <div class="fog-card">«Объясни дроби для 3 класса.»</div>
+  <label class="choice-card"><input type="radio" name="d2" value="a"> Роли (кто объясняет)</label>
+  <label class="choice-card"><input type="radio" name="d2" value="b"> Контекста — уже есть</label>
+  <div class="fog-card">«Ты гид. Расскажи про замок детям 5 лет.»</div>
+  <label class="choice-card"><input type="radio" name="d3" value="a"> Формата (сколько предложений / список?)</label>
+  <label class="choice-card"><input type="radio" name="d3" value="b"> Задачи — её нет</label>
+  <button class="action-btn" onclick="m6check()">Проверить</button>
+  <div class="feedback" id="m6fb"></div>`);
+window.m6check=function(){
+  const a1=document.querySelector('input[name="d1"]:checked');
+  const a2=document.querySelector('input[name="d2"]:checked');
+  const a3=document.querySelector('input[name="d3"]:checked');
+  if(!a1||!a2||!a3){ showFeedback('m6fb','Ответь на 3 улики.','err'); return; }
+  if(a1.value==='b'&&a2.value==='a'&&a3.value==='a'){
+    healClarity(20); showFeedback('m6fb','Дело раскрыто!','ok'); MissionManager.complete(6);
+  } else { hitClarity(15); showFeedback('m6fb','Перечитай туманы.','err'); }
+};
+
+/* ===== 7 ФОРМАТ ===== */
+createMissionShell(7,'Кристалл «Формат» + сборка',
+  `<div class="theory"><h4>💎 Формат</h4><p>Список, таблица, N предложений…</p></div>
+  <p>Кликай куски <b>по порядку формулы</b>:</p>
+  <div id="m7bank"></div>
+  <div class="prompt-box" id="m7line">…</div>
+  <button class="action-btn ghost" onclick="m7reset()">Сброс</button>
+  <button class="action-btn" onclick="m7check()">Активировать</button>
+  <div class="feedback" id="m7fb"></div>`);
+const M7ORDER=[
+  'Ты капитан космического корабля.',
+  'Придумай мини-квест на 1 урок.',
+  'Для детей 9–10 лет, без страшилок.',
+  'Оформи списком из 5 шагов.'
+];
+let m7p=[];
+(function(){
+  const bank=document.getElementById('m7bank');
+  [...M7ORDER].sort(()=>Math.random()-.5).forEach(t=>{
+    const c=document.createElement('div'); c.className='drag-chip'; c.style.cursor='pointer'; c.textContent=t;
+    c.onclick=()=>{ if(c.classList.contains('used')) return; c.classList.add('used'); c.style.opacity='.35'; m7p.push(t); document.getElementById('m7line').textContent=m7p.join(' '); };
+    bank.appendChild(c);
+  });
+})();
+window.m7reset=function(){
+  m7p=[]; document.getElementById('m7line').textContent='…';
+  document.querySelectorAll('#m7bank .drag-chip').forEach(c=>{ c.classList.remove('used'); c.style.opacity='1'; });
+};
+window.m7check=function(){
+  if(!(m7p.length===4&&m7p.every((v,i)=>v===M7ORDER[i]))){ hitClarity(10); showFeedback('m7fb','Порядок: Роль → Задача → Контекст → Формат.','err'); return; }
+  gameState.crystals.fmt=true; healClarity(25);
+  showFeedback('m7fb','Четвёртый кристалл!','ok'); earnBadge('📦 Формат'); MissionManager.complete(7);
+  robySay('Скоро ★ проект. Ещё ремонт и босс!');
+};
+
+/* ===== 8 РЕМОНТ ===== */
+createMissionShell(8,'Ремонт промпта',
+  `<div class="fog-card">Было: «Напиши про собак»</div>
+  <div class="crystal-card">
+    <input class="fill-blank" id="rRole" placeholder="Роль"> .
+    <input class="fill-blank" id="rTask" placeholder="Задача" style="min-width:160px"> .
+    Для <input class="fill-blank" id="rCtx" placeholder="кого" style="min-width:130px"> ,
+    оформи <input class="fill-blank" id="rFmt" placeholder="формат" style="min-width:130px"> .
+  </div>
+  <p style="font-size:.9rem;color:#64748B">Подсказка: ветеринар/кинолог · расскажи/объясни · детям 9 лет · в 5 пунктах</p>
+  <button class="action-btn" onclick="m8check()">Починить</button>
+  <div class="prompt-box hidden" id="m8out"></div>
+  <div class="feedback" id="m8fb"></div>`);
+window.m8check=function(){
+  const role=rRole.value.trim().toLowerCase(), task=rTask.value.trim().toLowerCase();
+  const ctx=rCtx.value.trim().toLowerCase(), fmt=rFmt.value.trim().toLowerCase();
+  const okRole=/ветеринар|кинолог|эксперт|дрессиров|учитель/.test(role);
+  const okTask=/расскаж|объясн|опиши|состав|сравн|посовету/.test(task);
+  const okCtx=/дет|класс|школ|лет|нович|квартир/.test(ctx);
+  const okFmt=/пункт|предлож|спис|таблиц|абзац|\d/.test(fmt);
+  [rRole,rTask,rCtx,rFmt].forEach((el,i)=>el.classList.toggle('ok',[okRole,okTask,okCtx,okFmt][i]));
+  if(!(okRole&&okTask&&okCtx&&okFmt)){ hitClarity(12); showFeedback('m8fb','Добавь роль, глагол, «для кого» и формат.','err'); return; }
+  m8out.classList.remove('hidden');
+  m8out.textContent=`${rRole.value.trim()}. ${rTask.value.trim()}. Для ${rCtx.value.trim()}, оформи ${rFmt.value.trim()}.`;
+  healClarity(20); showFeedback('m8fb','Починено!','ok'); earnBadge('🔧 Ремонт'); MissionManager.complete(8);
+};
+
+/* ===== 9 БОСС ===== */
+createMissionShell(9,'Босс: Повелитель Тумана',
+  `<div class="boss"><div class="name">🐉 Повелитель Тумана</div>
+  <p>4 сильных удара. HP: <span id="bossHp">4</span>/4</p>
+  <p style="opacity:.85;font-size:.9rem;">После победы откроется ★ главный проект.</p></div>
+  <div id="bossRounds"></div>
+  <div class="feedback" id="m9fb"></div>`);
+const BOSS=[
+  {q:'Клуб роботов',bad:'Расскажи про клуб',good:'Ты вожатый. Придумай название и 4 занятия клуба роботов для 4 класса, списком'},
+  {q:'Безопасность',bad:'Напиши правило',good:'Ты инструктор. Правило «не отправляй пароли ИИ» для детей, 2 предложения'},
+  {q:'Герой',bad:'Придумай героя',good:'Ты геймдизайнер. Герой-кролик-изобретатель: имя, сила, слабость — 3 пункта'},
+  {q:'Стиль',bad:'Сделай красиво',good:'Ты редактор детского журнала. Факт про вулканы дружеским тоном для 9 лет, 5 предложений'}
+];
+let bossHp=4, bossStep=0;
+(function(){
+  const box=document.getElementById('bossRounds');
+  function render(){
+    if(bossStep>=BOSS.length){
+      showFeedback('m9fb','Босс повержен! ★ Открыт проект: картинка + 3 стиля.','ok');
+      earnBadge('🐉 Победитель'); MissionManager.complete(9);
+      robySay('Теперь главное: этажи 10–12 — герой, картинка, три текста!'); return;
+    }
+    const r=BOSS[bossStep];
+    const opts=[{t:r.bad,ok:0},{t:r.good,ok:1}].sort(()=>Math.random()-.5);
+    box.innerHTML=`<p style="font-weight:800">${r.q}</p>`+opts.map(o=>`<label class="choice-card" data-ok="${o.ok}">${o.t}</label>`).join('');
+    box.querySelectorAll('.choice-card').forEach(card=>{
+      card.onclick=()=>{
+        if(+card.dataset.ok){ card.classList.add('good'); bossHp--; bossHpEl.textContent=bossHp; bossStep++; healClarity(8); setTimeout(render,400); }
+        else { card.classList.add('bad'); hitClarity(22); showFeedback('m9fb','Туманный удар. Бери вариант с кристаллами.','err'); }
+      };
+    });
+  }
+  const bossHpEl=document.getElementById('bossHp');
+  render();
+})();
+
+/* ===== 10 ★ ГЕРОЙ + КАРТИНКА ===== */
+createMissionShell(10,'★ Проект: герой и изображение',
+  `<div class="crystal-card"><b>★ Часть итога №2 — картинка героя</b><br>Сначала карточка, потом промпт и генерация изображения.</div>
+  <label>Имя<input type="text" id="heroName" placeholder="Искра"></label>
+  <label>Суперсила<input type="text" id="heroPower" placeholder="Чинит гаджеты за 10 секунд"></label>
+  <label>Внешность (подробно — для текста и рисунка)<input type="text" id="heroLook" placeholder="Рыжий робот-кот в красном плаще, большие глаза, улыбка"></label>
+  <label>Слабость<input type="text" id="heroWeak" placeholder="Боится воды"></label>
+  <label>Стиль картинки
+    <select id="heroArt">
+      <option value="мультяшный, яркий, для детей">Мультяшный</option>
+      <option value="комикс, чёткие контуры">Комикс</option>
+      <option value="цифровая иллюстрация, мягкий свет">Иллюстрация</option>
+      <option value="пиксель-арт 16-bit">Пиксель-арт</option>
+    </select>
+  </label>
+  <button class="action-btn" onclick="m10save()">💾 Сохранить и собрать промпт картинки</button>
+  <div class="prompt-box hidden" id="m10card"></div>
+  <div class="prompt-box img hidden" id="m10imgPrompt"></div>
+  <div id="m10imgBlock" class="hidden">
+    <p><b>🖼 Сгенерируй изображение</b></p>
+    <ol>
+      <li>Скопируй промпт</li>
+      <li>Вставь в Kandinsky / Шедеврум (с педагогом)</li>
+      <li>Загрузи файл или вставь ссылку</li>
+    </ol>
+    <button class="action-btn ghost" type="button" onclick="m10copyImg()">📋 Копировать промпт</button>
+    <div class="ai-links">
+      <a class="action-btn accent" href="https://www.sberbank.com/promo/kandinsky" target="_blank" rel="noopener">Kandinsky</a>
+      <a class="action-btn accent" href="https://shedevrum.ai" target="_blank" rel="noopener">Шедеврум</a>
+    </div>
+    <label>Ссылка<input type="url" id="heroImgUrl" placeholder="https://..."></label>
+    <label>Или файл с устройства<input type="file" id="heroImgFile" accept="image/*"></label>
+    <div class="img-preview" id="heroImgPreview">Превью героя</div>
+    <button class="action-btn" type="button" onclick="m10confirmImg()">✅ Картинка готова — к текстам</button>
+  </div>
+  <div class="feedback" id="m10fb"></div>`, true);
+
+window.m10save=function(){
+  const name=heroName.value.trim(), power=heroPower.value.trim(), look=heroLook.value.trim(), weak=heroWeak.value.trim(), art=heroArt.value;
+  if(name.length<2||power.length<8||look.length<12){
+    showFeedback('m10fb','Имя, сила и внешность (от 12 символов: цвет, одежда, настроение).','err'); return;
+  }
+  const imgPrompt=`Детский персонаж для игры: ${name}. Внешность: ${look}. Стиль: ${art}. Один герой по центру, простой фон, без страшных деталей, высокое качество.`;
+  gameState.hero={...gameState.hero,name,power,look,weak,art,imgPrompt};
+  m10card.classList.remove('hidden');
+  m10card.textContent=`🦸 ${name}\nСила: ${power}\nВид: ${look}\nСлабость: ${weak||'—'}`;
+  m10imgPrompt.classList.remove('hidden');
+  m10imgPrompt.textContent='ПРОМПТ ДЛЯ КАРТИНКИ:\n'+imgPrompt;
+  m10imgBlock.classList.remove('hidden');
+  showFeedback('m10fb','Карточка готова. Сгенерируй картинку и подтверди.','ok');
+  saveState();
+};
+window.m10copyImg=function(){
+  const t=gameState.hero.imgPrompt||'';
+  navigator.clipboard?.writeText(t).then(()=>showFeedback('m10fb','Скопировано!','ok')).catch(()=>prompt('Скопируй:',t));
+};
+function bindImgInputs(){
+  const file=document.getElementById('heroImgFile');
+  const url=document.getElementById('heroImgUrl');
+  if(file && !file.dataset.bound){
+    file.dataset.bound='1';
+    file.addEventListener('change',e=>{
+      const f=e.target.files&&e.target.files[0]; if(!f) return;
+      const reader=new FileReader();
+      reader.onload=()=>{
+        gameState.hero.imgData=reader.result; gameState.hero.imgUrl='';
+        heroImgPreview.innerHTML=`<img src="${reader.result}" alt="Герой">`;
+        saveState();
+      };
+      reader.readAsDataURL(f);
+    });
+  }
+  if(url && !url.dataset.bound){
+    url.dataset.bound='1';
+    url.addEventListener('change',()=>{
+      const u=url.value.trim(); if(!u) return;
+      gameState.hero.imgUrl=u; gameState.hero.imgData='';
+      heroImgPreview.innerHTML=`<img src="${u}" alt="Герой" onerror="this.parentElement.innerHTML='Не загрузилось — попробуй файл'">`;
+      saveState();
+    });
+  }
+}
+window.m10confirmImg=function(){
+  const h=gameState.hero;
+  if(!h.name){ showFeedback('m10fb','Сначала сохрани героя.','err'); return; }
+  if(!h.imgData && !h.imgUrl){ showFeedback('m10fb','Нужна картинка: файл или ссылка.','err'); return; }
+  showFeedback('m10fb','Картинка принята! Дальше ★ три стиля текста.','ok');
+  earnBadge('🖼 Портрет героя'); MissionManager.complete(10); saveState();
+  robySay('★ Главное: напиши героя в трёх стилях на этаже 11.');
+};
+
+/* ===== 11 ★ ТРИ СТИЛЯ ===== */
+createMissionShell(11,'★ Проект: ТЕКСТ В 3 СТИЛЯХ',
+  `<div class="crystal-card"><b>★ Главная текстовая задача урока</b><br>Один герой — три голоса. В каждом поле от <b>50</b> символов.</div>
+  <div class="prompt-box" id="m11heroCard">Сначала этаж 10.</div>
+  <div id="m11imgMini" style="text-align:center;margin:8px 0;"></div>
+  <p><b>A.</b> Кому какой стиль?</p>
+  <div class="match-row" data-a="friendly"><span class="phrase">Сообщение в классный чат</span>
+    <select><option value="">—</option><option value="friendly">😊 Дружеский</option><option value="school">📚 Учебный</option><option value="expert">🧠 Экспертный</option></select></div>
+  <div class="match-row" data-a="school"><span class="phrase">Абзац в учебник</span>
+    <select><option value="">—</option><option value="friendly">😊 Дружеский</option><option value="school">📚 Учебный</option><option value="expert">🧠 Экспертный</option></select></div>
+  <div class="match-row" data-a="expert"><span class="phrase">Карточка для геймдизайнера</span>
+    <select><option value="">—</option><option value="friendly">😊 Дружеский</option><option value="school">📚 Учебный</option><option value="expert">🧠 Экспертный</option></select></div>
+  <button class="action-btn ghost" type="button" onclick="m11styleQuiz()">Проверить A</button>
+  <p class="score-pill" id="m11a">Часть A: не сдана</p>
+  <p><b>B. ★ Три текста про твоего героя</b></p>
+  <div class="style-grid">
+    <div class="style-box"><h4>😊 Дружеский</h4><textarea id="vFriend" placeholder="Знакомься! Это..."></textarea></div>
+    <div class="style-box"><h4>📚 Учебный</h4><textarea id="vSchool" placeholder="Персонаж представляет собой..."></textarea></div>
+    <div class="style-box"><h4>🧠 Экспертный</h4><textarea id="vExpert" placeholder="Характеристики:..."></textarea></div>
+  </div>
+  <button class="action-btn" type="button" onclick="m11build()">✅ Принять 3 стиля</button>
+  <div class="prompt-box hidden" id="m11prompts"></div>
+  <div class="feedback" id="m11fb"></div>`, true);
+
+let m11A=false;
+window.m11styleQuiz=function(){
+  let ok=true;
+  document.querySelectorAll('#mission11 .match-row').forEach(row=>{
+    const good=row.querySelector('select').value===row.dataset.a;
+    row.classList.toggle('right',good); row.classList.toggle('wrong',!good); if(!good) ok=false;
+  });
+  m11A=ok; m11a.textContent=ok?'Часть A: ✅':'Часть A: ошибки';
+  if(!ok) hitClarity(8);
+};
+window.m11build=function(){
+  if(!m11A){ showFeedback('m11fb','Сначала часть A.','err'); return; }
+  const h=gameState.hero;
+  if(!h.name||(!h.imgData&&!h.imgUrl)){ showFeedback('m11fb','Нужны герой и картинка с этажа 10.','err'); return; }
+  m11heroCard.textContent=`🦸 ${h.name} · ${h.power} · ${h.look}`;
+  const src=h.imgData||h.imgUrl;
+  m11imgMini.innerHTML=src?`<img src="${src}" alt="Герой" style="max-height:140px;border-radius:12px;border:3px solid #F59E0B;">`:'';
+  const f=vFriend.value.trim(), s=vSchool.value.trim(), e=vExpert.value.trim();
+  if(f.length<50||s.length<50||e.length<50){ showFeedback('m11fb','★ В каждом стиле от 50 символов.','err'); return; }
+  gameState.voices={friendly:f,school:s,expert:e};
+  m11prompts.classList.remove('hidden');
+  m11prompts.textContent=`ПРОМПТЫ ДЛЯ ПРОВЕРКИ В ЧАТЕ:\n\n① Дружеский:\nТы лучший друг. Расскажи о «${h.name}» (${h.look}, сила: ${h.power}) детям 9 лет, весело, 4 предложения.\n\n② Учебный:\nТы автор учебника. Опиши «${h.name}» нейтрально, 5 предложений.\n\n③ Экспертный:\nТы геймдизайнер. Внешность, сила, слабость «${h.weak||'—'}», роль в команде — список.`;
+  showFeedback('m11fb','★ Три стиля приняты — главная текстовая часть закрыта!','ok');
+  earnBadge('★ Текст в 3 стилях'); MissionManager.complete(11); saveState();
+};
+
+/* ===== 12 ★ СДАЧА ===== */
+createMissionShell(12,'★ Сдача пакета: 3 стиля + картинка',
+  `<div class="crystal-card"><b>Пакет урока</b><br>🖼 Картинка · 😊📚🧠 Три текста</div>
+  <button class="action-btn ghost" type="button" onclick="m12prev()">📋 Превью проекта</button>
+  <div class="prompt-box hidden" id="m12out"></div>
+  <div id="m12img" class="img-preview hidden"></div>
+  <p><b>Блиц</b></p>
+  <label class="choice-card"><input type="radio" name="q1" value="b"> Формат = вид ответа</label>
+  <label class="choice-card"><input type="radio" name="q1" value="a"> Формат = кто отвечает</label>
+  <label class="choice-card"><input type="radio" name="q2" value="b"> Итог урока = 3 стиля + картинка героя</label>
+  <label class="choice-card"><input type="radio" name="q2" value="a"> Итог = только регистрация</label>
+  <button class="action-btn ghost" type="button" onclick="m12quiz()">Проверить блиц</button>
+  <div id="m12go" class="hidden" style="margin-top:12px">
+    <label class="choice-card"><input type="checkbox" id="c1"> Есть изображение героя</label>
+    <label class="choice-card"><input type="checkbox" id="c2"> Есть дружеский текст</label>
+    <label class="choice-card"><input type="checkbox" id="c3"> Есть учебный текст</label>
+    <label class="choice-card"><input type="checkbox" id="c4"> Есть экспертный текст</label>
+    <label class="choice-card"><input type="checkbox" id="c5"> Готово к Classroom</label>
+    <a class="action-btn accent" href="https://classroom.google.com" target="_blank" rel="noopener">📤 Classroom</a>
+    <button class="action-btn" type="button" onclick="m12finish()">🏰 Сдать и освободить Роби</button>
+  </div>
+  <div class="feedback" id="m12fb"></div>`, true);
+
+window.m12prev=function(){
+  const h=gameState.hero,v=gameState.voices;
+  m12out.classList.remove('hidden');
+  m12out.textContent=`ИТОГ УРОКА 7\nГерой: ${h.name||'—'}\nСила: ${h.power||'—'}\nВид: ${h.look||'—'}\n\n😊\n${v.friendly||'—'}\n\n📚\n${v.school||'—'}\n\n🧠\n${v.expert||'—'}\n\nПромпт картинки:\n${h.imgPrompt||'—'}`;
+  const src=h.imgData||h.imgUrl;
+  m12img.classList.remove('hidden');
+  m12img.innerHTML=src?`<img src="${src}" alt="Герой">`:'<b style="color:#9A3412">Картинки нет — этаж 10</b>';
+};
+window.m12quiz=function(){
+  const a1=document.querySelector('input[name="q1"]:checked');
+  const a2=document.querySelector('input[name="q2"]:checked');
+  if(!a1||!a2){ showFeedback('m12fb','Ответь на оба вопроса.','err'); return; }
+  if(a1.value==='b'&&a2.value==='b'){ showFeedback('m12fb','Блиц сдан!','ok'); m12go.classList.remove('hidden'); }
+  else { hitClarity(8); showFeedback('m12fb','Итог урока — 3 стиля + картинка; формат = вид ответа.','err'); }
+};
+window.m12finish=function(){
+  if(![c1,c2,c3,c4,c5].every(x=>x.checked)){ showFeedback('m12fb','Отметь весь пакет.','err'); return; }
+  const h=gameState.hero,v=gameState.voices;
+  if(!h.name||(!h.imgData&&!h.imgUrl)||!v.friendly||!v.school||!v.expert){
+    showFeedback('m12fb','Не хватает картинки или одного из трёх текстов.','err'); return;
+  }
+  showFeedback('m12fb','Пакет принят. Роби свободен!','ok'); MissionManager.complete(12);
+};
+
+function launchConfetti(){
+  const box=document.getElementById('confetti-container');
+  for(let i=0;i<60;i++){
+    const p=document.createElement('div'); p.className='confetti-piece';
+    p.style.left=Math.random()*100+'%';
+    p.style.background=['#F59E0B','#7C3AED','#34D399','#F472B6','#38BDF8'][i%5];
+    p.style.animationDelay=Math.random()+'s';
+    box.appendChild(p); setTimeout(()=>p.remove(),3000);
+  }
+}
+function submitReflection(){
+  if(!reflectionText.value.trim()){ alert('Напиши мысль!'); return; }
+  reflectionResult.textContent='✅ Принято!'; reflectionText.disabled=true;
+}
+function restoreHeroUI(){
+  const h=gameState.hero; if(!h||!h.name) return;
+  const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.value=v||''; };
+  set('heroName',h.name); set('heroPower',h.power); set('heroLook',h.look); set('heroWeak',h.weak);
+  if(h.art){ const s=document.getElementById('heroArt'); if(s) s.value=h.art; }
+  if(h.imgPrompt){
+    m10card.classList.remove('hidden'); m10card.textContent=`🦸 ${h.name}\nСила: ${h.power}\nВид: ${h.look}`;
+    m10imgPrompt.classList.remove('hidden'); m10imgPrompt.textContent='ПРОМПТ ДЛЯ КАРТИНКИ:\n'+h.imgPrompt;
+    m10imgBlock.classList.remove('hidden');
+  }
+  const src=h.imgData||h.imgUrl;
+  if(src){ const prev=document.getElementById('heroImgPreview'); if(prev) prev.innerHTML=`<img src="${src}" alt="Герой">`; }
+  set('vFriend',gameState.voices.friendly); set('vSchool',gameState.voices.school); set('vExpert',gameState.voices.expert);
+}
+
+window.addEventListener('load',()=>{
+  bindImgInputs();
+  RobovitaProgress.mount({
+    key:'robovita_l7',
+    defaultName:'Герой',
+    promptText:'Как тебя зовут?',
+    host:'#progressProfileHost',
+    getState(){
+      return {
+        xp:gameState.xp,current:gameState.current,lives:gameState.lives,clarity:gameState.clarity,
+        completed:[...gameState.completed],artifacts:[...gameState.artifacts],badges:[...gameState.badges],
+        crystals:gameState.crystals,hero:gameState.hero,voices:gameState.voices
+      };
+    },
+    applyState(d){
+      gameState.xp=d.xp||0; gameState.current=d.current||1;
+      gameState.lives=d.lives??3; gameState.clarity=d.clarity??100;
+      gameState.completed=new Set(d.completed||[]);
+      gameState.artifacts=new Set(d.artifacts||[]);
+      gameState.badges=new Set(d.badges||[]);
+      gameState.crystals=d.crystals||{role:false,task:false,ctx:false,fmt:false};
+      gameState.hero=Object.assign({name:'',power:'',look:'',weak:'',art:'',imgPrompt:'',imgData:'',imgUrl:''}, d.hero||{});
+      gameState.voices=d.voices||{friendly:'',school:'',expert:''};
+      if(d.studentName) gameState.studentName=d.studentName;
+    },
+    onNameChange(n){ gameState.studentName=n; },
+    onReady(){
+      if(gameState.completed.size>0){
+        gameState.current=Math.min(TOTAL+1, Math.max(...[...gameState.completed],0)+1);
+        if(gameState.completed.size===TOTAL) gameState.current=TOTAL+1;
+      }
+      initShell();
+      const box=document.getElementById('badgesContainer');
+      if(box&&gameState.badges.size){
+        box.innerHTML='';
+        gameState.badges.forEach(n=>{ const b=document.createElement('span'); b.className='badge'; b.textContent=n; box.appendChild(b); });
+      }
+      restoreHeroUI();
+      bindImgInputs();
+      updateUI(); unlockMissions();
+      if(gameState.completed.size===TOTAL){
+        finalCongrats.classList.add('show');
+        const src=gameState.hero.imgData||gameState.hero.imgUrl;
+        if(src) finalImg.innerHTML=`<img src="${src}" alt="Герой">`;
+      }
+      robySay(gameState.completed.size===0
+        ? 'Главное сегодня — 3 текста и картинка. Этаж 1 — разминка!'
+        : 'С возвращением! Этаж '+Math.min(gameState.current,TOTAL));
+    }
+  });
+});
+</script>
+</body>
+</html>

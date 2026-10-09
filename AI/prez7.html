@@ -1,0 +1,647 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ИИ-Творец · Занятие 7 · Кристаллы промпта</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #61B01F; --green-dark: #2E4A17; --green-light: #E8F5E0;
+      --purple: #6C3F9B; --purple-light: #F4EAFA;
+      --orange: #F0A500; --orange-light: #FFF4DB; --orange-ink: #875B00;
+      --navy: #12274C; --violet: #7C3AED; --violet-light: #F5F3FF;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #fff; overflow: hidden; height: 100vh; color: var(--green-dark); }
+    .presentation { display: flex; flex-direction: column; height: 100vh; }
+    .slide-stage { flex: 1; position: relative; overflow: hidden; }
+    .slide {
+      display: none; width: 100%; height: 100%; padding: 28px 48px 20px;
+      position: absolute; top: 0; left: 0; overflow-y: auto; background: #fff; animation: fade .4s ease;
+    }
+    .slide.active { display: flex; align-items: center; justify-content: center; }
+    .slide-inner {
+      width: 100%; margin: auto; display: grid; grid-template-columns: 1.15fr 0.85fr;
+      gap: 32px; align-items: center; height: 100%; padding: 0 1.5vw;
+    }
+    .slide-inner.full, .slide-inner.stack { grid-template-columns: 1fr; }
+    .title-slide { background: var(--navy); color: #fff; }
+    .title-slide .slide-inner { grid-template-columns: 1.1fr 0.9fr; }
+    .title-slide h1 { font-size: clamp(32px, 5vw, 58px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; }
+    .title-slide h2 { font-size: clamp(24px, 3.5vw, 40px); font-weight: 800; color: #c4b5fd; margin: 10px 0; }
+    .title-slide p { font-size: clamp(18px, 2.1vw, 26px); font-weight: 700; opacity: .95; }
+    .title-slide .stars {
+      position: absolute; inset: 0; pointer-events: none; opacity: .35;
+      background-image: radial-gradient(2px 2px at 20% 30%, #fff, transparent),
+        radial-gradient(2px 2px at 70% 20%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 40% 70%, #c4b5fd, transparent),
+        radial-gradient(2px 2px at 85% 60%, #fff, transparent);
+    }
+    .eyebrow {
+      display: inline-block; padding: 8px 18px; border-radius: 99px;
+      font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;
+      background: var(--green-light); color: var(--green-dark);
+    }
+    h2 { font-size: clamp(30px, 4.4vw, 52px); font-weight: 900; line-height: 1.1; color: var(--green-dark); margin: 10px 0 8px; }
+    .lead { font-weight: 800; font-size: clamp(18px, 2vw, 26px); line-height: 1.45; }
+    .list { margin-top: 16px; display: grid; gap: 12px; font-size: clamp(17px, 1.9vw, 24px); font-weight: 800; }
+    .list span { display: flex; align-items: flex-start; gap: 10px; }
+    .tick {
+      width: 32px; height: 32px; border-radius: 50%; background: var(--green-light);
+      display: grid; place-items: center; color: var(--green); font-size: 14px; flex-shrink: 0;
+    }
+    .note {
+      padding: 16px 20px; border-radius: 18px; background: var(--orange-light); color: var(--orange-ink);
+      font-weight: 800; font-size: clamp(16px, 1.6vw, 22px); margin-top: 14px;
+    }
+    .note.green { background: var(--green-light); color: var(--green-dark); }
+    .note.purple { background: var(--purple-light); color: var(--purple); }
+    .discuss {
+      margin-top: 14px; padding: 12px 16px; border-radius: 16px; border: 2px dashed var(--purple);
+      background: #faf5ff; color: var(--purple); font-weight: 800; font-size: clamp(16px, 1.7vw, 22px);
+    }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    .can-card { padding: 16px; border-radius: 20px; font-weight: 800; }
+    .can-card h3 { font-size: clamp(16px, 1.5vw, 22px); margin-bottom: 6px; }
+    .can-card ul { list-style: none; padding: 0; font-size: clamp(15px, 1.5vw, 20px); display: grid; gap: 4px; }
+    .can { background: var(--green-light); color: var(--green-dark); }
+    .cannot { background: var(--purple-light); color: var(--purple); }
+    .steps { display: grid; gap: 10px; margin-top: 12px; }
+    .step {
+      display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start;
+      background: var(--green-light); border-radius: 16px; padding: 12px 14px; font-weight: 800;
+      font-size: clamp(16px, 1.7vw, 22px);
+    }
+    .step-num {
+      min-width: 42px; height: 42px; border-radius: 999px; font-size: 14px; background: var(--green); color: #fff;
+      display: grid; place-items: center; font-weight: 900;
+    }
+    .step.alt { background: var(--purple-light); }
+    .step.alt .step-num { background: var(--purple); }
+    .step.warn { background: var(--orange-light); }
+    .step.warn .step-num { background: var(--orange); color: #3E2C0B; }
+    .crystal-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+    .crystal-card {
+      background: var(--violet-light); border: 3px solid #c4b5fd; border-radius: 20px;
+      padding: 16px 12px; text-align: center; font-weight: 800;
+    }
+    .crystal-card .ico { font-size: clamp(36px, 4vw, 52px); display: block; margin-bottom: 6px; }
+    .crystal-card b { display: block; font-size: clamp(16px, 1.6vw, 22px); color: var(--violet); margin-bottom: 4px; }
+    .crystal-card span { font-size: clamp(14px, 1.3vw, 18px); color: #5b21b6; }
+    .chat-bubble {
+      border-radius: 16px; padding: 12px 16px; font-weight: 800;
+      font-size: clamp(15px, 1.5vw, 21px); line-height: 1.4; margin-bottom: 10px;
+    }
+    .bad { background: var(--orange-light); border: 3px solid #f5c15a; color: var(--orange-ink); }
+    .good { background: var(--green-light); border: 3px solid #9bce75; color: var(--green-dark); }
+    .style-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+    .style-card {
+      border-radius: 20px; padding: 16px; font-weight: 800; border: 3px solid transparent;
+      font-size: clamp(14px, 1.4vw, 19px); line-height: 1.35;
+    }
+    .style-card h3 { font-size: clamp(16px, 1.6vw, 22px); margin-bottom: 8px; }
+    .s-friend { background: #FEF3C7; border-color: #F59E0B; color: #78350F; }
+    .s-school { background: var(--green-light); border-color: #9bce75; color: var(--green-dark); }
+    .s-expert { background: var(--violet-light); border-color: #a78bfa; color: #5b21b6; }
+    .illustration {
+      position: relative; min-height: 280px; display: flex; align-items: center; justify-content: center;
+    }
+    .tower-art {
+      width: min(320px, 80%); aspect-ratio: 3/4; border-radius: 28px;
+      background: linear-gradient(160deg, #1E1B4B, #5B21B6 55%, #F59E0B);
+      display: flex; flex-direction: column; align-items: center; justify-content: space-evenly;
+      box-shadow: 0 20px 40px rgba(46,16,101,.35); padding: 20px; color: #fff; font-weight: 900;
+    }
+    .tower-art .gem {
+      width: 64px; height: 64px; border-radius: 16px; background: rgba(255,255,255,.15);
+      border: 2px solid rgba(251,191,36,.8); display: grid; place-items: center; font-size: 28px;
+      box-shadow: 0 0 16px rgba(251,191,36,.4);
+    }
+    .big-emoji { font-size: clamp(80px, 12vw, 140px); text-align: center; line-height: 1; }
+    .check-list { margin-top: 12px; display: grid; gap: 8px; }
+    .check-item {
+      display: flex; gap: 10px; align-items: flex-start; font-weight: 800;
+      font-size: clamp(16px, 1.6vw, 22px); background: var(--green-light);
+      padding: 10px 14px; border-radius: 14px;
+    }
+    .check-item .ok { color: var(--green); font-size: 22px; }
+    .cta-link {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
+      background: var(--green); color: #fff; padding: 12px 22px; border-radius: 30px;
+      font-weight: 900; text-decoration: none; font-size: clamp(16px, 1.7vw, 22px);
+      box-shadow: 0 4px 0 #4a8a18;
+    }
+    .ref-links { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .ref-links a {
+      background: #f0f4f9; padding: 4px 12px; border-radius: 20px; font-weight: 700;
+      font-size: 13px; text-decoration: none; color: var(--purple); border: 1px solid #dce3ec;
+    }
+    .teacher-toggle {
+      position: fixed; bottom: 90px; right: 20px; z-index: 999; background: var(--purple);
+      color: #fff; border: none; border-radius: 40px; padding: 12px 20px; font-weight: 900;
+      font-size: 14px; cursor: pointer; box-shadow: 0 8px 20px rgba(108,63,155,.4); font-family: inherit;
+    }
+    .teacher-panel {
+      position: fixed; bottom: 150px; right: 20px; width: 360px; max-height: 60vh; overflow-y: auto;
+      background: #fff; border-radius: 24px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,.2);
+      z-index: 998; display: none; font-size: 14px; line-height: 1.5; border: 3px solid var(--purple-light);
+    }
+    .teacher-panel.open { display: block; }
+    .teacher-panel h4 { color: var(--purple); margin-bottom: 8px; }
+    .teacher-panel p { margin-bottom: 6px; padding: 4px 6px; border-radius: 6px; }
+    .teacher-panel .meta { color: var(--orange-ink); font-weight: 700; }
+    .teacher-panel .active-note { background: var(--green-light); }
+    .footer-nav {
+      height: 76px; background: white; border-top: 1px solid #e6eee1;
+      display: flex; align-items: center; justify-content: center; padding: 0 16px; flex-shrink: 0;
+    }
+    .nav-inner {
+      width: 100%; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border: 0;
+      border-radius: 30px; font-weight: 900; font-size: 15px; cursor: pointer;
+      background: var(--green-light); color: var(--green-dark); font-family: inherit;
+    }
+    .nav-btn.primary { background: var(--green); color: white; }
+    .nav-btn:disabled { opacity: .4; pointer-events: none; }
+    .progress-wrap { flex: 1; max-width: 420px; }
+    .progress-track { height: 8px; border-radius: 99px; background: #e7eee5; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--violet); border-radius: inherit; transition: width .3s; width: 0; }
+    .dots { display: flex; gap: 4px; justify-content: center; margin-top: 6px; flex-wrap: wrap; }
+    .nav-dot { border: 0; padding: 0; width: 7px; height: 7px; border-radius: 50%; background: #cad7c4; cursor: pointer; }
+    .nav-dot.active { background: var(--purple); transform: scale(1.35); }
+    .counter { font-weight: 900; font-size: 18px; white-space: nowrap; min-width: 72px; text-align: center; }
+    @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 760px) {
+      .slide { padding: 16px; }
+      .slide-inner, .title-slide .slide-inner { grid-template-columns: 1fr; gap: 14px; }
+      .crystal-grid, .style-row, .two-col { grid-template-columns: 1fr 1fr; }
+      .progress-wrap { display: none; }
+      .footer-nav { height: 68px; }
+    }
+  </style>
+</head>
+<body>
+<div class="presentation">
+  <main class="slide-stage">
+
+    <!-- 1 -->
+    <section class="slide title-slide active">
+      <div class="stars"></div>
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow" style="background:#F0A500;color:#12274C;">Модуль 2 · Занятие 7</span>
+          <h1>КРИСТАЛЛЫ ПРОМПТА</h1>
+          <h2>Структура сильного запроса</h2>
+          <p>🏰 Освободим Роби из Башни Тумана</p>
+          <p style="margin-top:10px;font-size:clamp(14px,1.5vw,18px);opacity:.9;">Формула · игра · проект «Три голоса героя»</p>
+          <div class="ref-links" style="margin-top:18px;">
+            <a href="Занятие_7_Структура_промпта.html" style="color:#c4b5fd;border-color:#6d28d9;background:#2e1065;">💻 Страница урока</a>
+            <a href="Карта.html" style="color:#c4b5fd;border-color:#6d28d9;background:#2e1065;">🗺️ Карта курса</a>
+          </div>
+        </div>
+        <div class="illustration">
+          <div class="tower-art">
+            <div class="gem">🎭</div>
+            <div class="gem">🎯</div>
+            <div class="gem">🌍</div>
+            <div class="gem">📦</div>
+            <div style="font-size:14px;opacity:.9;">4 кристалла</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Старт модуля 2</span>
+          <h2>Мастер промптов</h2>
+          <p class="lead">От «хочу вот так» — к осознанному запросу для текста и картинок.</p>
+          <div class="list">
+            <span><span class="tick">7</span> Структура промпта ← сегодня</span>
+            <span><span class="tick">8</span> Управление контекстом</span>
+            <span><span class="tick">9–11</span> Картинки и креатив</span>
+            <span><span class="tick">12</span> Комикс — итог модуля</span>
+          </div>
+        </div>
+        <div class="illustration"><div class="big-emoji">🪄</div></div>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Цели урока</span>
+          <h2>Что сделаем сегодня</h2>
+          <div class="list">
+            <span><span class="tick">💎</span> Соберём формулу из 4 кристаллов</span>
+            <span><span class="tick">🌫</span> Научимся побеждать «туманные» запросы</span>
+            <span><span class="tick">🎭</span> Поймём три стиля одного смысла</span>
+            <span><span class="tick">🦸</span> Сделаем проект «Три голоса героя»</span>
+          </div>
+          <div class="note green">⏱ ≈90 минут · игра на странице урока + проект</div>
+        </div>
+        <div class="illustration"><div class="big-emoji">🎯</div></div>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Сюжет</span>
+          <h2>Башня Тумана</h2>
+          <p class="lead">Роби застрял наверху. Туман — это слабые запросы: «напиши что-нибудь», «придумай».</p>
+          <div class="discuss">❓ Вопрос классу: почему ИИ «плывёт», если запрос слишком короткий?</div>
+          <div class="note">Чтобы поднять мост, нужны 4 кристалла. Потом — проект.</div>
+        </div>
+        <div class="illustration">
+          <div class="tower-art">
+            <div style="font-size:42px;">🤖</div>
+            <div style="opacity:.85;font-size:15px;text-align:center;">«Соберите кристаллы —<br>я выберусь!»</div>
+            <div class="gem">🌫</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide">
+      <div class="slide-inner full">
+        <div>
+          <span class="eyebrow">Формула</span>
+          <h2>Четыре кристалла</h2>
+          <div class="crystal-grid">
+            <div class="crystal-card"><span class="ico">🎭</span><b>Роль</b><span>кто отвечает?</span></div>
+            <div class="crystal-card"><span class="ico">🎯</span><b>Задача</b><span>что сделать?</span></div>
+            <div class="crystal-card"><span class="ico">🌍</span><b>Контекст</b><span>для кого / зачем?</span></div>
+            <div class="crystal-card"><span class="ico">📦</span><b>Формат</b><span>в каком виде?</span></div>
+          </div>
+          <div class="note purple" style="margin-top:18px;">Порядок: Роль → Задача → Контекст → Формат</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Кристалл 1</span>
+          <h2>🎭 Роль</h2>
+          <p class="lead">Маска для ИИ: учитель, тренер, сказочник, капитан корабля…</p>
+          <div class="two-col">
+            <div class="can-card cannot"><h3>🌫 Туман</h3><ul><li>«Напиши про космос»</li></ul></div>
+            <div class="can-card can"><h3>💎 С ролью</h3><ul><li>«Ты астронавт-гид. Расскажи про Марс»</li></ul></div>
+          </div>
+          <div class="discuss">⏱ 30 сек: придумай роль для темы «чистка зубов»</div>
+        </div>
+        <div class="illustration"><div class="big-emoji">🎭</div></div>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Кристалл 2</span>
+          <h2>🎯 Задача</h2>
+          <p class="lead">Глагол действия: объясни, составь, сравни, придумай…</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">✅</div><div>Составь 5 советов новичку</div></div>
+            <div class="step"><div class="step-num">✅</div><div>Объясни, как заряжать робота</div></div>
+            <div class="step warn"><div class="step-num">🌫</div><div>«Что-нибудь про роботов» / «Сделай красиво»</div></div>
+          </div>
+        </div>
+        <div class="illustration"><div class="big-emoji">🎯</div></div>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Кристалл 3</span>
+          <h2>🌍 Контекст</h2>
+          <p class="lead">Для кого? Зачем? Какие ограничения?</p>
+          <div class="chat-bubble bad">Ты учитель. Объясни гравитацию.</div>
+          <div class="chat-bubble good">…для ребёнка 9 лет, на примере мяча, в 4 предложениях.</div>
+          <div class="note green">Один совет для малыша и для взрослого звучит по-разному.</div>
+        </div>
+        <div class="illustration"><div class="big-emoji">🌍</div></div>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Кристалл 4</span>
+          <h2>📦 Формат</h2>
+          <p class="lead">Упаковка ответа: список, таблица, диалог, 5 предложений…</p>
+          <div class="list">
+            <span><span class="tick">1</span> Списком из 5 шагов</span>
+            <span><span class="tick">2</span> Таблицей «плюс / минус»</span>
+            <span><span class="tick">3</span> Диалогом из 6 реплик</span>
+            <span><span class="tick">4</span> Ровно 4 коротких предложения</span>
+          </div>
+        </div>
+        <div class="illustration"><div class="big-emoji">📦</div></div>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="slide">
+      <div class="slide-inner full">
+        <div>
+          <span class="eyebrow">Сборка</span>
+          <h2>Весь промпт целиком</h2>
+          <div class="chat-bubble good" style="font-size:clamp(16px,1.7vw,24px);margin-top:12px;">
+            <b>🎭</b> Ты капитан космического корабля.<br>
+            <b>🎯</b> Придумай мини-квест на 1 урок.<br>
+            <b>🌍</b> Для детей 9–10 лет, без страшилок.<br>
+            <b>📦</b> Оформи списком из 5 шагов.
+          </div>
+          <div class="discuss">🎤 Хор: прочитаем формулу вместе — Роль, Задача, Контекст, Формат!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Тренировка</span>
+          <h2>Туман или кристалл?</h2>
+          <div class="two-col">
+            <div class="can-card cannot">
+              <h3>🌫 Туман</h3>
+              <ul>
+                <li>«Напиши про собак»</li>
+                <li>«Придумай героя»</li>
+                <li>«Сделай красиво»</li>
+              </ul>
+            </div>
+            <div class="can-card can">
+              <h3>💎 Кристалл</h3>
+              <ul>
+                <li>Роль + задача</li>
+                <li>+ для кого</li>
+                <li>+ в каком виде</li>
+              </ul>
+            </div>
+          </div>
+          <div class="note">На странице урока: охота на глаголы, ремонт промпта, босс Тумана.</div>
+        </div>
+        <div class="illustration"><div class="big-emoji">⚔️</div></div>
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section class="slide">
+      <div class="slide-inner full">
+        <div>
+          <span class="eyebrow">Новый навык</span>
+          <h2>Один смысл — три стиля</h2>
+          <p class="lead" style="margin-bottom:8px;">Тема одна. Меняются слова, тон и сложность.</p>
+          <div class="style-row">
+            <div class="style-card s-friend">
+              <h3>😊 Дружеский</h3>
+              Просто, с примером из жизни, как другу.
+            </div>
+            <div class="style-card s-school">
+              <h3>📚 Учебный</h3>
+              Чётко, как в учебнике, без лишних шуток.
+            </div>
+            <div class="style-card s-expert">
+              <h3>🧠 Экспертный</h3>
+              Структура, термины, спокойный тон.
+            </div>
+          </div>
+          <div class="discuss">❓ Зачем менять стиль, если тема не меняется?</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Пример</span>
+          <h2>«Почему мыть руки»</h2>
+          <div class="style-row" style="grid-template-columns:1fr;gap:10px;">
+            <div class="style-card s-friend">😊 Микробы — невидимки. 20 секунд с мылом — и они «съезжают»!</div>
+            <div class="style-card s-school">📚 Мытьё рук удаляет микробы. Перед едой и после улицы — не меньше 20 секунд.</div>
+            <div class="style-card s-expert">🧠 Гигиена рук снижает риск передачи патогенов: механика + ПАВ мыла.</div>
+          </div>
+        </div>
+        <div class="illustration"><div class="big-emoji">🧼</div></div>
+      </div>
+    </section>
+
+    <!-- 14 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Проект</span>
+          <h2>Три голоса героя</h2>
+          <p class="lead">Итог занятия — не регистрация, а готовый мини-проект.</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div>Придумай героя: имя, сила, вид, слабость</div></div>
+            <div class="step alt"><div class="step-num">2</div><div>Опиши его в 3 стилях (дружеский / учебный / экспертный)</div></div>
+            <div class="step warn"><div class="step-num">3</div><div>Собери 3 промпта по формуле и сравни ответы</div></div>
+          </div>
+        </div>
+        <div class="illustration"><div class="big-emoji">🦸</div></div>
+      </div>
+    </section>
+
+    <!-- 15 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Карточка героя</span>
+          <h2>Шаблон</h2>
+          <div class="chat-bubble good">
+            <b>Имя:</b> Искра<br>
+            <b>Сила:</b> чинит гаджеты за 10 секунд<br>
+            <b>Вид:</b> рыжий робот-кот в плаще<br>
+            <b>Слабость:</b> боится воды
+          </div>
+          <div class="note">Ученики заполняют на этаже 10 страницы урока.</div>
+        </div>
+        <div class="illustration"><div class="big-emoji">🐱</div></div>
+      </div>
+    </section>
+
+    <!-- 16 -->
+    <section class="slide">
+      <div class="slide-inner full">
+        <div>
+          <span class="eyebrow">Промпт для стиля</span>
+          <h2>Как звучит формула</h2>
+          <div class="chat-bubble good" style="margin-top:10px;">
+            <b>😊</b> Ты лучший друг. Расскажи о герое «Искра» детям 9 лет, весело, 4 предложения.<br><br>
+            <b>📚</b> Ты автор учебника. Опиши «Искру» нейтрально, 5 предложений, без шуток.<br><br>
+            <b>🧠</b> Ты геймдизайнер. Внешность, сила, слабость, роль в команде — маркированный список.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">План на экране</span>
+          <h2>12 этажей башни</h2>
+          <div class="list" style="font-size:clamp(15px,1.5vw,20px);">
+            <span><span class="tick">1–2</span> Роль + мастер масок</span>
+            <span><span class="tick">3–4</span> Задача + охота на глаголы</span>
+            <span><span class="tick">5–6</span> Контекст + детектив деталей</span>
+            <span><span class="tick">7–8</span> Формат + ремонт промпта</span>
+            <span><span class="tick">9</span> Босс Тумана</span>
+            <span><span class="tick">10–12</span> Герой → 3 голоса → сдача</span>
+          </div>
+          <a class="cta-link" href="Занятие_7_Структура_промпта.html">🚀 Открыть страницу урока</a>
+        </div>
+        <div class="illustration"><div class="big-emoji">🗺️</div></div>
+      </div>
+    </section>
+
+    <!-- 18 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Что сдать</span>
+          <h2>Чек-лист</h2>
+          <div class="check-list">
+            <div class="check-item"><span class="ok">✔️</span> Карточка героя</div>
+            <div class="check-item"><span class="ok">✔️</span> Текст в дружеском стиле</div>
+            <div class="check-item"><span class="ok">✔️</span> Текст в учебном стиле</div>
+            <div class="check-item"><span class="ok">✔️</span> Текст в экспертном стиле</div>
+            <div class="check-item"><span class="ok">✔️</span> Один полный промпт по формуле</div>
+          </div>
+          <div class="note purple">Classroom: документ или скрины</div>
+        </div>
+        <div class="illustration"><div class="big-emoji">📤</div></div>
+      </div>
+    </section>
+
+    <!-- 19 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <div>
+          <span class="eyebrow">Рефлексия</span>
+          <h2>Микрофон Роби</h2>
+          <div class="discuss">❓ Какой кристалл чаще всего спасает ответ — роль, задача, контекст или формат?</div>
+          <div class="discuss">❓ Какой стиль тебе писать проще всего?</div>
+          <div class="note green">1–2 ответа вслух · остальные — в поле рефлексии на странице</div>
+        </div>
+        <div class="illustration"><div class="big-emoji">🎤</div></div>
+      </div>
+    </section>
+
+    <!-- 20 -->
+    <section class="slide title-slide">
+      <div class="stars"></div>
+      <div class="slide-inner full" style="text-align:center;justify-items:center;">
+        <div>
+          <span class="eyebrow" style="background:#F0A500;color:#12274C;">Финиш занятия 7</span>
+          <h1 style="margin-top:16px;">Роби свободен!</h1>
+          <h2>Ты — мастер кристаллов промпта</h2>
+          <p style="max-width:700px;margin:16px auto;">Дальше — занятие 8: управление контекстом и ролевые диалоги.</p>
+          <div class="cta-link" style="background:var(--orange);box-shadow:0 4px 0 #c68400;margin-top:20px;">💎 До встречи на этаже контекста!</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <button class="teacher-toggle" id="teacherToggle" type="button">📘 Для учителя</button>
+  <div class="teacher-panel" id="teacherPanel">
+    <h4>Заметки педагога</h4>
+    <p class="meta">Занятие 7 · Модуль 2 · ≈90 мин</p>
+    <p><b>1.</b> Титул. Открыть страницу урока на втором мониторе.</p>
+    <p><b>2.</b> Карта модуля 2 — 1 минута.</p>
+    <p><b>3.</b> Цели — показать, что итог = проект, не аккаунт.</p>
+    <p><b>4.</b> Сюжет башни — эмоциональный крючок.</p>
+    <p><b>5.</b> 4 кристалла — хором повторить порядок.</p>
+    <p><b>6–9.</b> По одному кристаллу; после каждого — этаж на странице.</p>
+    <p><b>10.</b> Сборка — дети читают вслух по ролям.</p>
+    <p><b>11.</b> Переход к игре: этажи 1–9.</p>
+    <p><b>12–13.</b> Стили: показать пример «мыть руки».</p>
+    <p><b>14–16.</b> Проект: 25–30 мин на этажи 10–11.</p>
+    <p><b>17–18.</b> Чек-лист сдачи в Classroom.</p>
+    <p><b>19.</b> Рефлексия 5 мин.</p>
+    <p><b>20.</b> Анонс занятия 8.</p>
+    <p class="meta">ДЗ: лёгкое — 4 части формулы; среднее — доделать 3 стиля; сложное — сравнить два чата.</p>
+  </div>
+
+  <footer class="footer-nav">
+    <nav class="nav-inner">
+      <button class="nav-btn" id="prevBtn" type="button">← Назад</button>
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="dots" id="dots"></div>
+      </div>
+      <span class="counter" id="counter">1 / 20</span>
+      <button class="nav-btn primary" id="nextBtn" type="button">Вперёд →</button>
+    </nav>
+  </footer>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progressFill = document.getElementById('progressFill');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let current = 0;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Слайд ' + (i + 1));
+    dot.addEventListener('click', () => showSlide(i));
+    dots.appendChild(dot);
+  });
+
+  function showSlide(index) {
+    current = Math.max(0, Math.min(index, slides.length - 1));
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+    document.querySelectorAll('.nav-dot').forEach((dot, i) => dot.classList.toggle('active', i === current));
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progressFill.style.width = ((current + 1) / slides.length * 100) + '%';
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+
+    const notes = document.querySelectorAll('#teacherPanel p');
+    notes.forEach((p, i) => p.classList.toggle('active-note', i === current + 1));
+  }
+
+  prevBtn.addEventListener('click', () => showSlide(current - 1));
+  nextBtn.addEventListener('click', () => showSlide(current + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); showSlide(current + 1); }
+    if (e.key === 'ArrowLeft') showSlide(current - 1);
+    if (e.key === 'Home') showSlide(0);
+    if (e.key === 'End') showSlide(slides.length - 1);
+  });
+  showSlide(0);
+
+  const toggleBtn = document.getElementById('teacherToggle');
+  const panel = document.getElementById('teacherPanel');
+  toggleBtn.addEventListener('click', () => {
+    panel.classList.toggle('open');
+    toggleBtn.textContent = panel.classList.contains('open') ? '📕 Скрыть заметки' : '📘 Для учителя';
+  });
+</script>
+</body>
+</html>
